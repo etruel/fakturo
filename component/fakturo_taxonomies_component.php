@@ -163,6 +163,16 @@ function fakturo_admin_init() {
          )
       )
    );
+   register_taxonomy(
+       'fakturo_emails',
+       '',
+      array(
+         'label' => 'Email',
+         'rewrite' => array(
+            'slug' => 'fakturo-emails'
+         )
+      )
+   );
 }
 
 ?>

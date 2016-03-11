@@ -82,6 +82,23 @@ function printSettingRowPrintTemplateTaxonomy($data, $tab, $section, $deleteFiel
   }
 }
 
+function printSettingRowEmailTaxonomy($data, $tab, $section, $deleteFieldName) {
+  foreach ($data as $key => $value) {
+    $description = get_term_meta( $value->term_id, 'description');
+    $description = isset($description[0])?$description[0]:'';
+    $text = get_term_meta( $value->term_id, 'text');
+    $text = isset($text[0])?$text[0]:'';
+    echo "<tr>
+    <td>$value->name</td>
+    <td>$description</td>
+    <td>" . substr(htmlspecialchars(stripslashes($text)), 0, 200) . "</td>
+    <td><a class=\"button\" href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=extensions&section=emails&action=edit&id=$value->term_id\">" . __( 'Edit', FAKTURO_TEXT_DOMAIN ) . "</a>
+    <a class=\"button\" href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=extensions&section=emails&action=preview&id=$value->term_id\">" . __( 'Preview', FAKTURO_TEXT_DOMAIN ) . "</a>
+    <a href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
+    </tr>";
+  }
+}
+
 function printSettingRowCurrencyTaxonomy($data, $tab, $section, $deleteFieldName) {
   foreach ($data as $key => $value) {
   	$symbol = get_term_meta( $value->term_id, 'symbol');

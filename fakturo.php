@@ -96,6 +96,49 @@ function fakturo_update_settings_controller() {
       		}
       	}
       	break;
+
+      case 'emails' :
+         if ($action == 'add' && isset($_POST['Submit']) && $_POST['Submit'] == 'add_email' && isset($_POST['email_subject']) && $_POST['email_subject'] != NULL) {
+            $term = wp_insert_term( $_POST['email_subject'], 'fakturo_emails', $args = array() );
+            if (isset($_POST['email_desc'])) {
+               add_term_meta ($term['term_id'], 'description', $_POST['email_desc']);
+            }
+            if (isset($_POST['email_text'])) {
+               add_term_meta ($term['term_id'], 'text', addslashes($_POST['email_text']));
+            }
+            print('<script>window.location.href="admin.php?page=fakturo%2Fview%2Ffakturo_settings.php&tab=extensions&section=emails"</script>');
+         }
+         if ($action == 'edit') {
+            $term = NULL;
+            if ($id != NULL) {               
+               if (isset($_POST['email_subject'])) {
+                  wp_update_term($id, 'fakturo_emails', array('name' => $_POST['email_subject'], 'slug' => sanitize_title($_POST['email_subject'])));
+               }
+               if (isset($_POST['email_desc'])) {
+                  update_term_meta($id, 'description', $_POST['email_desc']);
+               }
+               if (isset($_POST['email_text'])) {
+                  update_term_meta($id, 'text', addslashes($_POST['email_text']));
+                  print('<script>window.location.href="admin.php?page=fakturo%2Fview%2Ffakturo_settings.php&tab=extensions&section=emails"</script>');
+               }
+               $term = get_term($id, 'fakturo_emails');
+            }
+         }
+
+
+
+         if (isset($_GET['emails_delete']) && $_GET['emails_delete'] != NULL) {
+            wp_delete_term( $_GET['emails_delete'], 'fakturo_emails' );
+         }
+         if (isset($_POST['Submit']) && $_POST['Submit'] == 'update_setting') {
+            if (isset($_POST['enable_emails']) && $_POST['enable_emails'] == TRUE) {
+               update_option('fakturo_enable_emails', TRUE);
+            } else {
+               update_option('fakturo_enable_emails', FALSE);
+            }
+         }
+         break;
+
       case 'currencies' :
       	if (isset($_POST['Submit']) && $_POST['Submit'] == 'add_currency' && isset($_POST['currency_name']) && $_POST['currency_name'] != NULL) {
       		$term = wp_insert_term( $_POST['currency_name'], 'fakturo_currency', $args = array() );

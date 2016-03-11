@@ -58,6 +58,25 @@ if ( $_GET['page'] == 'fakturo/view/fakturo_settings.php' ){
          <?php
       break;
 
+      case 'emails' :
+
+        switch ($action) {
+          case 'add':
+            require_once('settings/emails_add.php');
+            break;
+
+          case 'edit':
+            require_once('settings/emails_edit.php');
+            break;
+          
+          default:
+            require_once('settings/emails_list.php');
+            break;
+        }
+         ?>          
+         <?php
+      break;
+
       case 'currencies' :
          ?>
           <tr>
