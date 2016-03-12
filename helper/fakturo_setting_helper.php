@@ -70,14 +70,19 @@ function printSettingRowPrintTemplateTaxonomy($data, $tab, $section, $deleteFiel
   	$content = isset($content[0])?$content[0]:'';
   	$assigned_to = get_term_meta( $value->term_id, 'assigned_to');
   	$assigned_to = isset($assigned_to[0])?$assigned_to[0]:'';
+	
+	$nonce= wp_create_nonce('preview-nonce');
+	$actionurl = FAKTURO_URI . 'view/settings/print_template_preview.php?p='.$value->term_id.'&_wpnonce=' . $nonce;
+	$actionjs = "javascript:window.open('$actionurl','$value->name','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=700, height=600');";
+	
     echo "<tr>
     <td>$value->name</td>
     <td>$description</td>
     <td>" . substr(htmlspecialchars(stripslashes($content)), 0, 200) . "</td>
     <td>$assigned_to</td>
     <td><a class=\"button\" href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=tables&section=print-template&action=edit&id=$value->term_id\">" . __( 'Edit', FAKTURO_TEXT_DOMAIN ) . "</a>
-    <a class=\"button\" href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=tables&section=print-template&action=preview&id=$value->term_id\">" . __( 'Preview', FAKTURO_TEXT_DOMAIN ) . "</a>
-    <a href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
+	<a href=\"javascrit:void(0);\" onclick=\"$actionjs return false;\" title=\"" . esc_attr(__("See a preview of this Print Template. (Open a PopUp window)", FAKTURO_TEXT_DOMAIN)) . "\" class=\"button\">" . __('Preview', FAKTURO_TEXT_DOMAIN) . "</a>
+	<a href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
     </tr>";
   }
 }
@@ -93,7 +98,7 @@ function printSettingRowEmailTaxonomy($data, $tab, $section, $deleteFieldName) {
     <td>$description</td>
     <td>" . substr(htmlspecialchars(stripslashes($text)), 0, 200) . "</td>
     <td><a class=\"button\" href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=extensions&section=emails&action=edit&id=$value->term_id\">" . __( 'Edit', FAKTURO_TEXT_DOMAIN ) . "</a>
-    <a class=\"button\" href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=extensions&section=emails&action=preview&id=$value->term_id\">" . __( 'Preview', FAKTURO_TEXT_DOMAIN ) . "</a>
+    <a class=\"button\" href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=extensions&section=emails&action=preview&id=$value->term_id\">" . __( 'Test', FAKTURO_TEXT_DOMAIN ) . "</a>
     <a href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
     </tr>";
   }

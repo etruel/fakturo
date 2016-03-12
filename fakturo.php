@@ -12,7 +12,10 @@
 
 add_action( 'admin_menu', 'fakturo_admin_menu' );
 add_action('admin_enqueue_scripts', 'fakturo_admin_style');
+
 const FAKTURO_TEXT_DOMAIN = 'fakturo';
+if(!defined( 'FAKTURO_URI' ) ) define( 'FAKTURO_URI', plugin_dir_url( __FILE__ ) );
+if(!defined( 'FAKTURO_DIR' ) ) define( 'FAKTURO_DIR', plugin_dir_path( __FILE__ ) );
 
 require_once('component/fakturo_base_component.php');
 require_once('component/fakturo_taxonomies_component.php');
@@ -124,9 +127,13 @@ function fakturo_update_settings_controller() {
                $term = get_term($id, 'fakturo_emails');
             }
          }
-
-
-
+         if ($action == 'preview') {
+            $term = get_term($id, 'fakturo_emails');
+            if ($term != NULL) {
+               wp_mail(bloginfo('admin_email'), $term->name, get_term_meta($term->term_id, 'text', true), get_term_meta($term->term_id, 'description', true));
+            }            
+            print('<script>window.location.href="admin.php?page=fakturo%2Fview%2Ffakturo_settings.php&tab=extensions&section=emails"</script>');
+         }
          if (isset($_GET['emails_delete']) && $_GET['emails_delete'] != NULL) {
             wp_delete_term( $_GET['emails_delete'], 'fakturo_emails' );
          }
