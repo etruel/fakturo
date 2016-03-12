@@ -12,7 +12,10 @@
 
 add_action( 'admin_menu', 'fakturo_admin_menu' );
 add_action('admin_enqueue_scripts', 'fakturo_admin_style');
+
 const FAKTURO_TEXT_DOMAIN = 'fakturo';
+if(!defined( 'FAKTURO_URI' ) ) define( 'FAKTURO_URI', plugin_dir_url( __FILE__ ) );
+if(!defined( 'FAKTURO_DIR' ) ) define( 'FAKTURO_DIR', plugin_dir_path( __FILE__ ) );
 
 require_once('component/fakturo_base_component.php');
 require_once('component/fakturo_taxonomies_component.php');
