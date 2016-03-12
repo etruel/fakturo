@@ -273,17 +273,17 @@ if ( $_GET['page'] == 'fakturo/view/fakturo_settings.php' ){
       case 'payment_types' :
          ?>
           <tr>
-            <th><?php echo __( 'Bank Entity Settings', FAKTURO_TEXT_DOMAIN ); ?></th>
+            <th><?php echo __( 'Payment Types Settings', FAKTURO_TEXT_DOMAIN ); ?></th>
           </tr>
           <tr>
-            <td><?php echo __( 'Enable Bank Entity', FAKTURO_TEXT_DOMAIN ); ?></td>
+            <td><?php echo __( 'Enable Payment Types', FAKTURO_TEXT_DOMAIN ); ?></td>
             <td><input type="checkbox" name="enable_payment_types" value="1" <?php if (get_option('fakturo_enable_payment_types') == TRUE) { ?> checked <?php } ?> ></td>
           </tr>
           <tr>
             
             <table class="wp-list-table widefat fixed fakturo-setting">
               <tr>
-                <p><?php echo __( 'Enter Bank Entity.', FAKTURO_TEXT_DOMAIN ); ?></p>
+                <p><?php echo __( 'Enter Payment Type.', FAKTURO_TEXT_DOMAIN ); ?></p>
               </tr>
               <tr>
                 <th class="manage-column column-title column-primary"><?php echo __( 'Name', FAKTURO_TEXT_DOMAIN ); ?></th>
@@ -298,7 +298,7 @@ if ( $_GET['page'] == 'fakturo/view/fakturo_settings.php' ){
               </tr>
             </table>
             <br/>
-            <button type="submit" name="Submit"  class="button" value="add_payment_types"><?php echo __( 'Add Bank Entity', FAKTURO_TEXT_DOMAIN ); ?></button>
+            <button type="submit" name="Submit"  class="button" value="add_payment_types"><?php echo __( 'Add Payment Type', FAKTURO_TEXT_DOMAIN ); ?></button>
           </tr>
          <?php
       break;
