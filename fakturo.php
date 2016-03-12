@@ -127,7 +127,7 @@ function fakturo_update_settings_controller() {
          if ($action == 'preview') {
             $term = get_term($id, 'fakturo_emails');
             if ($term != NULL) {
-               wp_mail(bloginfo('admin_email'), $term->name, get_term_meta($term->term_id, 'text', true), get_term_meta($term->term_id, 'description', true));
+               wp_mail(get_bloginfo('admin_email'), $term->name, get_term_meta($term->term_id, 'text', true), get_term_meta($term->term_id, 'description', true));
             }            
             print('<script>window.location.href="admin.php?page=fakturo%2Fview%2Ffakturo_settings.php&tab=extensions&section=emails"</script>');
          }
