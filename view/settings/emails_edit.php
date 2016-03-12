@@ -16,5 +16,8 @@
 <tr>
   <td>
     <button type="submit" name="Submit"  class="button" value="add_email"><?php echo __( 'Update Email Template', FAKTURO_TEXT_DOMAIN ); ?></button>
+  </td>
+  <td>
+    <a class="button" href="?page=fakturo%2Fview%2Ffakturo_settings.php&tab=extensions&section=emails&action=preview&id=<?php echo $term->term_id; ?>"><?php echo __( 'Test', FAKTURO_TEXT_DOMAIN ) ?></a>
   </td>  
 </tr>

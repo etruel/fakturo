@@ -124,9 +124,13 @@ function fakturo_update_settings_controller() {
                $term = get_term($id, 'fakturo_emails');
             }
          }
-
-
-
+         if ($action == 'preview') {
+            $term = get_term($id, 'fakturo_emails');
+            if ($term != NULL) {
+               wp_mail(bloginfo('admin_email'), $term->name, get_term_meta($term->term_id, 'text', true), get_term_meta($term->term_id, 'description', true));
+            }            
+            print('<script>window.location.href="admin.php?page=fakturo%2Fview%2Ffakturo_settings.php&tab=extensions&section=emails"</script>');
+         }
          if (isset($_GET['emails_delete']) && $_GET['emails_delete'] != NULL) {
             wp_delete_term( $_GET['emails_delete'], 'fakturo_emails' );
          }
