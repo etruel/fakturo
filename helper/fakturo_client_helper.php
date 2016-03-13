@@ -56,6 +56,20 @@ function Fakturo_seller_box( $post ) {
 	<?php
 }
 
+function fakturo_client_select_data($taxonomies, $name, $client_data) {
+	$data = get_terms($taxonomies, 'hide_empty=0');
+    $selected = "";
+    echo '<select name="' . $name . '"><option></option>';
+    foreach ($data as $value) {
+    	if ($client_data[$name] == $value->name) {
+    		$selected = " selected";
+    	} else {
+    		$selected = "";
+    	}
+      	echo "<option$selected>$value->name</option>";
+    }
+    echo '</select>';
+}
 
 function Fakturo_data_box( $post ) {  
 	global $post, $client_data;		
@@ -69,10 +83,6 @@ function Fakturo_data_box( $post ) {
 		<th><label for="address"><?php _e("Address", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
 		<td><input type="text" name="address" id="address" value="<?php echo $client_data['address'] ?>" class="regular-text"></td>
 	</tr>
-	<tr class="user-phone-wrap">
-		<th><label for="phone"><?php _e("Telephone", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input type="text" name="phone" id="phone" value="<?php echo $client_data['phone'] ?>" class="regular-text"></td>
-	</tr>
 	<tr class="user-cellular-wrap">
 		<th><label for="cellular"><?php _e("Cellular", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
 		<td><input type="text" name="cellular" id="cellular" value="<?php echo $client_data['cellular'] ?>" class="regular-text"></td>
@@ -80,6 +90,74 @@ function Fakturo_data_box( $post ) {
 	<tr class="user-facebook-wrap">
 		<th><label for="facebook"><?php _e("Facebook URL", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
 		<td><input type="text" name="facebook" id="facebook" value="<?php echo $client_data['facebook'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="facebook"><?php _e("Taxpayer ID", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td>
+			<input id="cuit" type="text" name="taxpayer" value="<?php echo $client_data['taxpayer'] ?>" class="regular-text">
+			<span id="cuit_validation"></span>
+			<div style="font-size:0.85em;" id="cuit_validation_note"><?php _e("Cuit number's validation only. Check www.afip.gov.ar", FAKTURO_TEXT_DOMAIN ) ?></div>
+		</td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="facebook"><?php _e("States", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><?php fakturo_client_select_data('fakturo_states', 'states', $client_data); ?></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="facebook"><?php _e("City", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input type="text" name="city" value="<?php echo $client_data['city'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="facebook"><?php _e("Payment Type", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><?php fakturo_client_select_data('fakturo_payment_types', 'payment_type', $client_data); ?></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="facebook"><?php _e("Price Scale", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><?php fakturo_client_select_data('fakturo_price_scales', 'price_scale', $client_data); ?></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="facebook"><?php _e("Bank Entity", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><?php fakturo_client_select_data('fakturo_bank_entities', 'bank_entity', $client_data); ?></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="facebook"><?php _e("Bank Account", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input type="text" name="bank_account" value="<?php echo $client_data['bank_account'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="facebook"><?php _e("Tax Condition", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><?php fakturo_client_select_data('fakturo_tax_condition', 'tax_condition', $client_data); ?></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="facebook"><?php _e("Postcode", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input type="text" name="postcode" value="<?php echo $client_data['postcode'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="facebook"><?php _e("Phone", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input type="text" name="phone" value="<?php echo $client_data['phone'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="facebook"><?php _e("Cell phone", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input type="text" name="cell_phone" value="<?php echo $client_data['cell_phone'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="facebook"><?php _e("Web", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input type="text" name="web" value="<?php echo $client_data['web'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="facebook"><?php _e("Credit Limit", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input type="text" name="credit_limit" value="<?php echo $client_data['credit_limit'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="facebook"><?php _e("Credit Limit Interval", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input type="text" name="credit_interval" value="<?php echo $client_data['credit_interval'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="facebook"><?php _e("Credit Limit Currency", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input type="text" name="credit_currency" value="<?php echo $client_data['credit_currency'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="facebook"><?php _e("Active", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input type="checkbox" name="active" value="1" <?php if ($client_data['active']) { echo 'checked="checked"'; } ?>></td>
 	</tr>
 	</tbody></table>
 	<?php
@@ -195,6 +273,9 @@ div.uc_column {float: left;width: 19%;}
 	overflow:hidden;
 }
 #snapshot_container_wrapper{text-align:center;}
+.cuit_ok {color: #2FB42F;text-shadow: 1px 1px 1px #eee;}
+.cuit_err {color: #FF3232;font-weight: 700;text-shadow: 1px 1px 1px #eee;}
+.sb_js_errors {float: right;color: #FF3232;}
 		</style><?php
 
 }
@@ -348,8 +429,79 @@ function fakturo_clients_head_scripts() {
 				//$('<?php //echo $form;?>').submit();
 			}
 		}
+
+		function CPcuitValido(cuit) {
+			if(cuit == ''){
+				return true;
+			}
+			if (!(cuit.match(/^\d{2}([\-_])?\d{8}([\-_])?\d{1}$/))) {
+				return false;
+			}
+			cuit = cuit.toString().replace(/[-_]/g, '');
+			var vec = new Array(10);
+			var esCuit = false;
+			var cuit_rearmado = '';
+			for (i=0; i < cuit.length; i++) {
+				caracter = cuit.charAt( i);
+				if ( caracter.charCodeAt(0) >= 48 && caracter.charCodeAt(0) <= 57 )     {
+					cuit_rearmado += caracter;
+				}
+			}
+			cuit=cuit_rearmado;
+			if ( cuit.length != 11) {  // si no estan todos los digitos
+				esCuit=false;
+			} else {
+				x=i=dv=0;
+				// Multiplico los dÃ­gitos.
+				vec[0] = cuit.charAt(0) * 5;
+				vec[1] = cuit.charAt(1) * 4;
+				vec[2] = cuit.charAt(2) * 3;
+				vec[3] = cuit.charAt(3) * 2;
+				vec[4] = cuit.charAt(4) * 7;
+				vec[5] = cuit.charAt(5) * 6;
+				vec[6] = cuit.charAt(6) * 5;
+				vec[7] = cuit.charAt(7) * 4;
+				vec[8] = cuit.charAt(8) * 3;
+				vec[9] = cuit.charAt(9) * 2;
+
+				// Suma cada uno de los resultado.
+				for( i = 0;i<=9; i++) {
+					x += vec[i];
+				}
+				dv = (11 - (x % 11)) % 11;
+				if (dv == cuit.charAt(10) ) {
+					esCuit=true;
+				}
+			}
+			if ( !esCuit ) {
+				return false;
+			}
+			return true;
+		}
+		var error = false
+		$('#cuit').keyup(function(){
+			if(this.value==''){
+				$('#cuit_validation').text('');
+			} else if(!CPcuitValido(this.value)){
+				$('#cuit_validation').text('Invalid cuit').removeClass('cuit_ok').addClass('cuit_err');
+				error = true;
+			} else {
+				$('#cuit_validation').text('Cuit OK').removeClass('cuit_err').addClass('cuit_ok');
+				error = false;
+			}
+		});
 		
-		
+		jQuery( "form#post #publish" ).hide();
+		jQuery( "form#post #publish" ).after("<input type=\'button\' value=\'<?php _e('Save Client', FAKTURO_TEXT_DOMAIN ); ?>\' class=\'sb_publish button-primary\' /><span class=\'sb_js_errors\'></span>");
+
+		jQuery( ".sb_publish" ).click(function() {			
+			if (!error) {
+				jQuery( "form#post #publish" ).click();
+			} else {
+				jQuery(".sb_js_errors").text("<?php _e('There was an error on the page and therefore this page can not yet be published.', FAKTURO_TEXT_DOMAIN ); ?>");
+			}
+		});
+
 	});		// jQuery
 	function delete_user_contact(row_id){
 		jQuery(row_id).fadeOut(); 

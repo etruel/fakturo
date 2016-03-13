@@ -95,11 +95,11 @@ function facturo_client_tax_menu_correction($parent_file) {
 }
 
 function fakturo_check_client($options) {
-	$client_data['email']	= (!isset($options['email'])) ? '' : $options['email'];
-	$client_data['address']	= (!isset($options['address'])) ? '' : $options['address'];
-	$client_data['phone']	= (!isset($options['phone']))	? '' : $options['phone'];
-	$client_data['cellular']= (!isset($options['cellular']))? '' : $options['cellular'];
-	$client_data['facebook']= (!isset($options['facebook']))? '' : $options['facebook'];
+	$fieldsArray = array('email', 'address', 'phone', 'cellular', 'facebook', 'taxpayer', 'states', 'city', 'payment_type', 'price_scale', 'bank_entity', 
+		'bank_account', 'tax_condition', 'postcode', 'phone', 'cell_phone', 'web', 'credit_limit', 'credit_interval', 'credit_currency', 'active');
+	foreach ($fieldsArray as $field) {
+		$client_data[$field]	= (!isset($options[$field])) ? '' : $options[$field];
+	}
 
 	$user_contacts = (!isset($options['user_contacts']))? Array() : $options['user_contacts'];
 	// Proceso los array sacando los que estan en blanco
@@ -187,7 +187,6 @@ function fakturo_save_client_data( $post_id ) {
 	$_POST['ID']=$post_id;
 	$client = array();
 	$client = apply_filters('fakturo_check_client', $_POST);
-
 	error_reporting($nivelerror);
 
 	fakturo_update_client($post_id, $client);
