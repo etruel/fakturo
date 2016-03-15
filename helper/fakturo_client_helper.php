@@ -236,9 +236,9 @@ function fakturo_clients_admin_scripts(){
 	global $post;
 	if($post->post_type != 'fakturo_client') return $post->ID;
 	wp_register_script('jquery-vsort', FAKTURO_URI .'js/jquery.vSort.min.js', array('jquery'));
-	wp_enqueue_script('jquery-vsort'); 
-	wp_register_script('webcam', FAKTURO_URI .'libraries/webcam/webcam.js', array('jquery'));
-	wp_enqueue_script('webcam'); 
+	wp_enqueue_script('jquery-vsort');
+	wp_register_script('webcam', FAKTURO_URI .'libraries/webcamjs-master/webcam.min.js', array('jquery'));
+	wp_enqueue_script('webcam');
 	add_action('admin_head', 'fakturo_clients_head_scripts');
 }
 
@@ -357,78 +357,61 @@ function fakturo_clients_head_scripts() {
 		});
 		
 		//*****************************
-		var webcamOn = false;
-		//var uploadOn = false;
+		Webcam.set({
+			width: 230,
+			height: 150,
+			image_format: 'jpeg',
+			jpeg_quality: 90,
+			force_flash: true
+		});
+		Webcam.attach( '#my_camera' );
 
-		takeSnapshot = function(){
-			$('#take_snapshot').hide();
-			$('#reset_snapshot').show(); //inline
-			webcam.freeze();
+		showSnapshot = function() {
+			$('#snapshot_btn').css('display', 'none');
+			$('#my_camera').css('display', 'block');
+			$('#take_snapshot').css('display', 'block');
 		}
 
-		resetSnapshot = function(){
-			$('#reset_snapshot').hide();
-			$('#take_snapshot').show(); //inline
-			if(webcam.loaded) webcam.reset();
+		take_snapshot = function() {
+			// take snapshot and get image data
+			Webcam.snap( function(data_uri) {
+				// display results in page				
+				$('#my_camera').css('display', 'none');
+				$('#take_snapshot').css('display', 'none');
+				$('input[name="webcam_image"]').val(data_uri);
+				$('#snap_image').attr('src', data_uri);
+				$('#snap_image').css('display', 'block');
+				$('#snapshot_reset').css('display', 'block');
+			} );
 		}
 
-		showSnapshot = function(){
-			$('#snapshot_container_buttons').hide();
-			$('#set-post-thumbnail.thickbox').hide();
-			$('#snapshot_container').show();
-			webcam.set_api_url(ajaxurl);
-			webcam.set_swf_url('<?php echo FAKTURO_URI .'libraries/webcam/webcam.swf' ?>');
-			webcam.set_quality(90); // JPEG quality (1 - 100)
-			webcam.set_shutter_sound(false); // play shutter click sound
-			webcam.set_hook('onError', 'cbWebcamError');
-			webcam.set_hook('onLoad', 'cbWebcamLoad');
-			webcam.set_hook('onComplete', 'cbWebcamActionComplete');
-			resetSnapshot();
-			$('#cam_image_container').html( webcam.get_html(230, 150) );
-			webcamOn = true;
+		reset_webcam = function() {
+			$('#snap_image').attr('src', "");
+			$('input[name="webcam_image"]').val("");
+			$('#snap_image').css('display', 'none');
+			$('#snapshot_btn').css('display', 'block');
+			$('#snapshot_reset').css('display', 'none');
 		}
 
-		hideSnapshot = function(){
-			$('#snapshot_container').hide();
-			webcamOn = false;
-			$('#snapshot_container_buttons').show();
-			$('#set-post-thumbnail.thickbox').show();
+		WPSetThumbnailHTML = function(html){
+			$('.featured-image-client', '#postimagediv').html(html);
+		};
+
+		wp.media.featuredImage.set = function( id ) {
+			var settings = wp.media.view.settings;
+
+			settings.post.featuredImageId = id;
+
+			wp.media.post( 'set-post-thumbnail', {
+				json:         true,
+				post_id:      settings.post.id,
+				thumbnail_id: settings.post.featuredImageId,
+				_wpnonce:     settings.post.nonce
+			}).done( function( html ) {
+				$('.featured-image-client', '#postimagediv').html(html);
+			});
 		}
 
-		cbWebcamError = function(msg) {
-			msgBox('Error: '+msg);
-			resetSnapshot();
-		}
-
-		cbWebcamLoad = function() {
-		}
-
-		cbWebcamActionComplete = function(msg) {
-			// extract URL out of PHP output
-			if (msg.match(/error\:(.*)/)) {
-				var error = RegExp.$1;
-				$('#cam_image_buttons').show();
-				if($('#action_buttons')) $('#action_buttons').show();
-				$('#upload_results').innerHTML = '';
-				resetSnapshot();
-				msgBox(msg);
-			} else {
-				$('#image').value = msg;
-				//$('<?php //echo $form;?>').submit();
-			}
-		}
-
-		uploadAndSubmit = function() {
-			if(webcamOn){
-				// Take snapshot and upload to server
-				$('#cam_image_buttons').hide();
-				if($('#action_buttons')) $('#action_buttons').hide();
-				$('#upload_results').innerHTML = '<?php echo __("Uploading", FAKTURO_TEXT_DOMAIN );?>';
-				webcam.upload();
-			} else {
-				//$('<?php //echo $form;?>').submit();
-			}
-		}
 
 		function CPcuitValido(cuit) {
 			if(cuit == ''){
@@ -528,34 +511,23 @@ function fakturo_clients_head_scripts() {
 function Fakturo_post_thumbnail_meta_box( $post ) {
 	$thumbnail_id = get_post_meta( $post->ID, '_thumbnail_id', true );
 	echo Faktura_get_webcam_link( $thumbnail_id, $post->ID );
+	echo '<div class="featured-image-client">';
 	echo _wp_post_thumbnail_html( $thumbnail_id, $post->ID );
+	echo "</div>";
 }
 
 function Faktura_get_webcam_link($thumbnail_id = null, $post = null){
 	?>
 	<div id="snapshot_container_wrapper">
-	<?php if(! $thumbnail_id ) { ?>
-		<div id="snapshot_container_buttons">
-			<?php echo '<a href="javascript:showSnapshot()" class="nobutton">"' . __( 'Take a snapshot', FAKTURO_TEXT_DOMAIN ) . '"</a>'; ?>
+	<div id="snapshot_container_buttons">
+		<?php echo '<a id="snapshot_btn" href="javascript:showSnapshot()" class="nobutton">"' . __( 'Take a snapshot', FAKTURO_TEXT_DOMAIN ) . '"</a>'; ?>
+		<div id="my_camera" style="display:none;">				
 		</div>
-		<div id="snapshot_container" class="form_field" style="display:none">
-			<div id="cam_image_container"></div>
-			<div id="upload_results"></div>
-			<input type="hidden" name="image" id="image" value="" >
-			<div id="cam_image_buttons">
-				<input type="button" value="<?php echo __("Configure", FAKTURO_TEXT_DOMAIN);?>" onClick="webcam.configure()">
-				&nbsp;&nbsp;
-				<input type="button" id="take_snapshot" value="<?php echo __("Take a snapshot", FAKTURO_TEXT_DOMAIN );?>" onClick="takeSnapshot()">
-				&nbsp;&nbsp;
-				<input type="button" id="reset_snapshot" style="display:none" value="<?php echo __("Reset", FAKTURO_TEXT_DOMAIN );?>" onClick="resetSnapshot()">
-				&nbsp;&nbsp;
-				<input type="button" id="cancel" value="<?php echo __("Cancel", FAKTURO_TEXT_DOMAIN );?>" onClick="hideSnapshot()">
-				<div id="delete_image_info">
-					<?php echo __("Must Save to complete image Saving", FAKTURO_TEXT_DOMAIN );?>
-				</div>
-			</div>
-		</div>
-	<?php } ?>
+		<img src="" id="snap_image" style="display:none;">
+		<input type="hidden" name="webcam_image">
+		<a href="javascript:take_snapshot()" class="nobutton" id="take_snapshot" style="display:none;"><?php _e( 'Take a snapshot') ?></a>
+		<a href="javascript:reset_webcam()" class="nobutton" id="snapshot_reset" style="display:none;"><?php _e( 'Reset') ?></a>
+	</div>
 	</div>
 	<?php
 }

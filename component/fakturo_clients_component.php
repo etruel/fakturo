@@ -189,6 +189,28 @@ function fakturo_save_client_data( $post_id ) {
 	$client = apply_filters('fakturo_check_client', $_POST);
 	error_reporting($nivelerror);
 
+	if (isset($_POST['webcam_image']) && $_POST['webcam_image'] != NULL ) {
+		$filename = "webcam_image_".microtime().'.jpg';
+		$file = wp_upload_bits($filename, null, base64_decode(substr($_POST['webcam_image'], 23)));
+		if ($file['error'] == FALSE) {
+			$wp_filetype = wp_check_filetype($filename, null );
+			$attachment = array(
+				'post_mime_type' => $wp_filetype['type'],
+				'post_parent' => $post_id,
+				'post_title' => preg_replace('/\.[^.]+$/', '', $filename),
+				'post_content' => '',
+				'post_status' => 'inherit'
+			);
+			$attachment_id = wp_insert_attachment( $attachment, $file['file'], $post_id );
+			if (!is_wp_error($attachment_id)) {
+				require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+				$attachment_data = wp_generate_attachment_metadata( $attachment_id, $file['file'] );
+				wp_update_attachment_metadata( $attachment_id,  $attachment_data );
+			}
+
+			add_post_meta($post_id, '_thumbnail_id', $attachment_id);
+		}
+	}
 	fakturo_update_client($post_id, $client);
 
 	return $post_id ;
