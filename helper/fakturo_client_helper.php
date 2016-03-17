@@ -59,7 +59,7 @@ function Fakturo_seller_box( $post ) {
 function fakturo_client_select_data($taxonomies, $name, $client_data) {
 	$data = get_terms($taxonomies, 'hide_empty=0');
     $selected = "";
-    echo '<select name="' . $name . '"><option></option>';
+    echo '<select id="' . $name . '" name="' . $name . '"><option></option>';
     foreach ($data as $value) {
     	if ($client_data[$name] == $value->name) {
     		$selected = " selected";
@@ -92,72 +92,72 @@ function Fakturo_data_box( $post ) {
 		<td><input type="text" name="facebook" id="facebook" value="<?php echo $client_data['facebook'] ?>" class="regular-text"></td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="facebook"><?php _e("Taxpayer ID", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<th><label for="taxpayer"><?php _e("Taxpayer ID", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
 		<td>
-			<input id="cuit" type="text" name="taxpayer" value="<?php echo $client_data['taxpayer'] ?>" class="regular-text">
+			<input id="taxpayer" type="text" name="taxpayer" value="<?php echo $client_data['taxpayer'] ?>" class="regular-text">
 			<span id="cuit_validation"></span>
 			<div style="font-size:0.85em;" id="cuit_validation_note"><?php _e("Cuit number's validation only. Check www.afip.gov.ar", FAKTURO_TEXT_DOMAIN ) ?></div>
 		</td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="facebook"><?php _e("States", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<th><label for="states"><?php _e("States", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
 		<td><?php fakturo_client_select_data('fakturo_states', 'states', $client_data); ?></td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="facebook"><?php _e("City", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input type="text" name="city" value="<?php echo $client_data['city'] ?>" class="regular-text"></td>
+		<th><label for="city"><?php _e("City", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="city" type="text" name="city" value="<?php echo $client_data['city'] ?>" class="regular-text"></td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="facebook"><?php _e("Payment Type", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<th><label for="payment_type"><?php _e("Payment Type", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
 		<td><?php fakturo_client_select_data('fakturo_payment_types', 'payment_type', $client_data); ?></td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="facebook"><?php _e("Price Scale", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<th><label for="price_scale"><?php _e("Price Scale", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
 		<td><?php fakturo_client_select_data('fakturo_price_scales', 'price_scale', $client_data); ?></td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="facebook"><?php _e("Bank Entity", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<th><label for="bank_entity"><?php _e("Bank Entity", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
 		<td><?php fakturo_client_select_data('fakturo_bank_entities', 'bank_entity', $client_data); ?></td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="facebook"><?php _e("Bank Account", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input type="text" name="bank_account" value="<?php echo $client_data['bank_account'] ?>" class="regular-text"></td>
+		<th><label for="bank_account"><?php _e("Bank Account", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="bank_account" type="text" name="bank_account" value="<?php echo $client_data['bank_account'] ?>" class="regular-text"></td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="facebook"><?php _e("Tax Condition", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<th><label for="tax_condition"><?php _e("Tax Condition", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
 		<td><?php fakturo_client_select_data('fakturo_tax_condition', 'tax_condition', $client_data); ?></td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="facebook"><?php _e("Postcode", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input type="text" name="postcode" value="<?php echo $client_data['postcode'] ?>" class="regular-text"></td>
+		<th><label for="postcode"><?php _e("Postcode", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="postcode" type="text" name="postcode" value="<?php echo $client_data['postcode'] ?>" class="regular-text"></td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="facebook"><?php _e("Phone", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input type="text" name="phone" value="<?php echo $client_data['phone'] ?>" class="regular-text"></td>
+		<th><label for="phone"><?php _e("Phone", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="phone" type="text" name="phone" value="<?php echo $client_data['phone'] ?>" class="regular-text"></td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="facebook"><?php _e("Cell phone", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input type="text" name="cell_phone" value="<?php echo $client_data['cell_phone'] ?>" class="regular-text"></td>
+		<th><label for="cell_phone"><?php _e("Cell phone", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="cell_phone" type="text" name="cell_phone" value="<?php echo $client_data['cell_phone'] ?>" class="regular-text"></td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="facebook"><?php _e("Web", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input type="text" name="web" value="<?php echo $client_data['web'] ?>" class="regular-text"></td>
+		<th><label for="web"><?php _e("Web", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="web" type="text" name="web" value="<?php echo $client_data['web'] ?>" class="regular-text"></td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="facebook"><?php _e("Credit Limit", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input type="text" name="credit_limit" value="<?php echo $client_data['credit_limit'] ?>" class="regular-text"></td>
+		<th><label for="credit_limit"><?php _e("Credit Limit", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="credit_limit" type="text" name="credit_limit" value="<?php echo $client_data['credit_limit'] ?>" class="regular-text"></td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="facebook"><?php _e("Credit Limit Interval", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input type="text" name="credit_interval" value="<?php echo $client_data['credit_interval'] ?>" class="regular-text"></td>
+		<th><label for="credit_interval"><?php _e("Credit Limit Interval", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="credit_interval" type="text" name="credit_interval" value="<?php echo $client_data['credit_interval'] ?>" class="regular-text"></td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="facebook"><?php _e("Credit Limit Currency", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input type="text" name="credit_currency" value="<?php echo $client_data['credit_currency'] ?>" class="regular-text"></td>
+		<th><label for="credit_currency"><?php _e("Credit Limit Currency", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="credit_currency" type="text" name="credit_currency" value="<?php echo $client_data['credit_currency'] ?>" class="regular-text"></td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="facebook"><?php _e("Active", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input type="checkbox" name="active" value="1" <?php if ($client_data['active']) { echo 'checked="checked"'; } ?>></td>
+		<th><label for="active"><?php _e("Active", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="active" type="checkbox" name="active" value="1" <?php if ($client_data['active']) { echo 'checked="checked"'; } ?>></td>
 	</tr>
 	</tbody></table>
 	<?php
@@ -363,6 +363,9 @@ function fakturo_clients_head_scripts() {
 			$('#snapshot_btn').css('display', 'none');
 			$('#my_camera').css('display', 'block');
 			$('#take_snapshot').css('display', 'block');
+			$('#set-post-thumbnail').css('display', 'none');
+			$('#remove-post-thumbnail').css('display', 'none');
+			$('#snapshot_cancel').css('display', 'block');
 			
 			if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
 				Webcam.set({
@@ -385,9 +388,7 @@ function fakturo_clients_head_scripts() {
 		}
 
 		take_snapshot = function() {
-			// take snapshot and get image data
 			Webcam.snap( function(data_uri) {
-				// display results in page				
 				$('#my_camera').css('display', 'none');
 				$('#take_snapshot').css('display', 'none');
 				$('input[name="webcam_image"]').val(data_uri);
@@ -401,8 +402,22 @@ function fakturo_clients_head_scripts() {
 			$('#snap_image').attr('src', "");
 			$('input[name="webcam_image"]').val("");
 			$('#snap_image').css('display', 'none');
+			$('#snapshot_reset').css('display', 'none');
+			$('#my_camera').css('display', 'block');
+			$('#take_snapshot').css('display', 'block');
+		}
+
+		snapshot_cancel = function() {
+			$('#snap_image').attr('src', "");
+			$('input[name="webcam_image"]').val("");
+			$('#snap_image').css('display', 'none');
 			$('#snapshot_btn').css('display', 'block');
 			$('#snapshot_reset').css('display', 'none');
+			$('#take_snapshot').css('display', 'none');
+			$('#snapshot_cancel').css('display', 'none');
+			$('#my_camera').css('display', 'none');
+			$('#set-post-thumbnail').css('display', 'block');
+			$('#remove-post-thumbnail').css('display', 'block');
 		}
 
 		WPSetThumbnailHTML = function(html){
@@ -532,13 +547,14 @@ function Faktura_get_webcam_link($thumbnail_id = null, $post = null){
 	?>
 	<div id="snapshot_container_wrapper">
 	<div id="snapshot_container_buttons">
-		<?php echo '<a id="snapshot_btn" href="javascript:showSnapshot()" class="nobutton">"' . __( 'Take a snapshot', FAKTURO_TEXT_DOMAIN ) . '"</a>'; ?>
+		<?php echo '<a id="snapshot_btn" href="javascript:showSnapshot()" class="nobutton">' . __( 'Take a snapshot', FAKTURO_TEXT_DOMAIN ) . '</a>'; ?>
 		<div id="my_camera" style="display:none;">				
 		</div>
 		<img src="" id="snap_image" style="display:none;">
 		<input type="hidden" name="webcam_image">
-		<a href="javascript:take_snapshot()" class="nobutton" id="take_snapshot" style="display:none;"><?php _e( 'Take a snapshot') ?></a>
-		<a href="javascript:reset_webcam()" class="nobutton" id="snapshot_reset" style="display:none;"><?php _e( 'Reset') ?></a>
+		<a href="javascript:take_snapshot()" class="button" id="take_snapshot" style="display:none;"><?php _e( 'Snapshot') ?></a>
+		<a href="javascript:reset_webcam()" class="button" id="snapshot_reset" style="display:none;"><?php _e( 'Reset') ?></a>
+		<a href="javascript:snapshot_cancel()" class="button" id="snapshot_cancel" style="display:none;"><?php _e( 'Cancel') ?></a>
 	</div>
 	</div>
 	<?php

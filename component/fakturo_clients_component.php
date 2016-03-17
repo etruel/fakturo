@@ -190,6 +190,7 @@ function fakturo_save_client_data( $post_id ) {
 	error_reporting($nivelerror);
 
 	if (isset($_POST['webcam_image']) && $_POST['webcam_image'] != NULL ) {
+		delete_post_meta($post_id, '_thumbnail_id');
 		$filename = "webcam_image_".microtime().'.jpg';
 		$file = wp_upload_bits($filename, null, base64_decode(substr($_POST['webcam_image'], 23)));
 		if ($file['error'] == FALSE) {
