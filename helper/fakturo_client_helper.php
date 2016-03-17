@@ -418,6 +418,7 @@ function fakturo_clients_head_scripts() {
 			$('#my_camera').css('display', 'none');
 			$('#set-post-thumbnail').css('display', 'block');
 			$('#remove-post-thumbnail').css('display', 'block');
+			Webcam.reset();
 		}
 
 		WPSetThumbnailHTML = function(html){
