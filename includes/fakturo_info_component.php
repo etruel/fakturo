@@ -129,7 +129,7 @@ function my_admin_styles() {
    wp_enqueue_style('thickbox');
 }
    
-if (isset($_GET['page']) && $_GET['page'] == 'fakturo/view/fakturo_settings.php') {
+if (isset($_GET['page']) && $_GET['page'] == 'fakturo/settings/fakturo_settings.php') {
    add_action('admin_print_scripts', 'my_admin_scripts');
    add_action('admin_print_styles', 'my_admin_styles');
 }

@@ -4,7 +4,7 @@
 <?php
 wp_nonce_field( "ilc-settings-page" ); 
 
-if ( $_GET['page'] == 'fakturo/view/fakturo_settings.php' ){
+if ( $_GET['page'] == 'fakturo/settings/fakturo_settings.php' ){
    echo '<table class="form-table fakturo-settings">';
    switch ( $section ){
       case 'user-template' :
@@ -43,15 +43,15 @@ if ( $_GET['page'] == 'fakturo/view/fakturo_settings.php' ){
 
         switch ($action) {
           case 'add':
-            require_once('settings/print_template_add.php');
+            require_once('views/print_template_add.php');
             break;
 
           case 'edit':
-            require_once('settings/print_template_edit.php');
+            require_once('views/print_template_edit.php');
             break;
           
           default:
-            require_once('settings/print_template_list.php');
+            require_once('views/print_template_list.php');
             break;
         }
          ?>          
@@ -62,15 +62,15 @@ if ( $_GET['page'] == 'fakturo/view/fakturo_settings.php' ){
 
         switch ($action) {
           case 'add':
-            require_once('settings/emails_add.php');
+            require_once('views/emails_add.php');
             break;
 
           case 'edit':
-            require_once('settings/emails_edit.php');
+            require_once('views/emails_edit.php');
             break;
           
           default:
-            require_once('settings/emails_list.php');
+            require_once('views/emails_list.php');
             break;
         }
          ?>          

@@ -17,7 +17,7 @@ function fakturo_admin_tabs( $current = 'user-template' ) {
     }
     foreach( $tabs as $tab => $name ){
         $class = ( $tab == $current ) ? ' nav-tab-active' : '';
-        echo "<a class='nav-tab$class' href='?page=fakturo%2Fview%2Ffakturo_settings.php&tab=$tab'>$name</a>";
+        echo "<a class='nav-tab$class' href='?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$tab'>$name</a>";
 
     }
     echo '</h2>';
@@ -25,7 +25,7 @@ function fakturo_admin_tabs( $current = 'user-template' ) {
 
 function printSettingRowSimpleTaxonomy($data, $tab, $section, $deleteFieldName) {
   foreach ($data as $key => $value) {
-    echo "<tr><td>$value->name</td><td><a href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td></tr>";
+    echo "<tr><td>$value->name</td><td><a href=\"?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td></tr>";
   }
 }
 
@@ -41,7 +41,7 @@ function fakturo_admin_tabs_section( $current = 'user-template' ) {
     }
     foreach( $tabs as $tab => $name ){
         $class = ( $tab == $currentTab ) ? ' nav-tab-active' : '';
-        echo "<a class='nav-tab$class' href='?page=fakturo%2Fview%2Ffakturo_settings.php&tab=$tab'>$name</a>";
+        echo "<a class='nav-tab$class' href='?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$tab'>$name</a>";
     }
     echo '</h2>';
 
@@ -57,7 +57,7 @@ function fakturo_admin_tabs_section( $current = 'user-template' ) {
     foreach ($sections as $key => $section) {
       $class = ( $key == $currentSection ) ? ' current' : '';
       $delimiter = ($section != $endSection) ? ' | ' : '';
-      echo "<li><a class='$class' href='?page=fakturo%2Fview%2Ffakturo_settings.php&tab=$currentTab&section=$key'>$section</a>$delimiter</li>";
+      echo "<li><a class='$class' href='?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$currentTab&section=$key'>$section</a>$delimiter</li>";
     }
     echo '</ul>';
 }
@@ -72,7 +72,7 @@ function printSettingRowPrintTemplateTaxonomy($data, $tab, $section, $deleteFiel
   	$assigned_to = isset($assigned_to[0])?$assigned_to[0]:'';
 	
 	$nonce= wp_create_nonce('preview-nonce');
-	$actionurl = FAKTURO_URI . 'view/settings/print_template_preview.php?p='.$value->term_id.'&_wpnonce=' . $nonce;
+	$actionurl = FAKTURO_URI . 'settings/views/print_template_preview.php?p='.$value->term_id.'&_wpnonce=' . $nonce;
 	$actionjs = "javascript:window.open('$actionurl','$value->name','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=700, height=600');";
 	
     echo "<tr>
@@ -80,9 +80,9 @@ function printSettingRowPrintTemplateTaxonomy($data, $tab, $section, $deleteFiel
     <td>$description</td>
     <td>" . substr(htmlspecialchars(stripslashes($content)), 0, 200) . "</td>
     <td>$assigned_to</td>
-    <td><a class=\"button\" href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=tables&section=print-template&action=edit&id=$value->term_id\">" . __( 'Edit', FAKTURO_TEXT_DOMAIN ) . "</a>
+    <td><a class=\"button\" href=\"?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=tables&section=print-template&action=edit&id=$value->term_id\">" . __( 'Edit', FAKTURO_TEXT_DOMAIN ) . "</a>
 	<a href=\"javascrit:void(0);\" onclick=\"$actionjs return false;\" title=\"" . esc_attr(__("See a preview of this Print Template. (Open a PopUp window)", FAKTURO_TEXT_DOMAIN)) . "\" class=\"button\">" . __('Preview', FAKTURO_TEXT_DOMAIN) . "</a>
-	<a href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
+	<a href=\"?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
     </tr>";
   }
 }
@@ -97,9 +97,9 @@ function printSettingRowEmailTaxonomy($data, $tab, $section, $deleteFieldName) {
     <td>$value->name</td>
     <td>$description</td>
     <td>" . substr(htmlspecialchars(stripslashes($text)), 0, 200) . "</td>
-    <td><a class=\"button\" href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=extensions&section=emails&action=edit&id=$value->term_id\">" . __( 'Edit', FAKTURO_TEXT_DOMAIN ) . "</a>
-    <a class=\"button\" href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=extensions&section=emails&action=preview&id=$value->term_id\">" . __( 'Test', FAKTURO_TEXT_DOMAIN ) . "</a>
-    <a href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
+    <td><a class=\"button\" href=\"?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=extensions&section=emails&action=edit&id=$value->term_id\">" . __( 'Edit', FAKTURO_TEXT_DOMAIN ) . "</a>
+    <a class=\"button\" href=\"?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=extensions&section=emails&action=preview&id=$value->term_id\">" . __( 'Test', FAKTURO_TEXT_DOMAIN ) . "</a>
+    <a href=\"?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
     </tr>";
   }
 }
@@ -123,7 +123,7 @@ function printSettingRowCurrencyTaxonomy($data, $tab, $section, $deleteFieldName
     <td>$reference</td>
     <td>$default</td>
     <td>$plural</td>
-    <td><a href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
+    <td><a href=\"?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
     </tr>";
   }
 }
@@ -135,7 +135,7 @@ function printSettingRowTaxesTaxonomy($data, $tab, $section, $deleteFieldName) {
     echo "<tr>
     <td>$value->name</td>
     <td>$percent</td>
-    <td><a href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
+    <td><a href=\"?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
     </tr>";
   }
 }
@@ -156,7 +156,7 @@ function printSettingRowInvoiceTypeTaxonomy($data, $tab, $section, $deleteFieldN
     <td>$taxes</td>
     <td>$default</td>
     <td>$sum</td>
-    <td><a href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
+    <td><a href=\"?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
     </tr>";
   }
 }
@@ -171,7 +171,7 @@ function printSettingRowPriceScalesTaxonomy($data, $tab, $section, $deleteFieldN
     <td>$value->name</td>
     <td>$percent</td>
     <td>$default</td>
-    <td><a href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
+    <td><a href=\"?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
     </tr>";
   }
 }
@@ -183,7 +183,7 @@ function printSettingRowStatesTaxonomy($data, $tab, $section, $deleteFieldName) 
     echo "<tr>
     <td>$value->name</td>
     <td>$country</td>
-    <td><a href=\"?page=fakturo%2Fview%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
+    <td><a href=\"?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
     </tr>";
   }
 }

@@ -490,7 +490,7 @@ function fakturo_clients_head_scripts() {
 			return true;
 		}
 		var error = false
-		$('#cuit').keyup(function(){
+		$('#taxpayer').keyup(function(){
 			if(this.value==''){
 				$('#cuit_validation').text('');
 			} else if(!CPcuitValido(this.value)){

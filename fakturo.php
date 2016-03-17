@@ -17,19 +17,18 @@ const FAKTURO_TEXT_DOMAIN = 'fakturo';
 if(!defined( 'FAKTURO_URI' ) ) define( 'FAKTURO_URI', plugin_dir_url( __FILE__ ) );
 if(!defined( 'FAKTURO_DIR' ) ) define( 'FAKTURO_DIR', plugin_dir_path( __FILE__ ) );
 
-require_once('component/fakturo_base_component.php');
-require_once('component/fakturo_taxonomies_component.php');
-require_once('component/fakturo_info_component.php');
-require_once('component/fakturo_clients_component.php');
-require_once('view/fakturo_clients.php');
-require_once('helper/fakturo_client_helper.php');
+require_once('includes/fakturo_base_component.php');
+require_once('includes/fakturo_taxonomies_component.php');
+require_once('includes/fakturo_info_component.php');
+require_once('includes/fakturo_clients_component.php');
+require_once('includes/fakturo_client_helper.php');
 
 
 function fakturo_admin_menu() {
 	if (current_user_can('manage_options')) {
-		add_menu_page( __( 'Fakturo', FAKTURO_TEXT_DOMAIN ), __( 'Fakturo', FAKTURO_TEXT_DOMAIN ), 'manage_options', 'fakturo/view/fakturo_admin.php', '', 'dashicons-tickets', 81  );
+		add_menu_page( __( 'Fakturo', FAKTURO_TEXT_DOMAIN ), __( 'Fakturo', FAKTURO_TEXT_DOMAIN ), 'manage_options', 'fakturo/admin/fakturo_admin.php', '', 'dashicons-tickets', 81  );
 		$page = add_submenu_page(
-			'fakturo/view/fakturo_admin.php',
+			'fakturo/admin/fakturo_admin.php',
 			__( 'Clients', FAKTURO_TEXT_DOMAIN ),
 			__( 'Clients List', FAKTURO_TEXT_DOMAIN ),
 			'manage_options',
@@ -38,7 +37,7 @@ function fakturo_admin_menu() {
 		add_action( 'admin_print_styles-' . $page, 'fakturo_admin_styles');
 
 		$page = add_submenu_page(
-			'fakturo/view/fakturo_admin.php',
+			'fakturo/admin/fakturo_admin.php',
 			__( 'Add Client', FAKTURO_TEXT_DOMAIN ),
 			__( 'Add Client', FAKTURO_TEXT_DOMAIN ),
 			'manage_options',
@@ -46,7 +45,7 @@ function fakturo_admin_menu() {
 		);
 		add_action( 'admin_print_styles-' . $page, 'fakturo_admin_styles');
 
-		add_submenu_page( 'fakturo/view/fakturo_admin.php', __( 'Settings', FAKTURO_TEXT_DOMAIN ), __( 'Settings', FAKTURO_TEXT_DOMAIN ), 'manage_options', 'fakturo/view/fakturo_settings.php', 'fakturo_update_settings_controller' ); 
+		add_submenu_page( 'fakturo/admin/fakturo_admin.php', __( 'Settings', FAKTURO_TEXT_DOMAIN ), __( 'Settings', FAKTURO_TEXT_DOMAIN ), 'manage_options', 'fakturo/settings/fakturo_settings.php', 'fakturo_update_settings_controller' ); 
 	}	
 }
 
@@ -55,7 +54,7 @@ function fakturo_admin_style() {
 }
 
 function fakturo_update_settings_controller() {
-   require_once('component/fakturo_setting_component.php');
+   require_once('includes/fakturo_setting_component.php');
 	$section = FakturoSettingComponent::getFakturoCurrentSection();
    $action = FakturoBaseComponent::fakturoGetAction();
    $id = FakturoBaseComponent::fakturoGetId();
@@ -88,7 +87,7 @@ function fakturo_update_settings_controller() {
       		if (isset($_POST['print_template_assigned'])) {
       			add_term_meta ($term['term_id'], 'assigned_to', $_POST['print_template_assigned']);
       		}
-            print('<script>window.location.href="admin.php?page=fakturo%2Fview%2Ffakturo_settings.php&tab=tables&section=print-template"</script>');
+            print('<script>window.location.href="admin.php?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=tables&section=print-template"</script>');
       	}
          if ($action == 'edit') {
             $term = NULL;
@@ -104,7 +103,7 @@ function fakturo_update_settings_controller() {
                }
                if (isset($_POST['print_template_assigned'])) {
                   update_term_meta($id, 'assigned_to', $_POST['print_template_assigned']);
-                  print('<script>window.location.href="admin.php?page=fakturo%2Fview%2Ffakturo_settings.php&tab=tables&section=print-template"</script>');
+                  print('<script>window.location.href="admin.php?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=tables&section=print-template"</script>');
                }
                $term = get_term($id, 'fakturo_print_template');
             }
@@ -130,7 +129,7 @@ function fakturo_update_settings_controller() {
             if (isset($_POST['email_text'])) {
                add_term_meta ($term['term_id'], 'text', addslashes($_POST['email_text']));
             }
-            print('<script>window.location.href="admin.php?page=fakturo%2Fview%2Ffakturo_settings.php&tab=extensions&section=emails"</script>');
+            print('<script>window.location.href="admin.php?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=extensions&section=emails"</script>');
          }
          if ($action == 'edit') {
             $term = NULL;
@@ -143,7 +142,7 @@ function fakturo_update_settings_controller() {
                }
                if (isset($_POST['email_text'])) {
                   update_term_meta($id, 'text', addslashes($_POST['email_text']));
-                  print('<script>window.location.href="admin.php?page=fakturo%2Fview%2Ffakturo_settings.php&tab=extensions&section=emails"</script>');
+                  print('<script>window.location.href="admin.php?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=extensions&section=emails"</script>');
                }
                $term = get_term($id, 'fakturo_emails');
             }
@@ -158,7 +157,7 @@ function fakturo_update_settings_controller() {
                   $alert = "alert(\"" . __( 'Your message could not be sent.', FAKTURO_TEXT_DOMAIN ) . "\")";
                }
             }            
-            print('<script>window.location.href="admin.php?page=fakturo%2Fview%2Ffakturo_settings.php&tab=extensions&section=emails";' . $alert . ';</script>');
+            print('<script>window.location.href="admin.php?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=extensions&section=emails";' . $alert . ';</script>');
          }
          if (isset($_GET['emails_delete']) && $_GET['emails_delete'] != NULL) {
             wp_delete_term( $_GET['emails_delete'], 'fakturo_emails' );
@@ -465,8 +464,8 @@ function fakturo_update_settings_controller() {
          break;
    }
 
-   require_once('helper/fakturo_setting_helper.php');
-	require_once('view/fakturo_settings.php');
+   require_once('includes/fakturo_setting_helper.php');
+	require_once('settings/fakturo_settings.php');
 }
 
 ?>
