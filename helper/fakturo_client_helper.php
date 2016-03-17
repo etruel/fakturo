@@ -357,19 +357,31 @@ function fakturo_clients_head_scripts() {
 		});
 		
 		//*****************************
-		Webcam.set({
-			width: 230,
-			height: 150,
-			image_format: 'jpeg',
-			jpeg_quality: 90,
-			force_flash: true
-		});
-		Webcam.attach( '#my_camera' );
+		
 
 		showSnapshot = function() {
 			$('#snapshot_btn').css('display', 'none');
 			$('#my_camera').css('display', 'block');
 			$('#take_snapshot').css('display', 'block');
+			
+			if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
+				Webcam.set({
+					width: 230,
+					height: 150,
+					image_format: 'jpeg',
+					jpeg_quality: 90,
+					force_flash: true
+				})
+			} else {
+				Webcam.set({
+					width: 230,
+					height: 150,
+					image_format: 'jpeg',
+					jpeg_quality: 90,
+					force_flash: false
+				});
+			}
+			Webcam.attach( '#my_camera' );
 		}
 
 		take_snapshot = function() {
