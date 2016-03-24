@@ -20,6 +20,7 @@ if(!defined( 'FAKTURO_DIR' ) ) define( 'FAKTURO_DIR', plugin_dir_path( __FILE__ 
 require_once('includes/fakturo_base_component.php');
 require_once('includes/fakturo_taxonomies_component.php');
 require_once('includes/fakturo_info_component.php');
+require_once('includes/fakturo_system_component.php');
 require_once('includes/fakturo_clients_component.php');
 require_once('includes/fakturo_client_helper.php');
 
@@ -443,23 +444,24 @@ function fakturo_update_settings_controller() {
 
       case 'company_info' :
          $fakturoConfig = json_decode(get_option('fakturo_setting_config'), TRUE);
+         break;
+
+      case 'system_settings':         
          if (isset($_POST['Submit']) && $_POST['Submit'] == 'update_setting') {
             $fakturoConfig = array();
-            $fakturoConfig['fakturo_config_name'] = isset($_POST['fakturo_config_name']) ? $_POST['fakturo_config_name'] : NULL;
-            $fakturoConfig['fakturo_config_taxpayer'] = isset($_POST['fakturo_config_taxpayer']) ? $_POST['fakturo_config_taxpayer'] : NULL;
-            $fakturoConfig['fakturo_config_tax_id'] = isset($_POST['fakturo_config_tax_id']) ? $_POST['fakturo_config_tax_id'] : NULL;
-            $fakturoConfig['fakturo_config_activities'] = isset($_POST['fakturo_config_activities']) ? $_POST['fakturo_config_activities'] : NULL;
-            $fakturoConfig['fakturo_config_address'] = isset($_POST['fakturo_config_address']) ? $_POST['fakturo_config_address'] : NULL;
-            $fakturoConfig['fakturo_config_telephone'] = isset($_POST['fakturo_config_telephone']) ? $_POST['fakturo_config_telephone'] : NULL;
-            $fakturoConfig['fakturo_config_postcode'] = isset($_POST['fakturo_config_postcode']) ? $_POST['fakturo_config_postcode'] : NULL;
-            $fakturoConfig['fakturo_config_city'] = isset($_POST['fakturo_config_city']) ? $_POST['fakturo_config_city'] : NULL;
-            $fakturoConfig['fakturo_config_state'] = isset($_POST['fakturo_config_state']) ? $_POST['fakturo_config_state'] : NULL;
-            $fakturoConfig['fakturo_config_country'] = isset($_POST['fakturo_config_country']) ? $_POST['fakturo_config_country'] : NULL;
-            $fakturoConfig['fakturo_config_web'] = isset($_POST['fakturo_config_web']) ? $_POST['fakturo_config_web'] : NULL;
-            $fakturoConfig['fakturo_config_tax'] = isset($_POST['fakturo_config_tax']) ? $_POST['fakturo_config_tax'] : NULL;
-            $fakturoConfig['fakturo_config_logo'] = isset($_POST['fakturo_config_logo']) ? $_POST['fakturo_config_logo'] : NULL;
+            $fakturoConfig['fakturo_system_currency'] = isset($_POST['fakturo_system_currency']) ? $_POST['fakturo_system_currency'] : NULL;
+            $fakturoConfig['fakturo_system_position'] = isset($_POST['fakturo_system_position']) ? $_POST['fakturo_system_position'] : NULL;
+            $fakturoConfig['fakturo_system_thousand'] = isset($_POST['fakturo_system_thousand']) ? $_POST['fakturo_system_thousand'] : NULL;
+            $fakturoConfig['fakturo_system_decimal'] = isset($_POST['fakturo_system_decimal']) ? $_POST['fakturo_system_decimal'] : NULL;
 
-            update_option('fakturo_setting_config', json_encode($fakturoConfig));
+            update_option('fakturo_system_config', json_encode($fakturoConfig));
+         }
+         $fakturoConfig = json_decode(get_option('fakturo_system_config'), TRUE);
+         if (!isset($fakturoConfig['fakturo_system_thousand']) || $fakturoConfig['fakturo_system_thousand'] == NULL) {
+            $fakturoConfig['fakturo_system_thousand'] = ',';
+         }
+         if (!isset($fakturoConfig['fakturo_system_decimal']) || $fakturoConfig['fakturo_system_decimal'] == NULL) {
+            $fakturoConfig['fakturo_system_decimal'] = '.';
          }
          break;
    }

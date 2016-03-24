@@ -586,8 +586,8 @@ if ( $_GET['page'] == 'fakturo/settings/fakturo_settings.php' ){
       case 'company_info' :
          ?>
           <tr>
-            <th><?php echo __( 'System Settings', FAKTURO_TEXT_DOMAIN ); ?></th>
-          </tr>          
+            <th><?php echo __( 'Company Info', FAKTURO_TEXT_DOMAIN ); ?></th>
+          </tr>
           <tr>
             <?php settings_fields('fakturo_info_options_group');
              do_settings_sections('fakturo_info_options_group');
@@ -596,6 +596,65 @@ if ( $_GET['page'] == 'fakturo/settings/fakturo_settings.php' ){
          <?php
       break;
 
+      case 'system_settings' :
+         ?>
+          <tr>
+            <th><?php echo __( 'System Settings', FAKTURO_TEXT_DOMAIN ); ?></th>
+          </tr>
+          <tr>
+            <th><?php _e( 'Currency', FAKTURO_TEXT_DOMAIN ); ?></th>
+            <td class="italic-label">
+              <select id="fakturo_system_currency" name="fakturo_system_currency">
+                <?php 
+                $currencies = FakturoSettingComponent::getCurrencies();
+                $checkedCurrency = "";
+                $currencyValue = isset($fakturoConfig['fakturo_system_currency']) ? $fakturoConfig['fakturo_system_currency'] : "";
+                foreach ($currencies as $key => $value) {
+                  if ($currencyValue == $key) {
+                    $checkedCurrency = " selected ";
+                  } else {
+                    $checkedCurrency = "";
+                  }
+                  echo "<option $checkedCurrency value='$key'>$value</option>";
+                } ?>
+              </select>
+              <label for="fakturo_system_currency">
+                <?php _e(' Choose your currency. Note that some payment gateways have currency restrictions.', FAKTURO_TEXT_DOMAIN) ?>
+              </label>
+            </td>
+          </tr>
+          <tr>
+            <th><?php _e( 'Currency Position', FAKTURO_TEXT_DOMAIN ); ?></th>
+            <td class="italic-label">
+              <select id="fakturo_system_position" name="fakturo_system_position">
+                <option <?php if (isset($fakturoConfig['fakturo_system_position']) && $fakturoConfig['fakturo_system_position'] == 'before') echo "selected"; ?> value="before"><?php _e("Before", FAKTURO_TEXT_DOMAIN) ?> - $10</option>
+                <option <?php if (isset($fakturoConfig['fakturo_system_position']) && $fakturoConfig['fakturo_system_position'] == 'after') echo "selected"; ?> value="after"><?php _e("After", FAKTURO_TEXT_DOMAIN) ?> - $10</option>
+              </select>
+              <label for="fakturo_system_position">
+                <?php _e('Choose the location of the currency sign.', FAKTURO_TEXT_DOMAIN) ?>
+              </label>
+            </td>            
+          </tr>
+          <tr>
+            <th><?php _e( 'Thousands Separator', FAKTURO_TEXT_DOMAIN ); ?></th>
+            <td class="italic-label-inline">
+              <input id="fakturo_system_thousand" name="fakturo_system_thousand" size="5" value="<?php echo isset($fakturoConfig['fakturo_system_thousand']) ? $fakturoConfig['fakturo_system_thousand'] : ''; ?>">
+              <label for="fakturo_system_thousand">
+                <?php _e('The symbol (usually , or .) to separate thousands', FAKTURO_TEXT_DOMAIN) ?>
+              </label>
+            </td>
+          </tr>
+          <tr>
+            <th><?php _e( 'Decimal Separator', FAKTURO_TEXT_DOMAIN ); ?></th>
+            <td class="italic-label-inline">
+              <input id="fakturo_system_decimal" name="fakturo_system_decimal" size="5" value="<?php echo isset($fakturoConfig['fakturo_system_decimal']) ? $fakturoConfig['fakturo_system_decimal'] : ''; ?>">
+              <label for="fakturo_system_decimal">
+                <?php _e('The symbol (usually , or .) to separate decimal points', FAKTURO_TEXT_DOMAIN) ?>
+              </label>
+            </td>
+          </tr>
+         <?php
+      break;
    }
    echo '</table>';
 }
