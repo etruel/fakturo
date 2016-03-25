@@ -140,8 +140,27 @@ function Fakturo_data_box( $post ) {
 		<td><input id="cell_phone" type="text" name="cell_phone" value="<?php echo $client_data['cell_phone'] ?>" class="regular-text"></td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="web"><?php _e("Web", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<th><label for="web"><?php _e("Web", FAKTURO_TEXT_DOMAIN ) ?></label></th>
 		<td><input id="web" type="text" name="web" value="<?php echo $client_data['web'] ?>" class="regular-text"></td>
+	</tr>
+	<tr>
+		<th><label for="currency"><?php _e("Currency", FAKTURO_TEXT_DOMAIN ) ?></label></th>
+		<td>
+			<select id="currency" name="currency">
+                <?php 
+                $currencies = FakturoBaseComponent::getCurrencies();
+                $checkedCurrency = "";
+                $currencyValue = isset($client_data['currency']) ? $client_data['currency'] : "";
+                foreach ($currencies as $key => $value) {
+                  if ($currencyValue == $key) {
+                    $checkedCurrency = " selected ";
+                  } else {
+                    $checkedCurrency = "";
+                  }
+                  echo "<option $checkedCurrency value='$key'>$value</option>";
+                } ?>
+            </select>
+		</td>
 	</tr>
 	<tr class="user-facebook-wrap">
 		<th><label for="credit_limit"><?php _e("Credit Limit", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>

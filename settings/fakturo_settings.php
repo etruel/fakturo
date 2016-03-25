@@ -606,7 +606,7 @@ if ( $_GET['page'] == 'fakturo/settings/fakturo_settings.php' ){
             <td class="italic-label">
               <select id="fakturo_system_currency" name="fakturo_system_currency">
                 <?php 
-                $currencies = FakturoSettingComponent::getCurrencies();
+                $currencies = FakturoBaseComponent::getCurrencies();
                 $checkedCurrency = "";
                 $currencyValue = isset($fakturoConfig['fakturo_system_currency']) ? $fakturoConfig['fakturo_system_currency'] : "";
                 foreach ($currencies as $key => $value) {
@@ -628,7 +628,7 @@ if ( $_GET['page'] == 'fakturo/settings/fakturo_settings.php' ){
             <td class="italic-label">
               <select id="fakturo_system_position" name="fakturo_system_position">
                 <option <?php if (isset($fakturoConfig['fakturo_system_position']) && $fakturoConfig['fakturo_system_position'] == 'before') echo "selected"; ?> value="before"><?php _e("Before", FAKTURO_TEXT_DOMAIN) ?> - $10</option>
-                <option <?php if (isset($fakturoConfig['fakturo_system_position']) && $fakturoConfig['fakturo_system_position'] == 'after') echo "selected"; ?> value="after"><?php _e("After", FAKTURO_TEXT_DOMAIN) ?> - $10</option>
+                <option <?php if (isset($fakturoConfig['fakturo_system_position']) && $fakturoConfig['fakturo_system_position'] == 'after') echo "selected"; ?> value="after"><?php _e("After", FAKTURO_TEXT_DOMAIN) ?> - 10$</option>
               </select>
               <label for="fakturo_system_position">
                 <?php _e('Choose the location of the currency sign.', FAKTURO_TEXT_DOMAIN) ?>
