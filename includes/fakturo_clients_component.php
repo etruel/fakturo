@@ -66,7 +66,7 @@ function fakturo_client_init() {
 	add_filter("manage_edit-fakturo_client_sortable_columns",  "sortable_columns" );
 
 	if( ($pagenow == 'edit.php') && (isset($_GET['post_type']) && $_GET['post_type'] == 'fakturo_client') ) {
-		add_filter('post_row_actions' ,  'fakturo_client_quick_actions', 10, 2);
+		add_filter('post_row_actions' ,  'fakturo_custom_post_quick_actions', 10, 2);
 		add_action('pre_get_posts',  'column_orderby');
 		add_action('pre_get_posts',  'query_set_only_author' );
 //			add_action('admin_print_styles-edit.php', 'list_admin_styles'));
@@ -341,7 +341,7 @@ function fakturo_clients_fix_post_counts($views) {
 	return $views;
 }
 //change actions from custom post type list
-function fakturo_client_quick_actions( $actions ) {
+function fakturo_custom_post_quick_actions( $actions ) {
 /*		global $post;
 	if( $post->post_type == 'fakturo_client_quick_actions' ) {
 */	//		unset( $actions['edit'] );

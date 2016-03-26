@@ -65,7 +65,7 @@ function fakturo_provider_init() {
 	add_filter("manage_edit-fakturo_client_sortable_columns",  "sortable_columns" );
 
 	if( ($pagenow == 'edit.php') && (isset($_GET['post_type']) && $_GET['post_type'] == 'fakturo_provider') ) {
-		add_filter('post_row_actions' ,  'fakturo_provider_quick_actions', 10, 2);
+		add_filter('post_row_actions' ,  'fakturo_custom_post_quick_actions', 10, 2);
 		add_action('pre_get_posts',  'column_orderby');
 		add_action('pre_get_posts',  'query_set_only_author' );
 	}	
@@ -165,7 +165,7 @@ function fakturo_get_provider_data( $provider_id = 0){
 		}
 	}
 	$provider_data = array();
-	$custom_fields = get_post_custom($client_id) ;
+	$custom_fields = get_post_custom($provider_id) ;
 	foreach ( $custom_fields as $field_key => $field_values ) {
 		if(!isset($field_values[0])) continue;
 		$provider_data[$field_key] = get_post_meta( $provider_id, $field_key, true );
@@ -496,7 +496,7 @@ function fakturo_providers_head_scripts() {
 		});
 		
 		jQuery( "form#post #publish" ).hide();
-		jQuery( "form#post #publish" ).after("<input type=\'button\' value=\'<?php _e('Save Client', FAKTURO_TEXT_DOMAIN ); ?>\' class=\'sb_publish button-primary\' /><span class=\'sb_js_errors\'></span>");
+		jQuery( "form#post #publish" ).after("<input type=\'button\' value=\'<?php _e('Save Provider', FAKTURO_TEXT_DOMAIN ); ?>\' class=\'sb_publish button-primary\' /><span class=\'sb_js_errors\'></span>");
 
 		jQuery( ".sb_publish" ).click(function() {			
 			if (!error) {
