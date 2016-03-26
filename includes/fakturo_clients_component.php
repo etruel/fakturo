@@ -150,13 +150,35 @@ function fakturo_get_client_data( $client_id = 0){
 	$custom_fields = get_post_custom($client_id) ;
 	foreach ( $custom_fields as $field_key => $field_values ) {
 		if(!isset($field_values[0])) continue;
-		//echo $field_key . '=>' . $field_values[0];
 		$client_data[$field_key] = get_post_meta( $client_id, $field_key, true );
 	}	
 
 	$client_data = apply_filters('fakturo_check_client', $client_data );
 
 	return $client_data;
+}
+
+function fakturo_get_custom_post_data( $id = 0, $filterName){
+	global $post, $post_id;
+	if($id==0) {
+		if( isset( $post->ID ) ) {
+			$id==$post->ID;
+		}elseif( isset( $post_id ) ) {
+			$id==$post_id;
+		}else {
+			return false;
+		}
+	}
+	$custom_post_data = array();
+	$custom_fields = get_post_custom($id) ;
+	foreach ( $custom_fields as $field_key => $field_values ) {
+		if(!isset($field_values[0])) continue;
+		$custom_post_data[$field_key] = get_post_meta( $id, $field_key, true );
+	}	
+
+	$custom_post_data = apply_filters($filterName, $custom_post_data );
+
+	return $custom_post_data;
 }
 
 
@@ -177,7 +199,7 @@ function fakturo_save_client_data( $post_id ) {
 	}
 	if ((defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) || (defined('DOING_AJAX') && DOING_AJAX) || isset($_REQUEST['bulk_edit']))
 		return $post_id;
-	if ( !wp_verify_nonce( @$_POST['fakturo_client_nonce'], 'edit-client' ) )
+	if ( !wp_verify_nonce( @$_POST['fakturo_contact_nonce'], 'edit-contact' ) )
 		return $post_id;
 	if($post->post_type != 'fakturo_client') return $post_id;
 	// Stop WP from clearing custom fields on autosave, and also during ajax requests (e.g. quick edit) and bulk edits.

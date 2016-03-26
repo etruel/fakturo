@@ -8,7 +8,7 @@ function fakturo_client_name_placeholder( $title_placeholder , $post ) {
 
 function fakturo_client_meta_boxes() {
 	global $post,$client_data;
-	$client_data = fakturo_get_client_data($post->ID);
+	$client_data = fakturo_get_custom_post_data($post->ID, 'fakturo_check_client');
 	
 	add_action('wp_ajax_webcam_shot', 'fakturo_ajax_webcam_shot');
 	
@@ -61,7 +61,7 @@ function fakturo_client_select_data($taxonomies, $name, $client_data) {
     $selected = "";
     echo '<select id="' . $name . '" name="' . $name . '"><option></option>';
     foreach ($data as $value) {
-    	if ($client_data[$name] == $value->name) {
+    	if (isset($client_data[$name]) && $client_data[$name] == $value->name) {
     		$selected = " selected";
     	} else {
     		$selected = "";
@@ -164,11 +164,11 @@ function Fakturo_data_box( $post ) {
 	</tr>
 	<tr class="user-facebook-wrap">
 		<th><label for="credit_limit"><?php _e("Credit Limit", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input id="credit_limit" type="text" name="credit_limit" value="<?php echo $client_data['credit_limit'] ?>" class="regular-text"></td>
+		<td><input id="credit_limit" type="number" name="credit_limit" value="<?php echo $client_data['credit_limit'] ?>" class="regular-text"></td>
 	</tr>
 	<tr class="user-facebook-wrap">
 		<th><label for="credit_interval"><?php _e("Credit Limit Interval", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input id="credit_interval" type="text" name="credit_interval" value="<?php echo $client_data['credit_interval'] ?>" class="regular-text"></td>
+		<td><input id="credit_interval" type="number" name="credit_interval" value="<?php echo $client_data['credit_interval'] ?>" class="regular-text"></td>
 	</tr>
 	<tr class="user-facebook-wrap">
 		<th><label for="credit_currency"><?php _e("Credit Limit Currency", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
@@ -185,7 +185,7 @@ function Fakturo_data_box( $post ) {
 
 function Fakturo_options_box( $post ) {  
 	global $post, $client_data;
-	wp_nonce_field( 'edit-client', 'fakturo_client_nonce' ); 
+	wp_nonce_field( 'edit-contact', 'fakturo_contact_nonce' ); 
 	$user_contacts = $client_data['user_contacts'];
 
 	?>
