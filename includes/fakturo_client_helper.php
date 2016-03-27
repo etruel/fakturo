@@ -248,7 +248,7 @@ function fakturo_clients_admin_styles(){
 	global $post;
 	if($post->post_type != 'fakturo_client') return $post->ID;
 	wp_enqueue_style('fakturo-sprite',FAKTURO_URI .'css/sprite.css');	
-	add_action('admin_head', 'fakturo_clients_head_style');
+	add_action('admin_head', 'fakturo_custom_post_head_style');
 }
 
 function fakturo_clients_admin_scripts(){
@@ -258,13 +258,12 @@ function fakturo_clients_admin_scripts(){
 	wp_enqueue_script('jquery-vsort');
 	wp_register_script('webcam', FAKTURO_URI .'libraries/webcamjs-master/webcam.min.js', array('jquery'));
 	wp_enqueue_script('webcam');
-	add_action('admin_head', 'fakturo_clients_head_scripts');
+	add_action('admin_head', 'fakturo_custom_post_head_scripts');
+	add_action('admin_head', 'fakturo_clients_head_scripts');	
 }
 
 
-function fakturo_clients_head_style() {
-	global $post;
-	if($post->post_type != 'fakturo_client') return $post->ID;
+function fakturo_custom_post_head_style() {
 		?>
 <style type="text/css">
 .fieldate {width: 135px !important;}
@@ -305,79 +304,10 @@ function fakturo_ajax_webcam_shot(){
 	return "XXXXXX";
 }
 
-function fakturo_clients_head_scripts() {
-	global $post, $wp_locale, $locale;
-	if($post->post_type != 'fakturo_client') return $post->ID;
-	$post->post_password = '';
-	$visibility = 'public';
-	$visibility_trans = __('Public');
-
+function fakturo_custom_post_head_scripts() {
 	?>
 	<script type="text/javascript" language="javascript">
-	jQuery(document).ready(function($){
-		$('#publish').val('<?php _e('Save Client', FAKTURO_TEXT_DOMAIN ); ?>');
-		$('#submitdiv h3 span').text('<?php _e('Update', FAKTURO_TEXT_DOMAIN ); ?>');
-		// remove visibility
-		$('#visibility').hide();
-
-		// remove channels Most used box
-		$('#channel-tabs').remove();
-		$('#channel-pop').remove();
-		// remove channels Ajax Quick Add 
-		$('#channel-adder').remove();
-		//-----Click on channel  (Allows just one)
-		$(document).on("click", '#channelchecklist input[type=checkbox]', function(event) { 
-			var $current = $(this).prop('checked') ; //true or false
-			$('#channelchecklist input[type=checkbox]').prop('checked', false);
-			$(this).prop('checked', $current );
-			//if( $current ){ }
-		});
-
-		// remove segments Most used box
-		$('#segment-tabs').remove();
-		$('#segment-pop').remove();
-		// remove segments Ajax Quick Add 
-		$('#segment-adder').remove();
-		//-----Click on segment (Allows just one)
-		$(document).on("click", '#segmentchecklist input[type=checkbox]', function(event) { 
-			var $current = $(this).prop('checked') ; //true or false
-			$('#segmentchecklist input[type=checkbox]').prop('checked', false);
-			$(this).prop('checked', $current );
-			//if( $current ){ }
-		});
-
-		// remove interests Most used box
-		$('#interest-tabs').remove();
-		$('#interest-pop').remove();
-		// remove interests Ajax Quick Add 
-		$('#interest-adder').remove();
-		//-----Click on interest (Allows just one)
-//			$(document).on("click", '#interestchecklist input[type=checkbox]', function(event) { 
-//				var $current = $(this).prop('checked') ; //true or false
-//				$('#interestchecklist input[type=checkbox]').prop('checked', false);
-//				$(this).prop('checked', $current );
-//				//if( $current ){ }
-//			});
-
-		$('#addmoreuc').click(function() {
-			oldval = $('#ucfield_max').val();
-			jQuery('#ucfield_max').val( parseInt(jQuery('#ucfield_max').val(),10) + 1 );
-			newval = $('#ucfield_max').val();
-			uc_new= $('.uc_new_field').clone();
-			$('div.uc_new_field').removeClass('uc_new_field');
-			$('div#uc_ID'+oldval).fadeIn();
-			$('input[name="uc_description['+oldval+']"]').focus();
-			uc_new.attr('id','uc_ID'+newval);
-			$('input', uc_new).eq(0).attr('name','uc_description['+ newval +']');
-			$('input', uc_new).eq(1).attr('name','uc_phone['+ newval +']');
-			$('.delete', uc_new).eq(0).attr('onclick', "delete_user_contact('#uc_ID"+ newval +"');");
-			$('#user_contacts').append(uc_new);
-			$('#user_contacts').vSort();
-		});
-		
-		//*****************************
-		
-
+	jQuery(document).ready(function($) {
 		showSnapshot = function() {
 			$('#snapshot_btn').css('display', 'none');
 			$('#my_camera').css('display', 'block');
@@ -508,27 +438,100 @@ function fakturo_clients_head_scripts() {
 			}
 			return true;
 		}
-		var error = false
 		$('#taxpayer').keyup(function(){
 			if(this.value==''){
 				$('#cuit_validation').text('');
 			} else if(!CPcuitValido(this.value)){
 				$('#cuit_validation').text('Invalid cuit').removeClass('cuit_ok').addClass('cuit_err');
-				error = true;
 			} else {
 				$('#cuit_validation').text('Cuit OK').removeClass('cuit_err').addClass('cuit_ok');
-				error = false;
 			}
 		});
+	});
+	</script>
+	<?php
+}
+
+function fakturo_clients_head_scripts() {
+	global $post, $wp_locale, $locale;
+	if($post->post_type != 'fakturo_client') return $post->ID;
+	$post->post_password = '';
+	$visibility = 'public';
+	$visibility_trans = __('Public');
+
+	?>
+	<script type="text/javascript" language="javascript">
+	jQuery(document).ready(function($){
+		$('#publish').val('<?php _e('Save Client', FAKTURO_TEXT_DOMAIN ); ?>');
+		$('#submitdiv h3 span').text('<?php _e('Update', FAKTURO_TEXT_DOMAIN ); ?>');
+		// remove visibility
+		$('#visibility').hide();
+
+		// remove channels Most used box
+		$('#channel-tabs').remove();
+		$('#channel-pop').remove();
+		// remove channels Ajax Quick Add 
+		$('#channel-adder').remove();
+		//-----Click on channel  (Allows just one)
+		$(document).on("click", '#channelchecklist input[type=checkbox]', function(event) { 
+			var $current = $(this).prop('checked') ; //true or false
+			$('#channelchecklist input[type=checkbox]').prop('checked', false);
+			$(this).prop('checked', $current );
+			//if( $current ){ }
+		});
+
+		// remove segments Most used box
+		$('#segment-tabs').remove();
+		$('#segment-pop').remove();
+		// remove segments Ajax Quick Add 
+		$('#segment-adder').remove();
+		//-----Click on segment (Allows just one)
+		$(document).on("click", '#segmentchecklist input[type=checkbox]', function(event) { 
+			var $current = $(this).prop('checked') ; //true or false
+			$('#segmentchecklist input[type=checkbox]').prop('checked', false);
+			$(this).prop('checked', $current );
+			//if( $current ){ }
+		});
+
+		// remove interests Most used box
+		$('#interest-tabs').remove();
+		$('#interest-pop').remove();
+		// remove interests Ajax Quick Add 
+		$('#interest-adder').remove();
+		//-----Click on interest (Allows just one)
+//			$(document).on("click", '#interestchecklist input[type=checkbox]', function(event) { 
+//				var $current = $(this).prop('checked') ; //true or false
+//				$('#interestchecklist input[type=checkbox]').prop('checked', false);
+//				$(this).prop('checked', $current );
+//				//if( $current ){ }
+//			});
+
+		$('#addmoreuc').click(function() {
+			oldval = $('#ucfield_max').val();
+			jQuery('#ucfield_max').val( parseInt(jQuery('#ucfield_max').val(),10) + 1 );
+			newval = $('#ucfield_max').val();
+			uc_new= $('.uc_new_field').clone();
+			$('div.uc_new_field').removeClass('uc_new_field');
+			$('div#uc_ID'+oldval).fadeIn();
+			$('input[name="uc_description['+oldval+']"]').focus();
+			uc_new.attr('id','uc_ID'+newval);
+			$('input', uc_new).eq(0).attr('name','uc_description['+ newval +']');
+			$('input', uc_new).eq(1).attr('name','uc_phone['+ newval +']');
+			$('.delete', uc_new).eq(0).attr('onclick', "delete_user_contact('#uc_ID"+ newval +"');");
+			$('#user_contacts').append(uc_new);
+			$('#user_contacts').vSort();
+		});
+		
+		//*****************************
 		
 		jQuery( "form#post #publish" ).hide();
 		jQuery( "form#post #publish" ).after("<input type=\'button\' value=\'<?php _e('Save Client', FAKTURO_TEXT_DOMAIN ); ?>\' class=\'sb_publish button-primary\' /><span class=\'sb_js_errors\'></span>");
 
-		jQuery( ".sb_publish" ).click(function() {			
-			if (!error) {
-				jQuery( "form#post #publish" ).click();
-			} else {
+		jQuery( ".sb_publish" ).click(function() {
+			if ($('#cuit_validation').hasClass('cuit_err')) {
 				jQuery(".sb_js_errors").text("<?php _e('There was an error on the page and therefore this page can not yet be published.', FAKTURO_TEXT_DOMAIN ); ?>");
+			} else {
+				jQuery( "form#post #publish" ).click();
 			}
 		});
 

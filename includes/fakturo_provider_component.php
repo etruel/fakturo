@@ -99,58 +99,7 @@ function fakturo_provider_name_placeholder( $title_placeholder , $post ) {
 }
 
 function fakturo_save_provider_data( $post_id ) {
-	global $post, $cfg;
-	if((defined('DOING_AJAX') && DOING_AJAX) || isset($_REQUEST['bulk_edit'])) {
-		return $post_id;
-	}
-	if ((defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) || (defined('DOING_AJAX') && DOING_AJAX) || isset($_REQUEST['bulk_edit']))
-		return $post_id;
-	if ( !wp_verify_nonce( @$_POST['fakturo_contact_nonce'], 'edit-contact' ) )
-		return $post_id;
-	if($post->post_type != 'fakturo_provider') return $post_id;
-	// Stop WP from clearing custom fields on autosave, and also during ajax requests (e.g. quick edit) and bulk edits.
-
-	$nivelerror = error_reporting(E_ERROR | E_WARNING | E_PARSE);
-
-	$_POST['ID']=$post_id;
-	$provider = array();
-	$provider = apply_filters('fakturo_check_provider', $_POST);
-	error_reporting($nivelerror);
-
-	if (isset($_POST['webcam_image']) && $_POST['webcam_image'] != NULL ) {
-		delete_post_meta($post_id, '_thumbnail_id');
-		$filename = "webcam_image_".microtime().'.jpg';
-		$file = wp_upload_bits($filename, null, base64_decode(substr($_POST['webcam_image'], 23)));
-		if ($file['error'] == FALSE) {
-			$wp_filetype = wp_check_filetype($filename, null );
-			$attachment = array(
-				'post_mime_type' => $wp_filetype['type'],
-				'post_parent' => $post_id,
-				'post_title' => preg_replace('/\.[^.]+$/', '', $filename),
-				'post_content' => '',
-				'post_status' => 'inherit'
-			);
-			$attachment_id = wp_insert_attachment( $attachment, $file['file'], $post_id );
-			if (!is_wp_error($attachment_id)) {
-				require_once(ABSPATH . "wp-admin" . '/includes/image.php');
-				$attachment_data = wp_generate_attachment_metadata( $attachment_id, $file['file'] );
-				wp_update_attachment_metadata( $attachment_id,  $attachment_data );
-			}
-
-			add_post_meta($post_id, '_thumbnail_id', $attachment_id);
-		}
-	}
-	fakturo_update_provider($post_id, $provider);
-
-	return $post_id ;
-}
-
-function fakturo_update_provider( $provider_id, $provider_data){
-	foreach ( $provider_data as $field_key => $field_values ) {
-		if(!isset($field_values)) continue;
-		add_post_meta( $provider_id, $field_key, $field_values, true )  or
-			update_post_meta( $provider_id, $field_key, $field_values);
-	}
+	return fakturo_save_custom_post_data($post_id, 'fakturo_provider', 'fakturo_check_provider', 'fakturo_contact_nonce', 'edit-contact');
 }
 
 function fakturo_get_provider_data( $provider_id = 0){
@@ -236,7 +185,7 @@ function fakturo_providers_admin_styles(){
 	global $post;
 	if($post->post_type != 'fakturo_provider') return $post->ID;
 	wp_enqueue_style('fakturo-sprite',FAKTURO_URI .'css/sprite.css');	
-	add_action('admin_head', 'fakturo_providers_head_style');
+	add_action('admin_head', 'fakturo_custom_post_head_style');
 }
 
 function fakturo_providers_admin_scripts(){
@@ -246,45 +195,8 @@ function fakturo_providers_admin_scripts(){
 	wp_enqueue_script('jquery-vsort');
 	wp_register_script('webcam', FAKTURO_URI .'libraries/webcamjs-master/webcam.min.js', array('jquery'));
 	wp_enqueue_script('webcam');
-	add_action('admin_head', 'fakturo_providers_head_scripts');
-}
-
-
-function fakturo_providers_head_style() {
-	global $post;
-	if($post->post_type != 'fakturo_provider') return $post->ID;
-		?>
-<style type="text/css">
-.fieldate {width: 135px !important;}
-.b {font-weight: bold;}
-.hide {display: none;}
-.updated.notice-success a {display: none;}
-#edit-slug-box, #post-preview{display: none;}
-#poststuff h3 {background-color: #6EDA67;}
-
-#msgdrag {display:none;color:red;padding: 0 0 0 20px;font-weight: 600;font-size: 1em;}
-.uc_header {padding: 0 0 0 30px;font-weight: 600;font-size: 0.9em;}
-div.uc_column {float: left;width: 19%;}
-.uc_actions{margin-left: 5px;}
-.delete{color: #F88;font-size: 1.6em;}
-.delete:hover{color: red;}
-.delete:before { content: "\2718";}
-.add:before { content: "\271A";}
-
-#snapshot_container_wrapper {
-	position:relative; border:3px solid #eaeaea; margin:15px 0; -moz-border-radius: 12px; -webkit-border-radius: 12px;
-	-moz-box-shadow: 0px 0px 6px rgba(0,0,0,.25) inset, 0px 0px 6px black inset;
-	-webkit-box-shadow: 0px 0px 6px rgba(0,0,0,.25) inset, 0px 0px 6px black inset;
-	background-color:#c7c7c7;
-	padding:10px;
-	overflow:hidden;
-}
-#snapshot_container_wrapper{text-align:center;}
-.cuit_ok {color: #2FB42F;text-shadow: 1px 1px 1px #eee;}
-.cuit_err {color: #FF3232;font-weight: 700;text-shadow: 1px 1px 1px #eee;}
-.sb_js_errors {float: right;color: #FF3232;}
-		</style><?php
-
+	add_action('admin_head', 'fakturo_custom_post_head_scripts');
+	add_action('admin_head', 'fakturo_providers_head_scripts');	
 }
 
 function fakturo_providers_head_scripts() {
@@ -352,160 +264,17 @@ function fakturo_providers_head_scripts() {
 		
 		//*****************************
 		
-
-		showSnapshot = function() {
-			$('#snapshot_btn').css('display', 'none');
-			$('#my_camera').css('display', 'block');
-			$('#take_snapshot').css('display', 'block');
-			$('#set-post-thumbnail').css('display', 'none');
-			$('#remove-post-thumbnail').css('display', 'none');
-			$('#snapshot_cancel').css('display', 'block');
-			
-			if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
-				Webcam.set({
-					width: 230,
-					height: 150,
-					image_format: 'jpeg',
-					jpeg_quality: 90,
-					force_flash: true
-				})
-			} else {
-				Webcam.set({
-					width: 230,
-					height: 150,
-					image_format: 'jpeg',
-					jpeg_quality: 90,
-					force_flash: false
-				});
-			}
-			Webcam.attach( '#my_camera' );
-		}
-
-		take_snapshot = function() {
-			Webcam.snap( function(data_uri) {
-				$('#my_camera').css('display', 'none');
-				$('#take_snapshot').css('display', 'none');
-				$('input[name="webcam_image"]').val(data_uri);
-				$('#snap_image').attr('src', data_uri);
-				$('#snap_image').css('display', 'block');
-				$('#snapshot_reset').css('display', 'block');
-			} );
-		}
-
-		reset_webcam = function() {
-			$('#snap_image').attr('src', "");
-			$('input[name="webcam_image"]').val("");
-			$('#snap_image').css('display', 'none');
-			$('#snapshot_reset').css('display', 'none');
-			$('#my_camera').css('display', 'block');
-			$('#take_snapshot').css('display', 'block');
-		}
-
-		snapshot_cancel = function() {
-			$('#snap_image').attr('src', "");
-			$('input[name="webcam_image"]').val("");
-			$('#snap_image').css('display', 'none');
-			$('#snapshot_btn').css('display', 'block');
-			$('#snapshot_reset').css('display', 'none');
-			$('#take_snapshot').css('display', 'none');
-			$('#snapshot_cancel').css('display', 'none');
-			$('#my_camera').css('display', 'none');
-			$('#set-post-thumbnail').css('display', 'block');
-			$('#remove-post-thumbnail').css('display', 'block');
-			Webcam.reset();
-		}
-
-		WPSetThumbnailHTML = function(html){
-			$('.featured-image-client', '#postimagediv').html(html);
-		};
-
-		wp.media.featuredImage.set = function( id ) {
-			var settings = wp.media.view.settings;
-
-			settings.post.featuredImageId = id;
-
-			wp.media.post( 'set-post-thumbnail', {
-				json:         true,
-				post_id:      settings.post.id,
-				thumbnail_id: settings.post.featuredImageId,
-				_wpnonce:     settings.post.nonce
-			}).done( function( html ) {
-				$('.featured-image-client', '#postimagediv').html(html);
-			});
-		}
-
-		function CPcuitValido(cuit) {
-			if(cuit == ''){
-				return true;
-			}
-			if (!(cuit.match(/^\d{2}([\-_])?\d{8}([\-_])?\d{1}$/))) {
-				return false;
-			}
-			cuit = cuit.toString().replace(/[-_]/g, '');
-			var vec = new Array(10);
-			var esCuit = false;
-			var cuit_rearmado = '';
-			for (i=0; i < cuit.length; i++) {
-				caracter = cuit.charAt( i);
-				if ( caracter.charCodeAt(0) >= 48 && caracter.charCodeAt(0) <= 57 )     {
-					cuit_rearmado += caracter;
-				}
-			}
-			cuit=cuit_rearmado;
-			if ( cuit.length != 11) {  // si no estan todos los digitos
-				esCuit=false;
-			} else {
-				x=i=dv=0;
-				// Multiplico los dÃ­gitos.
-				vec[0] = cuit.charAt(0) * 5;
-				vec[1] = cuit.charAt(1) * 4;
-				vec[2] = cuit.charAt(2) * 3;
-				vec[3] = cuit.charAt(3) * 2;
-				vec[4] = cuit.charAt(4) * 7;
-				vec[5] = cuit.charAt(5) * 6;
-				vec[6] = cuit.charAt(6) * 5;
-				vec[7] = cuit.charAt(7) * 4;
-				vec[8] = cuit.charAt(8) * 3;
-				vec[9] = cuit.charAt(9) * 2;
-
-				// Suma cada uno de los resultado.
-				for( i = 0;i<=9; i++) {
-					x += vec[i];
-				}
-				dv = (11 - (x % 11)) % 11;
-				if (dv == cuit.charAt(10) ) {
-					esCuit=true;
-				}
-			}
-			if ( !esCuit ) {
-				return false;
-			}
-			return true;
-		}
-		var error = false
-		$('#taxpayer').keyup(function(){
-			if(this.value==''){
-				$('#cuit_validation').text('');
-			} else if(!CPcuitValido(this.value)){
-				$('#cuit_validation').text('Invalid cuit').removeClass('cuit_ok').addClass('cuit_err');
-				error = true;
-			} else {
-				$('#cuit_validation').text('Cuit OK').removeClass('cuit_err').addClass('cuit_ok');
-				error = false;
-			}
-		});
 		
 		jQuery( "form#post #publish" ).hide();
 		jQuery( "form#post #publish" ).after("<input type=\'button\' value=\'<?php _e('Save Provider', FAKTURO_TEXT_DOMAIN ); ?>\' class=\'sb_publish button-primary\' /><span class=\'sb_js_errors\'></span>");
 
-		jQuery( ".sb_publish" ).click(function() {			
-			if (!error) {
-				jQuery( "form#post #publish" ).click();
-			} else {
+		jQuery( ".sb_publish" ).click(function() {
+			if ($('#cuit_validation').hasClass('cuit_err')) {
 				jQuery(".sb_js_errors").text("<?php _e('There was an error on the page and therefore this page can not yet be published.', FAKTURO_TEXT_DOMAIN ); ?>");
+			} else {
+				jQuery( "form#post #publish" ).click();
 			}
 		});
-
 	});		// jQuery
 	function delete_user_contact(row_id){
 		jQuery(row_id).fadeOut(); 

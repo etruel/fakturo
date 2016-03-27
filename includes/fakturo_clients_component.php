@@ -182,16 +182,19 @@ function fakturo_get_custom_post_data( $id = 0, $filterName){
 }
 
 
-function fakturo_update_client( $client_id, $client_data){
+function fakturo_update_custom_post( $client_id, $client_data){
 	foreach ( $client_data as $field_key => $field_values ) {
 		if(!isset($field_values)) continue;
-		//echo $field_key . '=>' . $field_values[0];
 		add_post_meta( $client_id, $field_key, $field_values, true )  or
 			update_post_meta( $client_id, $field_key, $field_values);
 	}
 }
 
 function fakturo_save_client_data( $post_id ) {
+	return fakturo_save_custom_post_data($post_id, 'fakturo_client', 'fakturo_check_client', 'fakturo_contact_nonce', 'edit-contact') ;
+}
+
+function fakturo_save_custom_post_data( $post_id, $postType, $filterName, $verityPostName, $verifyName ) {
 	global $post, $cfg;
 	if((defined('DOING_AJAX') && DOING_AJAX) || isset($_REQUEST['bulk_edit'])) {
 		//save_quick_edit_post($post_id);
@@ -199,16 +202,16 @@ function fakturo_save_client_data( $post_id ) {
 	}
 	if ((defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) || (defined('DOING_AJAX') && DOING_AJAX) || isset($_REQUEST['bulk_edit']))
 		return $post_id;
-	if ( !wp_verify_nonce( @$_POST['fakturo_contact_nonce'], 'edit-contact' ) )
+	if ( !wp_verify_nonce( @$_POST[$verityPostName], $verifyName ) )
 		return $post_id;
-	if($post->post_type != 'fakturo_client') return $post_id;
+	if($post->post_type != $postType) return $post_id;
 	// Stop WP from clearing custom fields on autosave, and also during ajax requests (e.g. quick edit) and bulk edits.
 
 	$nivelerror = error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 	$_POST['ID']=$post_id;
 	$client = array();
-	$client = apply_filters('fakturo_check_client', $_POST);
+	$client = apply_filters($filterName, $_POST);
 	error_reporting($nivelerror);
 
 	if (isset($_POST['webcam_image']) && $_POST['webcam_image'] != NULL ) {
@@ -234,7 +237,7 @@ function fakturo_save_client_data( $post_id ) {
 			add_post_meta($post_id, '_thumbnail_id', $attachment_id);
 		}
 	}
-	fakturo_update_client($post_id, $client);
+	fakturo_update_custom_post($post_id, $client);
 
 	return $post_id ;
 }

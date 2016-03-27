@@ -24,6 +24,7 @@ require_once('includes/fakturo_system_component.php');
 require_once('includes/fakturo_clients_component.php');
 require_once('includes/fakturo_client_helper.php');
 require_once('includes/fakturo_provider_component.php');
+require_once('includes/fakturo_product_component.php');
 
 
 function fakturo_admin_menu() {
@@ -62,6 +63,24 @@ function fakturo_admin_menu() {
          __( 'Add Provider', FAKTURO_TEXT_DOMAIN ),
          'manage_options',
          'post-new.php?post_type=fakturo_provider'
+      );
+      add_action( 'admin_print_styles-' . $page, 'fakturo_admin_styles');
+
+      $page = add_submenu_page(
+         'fakturo/admin/fakturo_admin.php',
+         __( 'Products', FAKTURO_TEXT_DOMAIN ),
+         __( 'Products List', FAKTURO_TEXT_DOMAIN ),
+         'manage_options',
+         'edit.php?post_type=fakturo_product'
+      );
+      add_action( 'admin_print_styles-' . $page, 'fakturo_admin_styles');
+
+      $page = add_submenu_page(
+         'fakturo/admin/fakturo_admin.php',
+         __( 'Add Product', FAKTURO_TEXT_DOMAIN ),
+         __( 'Add Product', FAKTURO_TEXT_DOMAIN ),
+         'manage_options',
+         'post-new.php?post_type=fakturo_product'
       );
       add_action( 'admin_print_styles-' . $page, 'fakturo_admin_styles');
 
