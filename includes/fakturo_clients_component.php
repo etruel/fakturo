@@ -96,7 +96,7 @@ function facturo_client_tax_menu_correction($parent_file) {
 
 function fakturo_check_client($options) {
 	$fieldsArray = array('email', 'address', 'phone', 'cellular', 'facebook', 'taxpayer', 'states', 'city', 'payment_type', 'price_scale', 'bank_entity', 
-		'bank_account', 'tax_condition', 'postcode', 'phone', 'cell_phone', 'web', 'credit_limit', 'credit_interval', 'credit_currency', 'active', 'currency');
+		'bank_account', 'tax_condition', 'postcode', 'phone', 'cell_phone', 'web', 'credit_limit', 'credit_interval', 'active', 'currency');
 	foreach ($fieldsArray as $field) {
 		$client_data[$field]	= (!isset($options[$field])) ? '' : $options[$field];
 	}

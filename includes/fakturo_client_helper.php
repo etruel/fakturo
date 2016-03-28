@@ -171,10 +171,6 @@ function Fakturo_data_box( $post ) {
 		<td><input id="credit_interval" type="number" name="credit_interval" value="<?php echo $client_data['credit_interval'] ?>" class="regular-text"></td>
 	</tr>
 	<tr class="user-facebook-wrap">
-		<th><label for="credit_currency"><?php _e("Credit Limit Currency", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input id="credit_currency" type="text" name="credit_currency" value="<?php echo $client_data['credit_currency'] ?>" class="regular-text"></td>
-	</tr>
-	<tr class="user-facebook-wrap">
 		<th><label for="active"><?php _e("Active", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
 		<td><input id="active" type="checkbox" name="active" value="1" <?php if ($client_data['active']) { echo 'checked="checked"'; } ?>></td>
 	</tr>
