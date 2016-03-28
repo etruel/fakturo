@@ -17,9 +17,78 @@ function fakturo_client_meta_boxes() {
 	//	add_meta_box( $id, $title, $callback, $post_type, $context, $priority, $callback_args );
 	remove_meta_box( 'postimagediv', 'fakturo_client', 'side' );
 	add_meta_box('postimagediv', __('Client Image', FAKTURO_TEXT_DOMAIN ), 'Fakturo_post_thumbnail_meta_box', 'fakturo_client', 'side', 'high');
-	add_meta_box( 'fakturo-seller-box', __('Assign Seller', FAKTURO_TEXT_DOMAIN ), 'Fakturo_seller_box','fakturo_client','side', 'high' );
-	add_meta_box( 'fakturo-data-box', __('Complete Client Data', FAKTURO_TEXT_DOMAIN ), 'Fakturo_data_box','fakturo_client','normal', 'default' );
-	add_meta_box( 'fakturo-options-box', __('Client Contacts', FAKTURO_TEXT_DOMAIN ), 'Fakturo_client_options_box','fakturo_client','normal', 'default' );
+	add_meta_box( 'fakturo-trade-box', __('Trade data', FAKTURO_TEXT_DOMAIN ), 'Fakturo_trade_box','fakturo_client','normal', 'default' );
+//	add_meta_box( 'fakturo-seller-box', __('Assign Seller', FAKTURO_TEXT_DOMAIN ), 'Fakturo_seller_box','fakturo_client','side', 'default' );
+	add_meta_box( 'fakturo-data-box', __('Complete Client Data', FAKTURO_TEXT_DOMAIN ), 'Fakturo_data_box','fakturo_client','side', 'default' );
+	add_meta_box( 'fakturo-options-box', __('Client Contacts', FAKTURO_TEXT_DOMAIN ), 'Fakturo_client_options_box','fakturo_client','normal', 'low' );
+}
+
+function Fakturo_trade_box( $post ) {
+	global $post, $client_data;		
+	?>
+	<table class="form-table">
+	<tbody>
+	<tr class="user-active-wrap">
+		<th><label for="active"><?php _e("Active", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="active" type="checkbox" name="active" value="1" <?php if ($client_data['active']) { echo 'checked="checked"'; } ?>></td>
+	</tr>
+		<tr class="user-taxpayer-wrap">
+		<th><label for="taxpayer"><?php _e("Taxpayer ID", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td>
+			<input id="taxpayer" type="text" name="taxpayer" value="<?php echo $client_data['taxpayer'] ?>" class="regular-text">
+			<span id="cuit_validation"></span>
+			<div style="font-size:0.85em;" id="cuit_validation_note"><?php _e("Cuit number's validation only. Check www.afip.gov.ar", FAKTURO_TEXT_DOMAIN ) ?></div>
+		</td>
+	</tr>
+	<tr class="user-payment_type-wrap">
+		<th><label for="payment_type"><?php _e("Payment Type", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><?php fakturo_client_select_data('fakturo_payment_types', 'payment_type', $client_data); ?></td>
+	</tr>
+	<tr class="user-bank_entity-wrap">
+		<th><label for="bank_entity"><?php _e("Bank Entity", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><?php fakturo_client_select_data('fakturo_bank_entities', 'bank_entity', $client_data); ?></td>
+	</tr>
+	<tr class="user-bank_account-wrap">
+		<th><label for="bank_account"><?php _e("Bank Account", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="bank_account" type="text" name="bank_account" value="<?php echo $client_data['bank_account'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-tax_condition-wrap">
+		<th><label for="tax_condition"><?php _e("Tax Condition", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><?php fakturo_client_select_data('fakturo_tax_condition', 'tax_condition', $client_data); ?></td>
+	</tr>
+	<tr class="user-price_scale-wrap">
+		<th><label for="price_scale"><?php _e("Price Scale", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><?php fakturo_client_select_data('fakturo_price_scales', 'price_scale', $client_data); ?></td>
+	</tr>
+	<tr>
+		<th><label for="currency"><?php _e("Currency", FAKTURO_TEXT_DOMAIN ) ?></label></th>
+		<td>
+			<select id="currency" name="currency">
+                <?php 
+                $currencies = FakturoBaseComponent::getCurrencies();
+                $checkedCurrency = "";
+                $currencyValue = isset($client_data['currency']) ? $client_data['currency'] : "";
+                foreach ($currencies as $key => $value) {
+                  if ($currencyValue == $key) {
+                    $checkedCurrency = " selected ";
+                  } else {
+                    $checkedCurrency = "";
+                  }
+                  echo "<option $checkedCurrency value='$key'>$value</option>";
+                } ?>
+            </select>
+		</td>
+	</tr>
+	<tr class="user-credit_limit-wrap">
+		<th><label for="credit_limit"><?php _e("Credit Limit", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="credit_limit" type="number" name="credit_limit" value="<?php echo $client_data['credit_limit'] ?>" class="small-text"></td>
+	</tr>
+	<tr class="user-credit_interval-wrap">
+		<th><label for="credit_interval"><?php _e("Credit Limit Interval", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="credit_interval" type="number" name="credit_interval" value="<?php echo $client_data['credit_interval'] ?>" class="small-text"></td>
+	</tr>
+	</tbody></table>
+	<?php
 }
 
 function Fakturo_seller_box( $post ) {  
@@ -74,106 +143,48 @@ function fakturo_client_select_data($taxonomies, $name, $client_data) {
 function Fakturo_data_box( $post ) {  
 	global $post, $client_data;		
 	?>
-	<table class="form-table">
-	<tbody><tr class="user-email-wrap">
-		<th><label for="email"><?php _e("E-mail", FAKTURO_TEXT_DOMAIN ) ?></label></th>
-		<td><input type="email" name="email" id="email" value="<?php echo $client_data['email'] ?>" class="regular-text ltr"></td>
-	</tr>
+	<table class="">
+	<tbody>
 	<tr class="user-address-wrap">
 		<th><label for="address"><?php _e("Address", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input type="text" name="address" id="address" value="<?php echo $client_data['address'] ?>" class="regular-text"></td>
+		<td><input type="text" name="address" id="address" value="<?php echo $client_data['address'] ?>" class="large-text"></td>
+	</tr>
+	<tr class="user-city-wrap">
+		<th><label for="city"><?php _e("City", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="city" type="text" name="city" value="<?php echo $client_data['city'] ?>" class="large-text"></td>
+	</tr>
+	<tr class="user-states-wrap">
+		<th><label for="states"><?php _e("State", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><?php fakturo_client_select_data('fakturo_states', 'states', $client_data); ?></td>
+	</tr>
+	<tr class="user-postcode-wrap">
+		<th><label for="postcode"><?php _e("Postcode", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="postcode" type="text" name="postcode" value="<?php echo $client_data['postcode'] ?>" class="large-text"></td>
+	</tr>
+	<tr class="user-email-wrap">
+		<th><label for="email"><?php _e("E-mail", FAKTURO_TEXT_DOMAIN ) ?></label></th>
+		<td><input type="email" name="email" id="email" value="<?php echo $client_data['email'] ?>" class="large-text ltr"></td>
 	</tr>
 	<tr class="user-cellular-wrap">
 		<th><label for="cellular"><?php _e("Cellular", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input type="text" name="cellular" id="cellular" value="<?php echo $client_data['cellular'] ?>" class="regular-text"></td>
+		<td><input type="text" name="cellular" id="cellular" value="<?php echo $client_data['cellular'] ?>" class="large-text"></td>
+	</tr>
+	<tr class="user-phone-wrap">
+		<th><label for="phone"><?php _e("Phone", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="phone" type="text" name="phone" value="<?php echo $client_data['phone'] ?>" class="large-text"></td>
+	</tr>
+	<tr class="user-cell_phone-wrap">
+		<th><label for="cell_phone"><?php _e("Cell phone", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="cell_phone" type="text" name="cell_phone" value="<?php echo $client_data['cell_phone'] ?>" class="large-text"></td>
 	</tr>
 	<tr class="user-facebook-wrap">
 		<th><label for="facebook"><?php _e("Facebook URL", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input type="text" name="facebook" id="facebook" value="<?php echo $client_data['facebook'] ?>" class="regular-text"></td>
+		<td><input type="text" name="facebook" id="facebook" value="<?php echo $client_data['facebook'] ?>" class="large-text"></td>
 	</tr>
-	<tr class="user-facebook-wrap">
-		<th><label for="taxpayer"><?php _e("Taxpayer ID", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td>
-			<input id="taxpayer" type="text" name="taxpayer" value="<?php echo $client_data['taxpayer'] ?>" class="regular-text">
-			<span id="cuit_validation"></span>
-			<div style="font-size:0.85em;" id="cuit_validation_note"><?php _e("Cuit number's validation only. Check www.afip.gov.ar", FAKTURO_TEXT_DOMAIN ) ?></div>
-		</td>
-	</tr>
-	<tr class="user-facebook-wrap">
-		<th><label for="states"><?php _e("States", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><?php fakturo_client_select_data('fakturo_states', 'states', $client_data); ?></td>
-	</tr>
-	<tr class="user-facebook-wrap">
-		<th><label for="city"><?php _e("City", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input id="city" type="text" name="city" value="<?php echo $client_data['city'] ?>" class="regular-text"></td>
-	</tr>
-	<tr class="user-facebook-wrap">
-		<th><label for="payment_type"><?php _e("Payment Type", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><?php fakturo_client_select_data('fakturo_payment_types', 'payment_type', $client_data); ?></td>
-	</tr>
-	<tr class="user-facebook-wrap">
-		<th><label for="price_scale"><?php _e("Price Scale", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><?php fakturo_client_select_data('fakturo_price_scales', 'price_scale', $client_data); ?></td>
-	</tr>
-	<tr class="user-facebook-wrap">
-		<th><label for="bank_entity"><?php _e("Bank Entity", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><?php fakturo_client_select_data('fakturo_bank_entities', 'bank_entity', $client_data); ?></td>
-	</tr>
-	<tr class="user-facebook-wrap">
-		<th><label for="bank_account"><?php _e("Bank Account", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input id="bank_account" type="text" name="bank_account" value="<?php echo $client_data['bank_account'] ?>" class="regular-text"></td>
-	</tr>
-	<tr class="user-facebook-wrap">
-		<th><label for="tax_condition"><?php _e("Tax Condition", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><?php fakturo_client_select_data('fakturo_tax_condition', 'tax_condition', $client_data); ?></td>
-	</tr>
-	<tr class="user-facebook-wrap">
-		<th><label for="postcode"><?php _e("Postcode", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input id="postcode" type="text" name="postcode" value="<?php echo $client_data['postcode'] ?>" class="regular-text"></td>
-	</tr>
-	<tr class="user-facebook-wrap">
-		<th><label for="phone"><?php _e("Phone", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input id="phone" type="text" name="phone" value="<?php echo $client_data['phone'] ?>" class="regular-text"></td>
-	</tr>
-	<tr class="user-facebook-wrap">
-		<th><label for="cell_phone"><?php _e("Cell phone", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input id="cell_phone" type="text" name="cell_phone" value="<?php echo $client_data['cell_phone'] ?>" class="regular-text"></td>
-	</tr>
-	<tr class="user-facebook-wrap">
+	<tr class="user-web-wrap">
 		<th><label for="web"><?php _e("Web", FAKTURO_TEXT_DOMAIN ) ?></label></th>
-		<td><input id="web" type="text" name="web" value="<?php echo $client_data['web'] ?>" class="regular-text"></td>
-	</tr>
-	<tr>
-		<th><label for="currency"><?php _e("Currency", FAKTURO_TEXT_DOMAIN ) ?></label></th>
-		<td>
-			<select id="currency" name="currency">
-                <?php 
-                $currencies = FakturoBaseComponent::getCurrencies();
-                $checkedCurrency = "";
-                $currencyValue = isset($client_data['currency']) ? $client_data['currency'] : "";
-                foreach ($currencies as $key => $value) {
-                  if ($currencyValue == $key) {
-                    $checkedCurrency = " selected ";
-                  } else {
-                    $checkedCurrency = "";
-                  }
-                  echo "<option $checkedCurrency value='$key'>$value</option>";
-                } ?>
-            </select>
-		</td>
-	</tr>
-	<tr class="user-facebook-wrap">
-		<th><label for="credit_limit"><?php _e("Credit Limit", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input id="credit_limit" type="number" name="credit_limit" value="<?php echo $client_data['credit_limit'] ?>" class="regular-text"></td>
-	</tr>
-	<tr class="user-facebook-wrap">
-		<th><label for="credit_interval"><?php _e("Credit Limit Interval", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input id="credit_interval" type="number" name="credit_interval" value="<?php echo $client_data['credit_interval'] ?>" class="regular-text"></td>
-	</tr>
-	<tr class="user-facebook-wrap">
-		<th><label for="active"><?php _e("Active", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><input id="active" type="checkbox" name="active" value="1" <?php if ($client_data['active']) { echo 'checked="checked"'; } ?>></td>
-	</tr>
+		<td><input id="web" type="text" name="web" value="<?php echo $client_data['web'] ?>" class="large-text"></td>
+	</tr>	
 	</tbody></table>
 	<?php
 }

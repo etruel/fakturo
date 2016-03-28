@@ -214,38 +214,6 @@ function fakturo_providers_head_scripts() {
 		// remove visibility
 		$('#visibility').hide();
 
-		// remove channels Most used box
-		$('#channel-tabs').remove();
-		$('#channel-pop').remove();
-		// remove channels Ajax Quick Add 
-		$('#channel-adder').remove();
-		//-----Click on channel  (Allows just one)
-		$(document).on("click", '#channelchecklist input[type=checkbox]', function(event) { 
-			var $current = $(this).prop('checked') ; //true or false
-			$('#channelchecklist input[type=checkbox]').prop('checked', false);
-			$(this).prop('checked', $current );
-			//if( $current ){ }
-		});
-
-		// remove segments Most used box
-		$('#segment-tabs').remove();
-		$('#segment-pop').remove();
-		// remove segments Ajax Quick Add 
-		$('#segment-adder').remove();
-		//-----Click on segment (Allows just one)
-		$(document).on("click", '#segmentchecklist input[type=checkbox]', function(event) { 
-			var $current = $(this).prop('checked') ; //true or false
-			$('#segmentchecklist input[type=checkbox]').prop('checked', false);
-			$(this).prop('checked', $current );
-			//if( $current ){ }
-		});
-
-		// remove interests Most used box
-		$('#interest-tabs').remove();
-		$('#interest-pop').remove();
-		// remove interests Ajax Quick Add 
-		$('#interest-adder').remove();
-
 		$('#addmoreuc').click(function() {
 			oldval = $('#ucfield_max').val();
 			jQuery('#ucfield_max').val( parseInt(jQuery('#ucfield_max').val(),10) + 1 );
