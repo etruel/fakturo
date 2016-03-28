@@ -178,7 +178,7 @@ function fakturo_provider_meta_boxes() {
 	add_meta_box('postimagediv', __('Provider Image', FAKTURO_TEXT_DOMAIN ), 'Fakturo_post_thumbnail_meta_box', 'fakturo_provider', 'side', 'high');
 	add_meta_box( 'fakturo-seller-box', __('Assign Seller', FAKTURO_TEXT_DOMAIN ), 'Fakturo_seller_box','fakturo_provider','side', 'high' );
 	add_meta_box( 'fakturo-data-box', __('Complete Provider Data', FAKTURO_TEXT_DOMAIN ), 'Fakturo_provider_data_box','fakturo_provider','normal', 'default' );
-	add_meta_box( 'fakturo-options-box', __('Provider Contacts', FAKTURO_TEXT_DOMAIN ), 'Fakturo_options_box','fakturo_provider','normal', 'default' );
+	add_meta_box( 'fakturo-options-box', __('Provider Contacts', FAKTURO_TEXT_DOMAIN ), 'Fakturo_provider_options_box','fakturo_provider','normal', 'default' );
 }
 
 function fakturo_providers_admin_styles(){
@@ -254,9 +254,12 @@ function fakturo_providers_head_scripts() {
 			$('div.uc_new_field').removeClass('uc_new_field');
 			$('div#uc_ID'+oldval).fadeIn();
 			$('input[name="uc_description['+oldval+']"]').focus();
-			uc_new.attr('id','uc_ID'+newval);
+			uc_new.attr('id','uc_ID'+newval);//debugger;
 			$('input', uc_new).eq(0).attr('name','uc_description['+ newval +']');
 			$('input', uc_new).eq(1).attr('name','uc_phone['+ newval +']');
+			$('input', uc_new).eq(2).attr('name','uc_email['+ newval +']');
+			$('input', uc_new).eq(3).attr('name','uc_position['+ newval +']');
+			$('input', uc_new).eq(4).attr('name','uc_address['+ newval +']');
 			$('.delete', uc_new).eq(0).attr('onclick', "delete_user_contact('#uc_ID"+ newval +"');");
 			$('#user_contacts').append(uc_new);
 			$('#user_contacts').vSort();
@@ -284,6 +287,13 @@ function fakturo_providers_head_scripts() {
 	
 	</script>
 	<?php
+}
+
+function Fakturo_provider_options_box( $post ) { 
+	global $post, $provider_data;
+	wp_nonce_field( 'edit-contact', 'fakturo_contact_nonce' ); 
+	$user_contacts = $provider_data['user_contacts'];
+	Fakturo_options_box($user_contacts);
 }
 
 function Fakturo_provider_data_box( $post ) {  

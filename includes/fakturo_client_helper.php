@@ -19,7 +19,7 @@ function fakturo_client_meta_boxes() {
 	add_meta_box('postimagediv', __('Client Image', FAKTURO_TEXT_DOMAIN ), 'Fakturo_post_thumbnail_meta_box', 'fakturo_client', 'side', 'high');
 	add_meta_box( 'fakturo-seller-box', __('Assign Seller', FAKTURO_TEXT_DOMAIN ), 'Fakturo_seller_box','fakturo_client','side', 'high' );
 	add_meta_box( 'fakturo-data-box', __('Complete Client Data', FAKTURO_TEXT_DOMAIN ), 'Fakturo_data_box','fakturo_client','normal', 'default' );
-	add_meta_box( 'fakturo-options-box', __('Client Contacts', FAKTURO_TEXT_DOMAIN ), 'Fakturo_options_box','fakturo_client','normal', 'default' );
+	add_meta_box( 'fakturo-options-box', __('Client Contacts', FAKTURO_TEXT_DOMAIN ), 'Fakturo_client_options_box','fakturo_client','normal', 'default' );
 }
 
 function Fakturo_seller_box( $post ) {  
@@ -178,12 +178,14 @@ function Fakturo_data_box( $post ) {
 	<?php
 }
 
-
-function Fakturo_options_box( $post ) {  
+function Fakturo_client_options_box( $post ) { 
 	global $post, $client_data;
 	wp_nonce_field( 'edit-contact', 'fakturo_contact_nonce' ); 
 	$user_contacts = $client_data['user_contacts'];
+	Fakturo_options_box($user_contacts);
+}
 
+function Fakturo_options_box( $user_contacts ) {
 	?>
 <table class="form-table">
 	<tbody>
@@ -512,7 +514,10 @@ function fakturo_clients_head_scripts() {
 			$('input[name="uc_description['+oldval+']"]').focus();
 			uc_new.attr('id','uc_ID'+newval);
 			$('input', uc_new).eq(0).attr('name','uc_description['+ newval +']');
-			$('input', uc_new).eq(1).attr('name','uc_phone['+ newval +']');
+			$('input', uc_new).eq(1).attr('name','uc_phone['+ newval +']');debugger;
+			// $('input', uc_new).eq(0).attr('name','uc_email['+ newval +']');
+			// $('input', uc_new).eq(0).attr('name','uc_position['+ newval +']');
+			// $('input', uc_new).eq(0).attr('name','uc_address['+ newval +']');
 			$('.delete', uc_new).eq(0).attr('onclick', "delete_user_contact('#uc_ID"+ newval +"');");
 			$('#user_contacts').append(uc_new);
 			$('#user_contacts').vSort();
