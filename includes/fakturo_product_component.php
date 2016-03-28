@@ -112,8 +112,8 @@ function fakturo_product_meta_boxes() {
 	remove_meta_box( 'postimagediv', 'fakturo_product', 'side' );
 	add_meta_box('postimagediv', __('Product Image', FAKTURO_TEXT_DOMAIN ), 'Fakturo_post_thumbnail_meta_box', 'fakturo_product', 'side', 'high');
 	add_meta_box( 'fakturo-seller-box', __('Assign Seller', FAKTURO_TEXT_DOMAIN ), 'Fakturo_seller_box','fakturo_product','side', 'high' );
-	add_meta_box( 'fakturo-data-box', __('Complete Product Data', FAKTURO_TEXT_DOMAIN ), 'Fakturo_provider_data_box','fakturo_product','normal', 'default' );
-	add_meta_box( 'fakturo-options-box', __('Product Contacts', FAKTURO_TEXT_DOMAIN ), 'Fakturo_options_box','fakturo_product','normal', 'default' );
+	add_meta_box( 'fakturo-data-box', __('Complete Product Data', FAKTURO_TEXT_DOMAIN ), 'Fakturo_product_data_box','fakturo_product','normal', 'default' );
+	// add_meta_box( 'fakturo-options-box', __('Product Contacts', FAKTURO_TEXT_DOMAIN ), 'Fakturo_client_options_box','fakturo_product','normal', 'default' );
 }
 
 function fakturo_products_admin_styles(){
@@ -201,11 +201,11 @@ function fakturo_products_head_scripts() {
 		jQuery( "form#post #publish" ).hide();
 		jQuery( "form#post #publish" ).after("<input type=\'button\' value=\'<?php _e('Save Product', FAKTURO_TEXT_DOMAIN ); ?>\' class=\'sb_publish button-primary\' /><span class=\'sb_js_errors\'></span>");
 
-		jQuery( ".sb_publish" ).click(function() {			
-			if (!error) {
-				jQuery( "form#post #publish" ).click();
-			} else {
+		jQuery( ".sb_publish" ).click(function() {
+			if ($('#cuit_validation').hasClass('cuit_err')) {
 				jQuery(".sb_js_errors").text("<?php _e('There was an error on the page and therefore this page can not yet be published.', FAKTURO_TEXT_DOMAIN ); ?>");
+			} else {
+				jQuery( "form#post #publish" ).click();
 			}
 		});
 
@@ -221,8 +221,8 @@ function fakturo_products_head_scripts() {
 }
 
 function fakturo_check_product($options) {
-	$fieldsArray = array('email', 'address', 'phone', 'taxpayer', 'states', 'city', 'bank_entity', 
-		'bank_account', 'postcode', 'phone', 'cell_phone', 'web', 'active', 'country');
+	$fieldsArray = array('cost', 'reference', 'internal', 'manufacturers', 'description', 'short', 'min',
+		'min_alert', 'packaging', 'unit', 'note', 'origin', 'provider', 'familia', 'origin', 'moneda', 'product_type', 'tax');
 	foreach ($fieldsArray as $field) {
 		$product_data[$field]	= (!isset($options[$field])) ? '' : $options[$field];
 	}
@@ -257,4 +257,87 @@ function fakturo_check_product($options) {
 	$product_data['user_aseller']= (isset($options['user_aseller']) && !empty($options['user_aseller']) ) ? $options['user_aseller'] : 0 ;
 
 	return $product_data;
+}
+
+function Fakturo_product_data_box( $post ) {  
+	global $post, $product_data;
+	wp_nonce_field( 'edit-contact', 'fakturo_contact_nonce' ); 
+	?>
+	<table class="form-table">
+	<tbody>
+	<tr class="user-address-wrap">
+		<th><label for="cost"><?php _e("Cost", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input type="text" name="cost" id="cost" value="<?php echo $product_data['cost'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="provider"><?php _e("Provider", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><?php FakturoBaseComponent::selectCustomPostType('fakturo_provider', 'provider', $product_data); ?></td>
+	</tr>
+	<tr class="user-address-wrap">
+		<th><label for="familia"><?php _e("Familia", FAKTURO_TEXT_DOMAIN ) ?></label></th>
+		<td>
+			<?php FakturoBaseComponent::selectArrayValue(array('Servicios', 'Suscripción a Pagina Web', 'Gestiones Online'), 'familia', $product_data); ?>
+		</td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="product_type"><?php _e("Product Type", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><?php fakturo_client_select_data('fakturo_product_types', 'product_type', $product_data); ?></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="tax"><?php _e("Tax", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><?php fakturo_client_select_data('fakturo_taxes', 'tax', $product_data); ?></td>
+	</tr>
+	<tr class="user-address-wrap">
+		<th><label for="moneda"><?php _e("Moneda", FAKTURO_TEXT_DOMAIN ) ?></label></th>
+		<td><?php FakturoBaseComponent::selectArrayValue(array('Peso Argentino', 'Dólar'), 'moneda', $product_data); ?>
+		</td>
+	</tr>
+	<tr class="user-address-wrap">
+		<th><label for="reference"><?php _e("Reference", FAKTURO_TEXT_DOMAIN ) ?></label></th>
+		<td><input type="text" name="reference" id="reference" value="<?php echo $product_data['reference'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-address-wrap">
+		<th><label for="internal"><?php _e("Internal code", FAKTURO_TEXT_DOMAIN ) ?></label></th>
+		<td><input type="text" name="internal" id="internal" value="<?php echo $product_data['internal'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-address-wrap">
+		<th><label for="manufacturers"><?php _e("Manufacturers code", FAKTURO_TEXT_DOMAIN ) ?></label></th>
+		<td><input type="text" name="manufacturers" id="manufacturers" value="<?php echo $product_data['manufacturers'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-address-wrap">
+		<th><label for="description"><?php _e("Description", FAKTURO_TEXT_DOMAIN ) ?></label></th>
+		<td>
+			<textarea style="width:95%;" rows="4" name="description" id="description"><?php echo $product_data['description'] ?></textarea>
+		</td>
+	</tr>
+	<tr class="user-address-wrap">
+		<th><label for="short"><?php _e("Short description", FAKTURO_TEXT_DOMAIN ) ?></label></th>
+		<td><input type="text" name="short" id="short" value="<?php echo $product_data['short'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-address-wrap">
+		<th><label for="min"><?php _e("Minimal stock", FAKTURO_TEXT_DOMAIN ) ?></label></th>
+		<td><input type="number" name="min" id="min" value="<?php echo $product_data['min'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="min_alert"><?php _e("Minimal stock alert", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><input id="min_alert" type="checkbox" name="min_alert" value="1" <?php if ($product_data['min_alert']) { echo 'checked="checked"'; } ?>></td>
+	</tr>
+	<tr class="user-facebook-wrap">
+		<th><label for="tax"><?php _e("Packaging", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
+		<td><?php fakturo_client_select_data('fakturo_packagings', 'packaging', $product_data); ?></td>
+	</tr>
+	<tr class="user-address-wrap">
+		<th><label for="unit"><?php _e("Units per package", FAKTURO_TEXT_DOMAIN ) ?></label></th>
+		<td><input type="text" name="unit" id="unit" value="<?php echo $product_data['unit'] ?>" class="regular-text"></td>
+	</tr>
+	<tr class="user-address-wrap">
+		<th><label for="note"><?php _e("Notes", FAKTURO_TEXT_DOMAIN ) ?></label></th>
+		<td><textarea style="width:95%;" rows="4" name="note" id="note"><?php echo $product_data['note'] ?></textarea></td>
+	</tr>
+	<tr class="user-address-wrap">
+		<th><label for="origin"><?php _e("Origin", FAKTURO_TEXT_DOMAIN ) ?></label></th>
+		<td><?php FakturoBaseComponent::selectArrayValue(array('China', 'Brasil', 'Japón', 'Taiwán', 'Estados Unidos', 'Argentina'), 'origin', $product_data); ?>
+	</tr>
+	</tbody></table>
+	<?php
 }
