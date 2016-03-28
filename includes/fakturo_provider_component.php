@@ -254,7 +254,7 @@ function fakturo_providers_head_scripts() {
 			$('div.uc_new_field').removeClass('uc_new_field');
 			$('div#uc_ID'+oldval).fadeIn();
 			$('input[name="uc_description['+oldval+']"]').focus();
-			uc_new.attr('id','uc_ID'+newval);//debugger;
+			uc_new.attr('id','uc_ID'+newval);
 			$('input', uc_new).eq(0).attr('name','uc_description['+ newval +']');
 			$('input', uc_new).eq(1).attr('name','uc_phone['+ newval +']');
 			$('input', uc_new).eq(2).attr('name','uc_email['+ newval +']');

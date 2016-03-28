@@ -195,7 +195,7 @@ function fakturo_save_client_data( $post_id ) {
 }
 
 function fakturo_save_custom_post_data( $post_id, $postType, $filterName, $verityPostName, $verifyName ) {
-	global $post, $cfg;print_r($_POST);echo "<br>";echo "<br>";echo "<br>";
+	global $post, $cfg;
 	if((defined('DOING_AJAX') && DOING_AJAX) || isset($_REQUEST['bulk_edit'])) {
 		//save_quick_edit_post($post_id);
 		return $post_id;
@@ -236,7 +236,7 @@ function fakturo_save_custom_post_data( $post_id, $postType, $filterName, $verit
 
 			add_post_meta($post_id, '_thumbnail_id', $attachment_id);
 		}
-	}print_r($client);die();
+	}
 	fakturo_update_custom_post($post_id, $client);
 
 	return $post_id ;

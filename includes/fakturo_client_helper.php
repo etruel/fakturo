@@ -514,10 +514,10 @@ function fakturo_clients_head_scripts() {
 			$('input[name="uc_description['+oldval+']"]').focus();
 			uc_new.attr('id','uc_ID'+newval);
 			$('input', uc_new).eq(0).attr('name','uc_description['+ newval +']');
-			$('input', uc_new).eq(1).attr('name','uc_phone['+ newval +']');debugger;
-			// $('input', uc_new).eq(0).attr('name','uc_email['+ newval +']');
-			// $('input', uc_new).eq(0).attr('name','uc_position['+ newval +']');
-			// $('input', uc_new).eq(0).attr('name','uc_address['+ newval +']');
+			$('input', uc_new).eq(1).attr('name','uc_phone['+ newval +']');
+			$('input', uc_new).eq(2).attr('name','uc_email['+ newval +']');
+			$('input', uc_new).eq(3).attr('name','uc_position['+ newval +']');
+			$('input', uc_new).eq(4).attr('name','uc_address['+ newval +']');
 			$('.delete', uc_new).eq(0).attr('onclick', "delete_user_contact('#uc_ID"+ newval +"');");
 			$('#user_contacts').append(uc_new);
 			$('#user_contacts').vSort();
