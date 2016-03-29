@@ -85,6 +85,31 @@ class FakturoBaseComponent
 		}
 		echo "</select>";
 	}
+
+	public static function showSelectTaxonomiesDataArrayValues($taxonomies, $name, $dataObj) {
+		$data = get_terms($taxonomies, 'hide_empty=0');
+		if (isset($dataObj[$name])) {
+			$items = json_decode($dataObj[$name], true);
+			foreach ($items as $key => $itemValue) {
+				echo '<tr class="user-address-wrap price-row"><th><label for="cost">' . __("Price", FAKTURO_TEXT_DOMAIN ) . '</label></th><td>';
+
+				$selected = "";
+				echo '<select name="' . $name . '[' . $key . ']"><option></option>';
+				foreach ($data as $value) {
+					if ($itemValue == $value->name) {
+						$selected = " selected";
+					} else {
+						$selected = "";
+					}
+				  	echo "<option$selected>$value->name</option>";
+				}
+
+				echo '</select>';
+
+				echo "</td></tr>";
+			}
+		}
+	}
 }
 
 ?>

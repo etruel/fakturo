@@ -113,6 +113,8 @@ function fakturo_product_meta_boxes() {
 	add_meta_box('postimagediv', __('Product Image', FAKTURO_TEXT_DOMAIN ), 'Fakturo_post_thumbnail_meta_box', 'fakturo_product', 'side', 'high');
 	add_meta_box( 'fakturo-seller-box', __('Assign Seller', FAKTURO_TEXT_DOMAIN ), 'Fakturo_seller_box','fakturo_product','side', 'high' );
 	add_meta_box( 'fakturo-data-box', __('Complete Product Data', FAKTURO_TEXT_DOMAIN ), 'Fakturo_product_data_box','fakturo_product','normal', 'default' );
+
+	add_meta_box( 'fakturo-price-box', __('Price', FAKTURO_TEXT_DOMAIN ), 'Fakturo_product_price_box','fakturo_product','normal', 'default' );
 	// add_meta_box( 'fakturo-options-box', __('Product Contacts', FAKTURO_TEXT_DOMAIN ), 'Fakturo_client_options_box','fakturo_product','normal', 'default' );
 }
 
@@ -195,6 +197,13 @@ function fakturo_products_head_scripts() {
 			$('.delete', uc_new).eq(0).attr('onclick', "delete_user_contact('#uc_ID"+ newval +"');");
 			$('#user_contacts').append(uc_new);
 			$('#user_contacts').vSort();
+		});
+
+		$('#addmoreprice').click(function() {
+			var newrow = $('.price-row:eq(0)').clone();
+			$('select', newrow).attr('name','price_scale['+ $('.price-row').length +']');
+			$('select', newrow).val([]);
+			$('#price-table').append(newrow);
 		});	
 		
 		
@@ -222,7 +231,10 @@ function fakturo_products_head_scripts() {
 
 function fakturo_check_product($options) {
 	$fieldsArray = array('cost', 'reference', 'internal', 'manufacturers', 'description', 'short', 'min',
-		'min_alert', 'packaging', 'unit', 'note', 'origin', 'provider', 'familia', 'origin', 'moneda', 'product_type', 'tax');
+		'min_alert', 'packaging', 'unit', 'note', 'origin', 'provider', 'familia', 'origin', 'moneda', 'product_type', 'tax', 'price_scale');
+	if (isset($options['price_scale']) && is_array($options['price_scale'])) {
+		$options['price_scale'] = json_encode($options['price_scale']);
+	}
 	foreach ($fieldsArray as $field) {
 		$product_data[$field]	= (!isset($options[$field])) ? '' : $options[$field];
 	}
@@ -339,5 +351,20 @@ function Fakturo_product_data_box( $post ) {
 		<td><?php FakturoBaseComponent::selectArrayValue(array('China', 'Brasil', 'Japón', 'Taiwán', 'Estados Unidos', 'Argentina'), 'origin', $product_data); ?>
 	</tr>
 	</tbody></table>
+	<?php
+}
+
+function Fakturo_product_price_box() {
+	global $post, $product_data;
+	?>
+	<table class="form-table">
+		<tbody id="price-table">
+			<?php FakturoBaseComponent::showSelectTaxonomiesDataArrayValues('fakturo_price_scales', 'price_scale', $product_data);  ?>
+		</tbody>
+	</table>
+	<div id="paging-box">		  
+		<a href="JavaScript:void(0);" class="button-primary add" id="addmoreprice" style="font-weight: bold; text-decoration: none;"> <?php _e('Add Price', FAKTURO_TEXT_DOMAIN  ); ?>.</a>
+		<label id="msgdrag"></label>
+	</div>
 	<?php
 }
