@@ -95,7 +95,7 @@ class FakturoBaseComponent
 		if (is_array($items) && count($items) > 0) {
 			$items = json_decode($dataObj[$name], true);
 			foreach ($items as $key => $itemValue) {
-				echo '<tr class="user-address-wrap price-row"><th><label for="cost">' . __("Price", FAKTURO_TEXT_DOMAIN ) . '</label></th><td>';
+				echo '<tr class="user-address-wrap price-row"><th><label>' . __("Price", FAKTURO_TEXT_DOMAIN ) . '</label></th><td>';
 
 				$selected = "";
 				echo '<select name="' . $name . '[' . $key . ']"><option></option>';
@@ -113,7 +113,7 @@ class FakturoBaseComponent
 				echo "</td></tr>";
 			}
 		} else {
-			echo '<tr class="user-address-wrap price-row"><th><label for="cost">' . __("Price", FAKTURO_TEXT_DOMAIN ) . '</label></th><td>';
+			echo '<tr class="user-address-wrap price-row"><th><label>' . __("Price", FAKTURO_TEXT_DOMAIN ) . '</label></th><td>';
 			echo '<select name="' . $name . '[0]"><option></option>';
 			foreach ($data as $value) {
 			  	echo "<option>$value->name</option>";

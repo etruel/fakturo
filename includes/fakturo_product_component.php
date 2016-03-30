@@ -115,6 +115,7 @@ function fakturo_product_meta_boxes() {
 	add_meta_box( 'fakturo-data-box', __('Complete Product Data', FAKTURO_TEXT_DOMAIN ), 'Fakturo_product_data_box','fakturo_product','normal', 'default' );
 
 	add_meta_box( 'fakturo-price-box', __('Price', FAKTURO_TEXT_DOMAIN ), 'Fakturo_product_price_box','fakturo_product','normal', 'default' );
+	add_meta_box( 'fakturo-stock-box', __('Stock', FAKTURO_TEXT_DOMAIN ), 'Fakturo_product_stock_box','fakturo_product','normal', 'default' );
 	// add_meta_box( 'fakturo-options-box', __('Product Contacts', FAKTURO_TEXT_DOMAIN ), 'Fakturo_client_options_box','fakturo_product','normal', 'default' );
 }
 
@@ -206,6 +207,19 @@ function fakturo_products_head_scripts() {
 			$('#price-table').append(newrow);
 		});	
 		
+		$('#addmorestock').click(function() {
+			var newrow = $('.stock-row:eq(0)').clone();
+			var rowNumber = $('.stock-row').length;
+			$('select', newrow).attr('name','stock_location['+ rowNumber +']');
+			$('select', newrow).val($('select option:first', newrow).val());
+			$('input:eq(0)', newrow).attr('name','stock_quantity['+ rowNumber +']');
+			$('input:eq(1)', newrow).attr('name','stock_order['+ rowNumber +']');
+			$('input:eq(2)', newrow).attr('name','stock_desc['+ rowNumber +']');
+			$('input:eq(3)', newrow).attr('name','stock_cost['+ rowNumber +']');
+			$('input:eq(4)', newrow).attr('name','stock_date['+ rowNumber +']');
+			$('input', newrow).val('');
+			$('#stock-table').append(newrow);
+		});	
 		
 		jQuery( "form#post #publish" ).hide();
 		jQuery( "form#post #publish" ).after("<input type=\'button\' value=\'<?php _e('Save Product', FAKTURO_TEXT_DOMAIN ); ?>\' class=\'sb_publish button-primary\' /><span class=\'sb_js_errors\'></span>");
@@ -231,9 +245,21 @@ function fakturo_products_head_scripts() {
 
 function fakturo_check_product($options) {
 	$fieldsArray = array('cost', 'reference', 'internal', 'manufacturers', 'description', 'short', 'min',
-		'min_alert', 'packaging', 'unit', 'note', 'origin', 'provider', 'familia', 'origin', 'moneda', 'product_type', 'tax', 'price_scale');
+		'min_alert', 'packaging', 'unit', 'note', 'origin', 'provider', 'familia', 'origin', 'moneda', 'product_type', 'tax', 'price_scale', 'stock');
 	if (isset($options['price_scale']) && is_array($options['price_scale'])) {
 		$options['price_scale'] = json_encode($options['price_scale']);
+	}
+	if (isset($options['stock_location']) && is_array($options['stock_location'])) {
+		$countStock = count($options['stock_location']);
+		$stock = array();
+
+		for ($i = 0; $i < $countStock; $i++) {
+			if ($options['stock_location'][$i] != NULL && $options['stock_quantity'][$i] != NULL && is_numeric($options['stock_quantity'][$i])) {
+				$stock[] = array('location' => $options['stock_location'][$i], 'quantity' => $options['stock_quantity'][$i], 'order' => $options['stock_order'][$i],
+				 'desc' => $options['stock_desc'][$i], 'cost' => $options['stock_cost'][$i], 'date' => $options['stock_date'][$i]);
+			}			
+		}
+		$options['stock'] = json_encode($stock);
 	}
 	foreach ($fieldsArray as $field) {
 		$product_data[$field]	= (!isset($options[$field])) ? '' : $options[$field];
@@ -364,6 +390,103 @@ function Fakturo_product_price_box() {
 	</table>
 	<div id="paging-box">		  
 		<a href="JavaScript:void(0);" class="button-primary add" id="addmoreprice" style="font-weight: bold; text-decoration: none;"> <?php _e('Add Price', FAKTURO_TEXT_DOMAIN  ); ?>.</a>
+		<label id="msgdrag"></label>
+	</div>
+	<?php
+}
+
+function fakturoCountStockLocation($items, $id) {
+	$count = 0;
+	if (is_array($items) && count($items) > 0) {
+		foreach ($items as $key => $item) {
+			if ($item['location'] == $id) {
+				$count += $item['quantity'];
+			}
+		}
+	}
+	return $count;
+}
+
+function Fakturo_product_stock_box() {
+	global $post, $product_data;
+
+	$data = get_terms('fakturo_locations', 'hide_empty=0');
+	$items = array();
+	if (isset($product_data['stock'])) {
+		$items = json_decode($product_data['stock'], true);
+	}
+	?>
+	<style>
+		#stock-table .stock-item {width: 16%;display: inline-block;}
+		#stock-table .stock-item input {width: 100%;}
+		.stock-label .stock-item.label {font-weight: bold;}
+		.stock-row .stock-item input {width: 100%;}
+	</style>
+	<table class="form-table">
+		<tbody>
+			<?php foreach ($data as $key => $value) { ?>
+				<tr class="user-address-wrap">
+					<th><label><?php echo $value->name; ?></label></th>
+					<td><?php echo fakturoCountStockLocation($items, $value->term_id); ?></td>
+				</tr>
+			<?php } ?>
+		</tbody>
+	</table>
+
+	<div id="stock-table">
+		<div class="stock-label">
+			<div class="stock-item label"><?php _e('Location', FAKTURO_TEXT_DOMAIN) ?></div>
+			<div class="stock-item label"><?php _e('Quantity', FAKTURO_TEXT_DOMAIN) ?></div>
+			<div class="stock-item label"><?php _e('Order Number', FAKTURO_TEXT_DOMAIN) ?></div>
+			<div class="stock-item label"><?php _e('Description', FAKTURO_TEXT_DOMAIN) ?></div>
+			<div class="stock-item label"><?php _e('Cost', FAKTURO_TEXT_DOMAIN) ?></div>
+			<div class="stock-item label"><?php _e('Date', FAKTURO_TEXT_DOMAIN) ?></div>
+		</div>
+		<?php 		
+		if (is_array($items) && count($items) > 0) {
+			foreach ($items as $key => $item) {
+				echo '<div class="stock-row">';
+				echo '<div class="stock-item">';
+				echo '<select name="stock_location[' . $key . ']">';
+				foreach ($data as $key2 => $value) {
+					if (isset($item['location']) && $value->term_id == $item['location']) {
+						$selected = " selected ";
+					} else {
+						$selected = "";
+					}
+					echo '<option '. $selected .' value="' . $value->term_id . '">' . $value->name . '</option>';
+				}
+				echo '</select></div>';
+
+				echo '<div class="stock-item"><input type="text" value="' . $item['quantity'] . '" name="stock_quantity[' . $key . ']"></div>';
+				echo '<div class="stock-item"><input type="text" value="' . $item['order'] . '" name="stock_order[' . $key . ']"></div>';
+				echo '<div class="stock-item"><input type="text" value="' . $item['desc'] . '" name="stock_desc[' . $key . ']"></div>';
+				echo '<div class="stock-item"><input type="text" value="' . $item['cost'] . '" name="stock_cost[' . $key . ']"></div>';
+				echo '<div class="stock-item"><input type="text" value="' . $item['date'] . '" name="stock_date[' . $key . ']"></div>';
+				echo '</div>';
+			}
+		} else { ?>			
+			<div class="stock-row">
+				<div class="stock-item">
+					<select name="stock_location[0]">
+						<?php foreach ($data as $key => $value) { ?>
+							<option value="<?php echo $value->term_id; ?>"><?php echo $value->name; ?></option>
+						<?php } ?>
+					</select>
+				</div>
+				<div class="stock-item"><input type="text" name="stock_quantity[0]"></div>
+				<div class="stock-item"><input type="text" name="stock_order[0]"></div>
+				<div class="stock-item"><input type="text" name="stock_desc[0]"></div>
+				<div class="stock-item"><input type="text" name="stock_cost[0]"></div>
+				<div class="stock-item"><input type="date" name="stock_date[0]"></div>
+			</div>
+		<?php
+		}
+		?>
+	</div>
+
+	<div id="paging-box">		  
+		<a href="JavaScript:void(0);" class="button-primary add" id="addmorestock" style="font-weight: bold; text-decoration: none;"> <?php _e('Add Stock', FAKTURO_TEXT_DOMAIN  ); ?>.</a>
 		<label id="msgdrag"></label>
 	</div>
 	<?php
