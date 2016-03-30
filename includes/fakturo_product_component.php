@@ -462,7 +462,7 @@ function Fakturo_product_stock_box() {
 				echo '<div class="stock-item"><input type="text" value="' . $item['order'] . '" name="stock_order[' . $key . ']"></div>';
 				echo '<div class="stock-item"><input type="text" value="' . $item['desc'] . '" name="stock_desc[' . $key . ']"></div>';
 				echo '<div class="stock-item"><input type="text" value="' . $item['cost'] . '" name="stock_cost[' . $key . ']"></div>';
-				echo '<div class="stock-item"><input type="text" value="' . $item['date'] . '" name="stock_date[' . $key . ']"></div>';
+				echo '<div class="stock-item"><input type="date" value="' . $item['date'] . '" name="stock_date[' . $key . ']"></div>';
 				echo '</div>';
 			}
 		} else { ?>			
