@@ -55,6 +55,41 @@ function fakturo_product_init() {
 	);
 
 	register_post_type( 'fakturo_product', $args );
+	register_taxonomy_for_object_type( 'category', 'fakturo_product' );
+
+	$labels_model = array(
+		'name'                       => _x( 'Models', 'Models' ),
+		'singular_name'              => _x( 'Model', 'Model' ),
+		'search_items'               => __( 'Search Models' ),
+		'popular_items'              => __( 'Popular Models' ),
+		'all_items'                  => __( 'All Models' ),
+		'parent_item'                => null,
+		'parent_item_colon'          => null,
+		'edit_item'                  => __( 'Edit Model' ),
+		'update_item'                => __( 'Update Model' ),
+		'add_new_item'               => __( 'Add New Model' ),
+		'new_item_name'              => __( 'New Model Name' ),
+		'separate_items_with_commas' => __( 'Separate models with commas' ),
+		'add_or_remove_items'        => __( 'Add or remove models' ),
+		'choose_from_most_used'      => __( 'Choose from the most used models' ),
+		'not_found'                  => __( 'No models found.' ),
+		'menu_name'                  => __( 'Models' ),
+	);
+
+	$args_model = array(
+		'hierarchical'          => false,
+		'labels'                => $labels_model,
+		'show_ui'               => true,
+		'show_admin_column'     => true,
+		'query_var'             => true,
+		'rewrite'               => array( 'slug' => 'fakturo-model' ),
+	);
+
+	register_taxonomy(
+		'fakturo_model',
+		'fakturo_product',
+		$args_model
+	);
 
 
 	add_filter(	'fakturo_check_product', 'fakturo_check_product',10,1);
@@ -491,3 +526,190 @@ function Fakturo_product_stock_box() {
 	</div>
 	<?php
 }
+
+// Add term page
+function fakturo_model_add_new_meta_field() {
+	$dataSetting = get_terms('fakturo_invoice_type','hide_empty=0');
+	?>
+	<div class="form-field">
+		<label for="short"><?php _e( 'Short Description', FAKTURO_TEXT_DOMAIN ); ?></label>
+		<input type="text" name="short" id="short">
+	</div>
+	<div class="form-field">
+		<label for="provider"><?php _e( 'Provider', FAKTURO_TEXT_DOMAIN ); ?></label>
+		<select name="provider" id="provider">
+			<option></option>
+			<?php
+			$args=array(
+				'post_type' => 'fakturo_provider',
+				'post_status' => 'publish',
+				'posts_per_page' => -1,
+				'caller_get_posts'=> 1
+			 );
+
+			$my_query = null;
+			$my_query = new WP_Query($args);
+			if( $my_query->have_posts() ) {
+				while ($my_query->have_posts()) : $my_query->the_post(); ?>
+				<option value="<?php the_ID(); ?>"><?php the_title(); ?></option>
+				<?php
+				endwhile;
+			}
+			wp_reset_query();
+			?>
+		</select>
+	</div>
+	<div class="form-field">
+		<?php $dataSetting = get_terms('category','hide_empty=0'); ?>
+		<label for="category"><?php _e( 'Category', FAKTURO_TEXT_DOMAIN ); ?></label>
+		<?php FakturoBaseComponent::showTaxonomySelectOnTaxonomy($dataSetting, 'category'); ?>
+	</div>
+	<div class="form-field">
+		<label for="reference"><?php _e( 'Reference', FAKTURO_TEXT_DOMAIN ); ?></label>
+		<input type="text" name="reference" id="reference">
+	</div>	
+	<div class="form-field">
+		<label for="internal"><?php _e( 'Internal Code', FAKTURO_TEXT_DOMAIN ); ?></label>
+		<input type="text" name="internal" id="internal" style="width:20%">
+	</div>
+	<div class="form-field">
+		<label for="manu"><?php _e( 'Manufacturers Code', FAKTURO_TEXT_DOMAIN ); ?></label>
+		<input type="text" name="manu" id="manu">
+	</div>	
+	<div class="form-field">
+		<label for="note"><?php _e( 'Note', FAKTURO_TEXT_DOMAIN ); ?></label>
+		<textarea name="note" id="note"></textarea>
+	</div>
+	<div class="form-field">
+		<?php $dataSetting = get_terms('fakturo_origins','hide_empty=0'); ?>
+		<label for="origin"><?php _e( 'Origin', FAKTURO_TEXT_DOMAIN ); ?></label>
+		<?php FakturoBaseComponent::showTaxonomySelectOnTaxonomy($dataSetting, 'origin'); ?>
+	</div>
+<?php
+}
+
+add_action( 'fakturo_model_add_form_fields', 'fakturo_model_add_new_meta_field', 10, 2 );
+
+function fakturo_model_edit_meta_field($term) { 
+	// put the term ID into a variable
+	$provider = get_term_meta( $term->term_id, 'provider');
+	$provider = isset($provider[0])?$provider[0]:'';
+	$category = get_term_meta( $term->term_id, 'category');
+	$category = isset($category[0])?$category[0]:'';
+	$short = get_term_meta( $term->term_id, 'short');
+	$short = isset($short[0])?$short[0]:'';
+	$reference = get_term_meta( $term->term_id, 'reference');
+	$reference = isset($reference[0])?$reference[0]:'';
+	$internal = get_term_meta( $term->term_id, 'internal');
+	$internal = isset($internal[0])?$internal[0]:'';
+	$manu = get_term_meta( $term->term_id, 'manu');
+	$manu = isset($manu[0])?$manu[0]:'';
+	$note = get_term_meta( $term->term_id, 'note');
+	$note = isset($note[0])?$note[0]:'';
+	$origin = get_term_meta( $term->term_id, 'origin');
+	$origin = isset($origin[0])?$origin[0]:'';
+?>
+	<tr class="form-field">
+		<th scope="row" valign="top"><label for="short"><?php _e( 'Short Description', FAKTURO_TEXT_DOMAIN ); ?></label></th>
+		<td>
+			<input type="text" name="short" id="short" value="<?php echo $short; ?>">
+		</td>
+	</tr>
+	<tr class="form-field">
+		<th scope="row" valign="top"><label for="provider"><?php _e( 'Provider', FAKTURO_TEXT_DOMAIN ); ?></label></th>
+		<td>
+			<select name="provider" id="provider">
+				<option></option>
+				<?php
+				$args=array(
+					'post_type' => 'fakturo_provider',
+					'post_status' => 'publish',
+					'posts_per_page' => -1,
+					'caller_get_posts'=> 1
+				 );
+
+				$my_query = null;
+				$my_query = new WP_Query($args);
+				if( $my_query->have_posts() ) {
+					while ($my_query->have_posts()) : $my_query->the_post(); ?>
+					<option <?php if (get_the_ID() == $provider) {
+				    	echo " selected ";
+				    } ?> value="<?php the_ID(); ?>"><?php the_title(); ?></option>
+					<?php
+					endwhile;
+				}
+				wp_reset_query();
+				?>
+			</select>
+		</td>
+	</tr>
+	<tr class="form-field">
+		<th scope="row" valign="top"><label for="category"><?php _e( 'Category', FAKTURO_TEXT_DOMAIN ); ?></label></th>
+		<td>
+			<?php $dataSetting = get_terms('category','hide_empty=0'); ?>
+			<?php FakturoBaseComponent::showTaxonomySelectOnTaxonomy($dataSetting, 'category', $category); ?>
+		</td>
+	</tr>
+	<tr class="form-field">
+		<th scope="row" valign="top"><label for="reference"><?php _e( 'Reference', FAKTURO_TEXT_DOMAIN ); ?></label></th>
+		<td>
+			<input type="text" name="reference" id="reference" value="<?php echo $reference; ?>">
+		</td>
+	</tr>
+	<tr class="form-field">
+		<th scope="row" valign="top"><label for="internal"><?php _e( 'Internal Code', FAKTURO_TEXT_DOMAIN ); ?></label></th>
+		<td>
+			<input type="text" name="internal" id="internal" value="<?php echo $internal; ?>" style="width:20%">
+		</td>
+	</tr>
+	<tr class="form-field">
+		<th scope="row" valign="top"><label for="manu"><?php _e( 'Manufacturers Code', FAKTURO_TEXT_DOMAIN ); ?></label></th>
+		<td>
+			<input type="text" name="manu" id="manu" value="<?php echo $manu; ?>">
+		</td>
+	</tr>
+	<tr class="form-field">
+		<th scope="row" valign="top"><label for="reference"><?php _e( 'Note', FAKTURO_TEXT_DOMAIN ); ?></label></th>
+		<td>
+			<textarea name="note" id="note"><?php echo $note; ?></textarea>
+		</td>
+	</tr>
+	<tr class="form-field">
+		<th scope="row" valign="top"><label for="origin"><?php _e( 'Origin', FAKTURO_TEXT_DOMAIN ); ?></label></th>
+		<td>
+			<?php $dataSetting = get_terms('fakturo_origins','hide_empty=0'); ?>
+			<?php FakturoBaseComponent::showTaxonomySelectOnTaxonomy($dataSetting, 'origin', $origin); ?>
+		</td>
+	</tr>
+<?php
+}
+add_action( 'fakturo_model_edit_form_fields', 'fakturo_model_edit_meta_field', 10, 2 );
+
+function save_fakturo_model_custom_meta( $term_id ) {
+	if ( isset( $_POST['provider'] ) ) {
+		update_term_meta($term_id, 'provider', $_POST['provider']);
+	}
+	if ( isset( $_POST['category'] ) ) {
+		update_term_meta($term_id, 'category', $_POST['category']);
+	}
+	if ( isset( $_POST['short'] ) ) {
+		update_term_meta($term_id, 'short', $_POST['short']);
+	}
+	if ( isset( $_POST['reference'] ) ) {
+		update_term_meta($term_id, 'reference', $_POST['reference']);
+	}
+	if ( isset( $_POST['internal'] ) ) {
+		update_term_meta($term_id, 'internal', $_POST['internal']);
+	}
+	if ( isset( $_POST['manu'] ) ) {
+		update_term_meta($term_id, 'manu', $_POST['manu']);
+	}
+	if ( isset( $_POST['note'] ) ) {
+		update_term_meta($term_id, 'note', $_POST['note']);
+	}
+	if ( isset( $_POST['origin'] ) ) {
+		update_term_meta($term_id, 'origin', $_POST['origin']);
+	}
+}  
+add_action( 'edited_fakturo_model', 'save_fakturo_model_custom_meta', 10, 2 );  
+add_action( 'create_fakturo_model', 'save_fakturo_model_custom_meta', 10, 2 );

@@ -122,6 +122,22 @@ class FakturoBaseComponent
 			echo "</td></tr>";
 		}
 	}
+
+	public static function showTaxonomySelectOnTaxonomy($dataSetting, $name, $value = NULL) { ?>
+		<select name="<?php echo $name; ?>" id="<?php echo $name; ?>">
+			<option></option>
+			<?php
+				foreach ($dataSetting as $key => $term) {
+					?>
+					<option <?php if ($term->term_id == $value) { ?> selected <?php } ?> value="<?php echo $term->term_id; ?>">
+						<?php echo $term->name; ?>
+					</option>
+					<?php
+				}
+			?>
+		</select>
+		<?php
+	}
 }
 
 ?>
