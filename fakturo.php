@@ -33,13 +33,13 @@ function fakturo_admin_menu() {
 		$page = add_submenu_page(
 			'fakturo/admin/fakturo_admin.php',
 			__( 'Clients', FAKTURO_TEXT_DOMAIN ),
-			__( 'Clients List', FAKTURO_TEXT_DOMAIN ),
+			__( 'Clients', FAKTURO_TEXT_DOMAIN ),
 			'manage_options',
 			'edit.php?post_type=fakturo_client'
 		);
 		add_action( 'admin_print_styles-' . $page, 'fakturo_admin_styles');
 
-		$page = add_submenu_page(
+/*		$page = add_submenu_page(
 			'fakturo/admin/fakturo_admin.php',
 			__( 'Add Client', FAKTURO_TEXT_DOMAIN ),
 			__( 'Add Client', FAKTURO_TEXT_DOMAIN ),
@@ -47,17 +47,17 @@ function fakturo_admin_menu() {
 			'post-new.php?post_type=fakturo_client'
 		);
 		add_action( 'admin_print_styles-' . $page, 'fakturo_admin_styles');
-
+*/
       $page = add_submenu_page(
          'fakturo/admin/fakturo_admin.php',
          __( 'Providers', FAKTURO_TEXT_DOMAIN ),
-         __( 'Providers List', FAKTURO_TEXT_DOMAIN ),
+         __( 'Providers', FAKTURO_TEXT_DOMAIN ),
          'manage_options',
          'edit.php?post_type=fakturo_provider'
       );
       add_action( 'admin_print_styles-' . $page, 'fakturo_admin_styles');
 
-      $page = add_submenu_page(
+/*      $page = add_submenu_page(
          'fakturo/admin/fakturo_admin.php',
          __( 'Add Provider', FAKTURO_TEXT_DOMAIN ),
          __( 'Add Provider', FAKTURO_TEXT_DOMAIN ),
@@ -65,7 +65,7 @@ function fakturo_admin_menu() {
          'post-new.php?post_type=fakturo_provider'
       );
       add_action( 'admin_print_styles-' . $page, 'fakturo_admin_styles');
-
+*/
       $page = add_submenu_page(
          'fakturo/admin/fakturo_admin.php',
          __( 'Products', FAKTURO_TEXT_DOMAIN ),
