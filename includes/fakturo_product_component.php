@@ -312,7 +312,7 @@ function fakturo_products_head_scripts() {
 
 function fakturo_check_product($options) {
 	$fieldsArray = array('cost', 'reference', 'internal', 'manufacturers', 'description', 'short', 'min',
-		'min_alert', 'packaging', 'unit', 'note', 'origin', 'provider', 'familia', 'origin', 'moneda', 'product_type', 'tax', 'price_scale', 'stock');
+		'min_alert', 'packaging', 'unit', 'note', 'origin', 'provider', 'origin', 'currency', 'product_type', 'tax', 'price_scale', 'stock');
 	if (isset($options['price_scale']) && is_array($options['price_scale'])) {
 		$options['price_scale'] = json_encode($options['price_scale']);
 	}//echo "<pre>"; print_r($options); echo "</pre>"; die();
@@ -376,12 +376,6 @@ function Fakturo_product_data_box( $post ) {
 		<th><label for="provider"><?php _e("Provider", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
 		<td><?php FakturoBaseComponent::selectCustomPostType('fakturo_provider', 'provider', $product_data); ?></td>
 	</tr>
-	<tr class="user-address-wrap">
-		<th><label for="familia"><?php _e("Familia", FAKTURO_TEXT_DOMAIN ) ?></label></th>
-		<td>
-			<?php FakturoBaseComponent::selectArrayValue(array('Servicios', 'Suscripción a Pagina Web', 'Gestiones Online'), 'familia', $product_data); ?>
-		</td>
-	</tr>
 	<tr class="user-facebook-wrap">
 		<th><label for="product_type"><?php _e("Product Type", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
 		<td><?php fakturo_client_select_data('fakturo_product_types', 'product_type', $product_data); ?></td>
@@ -391,8 +385,8 @@ function Fakturo_product_data_box( $post ) {
 		<td><?php fakturo_client_select_data('fakturo_taxes', 'tax', $product_data); ?></td>
 	</tr>
 	<tr class="user-address-wrap">
-		<th><label for="moneda"><?php _e("Moneda", FAKTURO_TEXT_DOMAIN ) ?></label></th>
-		<td><?php FakturoBaseComponent::selectArrayValue(array('Peso Argentino', 'Dólar'), 'moneda', $product_data); ?>
+		<th><label for="currency"><?php _e("Currency", FAKTURO_TEXT_DOMAIN ) ?></label></th>
+		<td><?php FakturoBaseComponent::selectArrayValue(array('Peso Argentino', 'Dólar'), 'currency', $product_data); ?>
 		</td>
 	</tr>
 	<tr class="user-address-wrap">
