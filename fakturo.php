@@ -92,6 +92,14 @@ function fakturo_admin_menu() {
          'edit-tags.php?taxonomy=fakturo_model'
       );
 
+      $page = add_submenu_page(
+         'fakturo/admin/fakturo_admin.php',
+         __( 'Stock', FAKTURO_TEXT_DOMAIN ),
+         __( 'Stock', FAKTURO_TEXT_DOMAIN ),
+         'manage_options',
+         'edit-tags.php?taxonomy=fakturo_stock'
+      );
+
 		add_submenu_page( 'fakturo/admin/fakturo_admin.php', __( 'Settings', FAKTURO_TEXT_DOMAIN ), __( 'Settings', FAKTURO_TEXT_DOMAIN ), 'manage_options', 'fakturo/settings/fakturo_settings.php', 'fakturo_update_settings_controller' ); 
 	}	
 }

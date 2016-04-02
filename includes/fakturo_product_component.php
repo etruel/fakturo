@@ -91,6 +91,39 @@ function fakturo_product_init() {
 		$args_model
 	);
 
+	$labels_stock = array(
+		'name'                       => _x( 'Stocks', 'Stocks' ),
+		'singular_name'              => _x( 'Stock', 'Stock' ),
+		'search_items'               => __( 'Search Stocks' ),
+		'popular_items'              => __( 'Popular Stocks' ),
+		'all_items'                  => __( 'All Stocks' ),
+		'parent_item'                => null,
+		'parent_item_colon'          => null,
+		'edit_item'                  => __( 'Edit Stock' ),
+		'update_item'                => __( 'Update Stock' ),
+		'add_new_item'               => __( 'Add New Stock' ),
+		'new_item_name'              => __( 'New Stock Name' ),
+		'separate_items_with_commas' => __( 'Separate stocks with commas' ),
+		'add_or_remove_items'        => __( 'Add or remove stocks' ),
+		'choose_from_most_used'      => __( 'Choose from the most used stocks' ),
+		'not_found'                  => __( 'No stocks found.' ),
+		'menu_name'                  => __( 'Stocks' ),
+	);
+
+	$args_stock = array(
+		'hierarchical'          => false,
+		'labels'                => $labels_stock,
+		'show_ui'               => true,
+		'show_admin_column'     => true,
+		'query_var'             => true,
+		'rewrite'               => array( 'slug' => 'fakturo-stock' ),
+	);
+
+	register_taxonomy(
+		'fakturo_stock',
+		'',
+		$args_stock
+	);
 
 	add_filter(	'fakturo_check_product', 'fakturo_check_product',10,1);
 	add_action('save_post',  'fakturo_save_product_data');
@@ -151,7 +184,6 @@ function fakturo_product_meta_boxes() {
 
 	add_meta_box( 'fakturo-price-box', __('Price', FAKTURO_TEXT_DOMAIN ), 'Fakturo_product_price_box','fakturo_product','normal', 'default' );
 	add_meta_box( 'fakturo-stock-box', __('Stock', FAKTURO_TEXT_DOMAIN ), 'Fakturo_product_stock_box','fakturo_product','normal', 'default' );
-	// add_meta_box( 'fakturo-options-box', __('Product Contacts', FAKTURO_TEXT_DOMAIN ), 'Fakturo_client_options_box','fakturo_product','normal', 'default' );
 }
 
 function fakturo_products_admin_styles(){
@@ -283,15 +315,43 @@ function fakturo_check_product($options) {
 		'min_alert', 'packaging', 'unit', 'note', 'origin', 'provider', 'familia', 'origin', 'moneda', 'product_type', 'tax', 'price_scale', 'stock');
 	if (isset($options['price_scale']) && is_array($options['price_scale'])) {
 		$options['price_scale'] = json_encode($options['price_scale']);
-	}
+	}//echo "<pre>"; print_r($options); echo "</pre>"; die();
 	if (isset($options['stock_location']) && is_array($options['stock_location'])) {
 		$countStock = count($options['stock_location']);
 		$stock = array();
 
+		if (isset($_POST['ID']) && $_POST['ID'] != NULL) {
+			$productMetas = get_post_meta($_POST['ID'], 'stock');
+			if (isset($productMetas[0])) {
+				$productMetas = json_decode($productMetas[0], TRUE);
+				foreach ($productMetas as $key => $productMeta) {
+					wp_delete_term((int)$productMeta, 'fakturo_stock');
+				}
+			}
+		}
+
 		for ($i = 0; $i < $countStock; $i++) {
 			if ($options['stock_location'][$i] != NULL && $options['stock_quantity'][$i] != NULL && is_numeric($options['stock_quantity'][$i])) {
-				$stock[] = array('location' => $options['stock_location'][$i], 'quantity' => $options['stock_quantity'][$i], 'order' => $options['stock_order'][$i],
-				 'desc' => $options['stock_desc'][$i], 'cost' => $options['stock_cost'][$i], 'date' => $options['stock_date'][$i]);
+				$term = wp_insert_term( "fakturo_stock_" . microtime(), 'fakturo_stock', $args = array('description' => $options['stock_desc'][$i]) );
+				$stock[] = $term['term_id'];
+				if ($options['stock_location'][$i] != NULL) {
+	      			add_term_meta ($term['term_id'], 'location',  $options['stock_location'][$i]);
+	      		}
+	      		if ($options['stock_quantity'][$i] != NULL) {
+	      			add_term_meta ($term['term_id'], 'quantity',  $options['stock_quantity'][$i]);
+	      		}
+	      		if ($options['stock_order'][$i] != NULL) {
+	      			add_term_meta ($term['term_id'], 'order',  $options['stock_order'][$i]);
+	      		}
+	      		if ($options['stock_cost'][$i] != NULL) {
+	      			add_term_meta ($term['term_id'], 'cost',  $options['stock_cost'][$i]);
+	      		}
+	      		if ($options['stock_date'][$i] != NULL) {
+	      			add_term_meta ($term['term_id'], 'date',  $options['stock_date'][$i]);
+	      		}
+	      		if (isset($_POST['ID']) && $_POST['ID'] != NULL) {
+	      			add_term_meta ($term['term_id'], 'product',  $_POST['ID']);
+	      		}
 			}			
 		}
 		$options['stock'] = json_encode($stock);
@@ -299,36 +359,6 @@ function fakturo_check_product($options) {
 	foreach ($fieldsArray as $field) {
 		$product_data[$field]	= (!isset($options[$field])) ? '' : $options[$field];
 	}
-
-	$user_contacts = (!isset($options['user_contacts']))? Array() : $options['user_contacts'];
-	if(isset($options['uc_description'])) {
-		foreach($options['uc_description'] as $id => $cf_value) {       
-			$uc_description = esc_attr($options['uc_description'][$id]);
-			$uc_phone = esc_attr($options['uc_phone'][$id]);
-			$uc_email = esc_attr($options['uc_email'][$id]);
-			$uc_position = esc_attr($options['uc_position'][$id]);
-			$uc_address = esc_attr($options['uc_address'][$id]);
-			if(!empty($uc_description))  {
-				$user_contacts['description'][]=$uc_description ;
-				$user_contacts['phone'][]=$uc_phone ;
-				$user_contacts['email'][]=$uc_email ;
-				$user_contacts['position'][]=$uc_position ;
-				$user_contacts['address'][]=$uc_address ;
-			}
-		}
-	}
-	if(!isset($user_contacts['description'])) {
-		$user_contacts = array(
-			'description'=>array(''),
-			'phone'=>array(''),
-			'email'=>array(''),
-			'position'=>array(''),
-			'address'=>array(''),	
-		);
-	}
-	$product_data['user_contacts']= $user_contacts;
-	$product_data['user_aseller']= (isset($options['user_aseller']) && !empty($options['user_aseller']) ) ? $options['user_aseller'] : 0 ;
-
 	return $product_data;
 }
 
@@ -450,6 +480,27 @@ function Fakturo_product_stock_box() {
 	if (isset($product_data['stock'])) {
 		$items = json_decode($product_data['stock'], true);
 	}
+
+	if (is_array($items) && count($items) > 0) {
+		foreach ($items as $key => $value) {
+			$term = get_term($value, 'fakturo_stock');			
+			$description = $term->description;
+			$location = get_term_meta($value, 'location');
+			$location = isset($location[0])?$location[0]:'';
+			$quantity = get_term_meta($value, 'quantity');
+			$quantity = isset($quantity[0])?$quantity[0]:'';
+			$order = get_term_meta($value, 'order');
+			$order = isset($order[0])?$order[0]:'';
+			$cost = get_term_meta($value, 'cost');
+			$cost = isset($cost[0])?$cost[0]:'';
+			$date = get_term_meta($value, 'date');
+			$date = isset($date[0])?$date[0]:'';
+
+			$item = array('id' => $value, 'description' => $description, 'location' => $location, 'quantity' => $quantity, 'order' => $order,
+				'cost' => $cost, 'date' => $date);
+			$items[$key] = $item;
+		}
+	}
 	?>
 	<style>
 		#stock-table .stock-item {width: 16%;display: inline-block;}
@@ -484,7 +535,7 @@ function Fakturo_product_stock_box() {
 				echo '<div class="stock-item">';
 				echo '<select name="stock_location[' . $key . ']">';
 				foreach ($data as $key2 => $value) {
-					if (isset($item['location']) && $value->term_id == $item['location']) {
+					if ($value->term_id == $item['location']) {
 						$selected = " selected ";
 					} else {
 						$selected = "";
@@ -495,7 +546,7 @@ function Fakturo_product_stock_box() {
 
 				echo '<div class="stock-item"><input type="text" value="' . $item['quantity'] . '" name="stock_quantity[' . $key . ']"></div>';
 				echo '<div class="stock-item"><input type="text" value="' . $item['order'] . '" name="stock_order[' . $key . ']"></div>';
-				echo '<div class="stock-item"><input type="text" value="' . $item['desc'] . '" name="stock_desc[' . $key . ']"></div>';
+				echo '<div class="stock-item"><input type="text" value="' . $item['description'] . '" name="stock_desc[' . $key . ']"></div>';
 				echo '<div class="stock-item"><input type="text" value="' . $item['cost'] . '" name="stock_cost[' . $key . ']"></div>';
 				echo '<div class="stock-item"><input type="date" value="' . $item['date'] . '" name="stock_date[' . $key . ']"></div>';
 				echo '</div>';
@@ -527,9 +578,8 @@ function Fakturo_product_stock_box() {
 	<?php
 }
 
-// Add term page
+// Add model page
 function fakturo_model_add_new_meta_field() {
-	$dataSetting = get_terms('fakturo_invoice_type','hide_empty=0');
 	?>
 	<div class="form-field">
 		<label for="short"><?php _e( 'Short Description', FAKTURO_TEXT_DOMAIN ); ?></label>
@@ -713,3 +763,138 @@ function save_fakturo_model_custom_meta( $term_id ) {
 }  
 add_action( 'edited_fakturo_model', 'save_fakturo_model_custom_meta', 10, 2 );  
 add_action( 'create_fakturo_model', 'save_fakturo_model_custom_meta', 10, 2 );
+
+// Add term page
+function fakturo_stock_add_new_meta_field() {
+	?>
+	<div class="form-field">
+		<label for="product"><?php _e( 'Product', FAKTURO_TEXT_DOMAIN ); ?></label>
+		<select name="product" id="product">
+			<?php
+			$args=array(
+				'post_type' => 'fakturo_product',
+				'post_status' => 'publish',
+				'posts_per_page' => -1,
+				'caller_get_posts'=> 1
+			 );
+
+			$my_query = null;
+			$my_query = new WP_Query($args);
+			if( $my_query->have_posts() ) {
+				while ($my_query->have_posts()) : $my_query->the_post(); ?>
+				<option value="<?php the_ID(); ?>"><?php the_title(); ?></option>
+				<?php
+				endwhile;
+			}
+			wp_reset_query();
+			?>
+		</select>
+	</div>
+	<div class="form-field">
+		<?php $dataSetting = get_terms('fakturo_locations','hide_empty=0'); ?>
+		<label for="location"><?php _e( 'Location', FAKTURO_TEXT_DOMAIN ); ?></label>
+		<?php FakturoBaseComponent::showTaxonomySelectOnTaxonomy($dataSetting, 'location', NULL, FALSE); ?>
+	</div>
+	<div class="form-field">
+		<label for="quantity"><?php _e( 'Quantity', FAKTURO_TEXT_DOMAIN ); ?></label>
+		<input type="text" name="quantity" id="quantity">
+	</div>
+	<div class="form-field">
+		<label for="order"><?php _e( 'Order Number', FAKTURO_TEXT_DOMAIN ); ?></label>
+		<input type="text" name="order" id="order">
+	</div>
+	<div class="form-field">
+		<label for="cost"><?php _e( 'Cost', FAKTURO_TEXT_DOMAIN ); ?></label>
+		<input type="text" name="cost" id="cost">
+	</div>
+	<div class="form-field">
+		<label for="date"><?php _e( 'Date', FAKTURO_TEXT_DOMAIN ); ?></label>
+		<input type="date" name="date" id="date">
+	</div>
+<?php
+}
+
+add_action( 'fakturo_stock_add_form_fields', 'fakturo_stock_add_new_meta_field', 10, 2 );
+
+function fakturo_stock_edit_meta_field($term) {
+	$location = get_term_meta( $term->term_id, 'location');
+	$location = isset($location[0])?$location[0]:'';
+	$quantity = get_term_meta( $term->term_id, 'quantity');
+	$quantity = isset($quantity[0])?$quantity[0]:'';
+	$order = get_term_meta( $term->term_id, 'order');
+	$order = isset($order[0])?$order[0]:'';
+	$cost = get_term_meta( $term->term_id, 'cost');
+	$cost = isset($cost[0])?$cost[0]:'';
+	$date = get_term_meta( $term->term_id, 'date');
+	$date = isset($date[0])?$date[0]:'';
+	$product = get_term_meta( $term->term_id, 'product');
+	$product = isset($product[0])?$product[0]:'';
+?>
+	<tr class="form-field">
+		<th scope="row" valign="top"><label for="product"><?php _e( 'Product', FAKTURO_TEXT_DOMAIN ); ?></label></th>
+		<td>
+			<?php
+			$productPost = get_post($product);
+			echo $productPost->post_title;
+			 ?>
+		</td>
+	</tr>
+	<tr class="form-field">
+		<th scope="row" valign="top"><label for="location"><?php _e( 'Location', FAKTURO_TEXT_DOMAIN ); ?></label></th>
+		<td>
+			<?php $dataSetting = get_terms('fakturo_locations','hide_empty=0'); ?>
+			<?php FakturoBaseComponent::showTaxonomySelectOnTaxonomy($dataSetting, 'location', $location, FALSE); ?>
+		</td>
+	</tr>
+	<tr class="form-field">
+		<th scope="row" valign="top"><label for="quantity"><?php _e( 'Quantity', FAKTURO_TEXT_DOMAIN ); ?></label></th>
+		<td>
+			<input type="text" name="quantity" id="quantity" value="<?php echo $quantity; ?>">
+		</td>
+	</tr>
+	<tr class="form-field">
+		<th scope="row" valign="top"><label for="order"><?php _e( 'Order', FAKTURO_TEXT_DOMAIN ); ?></label></th>
+		<td>
+			<input type="text" name="order" id="order" value="<?php echo $order; ?>">
+		</td>
+	</tr>
+	<tr class="form-field">
+		<th scope="row" valign="top"><label for="cost"><?php _e( 'Cost', FAKTURO_TEXT_DOMAIN ); ?></label></th>
+		<td>
+			<input type="text" name="cost" id="cost" value="<?php echo $cost; ?>">
+		</td>
+	</tr>
+	<tr class="form-field">
+		<th scope="row" valign="top"><label for="date"><?php _e( 'Date', FAKTURO_TEXT_DOMAIN ); ?></label></th>
+		<td>
+			<input type="date" name="date" id="date" value="<?php echo $date; ?>">
+		</td>
+	</tr>
+<?php
+}
+add_action( 'fakturo_stock_edit_form_fields', 'fakturo_stock_edit_meta_field', 10, 2 );
+
+function save_fakturo_stock_custom_meta( $term_id ) {
+	if (isset($_POST['action']) && $_POST['action'] == 'editedtag' && $_POST['action'] == 'add-tag') {
+		if ( isset( $_POST['location'] ) ) {
+			update_term_meta($term_id, 'location', $_POST['location']);
+		}
+		if ( isset( $_POST['quantity'] ) ) {
+			update_term_meta($term_id, 'quantity', $_POST['quantity']);
+		}
+		if ( isset( $_POST['order'] ) ) {
+			update_term_meta($term_id, 'order', $_POST['order']);
+		}
+		if ( isset( $_POST['cost'] ) ) {
+			update_term_meta($term_id, 'cost', $_POST['cost']);
+		}
+		if ( isset( $_POST['date'] ) ) {
+			update_term_meta($term_id, 'date', $_POST['date']);
+		}
+		if ( isset( $_POST['product'] ) ) {
+			update_term_meta($term_id, 'product', $_POST['product']);
+		}
+	}	
+}  
+add_action( 'edited_fakturo_stock', 'save_fakturo_stock_custom_meta', 10, 2 );  
+add_action( 'create_fakturo_stock', 'save_fakturo_stock_custom_meta', 10, 2 );
