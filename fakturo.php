@@ -29,7 +29,7 @@ require_once('includes/fakturo_product_component.php');
 
 function fakturo_admin_menu() {
 	if (current_user_can('manage_options')) {
-		add_menu_page( __( 'Fakturo', FAKTURO_TEXT_DOMAIN ), __( 'Fakturo', FAKTURO_TEXT_DOMAIN ), 'manage_options', 'fakturo/admin/fakturo_admin.php', '', 'dashicons-tickets', 81  );
+		add_menu_page( __( 'Fakturo', FAKTURO_TEXT_DOMAIN ), __( 'Fakturo', FAKTURO_TEXT_DOMAIN ), 'manage_options', 'fakturo/admin/fakturo_admin.php', '', 'dashicons-tickets', 25  );
 		$page = add_submenu_page(
 			'fakturo/admin/fakturo_admin.php',
 			__( 'Clients', FAKTURO_TEXT_DOMAIN ),
@@ -75,14 +75,22 @@ function fakturo_admin_menu() {
       );
       add_action( 'admin_print_styles-' . $page, 'fakturo_admin_styles');
 
+      // $page = add_submenu_page(
+      //    'fakturo/admin/fakturo_admin.php',
+      //    __( 'Add Product', FAKTURO_TEXT_DOMAIN ),
+      //    __( 'Add Product', FAKTURO_TEXT_DOMAIN ),
+      //    'manage_options',
+      //    'post-new.php?post_type=fakturo_product'
+      // );
+      // add_action( 'admin_print_styles-' . $page, 'fakturo_admin_styles');
+
       $page = add_submenu_page(
          'fakturo/admin/fakturo_admin.php',
-         __( 'Add Product', FAKTURO_TEXT_DOMAIN ),
-         __( 'Add Product', FAKTURO_TEXT_DOMAIN ),
+         __( 'Category', FAKTURO_TEXT_DOMAIN ),
+         __( 'Category', FAKTURO_TEXT_DOMAIN ),
          'manage_options',
-         'post-new.php?post_type=fakturo_product'
+         'edit-tags.php?taxonomy=fakturo_category'
       );
-      add_action( 'admin_print_styles-' . $page, 'fakturo_admin_styles');
 
       $page = add_submenu_page(
          'fakturo/admin/fakturo_admin.php',

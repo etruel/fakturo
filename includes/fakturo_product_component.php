@@ -55,8 +55,43 @@ function fakturo_product_init() {
 	);
 
 	register_post_type( 'fakturo_product', $args );
-	register_taxonomy_for_object_type( 'category', 'fakturo_product' );
 
+	// category taxonomy
+	$labels_model = array(
+		'name'                       => _x( 'Categories', 'Categories' ),
+		'singular_name'              => _x( 'Category', 'Category' ),
+		'search_items'               => __( 'Search Categories' ),
+		'popular_items'              => __( 'Popular Categories' ),
+		'all_items'                  => __( 'All Categories' ),
+		'parent_item'                => __( 'Parent Category' ),
+		'parent_item_colon'          => null,
+		'edit_item'                  => __( 'Edit Category' ),
+		'update_item'                => __( 'Update Category' ),
+		'add_new_item'               => __( 'Add New Category' ),
+		'new_item_name'              => __( 'New Category Name' ),
+		'separate_items_with_commas' => __( 'Separate categories with commas' ),
+		'add_or_remove_items'        => __( 'Add or remove categories' ),
+		'choose_from_most_used'      => __( 'Choose from the most used categories' ),
+		'not_found'                  => __( 'No categories found.' ),
+		'menu_name'                  => __( 'Categories' ),
+	);
+
+	$args_model = array(
+		'hierarchical'          => true,
+		'labels'                => $labels_model,
+		'show_ui'               => true,
+		'show_admin_column'     => true,
+		'query_var'             => true,
+		'rewrite'               => array( 'slug' => 'fakturo-category' ),
+	);
+
+	register_taxonomy(
+		'fakturo_category',
+		'fakturo_product',
+		$args_model
+	);
+
+	// model taxonomy
 	$labels_model = array(
 		'name'                       => _x( 'Models', 'Models' ),
 		'singular_name'              => _x( 'Model', 'Model' ),
