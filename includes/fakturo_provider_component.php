@@ -67,7 +67,7 @@ function fakturo_provider_init() {
 	if( ($pagenow == 'edit.php') && (isset($_GET['post_type']) && $_GET['post_type'] == 'fakturo_provider') ) {
 		add_filter('post_row_actions' ,  'fakturo_custom_post_quick_actions', 10, 2);
 		add_action('pre_get_posts',  'column_orderby');
-		add_action('pre_get_posts',  'query_set_only_author' );
+		// add_action('pre_get_posts',  'query_set_only_author' );
 	}	
 
 	if( ($pagenow == 'post-new.php' || $pagenow == 'post.php') ) {

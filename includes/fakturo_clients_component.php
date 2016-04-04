@@ -68,7 +68,7 @@ function fakturo_client_init() {
 	if( ($pagenow == 'edit.php') && (isset($_GET['post_type']) && $_GET['post_type'] == 'fakturo_client') ) {
 		add_filter('post_row_actions' ,  'fakturo_custom_post_quick_actions', 10, 2);
 		add_action('pre_get_posts',  'column_orderby');
-		add_action('pre_get_posts',  'query_set_only_author' );
+		// add_action('pre_get_posts',  'query_set_only_author' );
 //			add_action('admin_print_styles-edit.php', 'list_admin_styles'));
 //			add_action('admin_print_scripts-edit.php', 'list_admin_scripts'));
 	}	
