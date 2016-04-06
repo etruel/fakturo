@@ -246,11 +246,6 @@ function fakturo_update_settings_controller() {
       		if (isset($_POST['currency_reference'])) {
       			add_term_meta ($term['term_id'], 'reference', $_POST['currency_reference']);
       		}
-      		if (isset($_POST['currency_default'])) {
-      			add_term_meta ($term['term_id'], 'default', $_POST['currency_default']);
-      		} else {
-               add_term_meta ($term['term_id'], 'default', 0);
-            }
             if (isset($_POST['currency_plural'])) {
                add_term_meta ($term['term_id'], 'plural', $_POST['currency_plural']);
             }

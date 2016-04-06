@@ -112,8 +112,6 @@ function printSettingRowCurrencyTaxonomy($data, $tab, $section, $deleteFieldName
   	$rate = isset($rate[0])?$rate[0]:'';
   	$reference = get_term_meta( $value->term_id, 'reference');
   	$reference = isset($reference[0])?$reference[0]:'';
-  	$default = get_term_meta( $value->term_id, 'default');
-  	$default = isset($default[0])?$default[0]:'';
     $plural = get_term_meta( $value->term_id, 'plural');
     $plural = isset($plural[0])?$plural[0]:'';
     echo "<tr>
@@ -121,7 +119,6 @@ function printSettingRowCurrencyTaxonomy($data, $tab, $section, $deleteFieldName
     <td>$symbol</td>
     <td>$rate</td>
     <td>$reference</td>
-    <td>$default</td>
     <td>$plural</td>
     <td><a href=\"?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$tab&section=$section&$deleteFieldName=$value->term_id\" class=\"button\">" . __( 'Remove', FAKTURO_TEXT_DOMAIN ) . "</a></td>
     </tr>";

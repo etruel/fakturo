@@ -97,7 +97,6 @@ if ( $_GET['page'] == 'fakturo/settings/fakturo_settings.php' ){
                 <th class="manage-column column-title column-primary"><?php echo __( 'Symbol', FAKTURO_TEXT_DOMAIN ); ?></th>
                 <th class="manage-column column-title column-primary"><?php echo __( 'Rate', FAKTURO_TEXT_DOMAIN ); ?></th>
                 <th class="manage-column column-title column-primary"><?php echo __( 'Reference', FAKTURO_TEXT_DOMAIN ); ?></th>
-                <th class="manage-column column-title column-primary"><?php echo __( 'Default', FAKTURO_TEXT_DOMAIN ); ?></th>
                 <th class="manage-column column-title column-primary"><?php echo __( 'Plural', FAKTURO_TEXT_DOMAIN ); ?></th>
                 <th><?php echo __( 'Remove', FAKTURO_TEXT_DOMAIN ); ?></th>
               </tr>
@@ -110,9 +109,6 @@ if ( $_GET['page'] == 'fakturo/settings/fakturo_settings.php' ){
                 <td><input type="text" name="currency_symbol"></td>
                 <td><input type="text" name="currency_rate"></td>
                 <td><input type="text" name="currency_reference"></td>
-                <td>
-                  <input type="checkbox" value="1" name="currency_default" />
-                </td>
                 <td><input type="text" name="currency_plural"></td>
               </tr>
             </table>
