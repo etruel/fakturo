@@ -63,20 +63,10 @@ function Fakturo_trade_box( $post ) {
 	<tr>
 		<th><label for="currency"><?php _e("Currency", FAKTURO_TEXT_DOMAIN ) ?></label></th>
 		<td>
-			<select id="currency" name="currency">
-                <?php 
-                $currencies = FakturoBaseComponent::getCurrencies();
-                $checkedCurrency = "";
-                $currencyValue = isset($client_data['currency']) ? $client_data['currency'] : "";
-                foreach ($currencies as $key => $value) {
-                  if ($currencyValue == $key) {
-                    $checkedCurrency = " selected ";
-                  } else {
-                    $checkedCurrency = "";
-                  }
-                  echo "<option $checkedCurrency value='$key'>$value</option>";
-                } ?>
-            </select>
+			<?php 
+				$currencyValue = isset($client_data['currency']) ? $client_data['currency'] : NULL;
+				FakturoBaseComponent::showCurrencySelect($currencyValue); 
+			?>
 		</td>
 	</tr>
 	<tr class="user-credit_limit-wrap">

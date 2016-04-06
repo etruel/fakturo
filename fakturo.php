@@ -69,7 +69,7 @@ function fakturo_admin_menu() {
       $page = add_submenu_page(
          'fakturo/admin/fakturo_admin.php',
          __( 'Products', FAKTURO_TEXT_DOMAIN ),
-         __( 'Products List', FAKTURO_TEXT_DOMAIN ),
+         __( 'Products', FAKTURO_TEXT_DOMAIN ),
          'manage_options',
          'edit.php?post_type=fakturo_product'
       );

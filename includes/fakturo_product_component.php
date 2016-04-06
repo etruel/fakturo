@@ -421,8 +421,13 @@ function Fakturo_product_data_box( $post ) {
 	</tr>
 	<tr class="user-address-wrap">
 		<th><label for="currency"><?php _e("Currency", FAKTURO_TEXT_DOMAIN ) ?></label></th>
-		<td><?php FakturoBaseComponent::selectArrayValue(array('Peso Argentino', 'Dólar'), 'currency', $product_data); ?>
+		<td>
+		<?php 
+			$currencyValue = isset($product_data['currency']) ? $product_data['currency'] : NULL;
+			FakturoBaseComponent::showCurrencySelect($currencyValue); 
+		?>
 		</td>
+		
 	</tr>
 	<tr class="user-address-wrap">
 		<th><label for="reference"><?php _e("Reference", FAKTURO_TEXT_DOMAIN ) ?></label></th>

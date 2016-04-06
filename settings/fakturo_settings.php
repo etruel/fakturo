@@ -604,20 +604,11 @@ if ( $_GET['page'] == 'fakturo/settings/fakturo_settings.php' ){
           <tr>
             <th><?php _e( 'Currency', FAKTURO_TEXT_DOMAIN ); ?></th>
             <td class="italic-label">
-              <select id="fakturo_system_currency" name="fakturo_system_currency">
                 <?php 
-                $currencies = FakturoBaseComponent::getCurrencies();
-                $checkedCurrency = "";
                 $currencyValue = isset($fakturoConfig['fakturo_system_currency']) ? $fakturoConfig['fakturo_system_currency'] : "";
-                foreach ($currencies as $key => $value) {
-                  if ($currencyValue == $key) {
-                    $checkedCurrency = " selected ";
-                  } else {
-                    $checkedCurrency = "";
-                  }
-                  echo "<option $checkedCurrency value='$key'>$value</option>";
-                } ?>
-              </select>
+                $dataSetting = get_terms('fakturo_currency','hide_empty=0');
+                FakturoBaseComponent::showTaxonomySelectOnTaxonomy($dataSetting, 'fakturo_system_currency', $currencyValue, FALSE);
+                ?>
               <label for="fakturo_system_currency">
                 <?php _e(' Choose your currency. Note that some payment gateways have currency restrictions.', FAKTURO_TEXT_DOMAIN) ?>
               </label>

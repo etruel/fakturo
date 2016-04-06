@@ -19,38 +19,6 @@ class FakturoBaseComponent
 		return NULL;
 	}
 
-	public static function getCurrencies() {
-		return apply_filters('FakturoSettingCurrency', array(
-			'USD' => 'US Dollars ($)',
-			'EUR' => 'Euros (€)',
-			'GBP' => 'Pounds Sterling (£)',
-			'AUD' => 'Australian Dollars ($)',
-			'BRL' => 'Brazilian Real (R$)',
-			'CAD' => 'Canadian Dollars ($)',
-			'CZK' => 'Czech Koruna',
-			'DKK' => 'Danish Krone',
-			'HKD' => 'Hong Kong Dollar ($)',
-			'HUF' => 'Hungarian Forint',
-			'ILS' => 'Israeli Shekel (₪)',
-			'JPY' => 'Japanese Yen (¥)',
-			'MYR' => 'Malaysian Ringgits',
-			'MXN' => 'Mexican Peso ($)',
-			'NZD' => 'New Zealand Dollar ($)',
-			'NOK' => 'Norwegian Krone',
-			'PHP' => 'Philippine Pesos',
-			'PLN' => 'Polish Zloty',
-			'SGD' => 'Singapore Dollar ($)',
-			'SEK' => 'Swedish Krona',
-			'CHF' => 'Swiss Franc',
-			'TWD' => 'Taiwan New Dollars',
-			'THB' => 'Thai Baht (฿)',
-			'INR' => 'Indian Rupee',
-			'TRY' => 'Turkish Lira',
-			'RIAL' => 'Iranian Rial',
-			'RUB' => 'Russian Rubles'
-		));
-	}
-
 	public static function selectCustomPostType($type, $name, $custom_post_data) {
 		$args=array(
 		  'post_type' => $type,
@@ -140,6 +108,32 @@ class FakturoBaseComponent
 		</select>
 		<?php
 	}
+
+	public static function getDefaultCurrency() { 
+		$fakturoConfig = json_decode(get_option('fakturo_system_config'), TRUE);
+		return isset($fakturoConfig['fakturo_system_currency']) ? $fakturoConfig['fakturo_system_currency'] : NULL;
+	}
+
+	public static function showCurrencySelect($value = NULL) { 
+		$dataSetting = get_terms('fakturo_currency', 'hide_empty=0');
+		if ($value == NULL) {
+			$value = FakturoBaseComponent::getDefaultCurrency();
+		}
+		?>
+		<select name="currency" id="currency">
+			<?php
+				foreach ($dataSetting as $key => $term) {
+					?>
+					<option <?php if ($term->term_id == $value) { ?> selected <?php } ?> value="<?php echo $term->term_id; ?>">
+						<?php echo $term->name; ?>
+					</option>
+					<?php
+				}
+			?>
+		</select>
+		<?php
+	}
+
 }
 
 ?>
