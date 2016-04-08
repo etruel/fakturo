@@ -217,7 +217,7 @@ function fakturo_product_meta_boxes() {
 	add_meta_box( 'fakturo-seller-box', __('Assign Seller', FAKTURO_TEXT_DOMAIN ), 'Fakturo_seller_box','fakturo_product','side', 'high' );
 	add_meta_box( 'fakturo-data-box', __('Complete Product Data', FAKTURO_TEXT_DOMAIN ), 'Fakturo_product_data_box','fakturo_product','normal', 'default' );
 
-	add_meta_box( 'fakturo-price-box', __('Price', FAKTURO_TEXT_DOMAIN ), 'Fakturo_product_price_box','fakturo_product','normal', 'default' );
+	add_meta_box( 'fakturo-price-box', __('Price', FAKTURO_TEXT_DOMAIN ), 'Fakturo_product_price_box','fakturo_product','side', 'default' );
 	add_meta_box( 'fakturo-stock-box', __('Stock', FAKTURO_TEXT_DOMAIN ), 'Fakturo_product_stock_box','fakturo_product','normal', 'default' );
 }
 
@@ -334,6 +334,26 @@ function fakturo_products_head_scripts() {
 			}
 		});
 
+		var taxCount = jQuery('table.price-product tr').length - 1;
+
+		for (var i = 0; i < taxCount; i++) {
+			jQuery('input[name="price_final[' + i + ']"]').change(function() {debugger;				
+				var percent = parseFloat(jQuery("#tax option:selected").attr('percent'));
+				var price = Math.round($(this).val() / (1 + percent/100) * 10) / 10;
+				var index = $(this).attr('name').replace(/^.*(\d+).*$/i,'$1');
+				jQuery('input[name="price_value[' + index + ']"]').val(price);
+			});
+		}
+
+		jQuery("#tax").change(function() {			
+			var percent = parseFloat(jQuery("#tax option:selected").attr('percent'));
+			for (var i = 0; i < taxCount; i++) {
+				var currentPrice = jQuery('input[name="price_value[' + i + ']"]').val();
+				var priceFinal = Math.round(currentPrice * (1 + percent/100) * 10) / 10;
+				jQuery('input[name="price_final[' + i + ']"]').val(priceFinal);
+			};			
+		});
+
 	});		// jQuery
 	function delete_user_contact(row_id){
 		jQuery(row_id).fadeOut(); 
@@ -348,9 +368,6 @@ function fakturo_products_head_scripts() {
 function fakturo_check_product($options) {
 	$fieldsArray = array('cost', 'reference', 'internal', 'manufacturers', 'description', 'short', 'min',
 		'min_alert', 'packaging', 'unit', 'note', 'origin', 'provider', 'origin', 'currency', 'product_type', 'tax', 'price_scale', 'stock');
-	if (isset($options['price_scale']) && is_array($options['price_scale'])) {
-		$options['price_scale'] = json_encode($options['price_scale']);
-	}//echo "<pre>"; print_r($options); echo "</pre>"; die();
 	if (isset($options['stock_location']) && is_array($options['stock_location'])) {
 		$countStock = count($options['stock_location']);
 		$stock = array();
@@ -391,6 +408,16 @@ function fakturo_check_product($options) {
 		}
 		$options['stock'] = json_encode($stock);
 	}
+
+	// store price
+	if (isset($options['price_id'])) {
+		$priceStore = array();
+		foreach ($options['price_id'] as $key => $priceId) {
+			$priceStore[] = array('price_id' => $priceId, 'price_value' => $options['price_value'][$key], 'price_final' => $options['price_final'][$key]);
+		}
+		$options['price_scale'] = json_encode($priceStore);
+	}	
+
 	foreach ($fieldsArray as $field) {
 		$product_data[$field]	= (!isset($options[$field])) ? '' : $options[$field];
 	}
@@ -417,7 +444,9 @@ function Fakturo_product_data_box( $post ) {
 	</tr>
 	<tr class="user-facebook-wrap">
 		<th><label for="tax"><?php _e("Tax", FAKTURO_TEXT_DOMAIN ) ?>	</label></th>
-		<td><?php fakturo_client_select_data('fakturo_taxes', 'tax', $product_data); ?></td>
+		<td><?php 
+		$dataSetting = get_terms('fakturo_taxes', 'hide_empty=0');
+		FakturoBaseComponent::showTaxSelect($dataSetting, 'tax', $product_data['tax']); ?></td>
 	</tr>
 	<tr class="user-address-wrap">
 		<th><label for="currency"><?php _e("Currency", FAKTURO_TEXT_DOMAIN ) ?></label></th>
@@ -426,8 +455,7 @@ function Fakturo_product_data_box( $post ) {
 			$currencyValue = isset($product_data['currency']) ? $product_data['currency'] : NULL;
 			FakturoBaseComponent::showCurrencySelect($currencyValue); 
 		?>
-		</td>
-		
+		</td>		
 	</tr>
 	<tr class="user-address-wrap">
 		<th><label for="reference"><?php _e("Reference", FAKTURO_TEXT_DOMAIN ) ?></label></th>
@@ -481,16 +509,40 @@ function Fakturo_product_data_box( $post ) {
 
 function Fakturo_product_price_box() {
 	global $post, $product_data;
+	$dataSetting = get_terms('fakturo_price_scales', 'hide_empty=0');
+	$priceData = json_decode($product_data['price_scale'], true);
 	?>
-	<table class="form-table">
-		<tbody id="price-table">
-			<?php FakturoBaseComponent::showSelectTaxonomiesDataArrayValues('fakturo_price_scales', 'price_scale', $product_data);  ?>
-		</tbody>
+	<table class="price-product">
+		<tr><th></th><th><?php _e("Price", FAKTURO_TEXT_DOMAIN ) ?></th><th><?php _e("Final", FAKTURO_TEXT_DOMAIN ) ?></th></tr>
+		<?php foreach ($dataSetting as $key => $data) { 
+			$percent = get_term_meta( $data->term_id, 'percent');
+    		$percent = isset($percent[0])?$percent[0]:'';
+    		$showPrice = array();
+
+    		if ($priceData != NULL && is_array($priceData)) {
+    			foreach ($priceData as $priceItem) {
+    				if ($priceItem['price_id'] == $data->term_id) {
+    					$showPrice = $priceItem;
+    					break;
+    				}
+    			}
+    		}
+		?>
+			<tr>
+				<td><?php 
+				echo $data->name;
+				echo "($percent%):"; ?>
+				</td>
+				<td>
+					<input type="hidden" name="price_id[<?php echo $key; ?>]" value="<?php echo $data->term_id; ?>">
+					<input type="text" name="price_value[<?php echo $key; ?>]" value="<?php if (isset($showPrice['price_value'])) {	echo $showPrice['price_value']; } ?>" />
+				</td>
+				<td>
+					<input type="text" name="price_final[<?php echo $key; ?>]" value="<?php if (isset($showPrice['price_final'])) {	echo $showPrice['price_final']; } ?>"  />
+				</td>
+			</tr>
+		<?php } ?>
 	</table>
-	<div id="paging-box">		  
-		<a href="JavaScript:void(0);" class="button-primary add" id="addmoreprice" style="font-weight: bold; text-decoration: none;"> <?php _e('Add Price', FAKTURO_TEXT_DOMAIN  ); ?>.</a>
-		<label id="msgdrag"></label>
-	</div>
 	<?php
 }
 

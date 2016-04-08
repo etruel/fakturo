@@ -134,6 +134,22 @@ class FakturoBaseComponent
 		<?php
 	}
 
+	public static function showTaxSelect($dataSetting, $name, $value = NULL) {
+		?>
+		<select name="<?php echo $name; ?>" id="<?php echo $name; ?>">
+			<?php
+				foreach ($dataSetting as $key => $term) {
+					?>
+					<option <?php if ($term->term_id == $value) { ?> selected <?php } ?> value="<?php echo $term->term_id; ?>" percent="<?php echo get_term_meta($term->term_id, 'percent', TRUE); ?>" >
+						<?php echo $term->name; ?>
+					</option>
+					<?php
+				}
+			?>
+		</select>
+		<?php
+	}
+
 }
 
 ?>
