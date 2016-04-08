@@ -337,7 +337,7 @@ function fakturo_products_head_scripts() {
 		var taxCount = jQuery('table.price-product tr').length - 1;
 
 		for (var i = 0; i < taxCount; i++) {
-			jQuery('input[name="price_final[' + i + ']"]').change(function() {debugger;				
+			jQuery('input[name="price_final[' + i + ']"]').change(function() {				
 				var percent = parseFloat(jQuery("#tax option:selected").attr('percent'));
 				var price = Math.round($(this).val() / (1 + percent/100) * 10) / 10;
 				var index = $(this).attr('name').replace(/^.*(\d+).*$/i,'$1');
