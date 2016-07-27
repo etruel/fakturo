@@ -1,6 +1,0 @@
-.fakturo-settings .fakturo-setting th {padding: 8px;}
-.fakturo-settings-form table.form-table:not(.fakturo-settings) th {font-weight: normal;}
-.fakturo-settings-form .fakturo-settings td.italic-label label {color: #666;font-size: 14px;font-style: italic;margin: 4px 0 0;display: block;}
-.fakturo-settings-form .fakturo-settings td.italic-label-inline label {font-style: italic;}
-#fakturo-price-box table.price-product td input[type="text"] {width: 75px;font-size: 12px;}
-#fakturo-price-box table.price-product td {text-align: center;}
