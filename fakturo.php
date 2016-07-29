@@ -32,6 +32,7 @@ class fakturo {
 	private function includes() {
 		
 		require_once FAKTURO_PLUGIN_DIR . 'includes/admin-menu.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types.php'; 
 		do_action('fakturo_include_files');
 		
 	}
