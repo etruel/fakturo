@@ -26,10 +26,13 @@ class fakturo {
 	}
 	function __construct() {
 		$this->setupGlobals();
-		
+		$this->includes();
 		$this->loadTextDomain();
 	}
 	private function includes() {
+		
+		require_once FAKTURO_PLUGIN_DIR . 'includes/admin-menu.php'; 
+		do_action('fakturo_include_files');
 		
 	}
 	private function setupGlobals() {
@@ -47,6 +50,11 @@ class fakturo {
 		// Plugin Root File
 		if (!defined('FAKTURO_PLUGIN_FILE')) {
 			define('FAKTURO_PLUGIN_FILE', __FILE__ );
+		}
+		
+		// Plugin text domain
+		if (!defined('FAKTURO_TEXT_DOMAIN')) {
+			define('FAKTURO_TEXT_DOMAIN', 'fakturo' );
 		}
 
 	}
