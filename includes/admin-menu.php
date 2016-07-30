@@ -23,6 +23,13 @@ class fktrAdminMenu {
 			'manage_options',
 			'edit.php?post_type=fktr_provider'
 		);
+		$page = add_submenu_page(
+			'fakturo/admin/fakturo_admin.php',
+			__( 'Clients', FAKTURO_TEXT_DOMAIN ),
+			__( 'Clients', FAKTURO_TEXT_DOMAIN ),
+			'manage_options',
+			'edit.php?post_type=fktr_client'
+		);
 	
 	
 		add_menu_page( __( 'Fakturo Products', FAKTURO_TEXT_DOMAIN ), __( 'Fakturo Products', FAKTURO_TEXT_DOMAIN ), 'manage_options', 'edit.php?post_type=fktr_product', '', 'dashicons-tickets', 25  );
