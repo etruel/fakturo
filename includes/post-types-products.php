@@ -70,7 +70,75 @@ class fktrPostTypeProducts {
 
 		register_post_type( 'fktr_product', $args );
 
+			// category taxonomy
+		$labels_model = array(
+			'name'                       => _x( 'Categories', 'Categories' ),
+			'singular_name'              => _x( 'Category', 'Category' ),
+			'search_items'               => __( 'Search Categories' ),
+			'popular_items'              => __( 'Popular Categories' ),
+			'all_items'                  => __( 'All Categories' ),
+			'parent_item'                => __( 'Parent Category' ),
+			'parent_item_colon'          => null,
+			'edit_item'                  => __( 'Edit Category' ),
+			'update_item'                => __( 'Update Category' ),
+			'add_new_item'               => __( 'Add New Category' ),
+			'new_item_name'              => __( 'New Category Name' ),
+			'separate_items_with_commas' => __( 'Separate categories with commas' ),
+			'add_or_remove_items'        => __( 'Add or remove categories' ),
+			'choose_from_most_used'      => __( 'Choose from the most used categories' ),
+			'not_found'                  => __( 'No categories found.' ),
+			'menu_name'                  => __( 'Categories' ),
+		);
+
+		$args_model = array(
+			'hierarchical'          => true,
+			'labels'                => $labels_model,
+			'show_ui'               => true,
+			'show_admin_column'     => true,
+			'query_var'             => true,
+			'rewrite'               => array( 'slug' => 'fktr-category' ),
+		);
+
+		register_taxonomy(
+			'fktr_category',
+			'fktr_product',
+			$args_model
+		);
 		
+		// model taxonomy
+		$labels_model = array(
+			'name'                       => _x( 'Models', 'Models' ),
+			'singular_name'              => _x( 'Model', 'Model' ),
+			'search_items'               => __( 'Search Models' ),
+			'popular_items'              => __( 'Popular Models' ),
+			'all_items'                  => __( 'All Models' ),
+			'parent_item'                => null,
+			'parent_item_colon'          => null,
+			'edit_item'                  => __( 'Edit Model' ),
+			'update_item'                => __( 'Update Model' ),
+			'add_new_item'               => __( 'Add New Model' ),
+			'new_item_name'              => __( 'New Model Name' ),
+			'separate_items_with_commas' => __( 'Separate models with commas' ),
+			'add_or_remove_items'        => __( 'Add or remove models' ),
+			'choose_from_most_used'      => __( 'Choose from the most used models' ),
+			'not_found'                  => __( 'No models found.' ),
+			'menu_name'                  => __( 'Models' ),
+		);
+
+		$args_model = array(
+			'hierarchical'          => false,
+			'labels'                => $labels_model,
+			'show_ui'               => true,
+			'show_admin_column'     => true,
+			'query_var'             => true,
+			'rewrite'               => array( 'slug' => 'fktr-model' ),
+		);
+
+		register_taxonomy(
+			'fktr_model',
+			'fktr_product',
+			$args_model
+		);
 		
 	}
 	
