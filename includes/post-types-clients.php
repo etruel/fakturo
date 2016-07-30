@@ -73,7 +73,7 @@ class fktrPostTypeClients {
 	
 	public static function meta_boxes() {
 		
-		
+		do_action('add_ftkr_client_meta_boxes');
 	}
 	
 	

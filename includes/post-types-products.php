@@ -53,7 +53,7 @@ class fktrPostTypeProducts {
 			'hierarchical' => false,
 			'description' => 'Fakturo Products',
 			'supports' => array( 'title', 'thumbnail',/* 'custom-fields' */),
-			'register_meta_box_cb' => array('fktrPostTypeProducts','productsMetaBoxes'),
+			'register_meta_box_cb' => array('fktrPostTypeProducts','meta_boxes'),
 			'public' => true,
 			'show_ui' => true,
 			'show_in_menu' => 'edit.php?post_type=fktr_product',
@@ -74,7 +74,7 @@ class fktrPostTypeProducts {
 		
 	}
 	
-	public static function productsMetaBoxes() {
+	public static function meta_boxes() {
 		
 		//add_action('wp_ajax_webcam_shot', 'fakturo_ajax_webcam_shot');
 		
@@ -87,6 +87,7 @@ class fktrPostTypeProducts {
 		add_meta_box( 'fakturo-price-box', __('Price', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'fktr_product_price_box'),'fktr_product','side', 'default' );
 		add_meta_box( 'fakturo-stock-box', __('Stock', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'fktr_product_stock_box'),'fktr_product','normal', 'default' );
 		
+		do_action('add_ftkr_product_meta_boxes');
 	}
 	
 	public static function fktr_post_thumbnail_meta_box() {

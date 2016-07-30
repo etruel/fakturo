@@ -73,7 +73,7 @@ class fktrPostTypeProviders {
 	
 	public static function meta_boxes() {
 		
-		
+		do_action('add_ftkr_provider_meta_boxes');
 	}
 	
 	
