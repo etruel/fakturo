@@ -7,12 +7,12 @@ if (!defined('ABSPATH'))  {
 }
 
 
-if ( ! class_exists('fktrPostType') ) :
-class fktrPostType {
+if ( ! class_exists('fktrPostTypeProduct') ) :
+class fktrPostTypeProduct {
 	function __construct() {
 		
-		add_action( 'init', array('fktrPostType', 'setup'), 1 );
-		add_action('transition_post_status', array('fktrPostType', 'product_default_fields'), 10, 3);
+		add_action( 'init', array('fktrPostTypeProduct', 'setup'), 1 );
+		add_action('transition_post_status', array('fktrPostTypeProduct', 'product_default_fields'), 10, 3);
 		
 	}
 	public static function setup() {
@@ -53,7 +53,7 @@ class fktrPostType {
 			'hierarchical' => false,
 			'description' => 'Fakturo Products',
 			'supports' => array( 'title', 'thumbnail',/* 'custom-fields' */),
-			'register_meta_box_cb' => array('fktrPostType','productsMetaBoxes'),
+			'register_meta_box_cb' => array('fktrPostTypeProduct','productsMetaBoxes'),
 			'public' => true,
 			'show_ui' => true,
 			'show_in_menu' => 'edit.php?post_type=fktr_product',
@@ -80,12 +80,12 @@ class fktrPostType {
 		
 		// Remove Custom Fields Metabox
 		remove_meta_box( 'postimagediv', 'fakturo_product', 'side' );
-		add_meta_box('postimagediv', __('Product Image', FAKTURO_TEXT_DOMAIN ), array('fktrPostType', 'fktr_post_thumbnail_meta_box'), 'fktr_product', 'side', 'high');
-		add_meta_box( 'fakturo-seller-box', __('Assign Seller', FAKTURO_TEXT_DOMAIN ), array('fktrPostType', 'fktr_product_seller_box'),'fktr_product','side', 'high' );
-		add_meta_box( 'fakturo-data-box', __('Complete Product Data', FAKTURO_TEXT_DOMAIN ), array('fktrPostType', 'fktr_product_data_box'),'fktr_product','normal', 'default' );
+		add_meta_box('postimagediv', __('Product Image', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProduct', 'fktr_post_thumbnail_meta_box'), 'fktr_product', 'side', 'high');
+		add_meta_box( 'fakturo-seller-box', __('Assign Seller', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProduct', 'fktr_product_seller_box'),'fktr_product','side', 'high' );
+		add_meta_box( 'fakturo-data-box', __('Complete Product Data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProduct', 'fktr_product_data_box'),'fktr_product','normal', 'default' );
 
-		add_meta_box( 'fakturo-price-box', __('Price', FAKTURO_TEXT_DOMAIN ), array('fktrPostType', 'fktr_product_price_box'),'fktr_product','side', 'default' );
-		add_meta_box( 'fakturo-stock-box', __('Stock', FAKTURO_TEXT_DOMAIN ), array('fktrPostType', 'fktr_product_stock_box'),'fktr_product','normal', 'default' );
+		add_meta_box( 'fakturo-price-box', __('Price', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProduct', 'fktr_product_price_box'),'fktr_product','side', 'default' );
+		add_meta_box( 'fakturo-stock-box', __('Stock', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProduct', 'fktr_product_stock_box'),'fktr_product','normal', 'default' );
 		
 	}
 	
@@ -97,7 +97,7 @@ class fktrPostType {
 		
 		
 	}
-	public static function fktr_product_data_box($post_id) {
+	public static function fktr_product_data_box() {
 		global $post;
 		
 		$product_data = self::get_product_data($post->ID);
@@ -218,6 +218,6 @@ class fktrPostType {
 
 endif;
 
-$fktrPostType = new fktrPostType();
+$fktrPostTypeProduct = new fktrPostTypeProduct();
 
 ?>
