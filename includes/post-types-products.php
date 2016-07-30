@@ -175,8 +175,8 @@ class fktrPostTypeProduct {
 	</table>';
 	
 		$echoHtml = apply_filters('fktr_product_data_box', $echoHtml);
-		do_action('add_fktr_product_data_box', $echoHtml);
 		echo $echoHtml;
+		do_action('add_fktr_product_data_box', $echoHtml);
 		
 	}
 	public static function fktr_product_price_box() {
