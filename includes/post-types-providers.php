@@ -68,20 +68,130 @@ class fktrPostTypeProviders {
 		);
 
 		register_post_type( 'fktr_provider', $args );
+		
+		add_filter('enter_title_here', array('fktrPostTypeProviders', 'name_placeholder'),10,2);
 
 	}
 	
 	public static function meta_boxes() {
 		
+		add_action('wp_ajax_webcam_shot', 'fakturo_ajax_webcam_shot');
+	
+		// Remove Custom Fields Metabox
+		remove_meta_box('postimagediv', 'fktr_provider', 'side' );
+		add_meta_box('postimagediv', __('Provider Image', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProviders', 'thumbnail_box'), 'fktr_provider', 'side', 'high');
+		add_meta_box('fakturo-seller-box', __('Assign Seller', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProviders', 'seller_box'),'fktr_provider','side', 'high' );
+		add_meta_box('fakturo-data-box', __('Complete Provider Data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProviders', 'data_box'),'fktr_provider','normal', 'default' );
+		add_meta_box('fakturo-options-box', __('Provider Contacts', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProviders', 'options_box'),'fktr_provider','normal', 'default' );
+		
+		
 		do_action('add_ftkr_provider_meta_boxes');
 	}
 	
+	public static function thumbnail_box() {
+		
+		
+	}
+	public static function seller_box() {
+		
+		
+	}
+	public static function data_box() {
+		global $post;
+		$provider_data = self::get_provider_data($post->ID);
+		$echoHtml = '<table class="form-table">
+					<tbody>
+					<tr class="user-facebook-wrap">
+						<th><label for="taxpayer">'.__('Taxpayer ID', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<td>
+							<input id="taxpayer" type="text" name="taxpayer" value="'.$provider_data['taxpayer'].'" class="regular-text">
+							<span id="cuit_validation"></span>
+							<div style="font-size:0.85em;" id="cuit_validation_note">'.__("Cuit number's validation only. Check www.afip.gov.ar", FAKTURO_TEXT_DOMAIN ).'</div>
+						</td>
+					</tr>
+					<tr class="user-address-wrap">
+						<th><label for="address">'.__('Address', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<td><input type="text" name="address" id="address" value="'.$provider_data['address'].'" class="regular-text"></td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="country">'. __('Country', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<td></td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="states">'. __('States', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+						<td></td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="city">'.__('City', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+						<td><input id="city" type="text" name="city" value="'.$provider_data['city'].'" class="regular-text"></td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="bank_entity">'.__('Bank Entity', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<td></td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="bank_account">'.__('Bank Account', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+						<td><input id="bank_account" type="text" name="bank_account" value="'.$provider_data['bank_account'].'" class="regular-text"></td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="postcode">'.__('Postcode', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<td><input id="postcode" type="text" name="postcode" value="'.$provider_data['postcode'].'" class="regular-text"></td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="phone">'.__('Phone', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+						<td><input id="phone" type="text" name="phone" value="'.$provider_data['phone'].'" class="regular-text"></td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="cell_phone">'.__('Cell phone', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+						<td><input id="cell_phone" type="text" name="cell_phone" value="'.$provider_data['cell_phone'].'" class="regular-text"></td>
+					</tr>
+					<tr class="user-email-wrap">
+						<th><label for="email">'.__('E-mail', FAKTURO_TEXT_DOMAIN ) .'</label></th>
+						<td><input type="email" name="email" id="email" value="'.$provider_data['email'].'" class="regular-text ltr"></td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="web">'.__('Web', FAKTURO_TEXT_DOMAIN ).'</label></th>
+						<td><input id="web" type="text" name="web" value="'.$provider_data['web'].'" class="regular-text"></td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="active">'.__('Active', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<td><input id="active" type="checkbox" name="active" value="1" '.(($provider_data['active'])?'checked="checked"':'').'></td>
+					</tr>
+					</tbody>
+				</table>';
+		$echoHtml = apply_filters('fktr_provider_data_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_provider_data_box', $echoHtml);
+		
+	}
+	public static function options_box() {
+		
+		
+	}
+	public static function name_placeholder( $title_placeholder , $post ) {
+		if($post->post_type == 'fktr_provider') {
+			$title_placeholder = __('Enter Provider name here', FAKTURO_TEXT_DOMAIN );
+			
+		}
+		return $title_placeholder;
+	}
 	
 	public static function default_fields($new_status, $old_status, $post ) {
 		
 		if( $post->post_type == 'fktr_provider' && $old_status == 'new'){		
 			
 			$fields = array();
+			$fields['taxpayer'] = '';
+			$fields['address'] = '';
+			$fields['city'] = '';
+			$fields['bank_account'] = '';
+			$fields['postcode'] = '';
+			$fields['phone'] = '';
+			$fields['cell_phone'] = '';
+			$fields['email'] = '';
+			$fields['web'] = '';
+			$fields['active'] = '';
+
 			$fields = apply_filters('fktr_clean_provider_fields', $fields);
 
 			foreach ( $fields as $field => $value ) {

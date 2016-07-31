@@ -262,6 +262,15 @@ class fktrPostTypeProducts {
 			
 			$fields = array();
 			$fields['cost'] = '0';
+			$fields['reference'] = '';
+			$fields['internal'] = '';
+			$fields['manufacturers'] = '';
+			$fields['description'] = '';
+			$fields['short'] = '';
+			$fields['min'] = '';
+			$fields['min_alert'] = '';
+			$fields['unit'] = '';
+			$fields['note'] = '';
 			$fields = apply_filters('fktr_clean_product_fields', $fields);
 
 			foreach ( $fields as $field => $value ) {
