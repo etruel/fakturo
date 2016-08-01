@@ -14,6 +14,13 @@ class fktrPostTypeProviders {
 		add_action( 'init', array('fktrPostTypeProviders', 'setup'), 1 );
 		add_action('transition_post_status', array('fktrPostTypeProviders', 'default_fields'), 10, 3);
 		
+		
+		add_action( 'admin_print_scripts-post-new.php', array('fktrPostTypeProviders','scripts'), 11 );
+		add_action( 'admin_print_scripts-post.php', array('fktrPostTypeProviders','scripts'), 11 );
+		
+		add_action('admin_print_styles-post-new.php', array('fktrPostTypeProviders','styles'));
+		add_action('admin_print_styles-post.php', array('fktrPostTypeProviders','styles'));
+		
 	}
 	public static function setup() {
 		$labels = array( 
@@ -85,7 +92,7 @@ class fktrPostTypeProviders {
 		add_meta_box('fakturo-options-box', __('Provider Contacts', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProviders', 'options_box'),'fktr_provider','normal', 'default' );
 		
 		remove_meta_box('fktr_locationsdiv', 'fktr_provider', 'side');
-		add_meta_box('fakturo-locations-box', 'Location Provider', 'post_categories_meta_box', 'fktr_provider', 'normal', 'core', array( 'taxonomy' => 'fktr_locations' ));
+		//add_meta_box('fakturo-locations-box', 'Location Provider', 'post_categories_meta_box', 'fktr_provider', 'normal', 'core', array( 'taxonomy' => 'fktr_locations' ));
 		
 		do_action('add_ftkr_provider_meta_boxes');
 	}
@@ -101,6 +108,26 @@ class fktrPostTypeProviders {
 	public static function data_box() {
 		global $post;
 		$provider_data = self::get_provider_data($post->ID);
+		
+		$selectCountry = wp_dropdown_categories( array(
+			'show_option_all'    => 'Choose a country',
+			'show_option_none'   => '',
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => -1,
+			'hierarchical'       => 1, 
+			'name'               => 'selected_country',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_locations',
+			'hide_if_empty'      => true
+		));
 		$echoHtml = '<table class="form-table">
 					<tbody>
 					<tr class="user-facebook-wrap">
@@ -117,7 +144,7 @@ class fktrPostTypeProviders {
 					</tr>
 					<tr class="user-facebook-wrap">
 						<th><label for="country">'. __('Country', FAKTURO_TEXT_DOMAIN ).'	</label></th>
-						<td></td>
+						<td>'.$selectCountry.'</td>
 					</tr>
 					<tr class="user-facebook-wrap">
 						<th><label for="states">'. __('States', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
@@ -176,6 +203,24 @@ class fktrPostTypeProviders {
 			
 		}
 		return $title_placeholder;
+	}
+	public static function scripts() {
+		global $post_type;
+		if($post_type == 'fktr_provider') {
+			wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js' );
+			wp_enqueue_script( 'post-type-providers', FAKTURO_PLUGIN_URL . 'assets/js/post-type-providers.js' );
+			
+			
+		}
+   
+	}
+	public static function styles() {
+		global $post_type;
+		if($post_type == 'fktr_provider') {
+			wp_enqueue_style('style-select2',FAKTURO_PLUGIN_URL .'assets/css/select2.min.css');	
+			
+		}
+   
 	}
 	
 	public static function default_fields($new_status, $old_status, $post ) {

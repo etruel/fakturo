@@ -11,7 +11,7 @@ if ( ! class_exists('fktrSettings') ) :
 class fktrSettings {
 	function __construct() {
 		
-		add_action( 'init', array('fktrSettings', 'setup'), 1 );
+		add_action( 'init', array('fktrSettings', 'setup'), 1, 99 );
 	
 		
 	}
