@@ -19,26 +19,19 @@ jQuery(document).ready(function() {
 	jQuery("#selected_bank_entity").select2();
 	
 	jQuery('#addmoreuc').click(function(e) {
-			oldval = jQuery('#ucfield_max').val();
+		
+			
 			jQuery('#ucfield_max').val( parseInt(jQuery('#ucfield_max').val(),10) + 1 );
-			newval = jQuery('#ucfield_max').val();
-			uc_new= jQuery('.uc_new_field').clone();
-			jQuery('div.uc_new_field').removeClass('uc_new_field');
-			jQuery('div#uc_ID'+oldval).fadeIn();
-			jQuery('input[name="uc_description['+oldval+']"]').focus();
-			uc_new.attr('id','uc_ID'+newval);
-			jQuery('input', uc_new).eq(0).attr('name','uc_description['+ newval +']');
-			jQuery('input', uc_new).eq(1).attr('name','uc_phone['+ newval +']');
-			jQuery('input', uc_new).eq(2).attr('name','uc_email['+ newval +']');
-			jQuery('input', uc_new).eq(3).attr('name','uc_position['+ newval +']');
-			jQuery('input', uc_new).eq(4).attr('name','uc_address['+ newval +']');
-			jQuery('.delete', uc_new).eq(0).attr('onclick', "delete_user_contact('#uc_ID"+ newval +"');");
-			jQuery('#user_contacts').append(uc_new);
-			jQuery('#user_contacts').vSort();
+			oldval = jQuery('#ucfield_max').val();
+			var newHTML = '<div id="uc_ID'+oldval+'" class="sortitem"> <div class="uc_column" id=""><input name="uc_description[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_phone[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_email[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_position[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_address[]" type="text" value="" class="large-text"/></div><div class="" id="uc_actions"><label title="'+providers_object.privider_delete_this_item+'" data-id="'+oldval+'" class="delete"> X </label></div></div>';
+			
+			jQuery('#user_contacts').append(newHTML);
+			jQuery('#uc_actions label').click(function() {
+				delete_user_contact('#uc_ID'+jQuery(this).attr('data-id'));
+			});
 			e.preventDefault();
 		});
 	jQuery('#uc_actions label').click(function() {
-		
 		delete_user_contact('#uc_ID'+jQuery(this).attr('data-id'));
 	});
 	

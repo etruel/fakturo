@@ -102,7 +102,29 @@ class fktrPostTypeProviders {
 	}
 	
 	public static function thumbnail_box() {
-		
+		global $post;
+		$thumbnail_id = get_post_meta($post->ID, '_thumbnail_id', true );
+		$echoHtml = '
+			<div id="snapshot_container_wrapper">
+				<div id="snapshot_container_buttons">
+					<a id="snapshot_btn" href="javascript:showSnapshot()" class="nobutton">' . __( 'Take a snapshot', FAKTURO_TEXT_DOMAIN ) . '</a>
+					<div id="my_camera" style="display:none;">				
+					</div>
+					<img src="" id="snap_image" style="display:none;">
+					<input type="hidden" name="webcam_image">
+					<a href="javascript:take_snapshot()" class="button" id="take_snapshot" style="display:none;">'.__( 'Snapshot').'</a>
+					<a href="javascript:reset_webcam()" class="button" id="snapshot_reset" style="display:none;">'.__( 'Reset').'</a>
+					<a href="javascript:snapshot_cancel()" class="button" id="snapshot_cancel" style="display:none;">'.__( 'Cancel').'</a>
+				</div>
+			</div>
+			<div class="featured-image-client">
+							'._wp_post_thumbnail_html( $thumbnail_id, $post->ID ).'
+				</div>
+			';
+			
+		$echoHtml = apply_filters('fktr_provider_thumbnail_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_provider_thumbnail_box', $echoHtml);
 		
 	}
 	public static function seller_box() {
@@ -273,8 +295,7 @@ class fktrPostTypeProviders {
 			
 	
 			$lastitem = $i==count(@$user_contacts['uc_description']); 
-			$echoContacts .= '<div id="uc_ID'.$i.'" class="sortitem '.((($i % 2) == 0) ? 'bw' :  'lightblue').' '.(($lastitem)?'uc_new_field':'').'" '.(($lastitem)?'style="display:none;"':'').' > <!-- sort item -->
-						<div class="sorthandle"> </div> <!-- sort handle -->
+			$echoContacts .= '<div id="uc_ID'.$i.'" class="sortitem '.((($i % 2) == 0) ? 'bw' :  'lightblue').' '.(($lastitem)?'uc_new_field':'').'" '.(($lastitem)?'style="display:none;"':'').' > 
 						<div class="uc_column" id="">
 							<input name="uc_description[]" type="text" value="'.stripslashes(@$user_contacts['uc_description'][$i]).'" class="large-text"/>
 						</div>
@@ -314,9 +335,9 @@ class fktrPostTypeProviders {
 							<div id="user_contacts"> 
 								'.$echoContacts.'
 							</div>
-							<input id="ucfield_max" value="'.$a.'" type="hidden" name="ucfield_max">
+							<input id="ucfield_max" value="'.$a.'" type="hidden" name="ucfield_max"/>
 							<div id="paging-box">		  
-								<a href="" class="button-primary add" id="addmoreuc" style="font-weight: bold; text-decoration: none;"> '.__('Add User Contact', FAKTURO_TEXT_DOMAIN  ).'</a>
+								<a href="#" class="button-primary add" id="addmoreuc" style="font-weight: bold; text-decoration: none;"> '.__('Add User Contact', FAKTURO_TEXT_DOMAIN  ).'</a>
 								<label id="msgdrag"></label>
 							</div>
 						</td>
@@ -373,13 +394,15 @@ class fktrPostTypeProviders {
 	public static function scripts() {
 		global $post_type;
 		if($post_type == 'fktr_provider') {
+			wp_enqueue_script('webcam', FAKTURO_PLUGIN_URL .'assets/js/webcamjs-master/webcam.min.js', array('jquery'), WPE_FAKTURO_VERSION, true);
+			wp_enqueue_script( 'jquery-snapshot', FAKTURO_PLUGIN_URL . 'assets/js/snapshot.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			wp_enqueue_script('jquery-vsort', FAKTURO_PLUGIN_URL .'assets/js/jquery.vSort.min.js', array('jquery'), WPE_FAKTURO_VERSION, true);
 			wp_enqueue_script( 'post-type-providers', FAKTURO_PLUGIN_URL . 'assets/js/post-type-providers.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_localize_script('post-type-providers', 'providers_object',
 				array('ajax_url' => admin_url( 'admin-ajax.php' ),
 					'loading_states_text' => __('Loading states...', FAKTURO_TEXT_DOMAIN ),
-					'update_provider_contacts' => __('Update Provider to save changes.', FAKTURO_TEXT_DOMAIN )
+					'update_provider_contacts' => __('Update Provider to save changes.', FAKTURO_TEXT_DOMAIN ),
+					'privider_delete_this_item' => __('Delete this item',  FAKTURO_TEXT_DOMAIN  )
 				) );
 			
 			
@@ -455,6 +478,35 @@ class fktrPostTypeProviders {
 		$fields = apply_filters('fktr_clean_provider_fields',$_POST);
 		$fields = apply_filters('fktr_provider_before_save',$fields);
 		
+		if (isset($fields['webcam_image']) && $fields['webcam_image'] != NULL ) {
+			delete_post_meta($post_id, '_thumbnail_id');
+			$filename = 'webcam_image_'.microtime().'.jpg';
+			$file = wp_upload_bits($filename, null, base64_decode(substr($fields['webcam_image'], 23)));
+			if ($file['error'] == FALSE) {
+				$wp_filetype = wp_check_filetype($filename, null );
+				$attachment = array(
+					'post_mime_type' => $wp_filetype['type'],
+					'post_parent' => $post_id,
+					'post_title' => preg_replace('/\.[^.]+$/', '', $filename),
+					'post_content' => '',
+					'post_status' => 'inherit'
+				);
+				$attachment_id = wp_insert_attachment( $attachment, $file['file'], $post_id );
+				if (!is_wp_error($attachment_id)) {
+					require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+					$attachment_data = wp_generate_attachment_metadata( $attachment_id, $file['file'] );
+					wp_update_attachment_metadata( $attachment_id,  $attachment_data );
+				}
+				$new = apply_filters('fktr_provider_thumbnail_id', $attachment_id);
+				add_post_meta($post_id, '_thumbnail_id', $new);
+				unset($fields['webcam_image']);
+			}
+		}
+		
+		
+		
+		
+
 		foreach ($fields as $field => $value ) {
 			
 			if ( !is_null( $value ) ) {

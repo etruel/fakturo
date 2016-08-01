@@ -16,3 +16,10 @@ delete:hover {
 label {
     cursor: pointer;
 }
+#msgdrag {
+    display: none;
+    color: red;
+    padding: 0 0 0 20px;
+    font-weight: 600;
+    font-size: 1em;
+}
