@@ -159,7 +159,7 @@ class fktrPostTypeProviders {
 			'hide_if_empty'      => false
 		));
 		
-		if (strlen($selectState) < 90) {
+		if ($provider_data['selected_country'] == 0 || strlen($selectState) < 90) {
 			
 			$selectState = '<select name="selected_state" id="selected_state">
 								<option value="0">'. __('Choose a country before', FAKTURO_TEXT_DOMAIN ) .'</option>
