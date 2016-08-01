@@ -84,6 +84,8 @@ class fktrPostTypeProviders {
 		add_meta_box('fakturo-data-box', __('Complete Provider Data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProviders', 'data_box'),'fktr_provider','normal', 'default' );
 		add_meta_box('fakturo-options-box', __('Provider Contacts', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProviders', 'options_box'),'fktr_provider','normal', 'default' );
 		
+		remove_meta_box('fktr_locationsdiv', 'fktr_provider', 'side');
+		add_meta_box('fakturo-locations-box', 'Location Provider', 'post_categories_meta_box', 'fktr_provider', 'normal', 'core', array( 'taxonomy' => 'fktr_locations' ));
 		
 		do_action('add_ftkr_provider_meta_boxes');
 	}
@@ -190,7 +192,7 @@ class fktrPostTypeProviders {
 			$fields['cell_phone'] = '';
 			$fields['email'] = '';
 			$fields['web'] = '';
-			$fields['active'] = '';
+			$fields['active'] = true;
 
 			$fields = apply_filters('fktr_clean_provider_fields', $fields);
 

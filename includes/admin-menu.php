@@ -48,6 +48,21 @@ class fktrAdminMenu {
 			'manage_options',
 			'edit-tags.php?taxonomy=fktr_model'
 		);
+		
+		add_menu_page( __( 'Fakturo Settings', FAKTURO_TEXT_DOMAIN ), __( 'Fakturo Settings', FAKTURO_TEXT_DOMAIN ), 'manage_options', 'edit.php?post_type=fakturo&page=ftkr-settings', '', 'dashicons-tickets', 25  );
+		$page = add_submenu_page(
+			'edit.php?post_type=fakturo&page=ftkr-settings',
+			__( 'Country and States', FAKTURO_TEXT_DOMAIN ),
+			__( 'Country and States', FAKTURO_TEXT_DOMAIN ),
+			'manage_options',
+			'edit-tags.php?taxonomy=fktr_locations'
+		);
+		
+		
+		
+		
+		
+		
 	}
 	
 }
