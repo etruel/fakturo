@@ -262,7 +262,70 @@ class fktrPostTypeProviders {
 		
 	}
 	public static function options_box() {
+		global $post;
+		$provider_data = self::get_provider_data($post->ID);
+		$user_contacts = $provider_data;
 		
+		
+		$echoContacts = '';
+		$a = 0;
+		foreach ($user_contacts['uc_description'] as $i => $desc) {
+			
+	
+			$lastitem = $i==count(@$user_contacts['uc_description']); 
+			$echoContacts .= '<div id="uc_ID'.$i.'" class="sortitem '.((($i % 2) == 0) ? 'bw' :  'lightblue').' '.(($lastitem)?'uc_new_field':'').'" '.(($lastitem)?'style="display:none;"':'').' > <!-- sort item -->
+						<div class="sorthandle"> </div> <!-- sort handle -->
+						<div class="uc_column" id="">
+							<input name="uc_description[]" type="text" value="'.stripslashes(@$user_contacts['uc_description'][$i]).'" class="large-text"/>
+						</div>
+						<div class="uc_column" id="">
+							<input name="uc_phone[]" type="text" value="'.stripslashes(@$user_contacts['uc_phone'][$i]).'" class="large-text"/>
+						</div>
+						<div class="uc_column" id="">
+							<input name="uc_email[]" type="text" value="'.stripslashes(@$user_contacts['uc_email'][$i]).'" class="large-text"/>
+						</div>
+						<div class="uc_column" id="">
+							<input name="uc_position[]" type="text" value="'.stripslashes(@$user_contacts['uc_position'][$i]).'" class="large-text"/>
+						</div>
+						<div class="uc_column" id="">
+							<input name="uc_address[]" type="text" value="'.stripslashes(@$user_contacts['uc_address'][$i]).'" class="large-text"/>
+						</div>
+						<div class="" id="uc_actions">
+							<label title="'. __('Delete this item',  FAKTURO_TEXT_DOMAIN  ).'" data-id="'.$i.'" class="delete"> X </label>
+						</div>
+					</div>';
+			$a=$i;
+		}
+		
+		
+		$echoHtml = '<table class="form-table">
+					<tbody>
+					<tr class="user-display-name-wrap">
+						<td>
+							<div class="uc_header">
+							<div class="uc_column">'.__('Description', FAKTURO_TEXT_DOMAIN  ).'</div>
+							<div class="uc_column">'.__('Phone', FAKTURO_TEXT_DOMAIN  ) .'</div>
+							<div class="uc_column">'. __('Email', FAKTURO_TEXT_DOMAIN  ) .'</div>
+							<div class="uc_column">'. __('Position', FAKTURO_TEXT_DOMAIN  ) .'</div>
+							<div class="uc_column">'. __('Address', FAKTURO_TEXT_DOMAIN  ) .'</div>
+							</div>
+							<br />
+			
+							<div id="user_contacts"> 
+								'.$echoContacts.'
+							</div>
+							<input id="ucfield_max" value="'.$a.'" type="hidden" name="ucfield_max">
+							<div id="paging-box">		  
+								<a href="" class="button-primary add" id="addmoreuc" style="font-weight: bold; text-decoration: none;"> '.__('Add User Contact', FAKTURO_TEXT_DOMAIN  ).'</a>
+								<label id="msgdrag"></label>
+							</div>
+						</td>
+						</tr>
+					</tbody>
+					</table>';
+		$echoHtml = apply_filters('fktr_provider_options_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_provider_options_box', $echoHtml);
 		
 	}
 	
@@ -311,10 +374,12 @@ class fktrPostTypeProviders {
 		global $post_type;
 		if($post_type == 'fktr_provider') {
 			wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script('jquery-vsort', FAKTURO_PLUGIN_URL .'assets/js/jquery.vSort.min.js', array('jquery'), WPE_FAKTURO_VERSION, true);
 			wp_enqueue_script( 'post-type-providers', FAKTURO_PLUGIN_URL . 'assets/js/post-type-providers.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_localize_script('post-type-providers', 'providers_object',
 				array('ajax_url' => admin_url( 'admin-ajax.php' ),
-					'loading_states_text' => __('Loading states...', FAKTURO_TEXT_DOMAIN )
+					'loading_states_text' => __('Loading states...', FAKTURO_TEXT_DOMAIN ),
+					'update_provider_contacts' => __('Update Provider to save changes.', FAKTURO_TEXT_DOMAIN )
 				) );
 			
 			
@@ -325,6 +390,7 @@ class fktrPostTypeProviders {
 		global $post_type;
 		if($post_type == 'fktr_provider') {
 			wp_enqueue_style('style-select2',FAKTURO_PLUGIN_URL .'assets/css/select2.min.css');	
+			wp_enqueue_style('post-type-providers',FAKTURO_PLUGIN_URL .'assets/css/post-type-providers.css');	
 			
 		}
    
@@ -349,6 +415,9 @@ class fktrPostTypeProviders {
 			$fields['email'] = '';
 			$fields['web'] = '';
 			$fields['active'] = true;
+			$fields['uc_description'] = array();
+			
+			
 
 			$fields = apply_filters('fktr_clean_provider_fields', $fields);
 
