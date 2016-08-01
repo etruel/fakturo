@@ -13,13 +13,15 @@ class fktrPostTypeProviders {
 		
 		add_action( 'init', array('fktrPostTypeProviders', 'setup'), 1 );
 		add_action('transition_post_status', array('fktrPostTypeProviders', 'default_fields'), 10, 3);
-		
+		add_action('save_post', array('fktrPostTypeProviders', 'save'), 10, 2 );
 		
 		add_action( 'admin_print_scripts-post-new.php', array('fktrPostTypeProviders','scripts'), 11 );
 		add_action( 'admin_print_scripts-post.php', array('fktrPostTypeProviders','scripts'), 11 );
 		
 		add_action('admin_print_styles-post-new.php', array('fktrPostTypeProviders','styles'));
 		add_action('admin_print_styles-post.php', array('fktrPostTypeProviders','styles'));
+		
+		add_action('wp_ajax_get_provider_states', array('fktrPostTypeProviders', 'get_provider_states'));
 		
 	}
 	public static function setup() {
@@ -92,6 +94,8 @@ class fktrPostTypeProviders {
 		add_meta_box('fakturo-options-box', __('Provider Contacts', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProviders', 'options_box'),'fktr_provider','normal', 'default' );
 		
 		remove_meta_box('fktr_locationsdiv', 'fktr_provider', 'side');
+		remove_meta_box('tagsdiv-fktr_bank_entities', 'fktr_provider', 'side');
+		
 		//add_meta_box('fakturo-locations-box', 'Location Provider', 'post_categories_meta_box', 'fktr_provider', 'normal', 'core', array( 'taxonomy' => 'fktr_locations' ));
 		
 		do_action('add_ftkr_provider_meta_boxes');
@@ -110,7 +114,7 @@ class fktrPostTypeProviders {
 		$provider_data = self::get_provider_data($post->ID);
 		
 		$selectCountry = wp_dropdown_categories( array(
-			'show_option_all'    => 'Choose a country',
+			'show_option_all'    => __('Choose a country', FAKTURO_TEXT_DOMAIN ),
 			'show_option_none'   => '',
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
@@ -119,15 +123,77 @@ class fktrPostTypeProviders {
 			'child_of'           => 0,
 			'exclude'            => '',
 			'echo'               => 0,
-			'selected'           => -1,
+			'selected'           => $provider_data['selected_country'],
 			'hierarchical'       => 1, 
 			'name'               => 'selected_country',
 			'class'              => 'form-no-clear',
 			'depth'              => 1,
 			'tab_index'          => 0,
 			'taxonomy'           => 'fktr_locations',
-			'hide_if_empty'      => true
+			'hide_if_empty'      => false
 		));
+		if (strlen($selectCountry) < 95) {
+			
+			$selectCountry = '<select name="selected_country" id="selected_country">
+								<option value="0">'. __('Choose a country', FAKTURO_TEXT_DOMAIN ) .'</option>
+							</select>';
+		}
+		
+		$selectState = wp_dropdown_categories( array(
+			'show_option_all'    => __('Choose a state', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => '',
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => $provider_data['selected_country'],
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $provider_data['selected_state'],
+			'hierarchical'       => 1, 
+			'name'               => 'selected_state',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_locations',
+			'hide_if_empty'      => false
+		));
+		
+		if (strlen($selectState) < 90) {
+			
+			$selectState = '<select name="selected_state" id="selected_state">
+								<option value="0">'. __('Choose a country before', FAKTURO_TEXT_DOMAIN ) .'</option>
+							</select>';
+		}
+		
+		
+		$selectBankEntities = wp_dropdown_categories( array(
+			'show_option_all'    => __('Choose a Bank Entity', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => '',
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $provider_data['selected_bank_entity'],
+			'hierarchical'       => 1, 
+			'name'               => 'selected_bank_entity',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_bank_entities',
+			'hide_if_empty'      => false
+		));
+		if (strlen($selectBankEntities) < 95) {
+			
+			$selectBankEntities = '<select name="selected_bank_entity" id="selected_bank_entity">
+								<option value="0">'. __('Choose a Bank Entity', FAKTURO_TEXT_DOMAIN ) .'</option>
+							</select>';
+		}
+		
+		
 		$echoHtml = '<table class="form-table">
 					<tbody>
 					<tr class="user-facebook-wrap">
@@ -148,7 +214,9 @@ class fktrPostTypeProviders {
 					</tr>
 					<tr class="user-facebook-wrap">
 						<th><label for="states">'. __('States', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
-						<td></td>
+						<td id="td_select_state">
+							'.$selectState.'
+						</td>
 					</tr>
 					<tr class="user-facebook-wrap">
 						<th><label for="city">'.__('City', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
@@ -156,7 +224,7 @@ class fktrPostTypeProviders {
 					</tr>
 					<tr class="user-facebook-wrap">
 						<th><label for="bank_entity">'.__('Bank Entity', FAKTURO_TEXT_DOMAIN ).'	</label></th>
-						<td></td>
+						<td>'.$selectBankEntities.'</td>
 					</tr>
 					<tr class="user-facebook-wrap">
 						<th><label for="bank_account">'.__('Bank Account', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
@@ -197,6 +265,41 @@ class fktrPostTypeProviders {
 		
 		
 	}
+	
+	public static function get_provider_states() {
+		
+		if (!is_numeric($_POST['country_id'])) {
+			$_POST['country_id']= 0;
+		}
+		
+		$selectState = wp_dropdown_categories( array(
+			'show_option_all'    => __('Choose a state', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => '',
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => $_POST['country_id'],
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => -1,
+			'hierarchical'       => 1, 
+			'name'               => 'selected_state',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_locations',
+			'hide_if_empty'      => false
+		));
+		if ($_POST['country_id'] == 0 || strlen($selectState) < 90) {
+			
+			$selectState = '<select name="selected_state" id="selected_state">
+								<option value="0">'. __('Choose a country before', FAKTURO_TEXT_DOMAIN ) .'</option>
+							</select>';
+		}
+		wp_die($selectState);
+		
+	}
 	public static function name_placeholder( $title_placeholder , $post ) {
 		if($post->post_type == 'fktr_provider') {
 			$title_placeholder = __('Enter Provider name here', FAKTURO_TEXT_DOMAIN );
@@ -207,8 +310,12 @@ class fktrPostTypeProviders {
 	public static function scripts() {
 		global $post_type;
 		if($post_type == 'fktr_provider') {
-			wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js' );
-			wp_enqueue_script( 'post-type-providers', FAKTURO_PLUGIN_URL . 'assets/js/post-type-providers.js' );
+			wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'post-type-providers', FAKTURO_PLUGIN_URL . 'assets/js/post-type-providers.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_localize_script('post-type-providers', 'providers_object',
+				array('ajax_url' => admin_url( 'admin-ajax.php' ),
+					'loading_states_text' => __('Loading states...', FAKTURO_TEXT_DOMAIN )
+				) );
 			
 			
 		}
@@ -223,6 +330,7 @@ class fktrPostTypeProviders {
    
 	}
 	
+	
 	public static function default_fields($new_status, $old_status, $post ) {
 		
 		if( $post->post_type == 'fktr_provider' && $old_status == 'new'){		
@@ -230,7 +338,10 @@ class fktrPostTypeProviders {
 			$fields = array();
 			$fields['taxpayer'] = '';
 			$fields['address'] = '';
+			$fields['selected_country'] = 0;
+			$fields['selected_state'] = 0;
 			$fields['city'] = '';
+			$fields['selected_bank_entity'] = 0;
 			$fields['bank_account'] = '';
 			$fields['postcode'] = '';
 			$fields['phone'] = '';
@@ -257,6 +368,34 @@ class fktrPostTypeProviders {
 		}
 		$custom_field_keys = apply_filters('fktr_clean_provider_fields', $custom_field_keys );
 		return $custom_field_keys;
+	}
+	public static function save($post_id, $post) {
+		
+		if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ( defined( 'DOING_AJAX') && DOING_AJAX ) || isset( $_REQUEST['bulk_edit'] ) ) {
+			return false;
+		}
+
+		if ( isset( $post->post_type ) && 'revision' == $post->post_type ) {
+			return false;
+		}
+
+		if ( ! current_user_can( 'manage_options', $post_id ) ) {
+			return false;
+		}
+		
+		$fields = apply_filters('fktr_clean_provider_fields',$_POST);
+		$fields = apply_filters('fktr_provider_before_save',$fields);
+		
+		foreach ($fields as $field => $value ) {
+			
+			if ( !is_null( $value ) ) {
+				$new = apply_filters('fktr_provider_metabox_save_' . $field, $value );  //filtra cada campo antes de grabar
+				update_post_meta( $post_id, $field, $new );
+				
+			}
+			
+		}
+		do_action( 'fktr_save_provider', $post_id, $post );
 	}
 	
 	

@@ -58,6 +58,14 @@ class fktrAdminMenu {
 			'edit-tags.php?taxonomy=fktr_locations'
 		);
 		
+		$page = add_submenu_page(
+			'edit.php?post_type=fakturo&page=ftkr-settings',
+			__( 'Bank Entities', FAKTURO_TEXT_DOMAIN ),
+			__( 'Bank Entities', FAKTURO_TEXT_DOMAIN ),
+			'manage_options',
+			'edit-tags.php?taxonomy=fktr_bank_entities'
+		);
+		
 		
 		
 		
