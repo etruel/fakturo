@@ -296,6 +296,7 @@ class fktrPostTypeProviders {
 	
 			$lastitem = $i==count(@$user_contacts['uc_description']); 
 			$echoContacts .= '<div id="uc_ID'.$i.'" class="sortitem '.((($i % 2) == 0) ? 'bw' :  'lightblue').' '.(($lastitem)?'uc_new_field':'').'" '.(($lastitem)?'style="display:none;"':'').' > 
+						<div class="sorthandle"> </div> <!-- sort handle -->
 						<div class="uc_column" id="">
 							<input name="uc_description[]" type="text" value="'.stripslashes(@$user_contacts['uc_description'][$i]).'" class="large-text"/>
 						</div>
@@ -397,6 +398,8 @@ class fktrPostTypeProviders {
 			wp_enqueue_script('webcam', FAKTURO_PLUGIN_URL .'assets/js/webcamjs-master/webcam.min.js', array('jquery'), WPE_FAKTURO_VERSION, true);
 			wp_enqueue_script( 'jquery-snapshot', FAKTURO_PLUGIN_URL . 'assets/js/snapshot.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'jquery-vsort', FAKTURO_PLUGIN_URL . 'assets/js/jquery.vSort.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			
 			wp_enqueue_script( 'post-type-providers', FAKTURO_PLUGIN_URL . 'assets/js/post-type-providers.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_localize_script('post-type-providers', 'providers_object',
 				array('ajax_url' => admin_url( 'admin-ajax.php' ),
