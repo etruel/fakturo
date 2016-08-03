@@ -1,5 +1,7 @@
 jQuery(document).ready(function() {
 	jQuery("#selected_country").select2();
+	jQuery("select#user_aseller").select2();
+	
 	jQuery('#user_contacts').vSort();
 	jQuery("#selected_country").on("change", function (e) {
 		
@@ -23,7 +25,7 @@ jQuery(document).ready(function() {
 			
 			jQuery('#ucfield_max').val( parseInt(jQuery('#ucfield_max').val(),10) + 1 );
 			oldval = jQuery('#ucfield_max').val();
-			var newHTML = '<div id="uc_ID'+oldval+'" class="sortitem"><div class="sorthandle"> </div> <div class="uc_column" id=""><input name="uc_description[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_phone[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_email[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_position[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_address[]" type="text" value="" class="large-text"/></div><div class="" id="uc_actions"><label title="'+providers_object.privider_delete_this_item+'" data-id="'+oldval+'" class="delete"> X </label></div></div>';
+			var newHTML = '<div id="uc_ID'+oldval+'" class="sortitem"><div class="sorthandle"> </div> <div class="uc_column" id=""><input name="uc_description[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_phone[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_email[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_position[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_address[]" type="text" value="" class="large-text"/></div><div class="" id="uc_actions"><label title="'+providers_object.privider_delete_this_item+'" data-id="'+oldval+'" class="delete"></label></div></div>';
 			
 			jQuery('#user_contacts').append(newHTML);
 			jQuery('#uc_actions label').click(function() {

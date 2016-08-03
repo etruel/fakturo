@@ -23,6 +23,7 @@ class fktrPostTypeProviders {
 		
 		add_action('wp_ajax_get_provider_states', array('fktrPostTypeProviders', 'get_provider_states'));
 		
+		add_filter('fktr_clean_provider_fields', array('fktrPostTypeProviders', 'clean_fields'), 10, 1);
 	}
 	public static function setup() {
 		$labels = array( 
@@ -96,8 +97,6 @@ class fktrPostTypeProviders {
 		remove_meta_box('fktr_locationsdiv', 'fktr_provider', 'side');
 		remove_meta_box('tagsdiv-fktr_bank_entities', 'fktr_provider', 'side');
 		
-		//add_meta_box('fakturo-locations-box', 'Location Provider', 'post_categories_meta_box', 'fktr_provider', 'normal', 'core', array( 'taxonomy' => 'fktr_locations' ));
-		
 		do_action('add_ftkr_provider_meta_boxes');
 	}
 	
@@ -128,6 +127,36 @@ class fktrPostTypeProviders {
 		
 	}
 	public static function seller_box() {
+		global $post;
+		$provider_data = self::get_provider_data($post->ID);
+		$user_aseller = $provider_data['user_aseller'];
+		
+		$inTD = '';
+		if(!current_user_can('fakturo_seller'))	 {
+			$allsellers = get_users( array( 'role' => 'fakturo_seller' ) );
+			
+			$inTD .= '<select name="user_aseller" id="user_aseller">';
+			$inTD .= '<option value="'.(( $user_aseller == 0)?' selected="selected"':'').'">'. __('Choose a Salesman', FAKTURO_TEXT_DOMAIN  ) . '</option>';
+			foreach ( $allsellers as $suser ) {
+				$inTD .= '<option value="' . $suser->ID . '" ' . selected($user_aseller, $suser->ID, false) . '>' . esc_html( $suser->display_name ) . '</option>';
+			}
+			$inTD .= '</select>';
+		} else  {
+			$inTD .= '<input type="hidden" name="user_aseller" id="user_aseller" value="'. get_current_user_id() .'" class="regular-text ltr">';
+		}	
+		$echoHtml = '<table class="form-table">
+						<tbody>
+						<tr class="user-display-name-wrap" id="row_user_aseller">
+							<td>
+								'.$inTD.'
+							</td>
+						</tr>
+					</tbody>
+				</table>';
+				
+		$echoHtml = apply_filters('fktr_provider_seller_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_provider_seller_box', $echoHtml);		
 		
 		
 	}
@@ -313,7 +342,7 @@ class fktrPostTypeProviders {
 							<input name="uc_address[]" type="text" value="'.stripslashes(@$user_contacts['uc_address'][$i]).'" class="large-text"/>
 						</div>
 						<div class="" id="uc_actions">
-							<label title="'. __('Delete this item',  FAKTURO_TEXT_DOMAIN  ).'" data-id="'.$i.'" class="delete"> X </label>
+							<label title="'. __('Delete this item',  FAKTURO_TEXT_DOMAIN  ).'" data-id="'.$i.'" class="delete"></label>
 						</div>
 					</div>';
 			$a=$i;
@@ -421,7 +450,58 @@ class fktrPostTypeProviders {
 		}
    
 	}
-	
+	public static function clean_fields($fields) {
+		
+		if (!isset($fields['taxpayer'])) {
+			$fields['taxpayer'] = '';
+		}
+		if (!isset($fields['address'])) {
+			$fields['address'] = '';
+		}
+		if (!isset($fields['selected_country'])) {
+			$fields['selected_country'] = 0;
+		}
+		if (!isset($fields['selected_state'])) {
+			$fields['selected_state'] = 0;
+		}
+		if (!isset($fields['city'])) {
+			$fields['city'] = '';
+		}
+		if (!isset($fields['selected_bank_entity'])) {
+			$fields['selected_bank_entity'] = 0;
+		}
+		if (!isset($fields['bank_account'])) {
+			$fields['bank_account'] = '';
+		}
+		if (!isset($fields['postcode'])) {
+			$fields['postcode'] = '';
+		}
+		if (!isset($fields['phone'])) {
+			$fields['phone'] = '';
+		}
+		if (!isset($fields['cell_phone'])) {
+			$fields['cell_phone'] = '';
+		}
+		if (!isset($fields['email'])) {
+			$fields['email'] = '';
+		}
+		if (!isset($fields['web'])) {
+			$fields['web'] = '';
+		}
+		if (!isset($fields['active'])) {
+			$fields['active'] = true;
+		}
+		if (!isset($fields['uc_description']) || !is_array($fields['uc_description'])) {
+			$fields['uc_description'] = array();
+		}
+
+		if (!isset($fields['user_aseller'])) {
+			$fields['user_aseller'] = 0;
+		}
+		
+		
+		return $fields;
+	}
 	
 	public static function default_fields($new_status, $old_status, $post ) {
 		
@@ -442,7 +522,7 @@ class fktrPostTypeProviders {
 			$fields['web'] = '';
 			$fields['active'] = true;
 			$fields['uc_description'] = array();
-			
+			$fields['user_aseller'] = 0;
 			
 
 			$fields = apply_filters('fktr_clean_provider_fields', $fields);
