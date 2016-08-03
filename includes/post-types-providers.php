@@ -302,8 +302,9 @@ class fktrPostTypeProviders {
 						<td><input id="web" type="text" name="web" value="'.$provider_data['web'].'" class="regular-text"></td>
 					</tr>
 					<tr class="user-facebook-wrap">
-						<th><label for="active">'.__('Active', FAKTURO_TEXT_DOMAIN ).'	</label></th>
-						<td><input id="active" type="checkbox" name="active" value="1" '.(($provider_data['active'])?'checked="checked"':'').'></td>
+						<th rowspan="2">
+						<input id="active" type="checkbox" name="active" value="1" '.(($provider_data['active'])?'checked="checked"':'').'><label for="active"><span class="ui"></span>'.__('Active', FAKTURO_TEXT_DOMAIN ).'	</label>
+						</th>
 					</tr>
 					</tbody>
 				</table>';
@@ -321,7 +322,6 @@ class fktrPostTypeProviders {
 		$echoContacts = '';
 		$a = 0;
 		foreach ($user_contacts['uc_description'] as $i => $desc) {
-			
 	
 			$lastitem = $i==count(@$user_contacts['uc_description']); 
 			$echoContacts .= '<div id="uc_ID'.$i.'" class="sortitem '.((($i % 2) == 0) ? 'bw' :  'lightblue').' '.(($lastitem)?'uc_new_field':'').'" '.(($lastitem)?'style="display:none;"':'').' > 
