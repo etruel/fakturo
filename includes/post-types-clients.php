@@ -14,6 +14,10 @@ class fktrPostTypeClients {
 		add_action( 'init', array('fktrPostTypeClients', 'setup'), 1 );
 		add_action('transition_post_status', array('fktrPostTypeClients', 'default_fields'), 10, 3);
 		
+		
+		add_filter('fktr_clean_client_fields', array('fktrPostTypeClients', 'clean_fields'), 10, 1);
+		
+		
 	}
 	public static function setup() {
 		$labels = array( 
@@ -73,15 +77,34 @@ class fktrPostTypeClients {
 	
 	public static function meta_boxes() {
 		
+		add_meta_box('fakturo-options-box', __('Client Contacts', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'options_box'),'fktr_client','normal', 'default' );
 		do_action('add_ftkr_client_meta_boxes');
 	}
 	
 	
+	public static function options_box() {
+		
+		
+	}
+	
+	
+	public static function clean_fields($fields) {
+		
+	
+		if (!isset($fields['uc_description']) || !is_array($fields['uc_description'])) {
+			$fields['uc_description'] = array();
+		}
+
+
+		
+		return $fields;
+	}
 	public static function default_fields($new_status, $old_status, $post ) {
 		
 		if( $post->post_type == 'fktr_client' && $old_status == 'new'){		
 			
 			$fields = array();
+			$fields['uc_description'] = array();
 			$fields = apply_filters('fktr_clean_client_fields', $fields);
 
 			foreach ( $fields as $field => $value ) {
