@@ -12,8 +12,7 @@ class fktrAdminMenu {
 	
 	function __construct() {
 		add_action( 'admin_menu', array('fktrAdminMenu','add_menu') );
-		add_action('admin_print_styles-post-new.php', array('fktrAdminMenu','styles'));
-		add_action('admin_print_styles-post.php', array('fktrAdminMenu','styles'));
+		add_action('admin_print_styles', array('fktrAdminMenu','styles'));
 	}
 	
 	public static function add_menu() {
@@ -82,7 +81,11 @@ class fktrAdminMenu {
 		
 	}
 	public static function styles() {
-		wp_enqueue_style('main',FAKTURO_PLUGIN_URL .'assets/css/main.css');	
+		global $post_type, $current_screen;
+		if( strpos($current_screen->id, "fktr")!==FALSE || strpos($current_screen->id, "fakturo")!==FALSE ) {
+			wp_enqueue_style('main',FAKTURO_PLUGIN_URL .'assets/css/main.css');	
+			wp_enqueue_style('main',FAKTURO_PLUGIN_URL .'assets/css/icons.css');	
+		}
 		
 	}
 	

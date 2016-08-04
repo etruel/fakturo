@@ -1,0 +1,115 @@
+
+/*Symbols*/
+.like:before               { content: "\2764"; }
+.star:before               { content: "\2605"; }
+.spark:before              { content: "\2737"; }
+.play:before               { content: "\25B6"; }
+.revplay:before            { content: "\25C0"; }
+.grab:before               { content: "\25cf"; }
+.stop:before               { content: "\25a0"; }
+.watch:before              { content: "\231A"; }
+.blacksun:before           { content: "\2600"; }
+.cloud:before              { content: "\2601"; }
+.umbrella:before           { content: "\2602"; }
+.snowman:before            { content: "\2603"; }
+.blackstar:before          { content: "\2605"; }
+.whitestar:before          { content: "\2606"; }
+.blackphone:before         { content: "\260E"; }
+.whitephone:before         { content: "\260F"; }
+.saltire:before            { content: "\2613"; }
+.hot_drink:before          { content: "\2615"; }
+.skull:before              { content: "\2620"; }
+.radioactive:before        { content: "\2622"; }
+.biohazard:before          { content: "\2623"; }
+.peace:before              { content: "\262E"; }
+.yingyang:before           { content: "\262F"; }
+.first_quarter_moon:before { content: "\263D"; }
+.last_quarter_moon:before  { content: "\263E"; }
+.wheelchair:before         { content: "\267F"; }
+.recycle:before            { content: "\267D"; }
+.recycle2:before           { content: "\267C"; }
+.music_note:before         { content: "\266C"; }
+.male_and_female:before    { content: "\26A4"; }
+.scissors:before           { content: "\2701"; }
+.airplane:before           { content: "\2708"; }
+.snow:before               { content: "\2042"; }
+
+.delete:before { content: "\2718";}
+.add:before { content: "\271A";}
+.isok:before { content: "\2714";}
+.cross:before { content: "\2716"; }
+.warning:before { content: "\26A0"; }
+.frowning_face:before { content: "\2639"; }
+.smiling_face:before { content: "\263A"; }
+
+
+/* Animated Checkboxes */
+[type="checkbox"]:not(:checked),
+[type="checkbox"]:checked {
+  position: absolute;
+  left: -9999px;
+}
+[type="checkbox"]:not(:checked) + label,
+[type="checkbox"]:checked + label {
+  position: relative;
+  padding-left: 75px;
+  cursor: pointer;
+}
+[type="checkbox"]:not(:checked) + label:before,
+[type="checkbox"]:checked + label:before,
+[type="checkbox"]:not(:checked) + label:after,
+[type="checkbox"]:checked + label:after {
+  content: '';
+  position: absolute;
+}
+[type="checkbox"]:not(:checked) + label:before,
+[type="checkbox"]:checked + label:before {
+  left:0; top: -3px;
+  width: 65px; height: 30px;
+  background: #DDDDDD;
+  border-radius: 15px;
+  transition: background-color .2s;
+}
+[type="checkbox"]:not(:checked) + label:after,
+[type="checkbox"]:checked + label:after {
+  width: 20px; height: 20px;
+  transition: all .2s;
+  border-radius: 50%;
+  background: #7F8C9A;
+  top: 2px; left: 5px;
+}
+
+/* on checked */
+[type="checkbox"]:checked + label:before {
+  background:#34495E; 
+}
+[type="checkbox"]:checked + label:after {
+  background: #39D2B4;
+  top: 2px; left: 40px;
+}
+
+[type="checkbox"]:checked + label .ui,
+[type="checkbox"]:not(:checked) + label .ui:before,
+[type="checkbox"]:checked + label .ui:after {
+  position: absolute;
+  left: 6px;
+  width: 65px;
+  border-radius: 15px;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 22px;
+  transition: all .2s;
+}
+[type="checkbox"]:not(:checked) + label .ui:before {
+  content: "no";
+  left: 32px
+}
+[type="checkbox"]:checked + label .ui:after {
+  content: "yes";
+  color: #39D2B4;
+}
+[type="checkbox"]:focus + label:before {
+  border: 1px dashed #777;
+  box-sizing: border-box;
+  margin-top: -1px;
+}
