@@ -12,9 +12,16 @@ class fktrSettings {
 	function __construct() {
 		
 		add_action( 'init', array('fktrSettings', 'setup'), 1, 99 );
-	
+		add_action( 'in_admin_header', array('fktrSettings', 'probandoarriba'), 1, 99 );
 		
 	}
+	
+	public static function probandoarriba() {
+		global $screen, $current_screen;
+		if($current_screen->id == "edit-fktr_locations")
+			echo "Agregar tabs aca<br>AAAAAAAAAAAAAAAAAAAAAAAAA";
+	}
+		
 	public static function setup() {
 		$labels_model = array(
 			'name'                       => _x( 'Locations', 'Locations', FAKTURO_TEXT_DOMAIN ),
