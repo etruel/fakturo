@@ -12,14 +12,16 @@ class fktrSettings {
 	function __construct() {
 		
 		add_action( 'init', array('fktrSettings', 'setup'), 1, 99 );
-		add_action( 'in_admin_header', array('fktrSettings', 'probandoarriba'), 1, 99 );
+		//add_action( 'in_admin_header', array('fktrSettings', 'probandoarriba'), 1, 0 );
+		add_action( 'all_admin_notices', array('fktrSettings', 'probandoarriba'), 1, 0 );
 		
 	}
 	
 	public static function probandoarriba() {
 		global $screen, $current_screen;
-		if($current_screen->id == "edit-fktr_locations")
+		if($current_screen->id == "edit-fktr_locations" || ($current_screen->id == "edit-fktr_bank_entities") ) {
 			echo "Agregar tabs aca<br>AAAAAAAAAAAAAAAAAAAAAAAAA";
+		}
 	}
 		
 	public static function setup() {
