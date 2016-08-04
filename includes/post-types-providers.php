@@ -87,10 +87,14 @@ class fktrPostTypeProviders {
 		
 		add_action('wp_ajax_webcam_shot', 'fakturo_ajax_webcam_shot');
 	
+		add_meta_box('fakturo-active-box', __('Active provider', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProviders', 'active'), 'fktr_provider', 'side', 'high');
 		// Remove Custom Fields Metabox
 		remove_meta_box('postimagediv', 'fktr_provider', 'side' );
+		
+		
 		add_meta_box('postimagediv', __('Provider Image', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProviders', 'thumbnail_box'), 'fktr_provider', 'side', 'high');
 		add_meta_box('fakturo-seller-box', __('Assign Seller', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProviders', 'seller_box'),'fktr_provider','side', 'high' );
+		
 		add_meta_box('fakturo-data-box', __('Complete Provider Data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProviders', 'data_box'),'fktr_provider','normal', 'default' );
 		add_meta_box('fakturo-options-box', __('Provider Contacts', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProviders', 'options_box'),'fktr_provider','normal', 'default' );
 		
@@ -99,7 +103,24 @@ class fktrPostTypeProviders {
 		
 		do_action('add_ftkr_provider_meta_boxes');
 	}
-	
+	public static function active() {
+		global $post;
+		
+		$provider_data = self::get_provider_data($post->ID);
+		$echoHtml = '<table class="form-table">
+					<tbody>
+					<tr class="user-facebook-wrap">
+						<th rowspan="2">
+						<input id="active" type="checkbox" name="active" value="1" '.(($provider_data['active'])?'checked="checked"':'').'><label for="active"><span class="ui"></span>'.__('Active', FAKTURO_TEXT_DOMAIN ).'	</label>
+						</th>
+					</tr>
+					</tbody>
+				</table>';
+		$echoHtml = apply_filters('fktr_provider_active_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_provider_active_box', $echoHtml);
+		
+	}
 	public static function thumbnail_box() {
 		global $post;
 		$thumbnail_id = get_post_meta($post->ID, '_thumbnail_id', true );
@@ -301,11 +322,6 @@ class fktrPostTypeProviders {
 						<th><label for="web">'.__('Web', FAKTURO_TEXT_DOMAIN ).'</label></th>
 						<td><input id="web" type="text" name="web" value="'.$provider_data['web'].'" class="regular-text"></td>
 					</tr>
-					<tr class="user-facebook-wrap">
-						<th rowspan="2">
-						<input id="active" type="checkbox" name="active" value="1" '.(($provider_data['active'])?'checked="checked"':'').'><label for="active"><span class="ui"></span>'.__('Active', FAKTURO_TEXT_DOMAIN ).'	</label>
-						</th>
-					</tr>
 					</tbody>
 				</table>';
 		$echoHtml = apply_filters('fktr_provider_data_box', $echoHtml);
@@ -489,8 +505,9 @@ class fktrPostTypeProviders {
 			$fields['web'] = '';
 		}
 		if (!isset($fields['active'])) {
-			$fields['active'] = true;
+			$fields['active'] = 0;
 		}
+
 		if (!isset($fields['uc_description']) || !is_array($fields['uc_description'])) {
 			$fields['uc_description'] = array();
 		}
@@ -520,7 +537,7 @@ class fktrPostTypeProviders {
 			$fields['cell_phone'] = '';
 			$fields['email'] = '';
 			$fields['web'] = '';
-			$fields['active'] = true;
+			$fields['active'] = 1;
 			$fields['uc_description'] = array();
 			$fields['user_aseller'] = 0;
 			

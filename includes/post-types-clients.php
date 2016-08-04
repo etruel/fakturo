@@ -13,7 +13,13 @@ class fktrPostTypeClients {
 		
 		add_action( 'init', array('fktrPostTypeClients', 'setup'), 1 );
 		add_action('transition_post_status', array('fktrPostTypeClients', 'default_fields'), 10, 3);
+		add_action('save_post', array('fktrPostTypeClients', 'save'), 10, 2 );
 		
+		add_action( 'admin_print_scripts-post-new.php', array('fktrPostTypeClients','scripts'), 11 );
+		add_action( 'admin_print_scripts-post.php', array('fktrPostTypeClients','scripts'), 11 );
+		
+		add_action('admin_print_styles-post-new.php', array('fktrPostTypeClients','styles'));
+		add_action('admin_print_styles-post.php', array('fktrPostTypeClients','styles'));
 		
 		add_filter('fktr_clean_client_fields', array('fktrPostTypeClients', 'clean_fields'), 10, 1);
 		
@@ -74,23 +80,390 @@ class fktrPostTypeClients {
 		register_post_type( 'fktr_client', $args );
 
 	}
-	
+	public static function scripts() {
+		global $post_type;
+		if($post_type == 'fktr_client') {
+			wp_enqueue_script('webcam', FAKTURO_PLUGIN_URL .'assets/js/webcamjs-master/webcam.min.js', array('jquery'), WPE_FAKTURO_VERSION, true);
+			wp_enqueue_script( 'jquery-snapshot', FAKTURO_PLUGIN_URL . 'assets/js/snapshot.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'jquery-vsort', FAKTURO_PLUGIN_URL . 'assets/js/jquery.vSort.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			
+			wp_enqueue_script( 'post-type-clients', FAKTURO_PLUGIN_URL . 'assets/js/post-type-clients.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_localize_script('post-type-clients', 'providers_object',
+				array('ajax_url' => admin_url( 'admin-ajax.php' ),
+					'loading_states_text' => __('Loading states...', FAKTURO_TEXT_DOMAIN ),
+					'update_provider_contacts' => __('Update Client to save changes.', FAKTURO_TEXT_DOMAIN ),
+					'privider_delete_this_item' => __('Delete this item',  FAKTURO_TEXT_DOMAIN  )
+				) );
+			
+			
+		}
+		
+	}
+	public static function styles() {
+		global $post_type;
+		if($post_type == 'fktr_client') {
+			wp_enqueue_style('style-select2',FAKTURO_PLUGIN_URL .'assets/css/select2.min.css');	
+			wp_enqueue_style('post-type-clients',FAKTURO_PLUGIN_URL .'assets/css/post-type-clients.css');	
+			
+		}
+		
+	}
 	public static function meta_boxes() {
 		
+		add_meta_box('fakturo-active-box', __('Active client', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'active'), 'fktr_client', 'side', 'high');
+		remove_meta_box('postimagediv', 'fktr_client', 'side' );
+		add_meta_box('fakturo-trade-box', __('Trader data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'trade_box'),'fktr_client','normal', 'default' );
+		add_meta_box('fakturo-data-box', __('Client data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'data_box'),'fktr_client','normal', 'default' );
 		add_meta_box('fakturo-options-box', __('Client Contacts', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'options_box'),'fktr_client','normal', 'default' );
 		do_action('add_ftkr_client_meta_boxes');
 	}
+	public static function active() {
+		global $post;
+		
+		$client_data = self::get_client_data($post->ID);
+		$echoHtml = '<table class="form-table">
+					<tbody>
+					<tr class="user-facebook-wrap">
+						<th rowspan="2">
+						<input id="active" type="checkbox" name="active" value="1" '.(($client_data['active'])?'checked="checked"':'').'><label for="active"><span class="ui"></span>'.__('Active', FAKTURO_TEXT_DOMAIN ).'	</label>
+						</th>
+					</tr>
+					</tbody>
+				</table>';
+		$echoHtml = apply_filters('fktr_provider_active_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_provider_active_box', $echoHtml);
+		
+	}
 	
+	public static function trade_box() {
+		global $post;
+		$client_data = self::get_client_data($post->ID);
+		
+		
+		$selectPaymentTypes = wp_dropdown_categories( array(
+			'show_option_all'    => __('Choose a Payment Type', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => '',
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $client_data['selected_payment_type'],
+			'hierarchical'       => 1, 
+			'name'               => 'selected_payment_type',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_payment_types',
+			'hide_if_empty'      => false
+		));
+		
+		if (strlen($selectPaymentTypes) < 99) {
+			
+			$selectPaymentTypes = '<select name="selected_payment_type" id="selected_payment_type">
+								<option value="0">'. __('Choose a Payment Type', FAKTURO_TEXT_DOMAIN ) .'</option>
+							</select>';
+		}
+		
+		
+		
+		$selectBankEntities = wp_dropdown_categories( array(
+			'show_option_all'    => __('Choose a Bank Entity', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => '',
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $client_data['selected_bank_entity'],
+			'hierarchical'       => 1, 
+			'name'               => 'selected_bank_entity',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_bank_entities',
+			'hide_if_empty'      => false
+		));
+		if (strlen($selectBankEntities) < 95) {
+			
+			$selectBankEntities = '<select name="selected_bank_entity" id="selected_bank_entity">
+								<option value="0">'. __('Choose a Bank Entity', FAKTURO_TEXT_DOMAIN ) .'</option>
+							</select>';
+		}
+		
+		$echoHtml = '<table class="form-table">
+					<tbody>
+					
+					<tr class="user-facebook-wrap">
+						<th><label for="taxpayer">'.__('Taxpayer ID', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<td>
+							<input id="taxpayer" type="text" name="taxpayer" value="'.$client_data['taxpayer'].'" class="regular-text">
+							<span id="cuit_validation"></span>
+							<div style="font-size:0.85em;" id="cuit_validation_note">'.__("Cuit number's validation only. Check www.afip.gov.ar", FAKTURO_TEXT_DOMAIN ).'</div>
+						</td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="selected_payment_type">'.__('Payment Type', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<td>'.$selectPaymentTypes.'</td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="selected_bank_entity">'.__('Bank Entity', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<td>'.$selectBankEntities.'</td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="bank_account">'.__('Bank Account', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+						<td><input id="bank_account" type="text" name="bank_account" value="'.$client_data['bank_account'].'" class="regular-text"></td>
+					</tr>
+
+					
+					</tbody>
+				</table>';
+		$echoHtml = apply_filters('fktr_client_trade_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_client_trade_box', $echoHtml);
+		
+	}
+	public static function data_box() {
+		global $post;
+		$client_data = self::get_client_data($post->ID);
+		$selectCountry = wp_dropdown_categories( array(
+			'show_option_all'    => __('Choose a country', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => '',
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $client_data['selected_country'],
+			'hierarchical'       => 1, 
+			'name'               => 'selected_country',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_locations',
+			'hide_if_empty'      => false
+		));
+		if (strlen($selectCountry) < 95) {
+			
+			$selectCountry = '<select name="selected_country" id="selected_country">
+								<option value="0">'. __('Choose a country', FAKTURO_TEXT_DOMAIN ) .'</option>
+							</select>';
+		}
+		
+		$selectState = wp_dropdown_categories( array(
+			'show_option_all'    => __('Choose a state', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => '',
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => $client_data['selected_country'],
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $client_data['selected_state'],
+			'hierarchical'       => 1, 
+			'name'               => 'selected_state',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_locations',
+			'hide_if_empty'      => false
+		));
+		
+		if ($client_data['selected_country'] == 0 || strlen($selectState) < 90) {
+			
+			$selectState = '<select name="selected_state" id="selected_state">
+								<option value="0">'. __('Choose a country before', FAKTURO_TEXT_DOMAIN ) .'</option>
+							</select>';
+		}
+		$echoHtml = '<table class="form-table">
+					<tbody>
+					
+					<tr class="user-address-wrap">
+						<th><label for="address">'.__('Address', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<td><input type="text" name="address" id="address" value="'.$client_data['address'].'" class="regular-text"></td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="country">'. __('Country', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<td>'.$selectCountry.'</td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="states">'. __('States', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+						<td id="td_select_state">
+							'.$selectState.'
+						</td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="city">'.__('City', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+						<td><input id="city" type="text" name="city" value="'.$client_data['city'].'" class="regular-text"></td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="postcode">'.__('Postcode', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+						<td><input id="postcode" type="text" name="postcode" value="'.$client_data['postcode'].'" class="regular-text"></td>
+					</tr>
+					
+					<tr class="user-facebook-wrap">
+						<th><label for="phone">'.__('Phone', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+						<td><input id="phone" type="text" name="phone" value="'.$client_data['phone'].'" class="regular-text"></td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="cell_phone">'.__('Cell phone', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+						<td><input id="cell_phone" type="text" name="cell_phone" value="'.$client_data['cell_phone'].'" class="regular-text"></td>
+					</tr>
+					<tr class="user-email-wrap">
+						<th><label for="email">'.__('E-mail', FAKTURO_TEXT_DOMAIN ) .'</label></th>
+						<td><input type="email" name="email" id="email" value="'.$client_data['email'].'" class="regular-text ltr"></td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="facebook_url">'.__('Facebook URL', FAKTURO_TEXT_DOMAIN ).'</label></th>
+						<td><input id="facebook_url" type="text" name="facebook_url" value="'.$client_data['facebook_url'].'" class="regular-text"></td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="web">'.__('Web', FAKTURO_TEXT_DOMAIN ).'</label></th>
+						<td><input id="web" type="text" name="web" value="'.$client_data['web'].'" class="regular-text"></td>
+					</tr>
+					
+					</tbody>
+				</table>';
+		$echoHtml = apply_filters('fktr_client_data_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_client_data_box', $echoHtml);
+		
+	}
 	
 	public static function options_box() {
+		global $post;
+		$client_data = self::get_client_data($post->ID);
+		$user_contacts = $client_data;
 		
+		
+		$echoContacts = '';
+		$a = 0;
+		foreach ($user_contacts['uc_description'] as $i => $desc) {
+	
+			$lastitem = $i==count(@$user_contacts['uc_description']); 
+			$echoContacts .= '<div id="uc_ID'.$i.'" class="sortitem '.((($i % 2) == 0) ? 'bw' :  'lightblue').' '.(($lastitem)?'uc_new_field':'').'" '.(($lastitem)?'style="display:none;"':'').' > 
+						<div class="sorthandle"> </div> <!-- sort handle -->
+						<div class="uc_column" id="">
+							<input name="uc_description[]" type="text" value="'.stripslashes(@$user_contacts['uc_description'][$i]).'" class="large-text"/>
+						</div>
+						<div class="uc_column" id="">
+							<input name="uc_phone[]" type="text" value="'.stripslashes(@$user_contacts['uc_phone'][$i]).'" class="large-text"/>
+						</div>
+						<div class="uc_column" id="">
+							<input name="uc_email[]" type="text" value="'.stripslashes(@$user_contacts['uc_email'][$i]).'" class="large-text"/>
+						</div>
+						<div class="uc_column" id="">
+							<input name="uc_position[]" type="text" value="'.stripslashes(@$user_contacts['uc_position'][$i]).'" class="large-text"/>
+						</div>
+						<div class="uc_column" id="">
+							<input name="uc_address[]" type="text" value="'.stripslashes(@$user_contacts['uc_address'][$i]).'" class="large-text"/>
+						</div>
+						<div class="" id="uc_actions">
+							<label title="'. __('Delete this item',  FAKTURO_TEXT_DOMAIN  ).'" data-id="'.$i.'" class="delete"></label>
+						</div>
+					</div>';
+			$a=$i;
+		}
+		
+		
+		$echoHtml = '<table class="form-table">
+					<tbody>
+					<tr class="user-display-name-wrap">
+						<td>
+							<div class="uc_header">
+							<div class="uc_column">'.__('Description', FAKTURO_TEXT_DOMAIN  ).'</div>
+							<div class="uc_column">'.__('Phone', FAKTURO_TEXT_DOMAIN  ) .'</div>
+							<div class="uc_column">'. __('Email', FAKTURO_TEXT_DOMAIN  ) .'</div>
+							<div class="uc_column">'. __('Position', FAKTURO_TEXT_DOMAIN  ) .'</div>
+							<div class="uc_column">'. __('Address', FAKTURO_TEXT_DOMAIN  ) .'</div>
+							</div>
+							<br />
+			
+							<div id="user_contacts"> 
+								'.$echoContacts.'
+							</div>
+							<input id="ucfield_max" value="'.$a.'" type="hidden" name="ucfield_max"/>
+							<div id="paging-box">		  
+								<a href="#" class="button-primary add" id="addmoreuc" style="font-weight: bold; text-decoration: none;"> '.__('Add User Contact', FAKTURO_TEXT_DOMAIN  ).'</a>
+								<label id="msgdrag"></label>
+							</div>
+						</td>
+						</tr>
+					</tbody>
+					</table>';
+		$echoHtml = apply_filters('fktr_provider_options_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_provider_options_box', $echoHtml);
 		
 	}
 	
 	
 	public static function clean_fields($fields) {
 		
+		if (!isset($fields['active'])) {
+			$fields['active'] = 0;
+		}
+		
+		
+		if (!isset($fields['taxpayer'])) {
+			$fields['taxpayer'] = '';
+		}
+		if (!isset($fields['selected_payment_type'])) {
+			$fields['selected_payment_type'] = 0;
+		}
+		if (!isset($fields['selected_bank_entity'])) {
+			$fields['selected_bank_entity'] = 0;
+		}
+		if (!isset($fields['bank_account'])) {
+			$fields['bank_account'] = '';
+		}
+		
+		
+		
+		if (!isset($fields['address'])) {
+			$fields['address'] = '';
+		}
+		if (!isset($fields['selected_country'])) {
+			$fields['selected_country'] = 0;
+		}
+		if (!isset($fields['selected_state'])) {
+			$fields['selected_state'] = 0;
+		}
+		if (!isset($fields['city'])) {
+			$fields['city'] = '';
+		}
+		if (!isset($fields['postcode'])) {
+			$fields['postcode'] = '';
+		}
+		if (!isset($fields['phone'])) {
+			$fields['phone'] = '';
+		}
+		if (!isset($fields['cell_phone'])) {
+			$fields['cell_phone'] = '';
+		}
+		if (!isset($fields['email'])) {
+			$fields['email'] = '';
+		}
+		if (!isset($fields['facebook_url'])) {
+			$fields['facebook_url'] = '';
+		}
+		if (!isset($fields['web'])) {
+			$fields['web'] = '';
+		}
 	
+
+
+		
+		
 		if (!isset($fields['uc_description']) || !is_array($fields['uc_description'])) {
 			$fields['uc_description'] = array();
 		}
@@ -104,6 +477,27 @@ class fktrPostTypeClients {
 		if( $post->post_type == 'fktr_client' && $old_status == 'new'){		
 			
 			$fields = array();
+			$fields['active'] = 1;
+			
+			$fields['taxpayer'] = '';
+			$fields['selected_payment_type'] = 0;
+			$fields['selected_bank_entity'] = 0;
+			$fields['bank_account'] = '';
+			
+			
+			$fields['address'] = '';
+			$fields['selected_country'] = 0;
+			$fields['selected_state'] = 0;
+			$fields['city'] = '';
+			$fields['postcode'] = '';
+			$fields['phone'] = '';
+			$fields['cell_phone'] = '';
+			$fields['email'] = '';
+			$fields['facebook_url'] = '';
+			$fields['web'] = '';
+			
+			
+			
 			$fields['uc_description'] = array();
 			$fields = apply_filters('fktr_clean_client_fields', $fields);
 
@@ -116,15 +510,43 @@ class fktrPostTypeClients {
 			}
 		}
 	}
-	public static function get_provider_data($provider_id) {
-		$custom_field_keys = get_post_custom($provider_id);
+	public static function get_client_data($client_id) {
+		$custom_field_keys = get_post_custom($client_id);
 		foreach ( $custom_field_keys as $key => $value ) {
 			$custom_field_keys[$key] = maybe_unserialize($value[0]);
 		}
 		$custom_field_keys = apply_filters('fktr_clean_client_fields', $custom_field_keys );
 		return $custom_field_keys;
 	}
-	
+	public static function save($post_id, $post) {
+		
+		if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ( defined( 'DOING_AJAX') && DOING_AJAX ) || isset( $_REQUEST['bulk_edit'] ) ) {
+			return false;
+		}
+
+		if ( isset( $post->post_type ) && 'revision' == $post->post_type ) {
+			return false;
+		}
+
+		if ( ! current_user_can( 'manage_options', $post_id ) ) {
+			return false;
+		}
+		
+		$fields = apply_filters('fktr_clean_client_fields',$_POST);
+		$fields = apply_filters('fktr_client_before_save',$fields);
+		
+		foreach ($fields as $field => $value ) {
+			
+			if ( !is_null( $value ) ) {
+				$new = apply_filters('fktr_provider_metabox_save_' . $field, $value );  //filtra cada campo antes de grabar
+				update_post_meta( $post_id, $field, $new );
+				
+			}
+			
+		}
+		do_action( 'fktr_save_client', $post_id, $post );
+		
+	}
 	
 } 
 

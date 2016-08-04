@@ -63,7 +63,7 @@ class fktrSettings {
 		
 		$labels_model = array(
 			'name'                       => _x( 'Bank Entities', 'Bank Entities', FAKTURO_TEXT_DOMAIN ),
-			'singular_name'              => _x( 'Location', 'Location', FAKTURO_TEXT_DOMAIN ),
+			'singular_name'              => _x( 'Bank Entity', 'Bank Entity', FAKTURO_TEXT_DOMAIN ),
 			'search_items'               => __( 'Search Bank Entities', FAKTURO_TEXT_DOMAIN ),
 			'popular_items'              => __( 'Popular Bank Entities', FAKTURO_TEXT_DOMAIN ),
 			'all_items'                  => __( 'All Bank Entities', FAKTURO_TEXT_DOMAIN ),
@@ -94,7 +94,39 @@ class fktrSettings {
 			'fktr_provider',
 			$args_model
 		);
+		
+		$labels_model = array(
+			'name'                       => _x( 'Payment Types', 'Payment Types', FAKTURO_TEXT_DOMAIN ),
+			'singular_name'              => _x( 'Payment Type', 'Payment Type', FAKTURO_TEXT_DOMAIN ),
+			'search_items'               => __( 'Search Payment Types', FAKTURO_TEXT_DOMAIN ),
+			'popular_items'              => __( 'Popular Payment Types', FAKTURO_TEXT_DOMAIN ),
+			'all_items'                  => __( 'All Payment Types', FAKTURO_TEXT_DOMAIN ),
+			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
+			'parent_item_colon'          => null,
+			'edit_item'                  => __( 'Edit Payment Type', FAKTURO_TEXT_DOMAIN ),
+			'update_item'                => __( 'Update Payment Type', FAKTURO_TEXT_DOMAIN ),
+			'add_new_item'               => __( 'Add New Payment Type', FAKTURO_TEXT_DOMAIN ),
+			'new_item_name'              => __( 'New Payment Type Name', FAKTURO_TEXT_DOMAIN ),
+			'separate_items_with_commas' => __( 'Separate Payment Type with commas', FAKTURO_TEXT_DOMAIN ),
+			'add_or_remove_items'        => __( 'Add or remove Payment Types', FAKTURO_TEXT_DOMAIN ),
+			'choose_from_most_used'      => __( 'Choose from the most used Payment Types', FAKTURO_TEXT_DOMAIN ),
+			'not_found'                  => __( 'No Payment Types found.', FAKTURO_TEXT_DOMAIN ),
+			'menu_name'                  => __( 'Payment Types', FAKTURO_TEXT_DOMAIN ),
+		);
 
+		$args_model = array(
+			'hierarchical'          => false,
+			'labels'                => $labels_model,
+			'show_ui'               => true,
+			'show_admin_column'     => true,
+			'query_var'             => true,
+			'rewrite'               => array( 'slug' => 'fktr-payment-types' ),
+		);
+		register_taxonomy(
+			'fktr_payment_types',
+			'',
+			$args_model
+		);
 	}
 	
 	

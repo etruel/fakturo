@@ -67,6 +67,13 @@ class fktrAdminMenu {
 			'manage_options',
 			'edit-tags.php?taxonomy=fktr_bank_entities'
 		);
+		$page = add_submenu_page(
+			'edit.php?post_type=fakturo&page=ftkr-settings',
+			__( 'Payment Types', FAKTURO_TEXT_DOMAIN ),
+			__( 'Payment Types', FAKTURO_TEXT_DOMAIN ),
+			'manage_options',
+			'edit-tags.php?taxonomy=fktr_payment_types'
+		);
 		
 		
 		
