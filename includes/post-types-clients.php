@@ -24,6 +24,8 @@ class fktrPostTypeClients {
 		add_filter('fktr_clean_client_fields', array('fktrPostTypeClients', 'clean_fields'), 10, 1);
 		
 		
+		add_action('wp_ajax_get_client_states', array('fktrPostTypeClients', 'get_client_states'));
+		
 	}
 	public static function setup() {
 		$labels = array( 
@@ -78,7 +80,14 @@ class fktrPostTypeClients {
 		);
 
 		register_post_type( 'fktr_client', $args );
-
+		add_filter('enter_title_here', array('fktrPostTypeClients', 'name_placeholder'),10,2);
+	}
+	public static function name_placeholder( $title_placeholder , $post ) {
+		if($post->post_type == 'fktr_client') {
+			$title_placeholder = __('Enter Client name here', FAKTURO_TEXT_DOMAIN );
+			
+		}
+		return $title_placeholder;
 	}
 	public static function scripts() {
 		global $post_type;
@@ -113,10 +122,37 @@ class fktrPostTypeClients {
 		
 		add_meta_box('fakturo-active-box', __('Active client', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'active'), 'fktr_client', 'side', 'high');
 		remove_meta_box('postimagediv', 'fktr_client', 'side' );
+		add_meta_box('postimagediv', __('Provider Image', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'thumbnail_box'), 'fktr_client', 'side', 'high');
 		add_meta_box('fakturo-trade-box', __('Trader data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'trade_box'),'fktr_client','normal', 'default' );
 		add_meta_box('fakturo-data-box', __('Client data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'data_box'),'fktr_client','normal', 'default' );
 		add_meta_box('fakturo-options-box', __('Client Contacts', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'options_box'),'fktr_client','normal', 'default' );
 		do_action('add_ftkr_client_meta_boxes');
+	}
+	public static function thumbnail_box() {
+		global $post;
+		$thumbnail_id = get_post_meta($post->ID, '_thumbnail_id', true );
+		$echoHtml = '
+			<div id="snapshot_container_wrapper">
+				<div id="snapshot_container_buttons">
+					<a id="snapshot_btn" href="javascript:showSnapshot()" class="nobutton">' . __( 'Take a snapshot', FAKTURO_TEXT_DOMAIN ) . '</a>
+					<div id="my_camera" style="display:none;">				
+					</div>
+					<img src="" id="snap_image" style="display:none;">
+					<input type="hidden" name="webcam_image">
+					<a href="javascript:take_snapshot()" class="button" id="take_snapshot" style="display:none;">'.__( 'Snapshot').'</a>
+					<a href="javascript:reset_webcam()" class="button" id="snapshot_reset" style="display:none;">'.__( 'Reset').'</a>
+					<a href="javascript:snapshot_cancel()" class="button" id="snapshot_cancel" style="display:none;">'.__( 'Cancel').'</a>
+				</div>
+			</div>
+			<div class="featured-image-client">
+							'._wp_post_thumbnail_html( $thumbnail_id, $post->ID ).'
+				</div>
+			';
+			
+		$echoHtml = apply_filters('fktr_client_thumbnail_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_client_thumbnail_box', $echoHtml);
+		
 	}
 	public static function active() {
 		global $post;
@@ -143,8 +179,8 @@ class fktrPostTypeClients {
 		
 		
 		$selectPaymentTypes = wp_dropdown_categories( array(
-			'show_option_all'    => __('Choose a Payment Type', FAKTURO_TEXT_DOMAIN ),
-			'show_option_none'   => '',
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a Payment Type', FAKTURO_TEXT_DOMAIN ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -162,18 +198,11 @@ class fktrPostTypeClients {
 			'hide_if_empty'      => false
 		));
 		
-		if (strlen($selectPaymentTypes) < 99) {
-			
-			$selectPaymentTypes = '<select name="selected_payment_type" id="selected_payment_type">
-								<option value="0">'. __('Choose a Payment Type', FAKTURO_TEXT_DOMAIN ) .'</option>
-							</select>';
-		}
-		
 		
 		
 		$selectBankEntities = wp_dropdown_categories( array(
-			'show_option_all'    => __('Choose a Bank Entity', FAKTURO_TEXT_DOMAIN ),
-			'show_option_none'   => '',
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a Bank Entity', FAKTURO_TEXT_DOMAIN ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -190,12 +219,70 @@ class fktrPostTypeClients {
 			'taxonomy'           => 'fktr_bank_entities',
 			'hide_if_empty'      => false
 		));
-		if (strlen($selectBankEntities) < 95) {
-			
-			$selectBankEntities = '<select name="selected_bank_entity" id="selected_bank_entity">
-								<option value="0">'. __('Choose a Bank Entity', FAKTURO_TEXT_DOMAIN ) .'</option>
-							</select>';
-		}
+		
+		
+		
+		$selectTaxCondition = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a Tax Condition', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $client_data['selected_tax_condition'],
+			'hierarchical'       => 1, 
+			'name'               => 'selected_tax_condition',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_tax_conditions',
+			'hide_if_empty'      => false
+		));
+		
+		$selectPriceScale = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a Price Scale', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $client_data['selected_price_scale'],
+			'hierarchical'       => 1, 
+			'name'               => 'selected_price_scale',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_price_scales',
+			'hide_if_empty'      => false
+		));
+		
+		$selectCurrency = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a Currency', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $client_data['selected_currency'],
+			'hierarchical'       => 1, 
+			'name'               => 'selected_currency',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_currencies',
+			'hide_if_empty'      => false
+		));
+	
+		
 		
 		$echoHtml = '<table class="form-table">
 					<tbody>
@@ -220,7 +307,28 @@ class fktrPostTypeClients {
 						<th><label for="bank_account">'.__('Bank Account', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
 						<td><input id="bank_account" type="text" name="bank_account" value="'.$client_data['bank_account'].'" class="regular-text"></td>
 					</tr>
-
+					<tr class="user-facebook-wrap">
+						<th><label for="selected_tax_condition">'.__('Tax Condition', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<td>'.$selectTaxCondition.'</td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="selected_price_scale">'.__('Price Scale', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<td>'.$selectPriceScale.'</td>
+					</tr>
+					<tr class="user-facebook-wrap">
+						<th><label for="selected_currency">'.__('Currency', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<td>'.$selectCurrency.'</td>
+					</tr>
+					
+					<tr class="user-facebook-wrap">
+						<th><label for="credit_limit">'.__('Credit Limit', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<td><input id="credit_limit" type="number" name="credit_limit" value="'.$client_data['credit_limit'].'" class="small-text"/></td>
+					</tr>
+					
+					<tr class="user-facebook-wrap">
+						<th><label for="credit_limit_interval">'.__('Credit Limit Interval', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<td><input id="credit_limit_interval" type="number" name="credit_limit_interval" value="'.$client_data['credit_limit_interval'].'" class="small-text"/></td>
+					</tr>
 					
 					</tbody>
 				</table>';
@@ -233,8 +341,8 @@ class fktrPostTypeClients {
 		global $post;
 		$client_data = self::get_client_data($post->ID);
 		$selectCountry = wp_dropdown_categories( array(
-			'show_option_all'    => __('Choose a country', FAKTURO_TEXT_DOMAIN ),
-			'show_option_none'   => '',
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a country', FAKTURO_TEXT_DOMAIN ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -251,16 +359,11 @@ class fktrPostTypeClients {
 			'taxonomy'           => 'fktr_locations',
 			'hide_if_empty'      => false
 		));
-		if (strlen($selectCountry) < 95) {
-			
-			$selectCountry = '<select name="selected_country" id="selected_country">
-								<option value="0">'. __('Choose a country', FAKTURO_TEXT_DOMAIN ) .'</option>
-							</select>';
-		}
+		
 		
 		$selectState = wp_dropdown_categories( array(
-			'show_option_all'    => __('Choose a state', FAKTURO_TEXT_DOMAIN ),
-			'show_option_none'   => '',
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a state', FAKTURO_TEXT_DOMAIN ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -277,8 +380,28 @@ class fktrPostTypeClients {
 			'taxonomy'           => 'fktr_locations',
 			'hide_if_empty'      => false
 		));
+
+		$selectEmptyState = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a state', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => -99,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $client_data['selected_state'],
+			'hierarchical'       => 1, 
+			'name'               => 'selected_state',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_locations',
+			'hide_if_empty'      => false
+		));
 		
-		if ($client_data['selected_country'] == 0 || strlen($selectState) < 90) {
+		if ($client_data['selected_country'] == 0 || strlen($selectState) < strlen($selectEmptyState)+1) {
 			
 			$selectState = '<select name="selected_state" id="selected_state">
 								<option value="0">'. __('Choose a country before', FAKTURO_TEXT_DOMAIN ) .'</option>
@@ -407,10 +530,45 @@ class fktrPostTypeClients {
 	}
 	
 	
+	public static function get_client_states() {
+		if (!is_numeric($_POST['country_id'])) {
+			$_POST['country_id']= 0;
+		}
+		
+		$selectState = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a state', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => $_POST['country_id'],
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => -1,
+			'hierarchical'       => 1, 
+			'name'               => 'selected_state',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_locations',
+			'hide_if_empty'      => false
+		));
+		if ($_POST['country_id'] < 1 ) {
+			
+			$selectState = '<select name="selected_state" id="selected_state">
+								<option value="0">'. __('Choose a country before', FAKTURO_TEXT_DOMAIN ) .'</option>
+							</select>';
+		}
+		wp_die($selectState);
+		
+		
+	}
+	
 	public static function clean_fields($fields) {
 		
 		if (!isset($fields['active'])) {
-			$fields['active'] = 0;
+			$fields['active'] = 1;
 		}
 		
 		
@@ -425,6 +583,21 @@ class fktrPostTypeClients {
 		}
 		if (!isset($fields['bank_account'])) {
 			$fields['bank_account'] = '';
+		}
+		if (!isset($fields['selected_tax_condition'])) {
+			$fields['selected_tax_condition'] = 0;
+		}
+		if (!isset($fields['selected_price_scale'])) {
+			$fields['selected_price_scale'] = 0;
+		}
+		if (!isset($fields['selected_currency'])) {
+			$fields['selected_currency'] = 0;
+		}
+		if (!isset($fields['credit_limit'])) {
+			$fields['credit_limit'] = 0;
+		}
+		if (!isset($fields['credit_limit_interval'])) {
+			$fields['credit_limit_interval'] = 0;
 		}
 		
 		
@@ -483,6 +656,11 @@ class fktrPostTypeClients {
 			$fields['selected_payment_type'] = 0;
 			$fields['selected_bank_entity'] = 0;
 			$fields['bank_account'] = '';
+			$fields['selected_tax_condition'] = 0;
+			$fields['selected_price_scale'] = 0;
+			$fields['selected_currency'] = 0;
+			$fields['credit_limit'] = 0;
+			$fields['credit_limit_interval'] = 0;
 			
 			
 			$fields['address'] = '';
@@ -535,10 +713,37 @@ class fktrPostTypeClients {
 		$fields = apply_filters('fktr_clean_client_fields',$_POST);
 		$fields = apply_filters('fktr_client_before_save',$fields);
 		
+		if (isset($fields['webcam_image']) && $fields['webcam_image'] != NULL ) {
+			delete_post_meta($post_id, '_thumbnail_id');
+			$filename = 'webcam_image_'.microtime().'.jpg';
+			$file = wp_upload_bits($filename, null, base64_decode(substr($fields['webcam_image'], 23)));
+			if ($file['error'] == FALSE) {
+				$wp_filetype = wp_check_filetype($filename, null );
+				$attachment = array(
+					'post_mime_type' => $wp_filetype['type'],
+					'post_parent' => $post_id,
+					'post_title' => preg_replace('/\.[^.]+$/', '', $filename),
+					'post_content' => '',
+					'post_status' => 'inherit'
+				);
+				$attachment_id = wp_insert_attachment( $attachment, $file['file'], $post_id );
+				if (!is_wp_error($attachment_id)) {
+					require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+					$attachment_data = wp_generate_attachment_metadata( $attachment_id, $file['file'] );
+					wp_update_attachment_metadata( $attachment_id,  $attachment_data );
+				}
+				$new = apply_filters('fktr_client_thumbnail_id', $attachment_id);
+				add_post_meta($post_id, '_thumbnail_id', $new);
+				unset($fields['webcam_image']);
+			}
+		}
+		
+		
+		
 		foreach ($fields as $field => $value ) {
 			
 			if ( !is_null( $value ) ) {
-				$new = apply_filters('fktr_provider_metabox_save_' . $field, $value );  //filtra cada campo antes de grabar
+				$new = apply_filters('fktr_client_metabox_save_' . $field, $value );  //filtra cada campo antes de grabar
 				update_post_meta( $post_id, $field, $new );
 				
 			}

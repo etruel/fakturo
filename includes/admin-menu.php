@@ -73,6 +73,27 @@ class fktrAdminMenu {
 			'manage_options',
 			'edit-tags.php?taxonomy=fktr_payment_types'
 		);
+		$page = add_submenu_page(
+			'edit.php?post_type=fakturo&page=ftkr-settings',
+			__( 'Tax Conditions', FAKTURO_TEXT_DOMAIN ),
+			__( 'Tax Conditions', FAKTURO_TEXT_DOMAIN ),
+			'manage_options',
+			'edit-tags.php?taxonomy=fktr_tax_conditions'
+		);
+		$page = add_submenu_page(
+			'edit.php?post_type=fakturo&page=ftkr-settings',
+			__( 'Price Scales', FAKTURO_TEXT_DOMAIN ),
+			__( 'Price Scales', FAKTURO_TEXT_DOMAIN ),
+			'manage_options',
+			'edit-tags.php?taxonomy=fktr_price_scales'
+		);
+		$page = add_submenu_page(
+			'edit.php?post_type=fakturo&page=ftkr-settings',
+			__( 'Currencies', FAKTURO_TEXT_DOMAIN ),
+			__( 'Currencies', FAKTURO_TEXT_DOMAIN ),
+			'manage_options',
+			'edit-tags.php?taxonomy=fktr_currencies'
+		);
 		
 		
 		
@@ -84,7 +105,7 @@ class fktrAdminMenu {
 		global $post_type, $current_screen;
 		if( strpos($current_screen->id, "fktr")!==FALSE || strpos($current_screen->id, "fakturo")!==FALSE ) {
 			wp_enqueue_style('main',FAKTURO_PLUGIN_URL .'assets/css/main.css');	
-			wp_enqueue_style('main',FAKTURO_PLUGIN_URL .'assets/css/icons.css');	
+			wp_enqueue_style('icons',FAKTURO_PLUGIN_URL .'assets/css/icons.css');	
 		}
 		
 	}

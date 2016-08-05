@@ -19,157 +19,95 @@ class fktrSettings {
 	
 	public static function add_setting_tabs() {
 		global $current_screen;
-		if( ($current_screen->id == "edit-fktr_locations") 
-			|| ($current_screen->id == "edit-fktr_bank_entities") 
-			|| ($current_screen->id == "edit-fktr_payment_types") 
-//			|| ($current_screen->id == "fktr_settings_screen") 
-		) {
-			//echo "Agregar tabs aca<br>--------------------------------------";
-			
-			$fktr_taxonomies = array(
-				'fktr_locations',
-				'fktr_bank_entities',
-				'fktr_payment_types',
-				);
-			$url = $_SERVER['REQUEST_URI'];
-			foreach($fktr_taxonomies as $fktr_tax) {
-				if( strpos($url, $fktr_tax) ){
-					$url = admin_url("edit-tags.php?taxonomy=".$fktr_tax);
-					break;
-				}
-			}
-
-			$tabs = self::get_Fakturo_Setting_Tabs();
-			//echo '<div id="icon-themes" class="icon32"><br></div>';
-			echo '<h2 class="nav-tab-wrapper fktr-settings-tabs">';
-			if (isset($_GET['tab'])) {
-			  $current_tab = $_GET['tab'];
-			} else {
-			  $current_tab = key($tabs);
-			}
-			
-			foreach( $tabs as $tab_id => $tab_name ){
-				$tab_url = add_query_arg( array('tab' => $tab_id), $url );
-
-				// Remove the section from the tabs so we always end up at the main section
-				$tab_url = remove_query_arg( 'section', $tab_url );
-//				$tab_url = remove_query_arg( array('section'), $tab_url );
-
-				$active = $current_tab == $tab_id ? ' nav-tab-active' : '';
-				echo '<a href="' . esc_url( $tab_url ) . '" title="' . esc_attr( $tab_name ) . '" class="nav-tab' . $active . '">' . esc_html( $tab_name ) . '</a>';
-
-//				$class = ( $tab_id == $current_tab ) ? ' nav-tab-active' : '';
-//				echo "<a class='nav-tab$class' href='?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$tab_id'>$tab_name</a>";
-			}
-			echo '</h2>';
-
-			// sections
-			$sections = self::get_Fakturo_Setting_Section($current_tab);
-
-			echo '<div class="fktr-sections"><ul class="subsubsub">';
-			if (isset($_GET['section'])) {
-			  $current_section = $_GET['section'];
-			} else {
-			  $current_section = key($sections);
-			}
-			$endSection = end($sections);
-			foreach ($sections as $section_id => $section_name) {
-				$section_url = add_query_arg( array(
-					'tab' => $current_tab,
-					'section' => $section_id
-				), $tab_url);
-/*				$class = ( $section_id == $current_section ) ? ' current' : '';
-				$delimiter = ($section_name != $endSection) ? ' | ' : '';
-				echo "<li><a class='$class' href='?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$current_tab&section=$section_id'>$section_name</a>$delimiter</li>";
-*/
-				$active = $current_section == $section_id ?  ' current' : '';
-				$delimiter = ($section_name != $endSection) ? ' | ' : '';
-				echo '<li><a href="' . esc_url( $section_url ) . '" title="' . esc_attr( $section_name ) . '" class="' . $active . '">' . esc_html( $section_name ) . '</a>' . $delimiter . '</li>';
-			}
-			echo '</ul></div>';
-			
-			//if( ! taxonomy ) {
-			?>
-			<div id="tab_container">
-				<form method="post" action="options.php">
-					<table class="form-table">
-					<?php
-					do_action( 'fktr_settings_tab_' . $current_tab . '_' . $current_section );
-					?>
-					</table>
-					<?php submit_button(); ?>
-				</form>
-			</div><!-- #tab_container-->
-			<?php
-			//}   // if( ! taxonomy ) {
-		}
-	}
-	
-	public static function get_Fakturo_Setting_tabs() {
-		$tabs = array( 
-			'general' => __( '​​General Settings', FAKTURO_TEXT_DOMAIN ), 
-			'tables' => __( 'Tables', FAKTURO_TEXT_DOMAIN ), 
-			'products' => __( '​​Products', FAKTURO_TEXT_DOMAIN ), 
-			'taxes' => __( 'Taxes', FAKTURO_TEXT_DOMAIN ), 
-			'extensions' => __( '​​Extensions', FAKTURO_TEXT_DOMAIN )
-			);
-		return apply_filters( 'Fakturo_Setting_Tabs', $tabs );
-	}
-	
-	public static function get_Fakturo_Setting_sections() {
-		$sections = array(
+		
+		
+		$sections_tabs = array(
 			'general' => array( 
-				'company_info' => __( 'Company Info', FAKTURO_TEXT_DOMAIN ), 
-				'system_settings' => __( 'System Settings', FAKTURO_TEXT_DOMAIN ), 
-				'invoice_type' => __( 'Invoice Types', FAKTURO_TEXT_DOMAIN ),
-				'payment_types' => __( 'Payment Types', FAKTURO_TEXT_DOMAIN ), 
-	//			'user_preferences' => __( 'User Preferences', FAKTURO_TEXT_DOMAIN ), 
-	//			'users' => __( 'Users', FAKTURO_TEXT_DOMAIN ),
+				'company_info' => array('text' => __( 'Company Info', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') , 
+				'system_settings' =>  array('text' => __( 'System Settings', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => ''), 
+				'invoice_type' =>  array('text' => __( 'Invoice Types', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => ''),
+				'payment_types' =>  array('text' => __( 'Payment Types', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_payment_types'), 'screen' => 'edit-fktr_payment_types'), 
+				'default' => array('text' => __( '​​General Settings', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_payment_types'), 'screen' => 'edit-fktr_payment_types')
+	
 			),
 			'tables' => array( 
-	//			'user-template' => __( 'User Template', FAKTURO_TEXT_DOMAIN ),
-				'print-template' => __( 'Print Template', FAKTURO_TEXT_DOMAIN ), 
-				'currencies' => __( 'Currencies', FAKTURO_TEXT_DOMAIN ),
-				'bank_entities' => __( 'Bank Entities', FAKTURO_TEXT_DOMAIN ),
-				'countries' => __( 'Countries', FAKTURO_TEXT_DOMAIN ),
-				'states' => __( 'States', FAKTURO_TEXT_DOMAIN ),
+				'print-template' =>  array('text' => __( 'Print Template', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => ''), 
+				'currencies' =>  array('text' => __( 'Currencies', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_currencies'), 'screen' => 'edit-fktr_currencies'),
+				'bank_entities' =>  array('text' => __( 'Bank Entities', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_bank_entities'), 'screen' => 'edit-fktr_bank_entities'),
+				'countries' => array('text' => __( 'Countries and States', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_locations'), 'screen' => 'edit-fktr_locations') ,
+				'default' => array('text' => __( 'Tables', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_currencies'), 'screen' => 'edit-fktr_currencies')
 			),
 			'products' => array( 
-				'product_types' => __( 'Product Types', FAKTURO_TEXT_DOMAIN ),
-				'locations' => __( 'Locations', FAKTURO_TEXT_DOMAIN ),
-				'packagings' => __( 'Packagings', FAKTURO_TEXT_DOMAIN ), 
-				'price_scales' => __( 'Price Scales', FAKTURO_TEXT_DOMAIN ),
-				'origins' => __( 'Origins', FAKTURO_TEXT_DOMAIN ),
+				'product_types' =>  array('text' => __( 'Product Types', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') ,
+				'locations' => array('text' =>  __( 'Locations', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => ''),
+				'packagings' =>  array('text' => __( 'Packagings', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') , 
+				'price_scales' =>  array('text' => __( 'Price Scales', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_price_scales'), 'screen' => 'edit-fktr_price_scales') ,
+				'origins' =>  array('text' => __( 'Origins', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') ,
+				'default' => array('text' => __( '​​Products', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_price_scales'), 'screen' => 'edit-fktr_price_scales')
 			),
 			'taxes' => array( 
-				'taxes' => __( 'Taxes', FAKTURO_TEXT_DOMAIN ),
-				'tax_condition' => __( 'Tax Conditions', FAKTURO_TEXT_DOMAIN ),
+				'taxes' =>  array('text' => __( 'Taxes', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') ,
+				'tax_condition' => array('text' => __( 'Tax Conditions', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax_conditions'), 'screen' => 'edit-fktr_tax_conditions')  ,
+				'default' => array('text' => __( 'Taxes', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax_conditions'), 'screen' => 'edit-fktr_tax_conditions')
 			),
 			'extensions' => array( 
-				'repairs_status' => __( 'Repairs Status', FAKTURO_TEXT_DOMAIN ),
-				'emails' => __( 'Emails', FAKTURO_TEXT_DOMAIN ), 
+				'repairs_status' =>  array('text' => __( 'Repairs Status', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') ,
+				'emails' =>  array('text' => __( 'Emails', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') , 
+				'default' => array('text' => __( '​​Extensions', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '')
 			)
 		);
-		return apply_filters( 'Fakturo_Setting_Sections', $sections);
-	}
-
-	public static function get_Fakturo_Setting_Section($tab_name = 'general') {
-		return self::get_Fakturo_Setting_sections()[$tab_name];
-	}
-
-	public static function getFakturoCurrentSection() {
-		if (isset($_GET['section'])) {
-			return $_GET['section'];
+		
+		$sections_tabs = apply_filters('ftkr_tabs_sections', $sections_tabs);
+		
+		$print_tabs = false;
+		foreach ($sections_tabs as $tabs_mains) {
+			foreach ($tabs_mains as $sections) {
+				if($current_screen->id == $sections['screen']) {
+					$print_tabs = true;
+					break;
+				}
+				
+			}
 		}
+		
+		
+		if($print_tabs) {
+			
+			echo '<h2 class="nav-tab-wrapper fktr-settings-tabs">';
+			$current_tab = 'general';
+			foreach ($sections_tabs as $tab_id => $tabs_mains) {
+				$tab_url = $tabs_mains['default']['url'];
+				$tab_name = $tabs_mains['default']['text']; 
+				foreach ($tabs_mains as $sections) {
+					if ($current_screen->id == $sections['screen']){
+						$current_tab = $tab_id;
+						$active = ' nav-tab-active';
+						break;
+					} else  {
+						$active = '';
+					} 
+				}
+				echo '<a href="' . esc_url( $tab_url ) . '" title="' . esc_attr( $tab_name ) . '" class="nav-tab' . $active . '">' . esc_html( $tab_name ) . '</a>';
 
-		if (isset($_GET['tab'])) {
-			return key(self::get_Fakturo_Setting_Section($_GET['tab']));
+			}
+			echo '</h2>';
+			echo '<div class="fktr-sections"><ul class="subsubsub">';
+			$delimiter = '';
+			foreach ($sections_tabs[$current_tab] as $sec_id => $sections) {
+				if ($sec_id != 'default') {
+					$active = $current_screen->id == $sections['screen'] ?  ' current' : '';
+					echo '<li>'.$delimiter.'<a href="' . esc_url( $sections['url'] ) . '" title="' . esc_attr( $sections['text'] ) . '" class="' . $active . '">' . esc_html( $sections['text'] ) . '</a></li>';
+					$delimiter = ' | ';
+				}
+			}
+			
+			echo '</ul></div>';
+			
+			
 		}
-		return key(self::get_Fakturo_Setting_Section( key(self::get_Fakturo_Setting_Tabs()) ));
 	}
 	
-	
-	
+
 	public static function load_taxonomies() {
 		$labels_model = array(
 			'name'                       => _x( 'Locations', 'Locations', FAKTURO_TEXT_DOMAIN ),
@@ -273,6 +211,110 @@ class fktrSettings {
 			'',
 			$args_model
 		);
+		
+		
+		
+		$labels_model = array(
+			'name'                       => _x( 'Tax Conditions', 'Tax Conditions', FAKTURO_TEXT_DOMAIN ),
+			'singular_name'              => _x( 'Tax Condition', 'Tax Condition', FAKTURO_TEXT_DOMAIN ),
+			'search_items'               => __( 'Search Tax Conditions', FAKTURO_TEXT_DOMAIN ),
+			'popular_items'              => __( 'Popular Tax Conditions', FAKTURO_TEXT_DOMAIN ),
+			'all_items'                  => __( 'All Tax Conditions', FAKTURO_TEXT_DOMAIN ),
+			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
+			'parent_item_colon'          => null,
+			'edit_item'                  => __( 'Edit Tax Condition', FAKTURO_TEXT_DOMAIN ),
+			'update_item'                => __( 'Update Tax Condition', FAKTURO_TEXT_DOMAIN ),
+			'add_new_item'               => __( 'Add New Tax Condition', FAKTURO_TEXT_DOMAIN ),
+			'new_item_name'              => __( 'New Tax Condition Name', FAKTURO_TEXT_DOMAIN ),
+			'separate_items_with_commas' => __( 'Separate Tax Condition with commas', FAKTURO_TEXT_DOMAIN ),
+			'add_or_remove_items'        => __( 'Add or remove Tax Conditions', FAKTURO_TEXT_DOMAIN ),
+			'choose_from_most_used'      => __( 'Choose from the most used Tax Conditions', FAKTURO_TEXT_DOMAIN ),
+			'not_found'                  => __( 'No Tax Conditions found.', FAKTURO_TEXT_DOMAIN ),
+			'menu_name'                  => __( 'Tax Conditions', FAKTURO_TEXT_DOMAIN ),
+		);
+
+		$args_model = array(
+			'hierarchical'          => false,
+			'labels'                => $labels_model,
+			'show_ui'               => true,
+			'show_admin_column'     => true,
+			'query_var'             => true,
+			'rewrite'               => array( 'slug' => 'fktr-tax-conditions' ),
+		);
+		register_taxonomy(
+			'fktr_tax_conditions',
+			'',
+			$args_model
+		);
+		
+		
+		$labels_model = array(
+			'name'                       => _x( 'Price Scales', 'Price Scales', FAKTURO_TEXT_DOMAIN ),
+			'singular_name'              => _x( 'Price Scale', 'Price Scale', FAKTURO_TEXT_DOMAIN ),
+			'search_items'               => __( 'Search Price Scales', FAKTURO_TEXT_DOMAIN ),
+			'popular_items'              => __( 'Popular Price Scales', FAKTURO_TEXT_DOMAIN ),
+			'all_items'                  => __( 'All Price Scales', FAKTURO_TEXT_DOMAIN ),
+			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
+			'parent_item_colon'          => null,
+			'edit_item'                  => __( 'Edit Price Scale', FAKTURO_TEXT_DOMAIN ),
+			'update_item'                => __( 'Update Price Scale', FAKTURO_TEXT_DOMAIN ),
+			'add_new_item'               => __( 'Add New Price Scale', FAKTURO_TEXT_DOMAIN ),
+			'new_item_name'              => __( 'New Price Scale Name', FAKTURO_TEXT_DOMAIN ),
+			'separate_items_with_commas' => __( 'Separate Price Scale with commas', FAKTURO_TEXT_DOMAIN ),
+			'add_or_remove_items'        => __( 'Add or remove Price Scales', FAKTURO_TEXT_DOMAIN ),
+			'choose_from_most_used'      => __( 'Choose from the most used Price Scales', FAKTURO_TEXT_DOMAIN ),
+			'not_found'                  => __( 'No Price Scales found.', FAKTURO_TEXT_DOMAIN ),
+			'menu_name'                  => __( 'Price Scales', FAKTURO_TEXT_DOMAIN ),
+		);
+
+		$args_model = array(
+			'hierarchical'          => false,
+			'labels'                => $labels_model,
+			'show_ui'               => true,
+			'show_admin_column'     => true,
+			'query_var'             => true,
+			'rewrite'               => array( 'slug' => 'fktr-price-scales' ),
+		);
+		register_taxonomy(
+			'fktr_price_scales',
+			'',
+			$args_model
+		);
+		
+		
+		$labels_model = array(
+			'name'                       => _x( 'Currencies', 'Currencies', FAKTURO_TEXT_DOMAIN ),
+			'singular_name'              => _x( 'Currency', 'Currency', FAKTURO_TEXT_DOMAIN ),
+			'search_items'               => __( 'Search Currencies', FAKTURO_TEXT_DOMAIN ),
+			'popular_items'              => __( 'Popular Currencies', FAKTURO_TEXT_DOMAIN ),
+			'all_items'                  => __( 'All Currencies', FAKTURO_TEXT_DOMAIN ),
+			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
+			'parent_item_colon'          => null,
+			'edit_item'                  => __( 'Edit Currency', FAKTURO_TEXT_DOMAIN ),
+			'update_item'                => __( 'Update Currency', FAKTURO_TEXT_DOMAIN ),
+			'add_new_item'               => __( 'Add New Currency', FAKTURO_TEXT_DOMAIN ),
+			'new_item_name'              => __( 'New Currency Name', FAKTURO_TEXT_DOMAIN ),
+			'separate_items_with_commas' => __( 'Separate Currency with commas', FAKTURO_TEXT_DOMAIN ),
+			'add_or_remove_items'        => __( 'Add or remove Currencies', FAKTURO_TEXT_DOMAIN ),
+			'choose_from_most_used'      => __( 'Choose from the most used Currencies', FAKTURO_TEXT_DOMAIN ),
+			'not_found'                  => __( 'No Currencies found.', FAKTURO_TEXT_DOMAIN ),
+			'menu_name'                  => __( 'Currencies', FAKTURO_TEXT_DOMAIN ),
+		);
+
+		$args_model = array(
+			'hierarchical'          => false,
+			'labels'                => $labels_model,
+			'show_ui'               => true,
+			'show_admin_column'     => true,
+			'query_var'             => true,
+			'rewrite'               => array( 'slug' => 'fktr-currencies' ),
+		);
+		register_taxonomy(
+			'fktr_currencies',
+			'',
+			$args_model
+		);
+		
 	}
 	
 	

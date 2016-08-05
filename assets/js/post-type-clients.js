@@ -1,12 +1,16 @@
 jQuery(document).ready(function() {
 	jQuery("#selected_country").select2();
 	jQuery("#selected_payment_type").select2();
+	jQuery("#selected_tax_condition").select2();
+	
+	jQuery("#selected_price_scale").select2();
+	jQuery("#selected_currency").select2();
 	
 	jQuery('#user_contacts').vSort();
 	jQuery("#selected_country").on("change", function (e) {
 		
 		var data = {
-			action: 'get_provider_states',
+			action: 'get_client_states',
 			country_id: this.value
 		}
 		jQuery("#td_select_state").html(providers_object.loading_states_text);
