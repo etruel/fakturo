@@ -25,35 +25,80 @@ class fktrSettings {
 //			|| ($current_screen->id == "fktr_settings_screen") 
 		) {
 			//echo "Agregar tabs aca<br>--------------------------------------";
+			
+			$fktr_taxonomies = array(
+				'fktr_locations',
+				'fktr_bank_entities',
+				'fktr_payment_types',
+				);
+			$url = $_SERVER['REQUEST_URI'];
+			foreach($fktr_taxonomies as $fktr_tax) {
+				if( strpos($url, $fktr_tax) ){
+					$url = admin_url("edit-tags.php?taxonomy=".$fktr_tax);
+					break;
+				}
+			}
+
 			$tabs = self::get_Fakturo_Setting_Tabs();
 			//echo '<div id="icon-themes" class="icon32"><br></div>';
 			echo '<h2 class="nav-tab-wrapper fktr-settings-tabs">';
 			if (isset($_GET['tab'])) {
-			  $currentTab = $_GET['tab'];
+			  $current_tab = $_GET['tab'];
 			} else {
-			  $currentTab = key($tabs);
+			  $current_tab = key($tabs);
 			}
-			foreach( $tabs as $tab => $name ){
-				$class = ( $tab == $currentTab ) ? ' nav-tab-active' : '';
-				echo "<a class='nav-tab$class' href='?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$tab'>$name</a>";
+			
+			foreach( $tabs as $tab_id => $tab_name ){
+				$tab_url = add_query_arg( array('tab' => $tab_id), $url );
+
+				// Remove the section from the tabs so we always end up at the main section
+				$tab_url = remove_query_arg( 'section', $tab_url );
+//				$tab_url = remove_query_arg( array('section'), $tab_url );
+
+				$active = $current_tab == $tab_id ? ' nav-tab-active' : '';
+				echo '<a href="' . esc_url( $tab_url ) . '" title="' . esc_attr( $tab_name ) . '" class="nav-tab' . $active . '">' . esc_html( $tab_name ) . '</a>';
+
+//				$class = ( $tab_id == $current_tab ) ? ' nav-tab-active' : '';
+//				echo "<a class='nav-tab$class' href='?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$tab_id'>$tab_name</a>";
 			}
 			echo '</h2>';
 
 			// sections
-			$sections = self::get_Fakturo_Setting_Section($currentTab);
+			$sections = self::get_Fakturo_Setting_Section($current_tab);
+
 			echo '<div class="fktr-sections"><ul class="subsubsub">';
 			if (isset($_GET['section'])) {
-			  $currentSection = $_GET['section'];
+			  $current_section = $_GET['section'];
 			} else {
-			  $currentSection = key($sections);
+			  $current_section = key($sections);
 			}
 			$endSection = end($sections);
-			foreach ($sections as $key => $section) {
-			  $class = ( $key == $currentSection ) ? ' current' : '';
-			  $delimiter = ($section != $endSection) ? ' | ' : '';
-			  echo "<li><a class='$class' href='?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$currentTab&section=$key'>$section</a>$delimiter</li>";
+			foreach ($sections as $section_id => $section_name) {
+				$section_url = add_query_arg( array(
+					'tab' => $current_tab,
+					'section' => $section_id
+				), $tab_url);
+/*				$class = ( $section_id == $current_section ) ? ' current' : '';
+				$delimiter = ($section_name != $endSection) ? ' | ' : '';
+				echo "<li><a class='$class' href='?page=fakturo%2Fsettings%2Ffakturo_settings.php&tab=$current_tab&section=$section_id'>$section_name</a>$delimiter</li>";
+*/
+				$active = $current_section == $section_id ?  ' current' : '';
+				$delimiter = ($section_name != $endSection) ? ' | ' : '';
+				echo '<li><a href="' . esc_url( $section_url ) . '" title="' . esc_attr( $section_name ) . '" class="' . $active . '">' . esc_html( $section_name ) . '</a>' . $delimiter . '</li>';
 			}
-			echo '</ul></div>';			
+			echo '</ul></div>';
+			?>
+			<div id="tab_container">
+			<form method="post" action="options.php">
+				<table class="form-table">
+				<?php
+				do_action( 'fktr_settings_tab_' . $current_tab . '_' . $current_section );
+				?>
+				</table>
+				<?php submit_button(); ?>
+			</form>
+		</div><!-- #tab_container-->
+		<?php
 		}
 	}
 	
@@ -105,8 +150,8 @@ class fktrSettings {
 		return apply_filters( 'Fakturo_Setting_Sections', $sections);
 	}
 
-	public static function get_Fakturo_Setting_Section($name = 'general') {
-		return self::get_Fakturo_Setting_sections()[$name];
+	public static function get_Fakturo_Setting_Section($tab_name = 'general') {
+		return self::get_Fakturo_Setting_sections()[$tab_name];
 	}
 
 	public static function getFakturoCurrentSection() {
