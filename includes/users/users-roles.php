@@ -98,12 +98,11 @@ class fktrUserRoles {
 			add_action('wp_dashboard_setup',  array( __CLASS__, 'remove_dashboard_widgets' ));
 			add_action( 'admin_menu', array( __CLASS__, 'remove_menus' ) );
 		}
-
 	}
 
 	public static function fakturo_login_redirect($redirect_url, $POST_redirect_url, $user) {
 		if ( isset($user->ID) and ( user_can($user, 'fakturo_manager') || user_can($user, 'fakturo_seller') ) ) {
-			return admin_url('edit.php?post_type=fakturollerevents');
+			return admin_url('http://plugins_svn_git/wp-admin/fakturo/admin/fakturo_admin.php');
 		}
 		return $redirect_url;
 	}

@@ -14,47 +14,92 @@ class fktrSettings {
 		add_action( 'init', array('fktrSettings', 'load_taxonomies'), 1, 99 );
 		//add_action( 'in_admin_header', array('fktrSettings', 'probandoarriba'), 1, 0 );
 		add_action( 'all_admin_notices', array('fktrSettings', 'add_setting_tabs'), 1, 0 );
+		add_action( 'fakturo_settings_general_company_info', array('fktrSettings', 'general_company_info'), 1, 0 );
+		add_action( 'fakturo_settings_general_system_settings', array('fktrSettings', 'general_system_settings'), 1, 0 );
 	}
 
 	
+	public static function general_company_info() {  
+		//campos de general_system_settings
+		echo "campos de general_company_info";
+	}
+	
+	
+	public static function general_system_settings() {  
+		//campos de general_system_settings
+		echo "campos de general_system_settings";
+	}
+	
+	// usar esta misma page para todas las pantallas de settings 
+	public static function fakturo_settings() {  
+		global $current_screen,$fktr_current_tab,$fktr_current_sec;
+		?>
+		<div id="tab_container">
+			<form method="post" action="options.php">
+				<table class="form-table">
+				<?php
+				//echo $fktr_current_tab.'--'.$fktr_current_sec;
+
+				settings_fields( 'fakturo_settings' );
+
+				do_action( 'fakturo_settings_tab_top_' . $fktr_current_tab . '_' . $fktr_current_sec );
+
+				do_action( 'fakturo_settings_' . $fktr_current_tab . '_' . $fktr_current_sec );
+				//do_settings_sections( 'fakturo_settings_' . $fktr_current_tab . '_' . $fktr_current_sec );
+
+				do_action( 'fakturo_settings_tab_bottom_' . $fktr_current_tab . '_' . $fktr_current_sec  );
+
+				?>
+				</table>
+				<?php submit_button(); ?>
+			</form>
+		</div><!-- #tab_container-->
+		<?php
+	}
+	
 	public static function add_setting_tabs() {
-		global $current_screen;
+		global $current_screen,$fktr_current_tab,$fktr_current_sec;
 		
+		$tab_default = (isset($_GET['tab']) && !empty($_GET['tab']) ) ? $_GET['tab'] : 'company_info';
 		
 		$sections_tabs = array(
-			'general' => array( 
-				'company_info' => array('text' => __( 'Company Info', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') , 
-				'system_settings' =>  array('text' => __( 'System Settings', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => ''), 
+			'general' => apply_filters( 'edd_settings_sections_general', array( 
+				'company_info' => array('text' => __( 'Company Info', FAKTURO_TEXT_DOMAIN ) ) , 
+				'system_settings' =>  array('text' => __( 'System Settings', FAKTURO_TEXT_DOMAIN ) ), 
 				'invoice_type' =>  array('text' => __( 'Invoice Types', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => ''),
 				'payment_types' =>  array('text' => __( 'Payment Types', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_payment_types'), 'screen' => 'edit-fktr_payment_types'), 
-				'default' => array('text' => __( '​​General Settings', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_payment_types'), 'screen' => 'edit-fktr_payment_types')
-	
+				'default' => array('text' => __( 'General Settings', FAKTURO_TEXT_DOMAIN ), 'section' => 'company_info')
+				)
 			),
-			'tables' => array( 
+			'tables' => apply_filters( 'edd_settings_sections_tables', array(
 				'print-template' =>  array('text' => __( 'Print Template', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => ''), 
 				'currencies' =>  array('text' => __( 'Currencies', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_currencies'), 'screen' => 'edit-fktr_currencies'),
 				'bank_entities' =>  array('text' => __( 'Bank Entities', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_bank_entities'), 'screen' => 'edit-fktr_bank_entities'),
 				'countries' => array('text' => __( 'Countries and States', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_locations'), 'screen' => 'edit-fktr_locations') ,
-				'default' => array('text' => __( 'Tables', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_currencies'), 'screen' => 'edit-fktr_currencies')
+				'default' => array('text' => __( 'Tables', FAKTURO_TEXT_DOMAIN ), 'section' => 'currencies')
+				)
 			),
-			'products' => array( 
+			'products' => apply_filters( 'edd_settings_sections_products', array(
 				'product_types' =>  array('text' => __( 'Product Types', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') ,
 				'locations' => array('text' =>  __( 'Locations', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => ''),
 				'packagings' =>  array('text' => __( 'Packagings', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') , 
 				'price_scales' =>  array('text' => __( 'Price Scales', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_price_scales'), 'screen' => 'edit-fktr_price_scales') ,
 				'origins' =>  array('text' => __( 'Origins', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') ,
-				'default' => array('text' => __( '​​Products', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_price_scales'), 'screen' => 'edit-fktr_price_scales')
+				'default' => array('text' => __( '​​Products', FAKTURO_TEXT_DOMAIN ), 'section' => 'price_scales')
+				)
 			),
-			'taxes' => array( 
+			'taxes' => apply_filters( 'edd_settings_sections_taxes', array(
 				'taxes' =>  array('text' => __( 'Taxes', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') ,
 				'tax_condition' => array('text' => __( 'Tax Conditions', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax_conditions'), 'screen' => 'edit-fktr_tax_conditions')  ,
-				'default' => array('text' => __( 'Taxes', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax_conditions'), 'screen' => 'edit-fktr_tax_conditions')
+				'default' => array('text' => __( 'Taxes', FAKTURO_TEXT_DOMAIN ), 'section' => 'tax_condition')
+				)
 			),
-			'extensions' => array( 
+			'extensions' => apply_filters( 'edd_settings_sections_extensions', array(
 				'repairs_status' =>  array('text' => __( 'Repairs Status', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') ,
 				'emails' =>  array('text' => __( 'Emails', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') , 
-				'default' => array('text' => __( '​​Extensions', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '')
-			)
+				'default' => array('text' => __( '​​Extensions', FAKTURO_TEXT_DOMAIN ), 'section' => 'emails')
+				)
+			),
 		);
 		
 		$sections_tabs = apply_filters('ftkr_tabs_sections', $sections_tabs);
@@ -62,6 +107,7 @@ class fktrSettings {
 		$print_tabs = false;
 		foreach ($sections_tabs as $tabs_mains) {
 			foreach ($tabs_mains as $sections) {
+				$sections['screen'] = (isset($sections['screen']) && !empty($sections['screen']) ) ? $sections['screen'] : 'fakturo_page_fakturo-settings';
 				if($current_screen->id == $sections['screen']) {
 					$print_tabs = true;
 					break;
@@ -70,16 +116,20 @@ class fktrSettings {
 			}
 		}
 		
-		
 		if($print_tabs) {
-			
 			echo '<h2 class="nav-tab-wrapper fktr-settings-tabs">';
 			$current_tab = 'general';
 			foreach ($sections_tabs as $tab_id => $tabs_mains) {
-				$tab_url = $tabs_mains['default']['url'];
+				//$tab_url = $tabs_mains['default']['url'];
+				$tab_url = add_query_arg( array(
+					'tab' => $tab_id ) );
+
+				$sec_default = (isset($_GET['section']) && !empty($_GET['section']) ) ? $_GET['section'] : $tabs_mains['default']['section'];
 				$tab_name = $tabs_mains['default']['text']; 
 				foreach ($tabs_mains as $sections) {
-					if ($current_screen->id == $sections['screen']){
+					$sections['screen'] = (isset($sections['screen']) && !empty($sections['screen']) ) ? $sections['screen'] : 'fakturo_page_fakturo-settings';
+					
+					if ($current_screen->id == $sections['screen'] && $tab_default == $tab_id ){
 						$current_tab = $tab_id;
 						$active = ' nav-tab-active';
 						break;
@@ -94,16 +144,27 @@ class fktrSettings {
 			echo '<div class="fktr-sections"><ul class="subsubsub">';
 			$delimiter = '';
 			foreach ($sections_tabs[$current_tab] as $sec_id => $sections) {
+				$sections['url'] = (isset($sections['url']) && !empty($sections['url']) ) ? $sections['url'] : 'admin.php?page=fakturo-settings';
+				$sections['screen'] = (isset($sections['screen']) && !empty($sections['screen']) ) ? $sections['screen'] : 'fakturo_page_fakturo-settings';
 				if ($sec_id != 'default') {
-					$active = $current_screen->id == $sections['screen'] ?  ' current' : '';
-					echo '<li>'.$delimiter.'<a href="' . esc_url( $sections['url'] ) . '" title="' . esc_attr( $sections['text'] ) . '" class="' . $active . '">' . esc_html( $sections['text'] ) . '</a></li>';
+					$sec_url = add_query_arg( array(
+						'tab' => $current_tab,
+						'section' => $sec_id ), $sections['url'] );
+					
+					if($current_screen->id == $sections['screen'] && $sec_default == $sec_id){
+						$current_sec = $sec_id;
+						$active = ' current';
+					} else  {
+						$active = '';
+					}
+					echo '<li>'.$delimiter.'<a href="' . esc_url( $sec_url ) . '" title="' . esc_attr( $sections['text'] ) . '" class="' . $active . '">' . esc_html( $sections['text'] ) . '</a></li>';
 					$delimiter = ' | ';
 				}
 			}
 			
 			echo '</ul></div>';
-			
-			
+			$fktr_current_tab = $current_tab;
+			$fktr_current_sec = $current_sec;
 		}
 	}
 	
