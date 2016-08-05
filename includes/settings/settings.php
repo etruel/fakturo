@@ -87,18 +87,21 @@ class fktrSettings {
 				echo '<li><a href="' . esc_url( $section_url ) . '" title="' . esc_attr( $section_name ) . '" class="' . $active . '">' . esc_html( $section_name ) . '</a>' . $delimiter . '</li>';
 			}
 			echo '</ul></div>';
+			
+			//if( ! taxonomy ) {
 			?>
 			<div id="tab_container">
-			<form method="post" action="options.php">
-				<table class="form-table">
-				<?php
-				do_action( 'fktr_settings_tab_' . $current_tab . '_' . $current_section );
-				?>
-				</table>
-				<?php submit_button(); ?>
-			</form>
-		</div><!-- #tab_container-->
-		<?php
+				<form method="post" action="options.php">
+					<table class="form-table">
+					<?php
+					do_action( 'fktr_settings_tab_' . $current_tab . '_' . $current_section );
+					?>
+					</table>
+					<?php submit_button(); ?>
+				</form>
+			</div><!-- #tab_container-->
+			<?php
+			//}   // if( ! taxonomy ) {
 		}
 	}
 	
