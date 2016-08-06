@@ -14,58 +14,143 @@ class fktrSettings {
 		add_action( 'init', array('fktrSettings', 'load_taxonomies'), 1, 99 );
 		//add_action( 'in_admin_header', array('fktrSettings', 'probandoarriba'), 1, 0 );
 		add_action( 'all_admin_notices', array('fktrSettings', 'add_setting_tabs'), 1, 0 );
-		
+		add_action( 'admin_init', array('fktrSettings', 'register_settings'));
 	}
-
+	
+	public static function register_settings() {
+		register_setting(
+			'fakturo-settings',  // settings section
+			'fakturo_info_options_group' // setting name
+		);
+		$value = get_option('fakturo_info_options_group', false);
+		if ($value===false) {
+			$values = array();
+			$values['name'] = '';
+			$values['taxpayer'] = '';
+			$values['tax'] = '';
+			$values['start'] = '';
+			$values['address'] = '';
+			$values['telephone'] = '';
+			$values['postcode'] = '';
+			$values['city'] = '';
+			$values['state'] = '';
+			$values['country'] = '';
+			$values['website'] = '';
+			$values['tax_condition'] = '';
+			$values = apply_filters('fktr_info_options_init', $values);
+			update_option('fakturo_info_options_group' , $values);
+		}
+	}
 	
 
-	
-	// usar esta misma page para todas las pantallas de settings 
 	public static function fakturo_settings() {  
 		global $current_screen;
+		$options = get_option('fakturo_info_options_group');
+		echo '<div id="tab_container">
+			<br/><h1>Company Info</h1>
+			<form method="post" action="options.php">';
+			settings_fields('fakturo-settings');
+			do_settings_sections('fakturo-settings');
+			echo '<table class="form-table">
+					<tr valign="top">
+						<th scope="row">Name</th>
+						<td>
+							<input type="text" size="36" name="fakturo_info_options_group[name]" value="'.$options['name'].'"/>
+                        </td>
+                    </tr>
+					<tr valign="top">
+						<th scope="row">Taxpayer ID</th>
+						<td>
+							<input type="text" size="36" name="fakturo_info_options_group[taxpayer]" value="'.$options['taxpayer'].'"/>
+                        </td>
+                    </tr>
+					<tr valign="top">
+						<th scope="row">Gross income tax ID</th>
+						<td>
+							<input type="text" size="36" name="fakturo_info_options_group[tax]" value="'.$options['tax'].'"/>
+                        </td>
+                    </tr>
+					<tr valign="top">
+						<th scope="row">Start of activities</th>
+						<td>
+							<input type="text" size="36" name="fakturo_info_options_group[start]" value="'.$options['start'].'"/>
+                        </td>
+                    </tr>
+					<tr valign="top">
+						<th scope="row">Address</th>
+						<td>
+							<textarea name="fakturo_info_options_group[address]" cols="36" rows="4">'.$options['address'].'</textarea>
+						</td>
+                    </tr>
+					<tr valign="top">
+						<th scope="row">Telephone</th>
+						<td>
+							<input type="text" size="36" name="fakturo_info_options_group[telephone]" value="'.$options['telephone'].'"/>
+						</td>
+                    </tr>
+					<tr valign="top">
+						<th scope="row">Postcode</th>
+						<td>
+							<input type="text" size="36" name="fakturo_info_options_group[postcode]" value="'.$options['postcode'].'"/>
+						</td>
+                    </tr>
+					<tr valign="top">
+						<th scope="row">City</th>
+						<td>
+							<input type="text" size="36" name="fakturo_info_options_group[city]" value="'.$options['city'].'"/>
+						</td>
+                    </tr>
+					<tr valign="top">
+						<th scope="row">State</th>
+						<td>
+							<input type="text" size="36" name="fakturo_info_options_group[state]" value="'.$options['state'].'"/>
+						</td>
+                    </tr>
+					<tr valign="top">
+						<th scope="row">Country</th>
+						<td>
+							<input type="text" size="36" name="fakturo_info_options_group[country]" value="'.$options['country'].'"/>
+						</td>
+                    </tr>
+					<tr valign="top">
+						<th scope="row">Website</th>
+						<td>
+							<input type="text" size="36" name="fakturo_info_options_group[website]" value="'.$options['website'].'"/>
+						</td>
+                    </tr>
+					<tr valign="top">
+						<th scope="row">Tax condition</th>
+						<td>
+							<input type="text" size="36" name="fakturo_info_options_group[tax_condition]" value="'.$options['tax_condition'].'"/>
+						</td>
+                    </tr>
+				
+				';
+
+
+			echo '</table>';
+			submit_button();
+			echo '</form>
+		</div><!-- #tab_container-->';
 		
-		?>
-		<div id="tab_container">
-			<?php echo $current_screen->id;?>
-			<form method="post" action="options.php">
-				<table class="form-table">
-				<?php
-				
-
-				settings_fields( 'fakturo_settings' );
-
-				
-
-				?>
-				</table>
-				<?php submit_button(); ?>
-			</form>
-		</div><!-- #tab_container-->
-		<?php
 	}
 	
-	// usar esta misma page para todas las pantallas de settings 
 	public static function fakturo_settings_system() {  
 		global $current_screen;
 		
-		?>
+		echo '
 		<div id="tab_container">
-			<?php echo $current_screen->id;?>
+			<br/><h1>System Settings</h1>
 			<form method="post" action="options.php">
-				<table class="form-table">
-				<?php
-				
-
-				settings_fields( 'fakturo_settings_system' );
-
-				
-
-				?>
-				</table>
-				<?php submit_button(); ?>
-			</form>
+				<table class="form-table">';
+				settings_fields('fakturo_settings_system');
+				do_settings_sections('fakturo_settings_system');
+							
+				echo '</table>';
+				submit_button();
+			echo '</form>
 		</div><!-- #tab_container-->
-		<?php
+		';
 	}
 	
 	public static function add_setting_tabs() {
@@ -365,6 +450,8 @@ class fktrSettings {
 			'',
 			$args_model
 		);
+		
+		
 		
 	}
 	
