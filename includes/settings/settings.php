@@ -56,7 +56,7 @@ class fktrSettings {
 				<?php
 				
 
-				settings_fields( 'fakturo_settings' );
+				settings_fields( 'fakturo_settings_system' );
 
 				
 
