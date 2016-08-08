@@ -15,8 +15,18 @@ class fktrSettings {
 		//add_action( 'in_admin_header', array('fktrSettings', 'probandoarriba'), 1, 0 );
 		add_action( 'all_admin_notices', array('fktrSettings', 'add_setting_tabs'), 1, 0 );
 		add_action( 'admin_init', array('fktrSettings', 'register_settings'));
+				
+		add_action('admin_print_scripts', array('fktrSettings', 'scripts'));
+		add_action('admin_print_styles', array('fktrSettings', 'styles'));
 	}
-	
+	public static function scripts() {
+		wp_enqueue_script('media-upload');
+		wp_enqueue_script('thickbox');
+		wp_enqueue_script( 'jquery-settings', FAKTURO_PLUGIN_URL . 'assets/js/settings.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+	}
+	public static function styles() {
+		wp_enqueue_style('thickbox');
+	}
 	public static function register_settings() {
 		register_setting(
 			'fakturo-settings',  // settings section
@@ -40,6 +50,7 @@ class fktrSettings {
 			$values = apply_filters('fktr_info_options_init', $values);
 			update_option('fakturo_info_options_group' , $values);
 		}
+
 	}
 	
 
@@ -122,6 +133,18 @@ class fktrSettings {
 						<th scope="row">Tax condition</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[tax_condition]" value="'.$options['tax_condition'].'"/>
+						</td>
+                    </tr>
+					<tr valign="top">
+						<th scope="row">Company Logo</th>
+						<td>
+							<label for="upload_image">
+								<input id="url" type="text" size="36" value="'.(isset($options['url'])?$options['url']:'').'" name="fakturo_info_options_group[url]" />
+								<input id="upload_logo_button" type="button" value="Upload Image" />
+								<br />'.__( 'Enter an URL or upload an image for the company logo.', FAKTURO_TEXT_DOMAIN ).'
+							</label>
+							
+							<p style="padding-top: 5px;">'. __( 'This is your current logo', FAKTURO_TEXT_DOMAIN ) .'</p><img id="setting_img_log" src="'. $options['url'] .'" style="padding:5px;" />
 						</td>
                     </tr>
 				
