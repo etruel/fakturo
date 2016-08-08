@@ -22,10 +22,12 @@ class fktrSettings {
 	public static function scripts() {
 		wp_enqueue_script('media-upload');
 		wp_enqueue_script('thickbox');
+		wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 		wp_enqueue_script( 'jquery-settings', FAKTURO_PLUGIN_URL . 'assets/js/settings.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 	}
 	public static function styles() {
 		wp_enqueue_style('thickbox');
+		wp_enqueue_style('style-select2',FAKTURO_PLUGIN_URL .'assets/css/select2.min.css');	
 	}
 	public static function register_settings() {
 		register_setting(
@@ -50,6 +52,22 @@ class fktrSettings {
 			$values = apply_filters('fktr_info_options_init', $values);
 			update_option('fakturo_info_options_group' , $values);
 		}
+		
+		register_setting(
+			'fakturo-settings-system',  // settings section
+			'fakturo_system_options_group' // setting name
+		);
+		$value = get_option('fakturo_system_options_group', false);
+		if ($value===false) {
+			$values = array();
+			$values['currency'] = 0;
+			$values['currency_position'] = 'before';
+			$values['tax'] = '';
+			$values['thousand'] = ',';
+			$values['decimal'] = '.';
+			$values = apply_filters('fktr_system_options_init', $values);
+			update_option('fakturo_system_options_group' , $values);
+		}
 
 	}
 	
@@ -64,79 +82,79 @@ class fktrSettings {
 			do_settings_sections('fakturo-settings');
 			echo '<table class="form-table">
 					<tr valign="top">
-						<th scope="row">Name</th>
+						<th scope="row">'. __( 'Name', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[name]" value="'.$options['name'].'"/>
                         </td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">Taxpayer ID</th>
+						<th scope="row">'. __( 'Taxpayer ID', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[taxpayer]" value="'.$options['taxpayer'].'"/>
                         </td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">Gross income tax ID</th>
+						<th scope="row">'. __( 'Gross income tax ID', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[tax]" value="'.$options['tax'].'"/>
                         </td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">Start of activities</th>
+						<th scope="row">'. __( 'Start of activities', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[start]" value="'.$options['start'].'"/>
                         </td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">Address</th>
+						<th scope="row">'. __( 'Address', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
 							<textarea name="fakturo_info_options_group[address]" cols="36" rows="4">'.$options['address'].'</textarea>
 						</td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">Telephone</th>
+						<th scope="row">'. __( 'Telephone', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[telephone]" value="'.$options['telephone'].'"/>
 						</td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">Postcode</th>
+						<th scope="row">'. __( 'Postcode', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[postcode]" value="'.$options['postcode'].'"/>
 						</td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">City</th>
+						<th scope="row">'. __( 'City', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[city]" value="'.$options['city'].'"/>
 						</td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">State</th>
+						<th scope="row">'. __( 'State', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[state]" value="'.$options['state'].'"/>
 						</td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">Country</th>
+						<th scope="row">'. __( 'Country', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[country]" value="'.$options['country'].'"/>
 						</td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">Website</th>
+						<th scope="row">'. __( 'Website', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[website]" value="'.$options['website'].'"/>
 						</td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">Tax condition</th>
+						<th scope="row">'. __( 'Tax condition', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[tax_condition]" value="'.$options['tax_condition'].'"/>
 						</td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">Company Logo</th>
+						<th scope="row">'. __( 'Company Logo', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
 							<label for="upload_image">
 								<input id="url" type="text" size="36" value="'.(isset($options['url'])?$options['url']:'').'" name="fakturo_info_options_group[url]" />
@@ -160,15 +178,82 @@ class fktrSettings {
 	
 	public static function fakturo_settings_system() {  
 		global $current_screen;
-		
+		$options = get_option('fakturo_system_options_group');
+		$selectCurrency = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Choose a Currency', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => $options['currency'],
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[currency]',
+										'id'               => 'fakturo_system_options_group_currency',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_currencies',
+										'hide_if_empty'      => false
+									));
 		echo '
 		<div id="tab_container">
 			<br/><h1>System Settings</h1>
 			<form method="post" action="options.php">
 				<table class="form-table">';
-				settings_fields('fakturo_settings_system');
-				do_settings_sections('fakturo_settings_system');
-							
+				settings_fields('fakturo-settings-system');
+				do_settings_sections('fakturo-settings-system');
+				echo '<tr>
+						<th>'. __( 'Currency', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<td class="italic-label">
+								  '.$selectCurrency.'	
+								  <label for="fakturo_system_currency">
+								  '. __( 'Choose your currency. Note that some payment gateways have currency restrictions.', FAKTURO_TEXT_DOMAIN ) .' 
+							        </label>
+						</td>
+					  </tr>
+					  <tr>
+							<th>'. __( 'Currency Position', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+									<select id="fakturo_system_options_group_currency_position" name="fakturo_system_options_group[currency_position]">
+										<option value="before"'.selected('before', $options['currency_position'], false).'>Before - $10</option>
+										<option value="after"'.selected('after', $options['currency_position'], false).'>After - 10$</option>
+									</select>
+									<label for="fakturo_system_position">
+										'. __( 'Choose the location of the currency sign.', FAKTURO_TEXT_DOMAIN ) .'             
+									</label>
+							</td>
+						</td>
+					  </tr>
+					  
+					  <tr>
+							<th>'. __( 'Thousands Separator', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+								<input id="fakturo_system_options_group_thousand" name="fakturo_system_options_group[thousand]" size="5" value="'.$options['thousand'].'">
+								<label for="fakturo_system_thousand">
+									'. __( 'The symbol (usually , or .) to separate thousands', FAKTURO_TEXT_DOMAIN ) .'           
+								</label>
+					
+							</td>
+						</td>
+					  </tr>
+					  
+					  <tr>
+							<th>'. __( 'Decimal Separator', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+								<input id="fakturo_system_options_group_decimal" name="fakturo_system_options_group[decimal]" size="5" value="'.$options['decimal'].'">
+								<label for="fakturo_system_decimal">
+									'. __( 'The symbol (usually , or .) to separate decimal points', FAKTURO_TEXT_DOMAIN ) .'           
+								</label>
+					
+							</td>
+						</td>
+					  </tr>
+					  
+					  ';			
 				echo '</table>';
 				submit_button();
 			echo '</form>
