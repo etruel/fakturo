@@ -69,10 +69,17 @@ class fktrAdminMenu {
 
 		$page = add_submenu_page(
 			'edit.php?post_type=fktr_product',
-			__( 'Model', FAKTURO_TEXT_DOMAIN ),
-			__( 'Model', FAKTURO_TEXT_DOMAIN ),
+			__( 'Models', FAKTURO_TEXT_DOMAIN ),
+			__( 'Models', FAKTURO_TEXT_DOMAIN ),
 			'manage_options',
 			'edit-tags.php?taxonomy=fktr_model'
+		);
+		$page = add_submenu_page(
+			'edit.php?post_type=fktr_product',
+			__( 'Product Types', FAKTURO_TEXT_DOMAIN ),
+			__( 'Product Types', FAKTURO_TEXT_DOMAIN ),
+			'manage_options',
+			'edit-tags.php?taxonomy=fktr_product_type'
 		);
 		
 //		remove_submenu_page( 'fakturo_dashboard', 'fakturo_dashboard' ); //remuevo 1º subitem repetido Fakturo

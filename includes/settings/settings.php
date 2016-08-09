@@ -35,6 +35,7 @@ class fktrSettings {
 			'fakturo_info_options_group' // setting name
 		);
 		$value = get_option('fakturo_info_options_group', false);
+
 		if ($value===false) {
 			$values = array();
 			$values['name'] = '';
@@ -49,6 +50,7 @@ class fktrSettings {
 			$values['country'] = '';
 			$values['website'] = '';
 			$values['tax_condition'] = '';
+			$values['url'] = FAKTURO_PLUGIN_URL . 'assets/images/etruel-logo.png';
 			$values = apply_filters('fktr_info_options_init', $values);
 			update_option('fakturo_info_options_group' , $values);
 		}
@@ -157,7 +159,7 @@ class fktrSettings {
 						<th scope="row">'. __( 'Company Logo', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
 							<label for="upload_image">
-								<input id="url" type="text" size="36" value="'.(isset($options['url'])?$options['url']:'').'" name="fakturo_info_options_group[url]" />
+								<input id="url" type="text" size="36" value="'.$options['url'].'" name="fakturo_info_options_group[url]" />
 								<input id="upload_logo_button" type="button" value="Upload Image" />
 								<br />'.__( 'Enter an URL or upload an image for the company logo.', FAKTURO_TEXT_DOMAIN ).'
 							</label>
@@ -290,9 +292,9 @@ class fktrSettings {
 				'default' => array('text' => __( '​​Products', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_price_scales'), 'screen' => 'edit-fktr_price_scales')
 			),
 			'taxes' => array( 
-				'taxes' =>  array('text' => __( 'Taxes', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') ,
+				'taxes' =>  array('text' => __( 'Taxes', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax'), 'screen' => 'edit-fktr_tax') ,
 				'tax_condition' => array('text' => __( 'Tax Conditions', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax_conditions'), 'screen' => 'edit-fktr_tax_conditions')  ,
-				'default' => array('text' => __( 'Taxes', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax_conditions'), 'screen' => 'edit-fktr_tax_conditions')
+				'default' => array('text' => __( 'Taxes', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax'), 'screen' => 'edit-fktr_tax')
 			),
 			'extensions' => array( 
 				'repairs_status' =>  array('text' => __( 'Repairs Status', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') ,
