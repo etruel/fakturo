@@ -285,6 +285,27 @@ class fktrPostTypeProducts {
 	public static function prices_box() {
 		global $post;
 		$product_data = self::get_product_data($post->ID);
+		$selectCurrencies = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a Currency', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $product_data['currency'],
+			'hierarchical'       => 1, 
+			'name'               => 'currency',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_currencies',
+			'hide_if_empty'      => false
+		));		
+		
+		
 		$echoHtml = '<table class="form-table">
 					<tbody>
 			<tr class="user-address-wrap">
@@ -294,7 +315,7 @@ class fktrPostTypeProducts {
 			<tr class="user-address-wrap">
 				<th><label for="currency">'.__('Currency', FAKTURO_TEXT_DOMAIN ).'</label></th>
 				<td>
-				
+					'.$selectCurrencies.'
 				</td>		
 			</tr>
 			</tbody>
@@ -489,6 +510,10 @@ class fktrPostTypeProducts {
 		if (!isset($fields['cost'])) {
 			$fields['cost'] = '0';
 		}
+		if (!isset($fields['currency'])) {
+			$fields['currency'] = 0;
+		}
+
 		if (!isset($fields['model'])) {
 			$fields['model'] = 0;
 		}
@@ -554,6 +579,9 @@ class fktrPostTypeProducts {
 			
 			$fields = array();
 			$fields['cost'] = '0';
+			$fields['currency'] = 0;
+			
+			
 			$fields['model'] = 0;
 			$fields['category'] = 0;
 			$fields['product_type'] = 0;

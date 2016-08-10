@@ -17,12 +17,28 @@ class fktr_tax_currency {
 		
 		add_filter('manage_edit-fktr_currencies_columns', array('fktr_tax_currency', 'columns'), 10, 3);
 		add_filter('manage_fktr_currencies_custom_column',  array('fktr_tax_currency', 'theme_columns'), 10, 3);
+		add_action('admin_enqueue_scripts', array('fktr_tax_currency', 'scripts'), 10, 1);
+		
+	}
+	public static function scripts() {
+		if (isset($_GET['taxonomy']) && $_GET['taxonomy'] == 'fktr_currencies') {
+			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'taxonomy-currencies', FAKTURO_PLUGIN_URL . 'assets/js/taxonomy-currencies.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			$setting_system = get_option('fakturo_system_options_group', false);
+			wp_localize_script('taxonomy-currencies', 'setting_system',
+				array(
+					'thousand' => $setting_system['thousand'],
+					'decimal' => $setting_system['decimal']
+
+				) );
+		
+		}
 		
 		
 	}
 	public static function add_form_fields() {
 		$echoHtml = '
-		<style type="text/css">.form-field.term-parent-wrap,.form-field.term-slug-wrap, .form-field label[for="parent"], .form-field #parent {display: none;}  .form-field.term-description-wrap { display:none;} .inline.hide-if-no-js{ display:none;}</style>
+		<style type="text/css">.form-field.term-parent-wrap,.form-field.term-slug-wrap, .form-field label[for="parent"], .form-field #parent {display: none;}  .form-field.term-description-wrap { display:none;} .inline.hide-if-no-js{ display:none;} .view{ display:none;}</style>
 		<div class="form-field" id="plural_div">
 			<label for="term_meta[plural]">'.__( 'Plural', FAKTURO_TEXT_DOMAIN ).'</label>
 			<input type="text" name="term_meta[plural]" id="term_meta[plural]" value="">
@@ -30,18 +46,18 @@ class fktr_tax_currency {
 		</div>
 		<div class="form-field" id="symbol_div">
 			<label for="term_meta[symbol]">'.__( 'Symbol', FAKTURO_TEXT_DOMAIN ).'</label>
-			<input style="width: 60px;text-align: right; padding-right: 0px; " type="text" name="term_meta[symbol]" id="term_meta[symbol]" value="">
+			<input style="width: 60px;text-align: center; padding-right: 0px; " type="text" name="term_meta[symbol]" id="term_meta[symbol]" value="">
 			<p class="description">'.__( 'Enter a symbol like $', FAKTURO_TEXT_DOMAIN ).'</p>
 		</div>
 		<div class="form-field" id="rate_div">
 			<label for="term_meta[rate]">'.__( 'Rate', FAKTURO_TEXT_DOMAIN ).'</label>
-			<input style="width: 60px;text-align: right; padding-right: 0px; " type="number" name="term_meta[rate]" id="term_meta[rate]" value="0">
+			<input style="width: 60px;text-align: right; padding-right: 0px; " type="text" name="term_meta[rate]" id="term_meta_rate" value="0">
 			<p class="description">'.__( 'Enter a rate', FAKTURO_TEXT_DOMAIN ).'</p>
 		</div>
 		<div class="form-field" id="reference_div">
 			<label for="term_meta[reference]">'.__( 'Reference', FAKTURO_TEXT_DOMAIN ).'</label>
 			<input type="text" name="term_meta[reference]" id="term_meta[reference]" value="">
-			<p class="description">'.__( 'Enter a reference', FAKTURO_TEXT_DOMAIN ).'</p>
+			<p class="description">'.__( 'Enter a reference website to find the conversion rate', FAKTURO_TEXT_DOMAIN ).'</p>
 		</div>
 		
 		';
@@ -71,7 +87,7 @@ class fktr_tax_currency {
 				<label for="term_meta[symbol]">'.__( 'Symbol', FAKTURO_TEXT_DOMAIN ).'</label>
 			</th>
 			<td>
-				<input type="text" style="width: 60px;text-align: right; padding-right: 0px; " name="term_meta[symbol]" id="term_meta[symbol]" value="'.$term_meta->symbol.'">
+				<input type="text" style="width: 60px;text-align: center; padding-right: 0px; " name="term_meta[symbol]" id="term_meta[symbol]" value="'.$term_meta->symbol.'">
 				<p class="description">'.__( 'Enter a symbol like $', FAKTURO_TEXT_DOMAIN ).'</p>
 			</td>
 		</tr>
@@ -80,7 +96,7 @@ class fktr_tax_currency {
 				<label for="term_meta[rate]">'.__( 'Rate', FAKTURO_TEXT_DOMAIN ).'</label>
 			</th>
 			<td>
-				<input style="width: 60px;text-align: right; padding-right: 0px; " type="number" name="term_meta[rate]" id="term_meta[rate]" value="'.$term_meta->rate.'">
+				<input style="width: 60px;text-align: right; padding-right: 0px; " type="text" name="term_meta[rate]" id="term_meta_rate" value="'.$term_meta->rate.'">
 				<p class="description">'.__( 'Enter a rate', FAKTURO_TEXT_DOMAIN ).'</p>
 			</td>
 		</tr>
@@ -90,7 +106,7 @@ class fktr_tax_currency {
 			</th>
 			<td>
 				<input type="text" name="term_meta[reference]" id="term_meta[reference]" value="'.$term_meta->reference.'">
-				<p class="description">'.__( 'Enter a reference', FAKTURO_TEXT_DOMAIN ).'</p>
+				<p class="description">'.__( 'Enter a reference website to find the conversion rate', FAKTURO_TEXT_DOMAIN ).'</p>
 			</td>
 		</tr>
 		';
