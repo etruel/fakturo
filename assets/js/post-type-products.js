@@ -6,4 +6,8 @@ jQuery(document).ready(function() {
 	jQuery('#tax').select2();
 	
 	
+	jQuery('#cost').mask("#"+products_object.thousand+"##0"+products_object.decimal+"00", {reverse: true});
+	
+	
+	
 });

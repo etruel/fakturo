@@ -238,8 +238,18 @@ class fktrPostTypeProducts {
 			wp_enqueue_script( 'jquery-snapshot', FAKTURO_PLUGIN_URL . 'assets/js/snapshot.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'jquery-vsort', FAKTURO_PLUGIN_URL . 'assets/js/jquery.vSort.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'post-type-products', FAKTURO_PLUGIN_URL . 'assets/js/post-type-products.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			
+			$setting_system = get_option('fakturo_system_options_group', false);
+			
+			
+			wp_localize_script('post-type-products', 'products_object',
+				array('ajax_url' => admin_url( 'admin-ajax.php' ),
+					'thousand' => $setting_system['thousand'],
+					'decimal' => $setting_system['decimal']
+
+				) );
 			
 			
 		}
