@@ -13,7 +13,7 @@ class fktrPostTypeProducts {
 		
 		add_action( 'init', array('fktrPostTypeProducts', 'setup'), 1 );
 		add_action('transition_post_status', array('fktrPostTypeProducts', 'default_fields'), 10, 3);
-		add_action('save_post', array('fktrPostTypeClients', 'save'), 10, 2 );
+		add_action('save_post', array('fktrPostTypeProducts', 'save'), 99, 2 );
 		
 		add_action( 'admin_print_scripts-post-new.php', array('fktrPostTypeProducts','scripts'), 11 );
 		add_action( 'admin_print_scripts-post.php', array('fktrPostTypeProducts','scripts'), 11 );
@@ -23,6 +23,7 @@ class fktrPostTypeProducts {
 		
 		
 		add_filter('fktr_clean_product_fields', array('fktrPostTypeProducts', 'clean_fields'), 10, 1);
+		add_filter('fktr_product_before_save', array('fktrPostTypeProducts', 'before_save'), 10, 1);
 		
 	}
 	public static function setup() {
@@ -261,6 +262,7 @@ class fktrPostTypeProducts {
 		//add_action('wp_ajax_webcam_shot', 'fakturo_ajax_webcam_shot');
 		
 		// Remove Custom Fields Metabox
+		add_meta_box('fakturo-prices', __('Prices', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'prices_box'), 'fktr_product', 'side', 'high');
 		remove_meta_box( 'postimagediv', 'fakturo_product', 'side' );
 		add_meta_box('postimagediv', __('Product Image', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'fktr_post_thumbnail_meta_box'), 'fktr_product', 'side', 'high');
 		add_meta_box( 'fakturo-seller-box', __('Assign Seller', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'fktr_product_seller_box'),'fktr_product','side', 'high' );
@@ -278,6 +280,29 @@ class fktrPostTypeProducts {
 	}
 	public static function fktr_product_seller_box() {
 		
+		
+	}
+	public static function prices_box() {
+		global $post;
+		$product_data = self::get_product_data($post->ID);
+		$echoHtml = '<table class="form-table">
+					<tbody>
+			<tr class="user-address-wrap">
+				<th><label for="cost">'. __('Cost', FAKTURO_TEXT_DOMAIN ). '	</label></th>
+				<td><input type="text" name="cost" id="cost" value="'.$product_data['cost'].'"></td>
+			</tr>
+			<tr class="user-address-wrap">
+				<th><label for="currency">'.__('Currency', FAKTURO_TEXT_DOMAIN ).'</label></th>
+				<td>
+				
+				</td>		
+			</tr>
+			</tbody>
+		</table>';
+	
+		$echoHtml = apply_filters('fktr_product_prices_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_product_prices_box', $echoHtml);
 		
 	}
 
@@ -375,10 +400,7 @@ class fktrPostTypeProducts {
 		
 		$echoHtml = '<table class="form-table">
 					<tbody>
-			<tr class="user-address-wrap">
-				<th><label for="cost">'. __('Cost', FAKTURO_TEXT_DOMAIN ). '	</label></th>
-				<td><input type="text" name="cost" id="cost" value="'.$product_data['cost'].'" class="regular-text"></td>
-			</tr>
+			
 			<tr class="user-facebook-wrap">
 				<th><label for="provider">'.__('Provider', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 				<td>'.$selectProvider.'</td>
@@ -399,12 +421,7 @@ class fktrPostTypeProducts {
 				<th><label for="tax">'.__('Tax', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 				<td>'.$selectTax.'</td>
 			</tr>
-			<tr class="user-address-wrap">
-				<th><label for="currency">'.__('Currency', FAKTURO_TEXT_DOMAIN ).'</label></th>
-				<td>
-				
-				</td>		
-			</tr>
+			
 			<tr class="user-address-wrap">
 				<th><label for="reference">'.__('Reference', FAKTURO_TEXT_DOMAIN ).'</label></th>
 				<td><input type="text" name="reference" id="reference" value="'.$product_data['reference'].'" class="regular-text"></td>
@@ -513,6 +530,20 @@ class fktrPostTypeProducts {
 		}
 		if (!isset($fields['note'])) {
 			$fields['note'] = '';
+		}
+		
+		return $fields;
+	}
+	public static function before_save($fields) {
+		$setting_system = get_option('fakturo_system_options_group', false);
+		if (!isset($fields['cost'])) {
+			$fields['cost'] = '0';
+		}
+		if (strpos($fields['cost'], $setting_system['decimal']) !== false) {
+			$pieceNumber = explode($setting_system['decimal'], $fields['cost']);
+			$pieceNumber[0] = str_replace($setting_system['thousand'], '', $pieceNumber[0]);
+			$fields['cost'] = implode('.', $pieceNumber);
+			$fields['cost'] = filter_var($fields['cost'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 		}
 		
 		return $fields;
