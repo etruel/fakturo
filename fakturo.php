@@ -39,8 +39,16 @@ class fakturo {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-clients.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/currencies.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/taxes.php'; 
-		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/tax_conditions.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/tax-conditions.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/invoice-types.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/payment-types.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/bank-entities.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/countries.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/product-types.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/locations.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/packagings.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/price-scales.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/origins.php'; 
 		
 		require_once FAKTURO_PLUGIN_DIR . 'includes/settings/settings.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/users/users-list.php'; 

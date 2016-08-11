@@ -329,15 +329,15 @@ class fktrSettings {
 				'print-template' =>  array('text' => __( 'Print Template', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => ''), 
 				'currencies' =>  array('text' => __( 'Currencies', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_currencies'), 'screen' => 'edit-fktr_currencies'),
 				'bank_entities' =>  array('text' => __( 'Bank Entities', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_bank_entities'), 'screen' => 'edit-fktr_bank_entities'),
-				'countries' => array('text' => __( 'Countries and States', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_locations'), 'screen' => 'edit-fktr_locations') ,
+				'countries' => array('text' => __( 'Countries and States', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_countries'), 'screen' => 'edit-fktr_countries') ,
 				'default' => array('text' => __( 'Tables', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_currencies'), 'screen' => 'edit-fktr_currencies')
 			),
 			'products' => array( 
 				'product_types' =>  array('text' => __( 'Product Types', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_product_type'), 'screen' => 'edit-fktr_product_type') ,
-				'locations' => array('text' =>  __( 'Locations', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => ''),
-				'packagings' =>  array('text' => __( 'Packagings', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') , 
+				'locations' => array('text' =>  __( 'Locations', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_locations'), 'screen' => 'edit-fktr_locations'),
+				'packagings' =>  array('text' => __( 'Packagings', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_packaging'), 'screen' => 'edit-fktr_packaging') , 
 				'price_scales' =>  array('text' => __( 'Price Scales', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_price_scales'), 'screen' => 'edit-fktr_price_scales') ,
-				'origins' =>  array('text' => __( 'Origins', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') ,
+				'origins' =>  array('text' => __( 'Origins', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_origins'), 'screen' => 'edit-fktr_origins') ,
 				'default' => array('text' => __( '​​Products', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_product_type'), 'screen' => 'edit-fktr_product_type')
 			),
 			'taxes' => array( 
@@ -404,150 +404,7 @@ class fktrSettings {
 	
 
 	public static function load_taxonomies() {
-		$labels_model = array(
-			'name'                       => _x( 'Locations', 'Locations', FAKTURO_TEXT_DOMAIN ),
-			'singular_name'              => _x( 'Location', 'Location', FAKTURO_TEXT_DOMAIN ),
-			'search_items'               => __( 'Search Locations', FAKTURO_TEXT_DOMAIN ),
-			'popular_items'              => __( 'Popular Locations', FAKTURO_TEXT_DOMAIN ),
-			'all_items'                  => __( 'All Locations', FAKTURO_TEXT_DOMAIN ),
-			'parent_item'                => __( 'Country', FAKTURO_TEXT_DOMAIN ),
-			'parent_item_colon'          => __( 'Country:', FAKTURO_TEXT_DOMAIN ),
-			'edit_item'                  => __( 'Edit Location', FAKTURO_TEXT_DOMAIN ),
-			'update_item'                => __( 'Update Location', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item'               => __( 'Add New Location', FAKTURO_TEXT_DOMAIN ),
-			'new_item_name'              => __( 'New Location Name', FAKTURO_TEXT_DOMAIN ),
-			'separate_items_with_commas' => __( 'Separate location with commas', FAKTURO_TEXT_DOMAIN ),
-			'add_or_remove_items'        => __( 'Add or remove locations', FAKTURO_TEXT_DOMAIN ),
-			'choose_from_most_used'      => __( 'Choose from the most used locations', FAKTURO_TEXT_DOMAIN ),
-			'not_found'                  => __( 'No locations found.', FAKTURO_TEXT_DOMAIN ),
-			'menu_name'                  => __( 'Locations', FAKTURO_TEXT_DOMAIN ),
-		);
 
-		$args_model = array(
-			'hierarchical'          => true,
-			'labels'                => $labels_model,
-			'show_ui'               => true,
-			'show_admin_column'     => true,
-			'query_var'             => true,
-			'rewrite'               => array( 'slug' => 'fktr-locations' ),
-		);
-
-		register_taxonomy(
-			'fktr_locations',
-			'fktr_provider',
-			$args_model
-		);
-		
-		
-		
-		$labels_model = array(
-			'name'                       => _x( 'Bank Entities', 'Bank Entities', FAKTURO_TEXT_DOMAIN ),
-			'singular_name'              => _x( 'Bank Entity', 'Bank Entity', FAKTURO_TEXT_DOMAIN ),
-			'search_items'               => __( 'Search Bank Entities', FAKTURO_TEXT_DOMAIN ),
-			'popular_items'              => __( 'Popular Bank Entities', FAKTURO_TEXT_DOMAIN ),
-			'all_items'                  => __( 'All Bank Entities', FAKTURO_TEXT_DOMAIN ),
-			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
-			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Bank Entity', FAKTURO_TEXT_DOMAIN ),
-			'update_item'                => __( 'Update Bank Entity', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item'               => __( 'Add New Bank Entity', FAKTURO_TEXT_DOMAIN ),
-			'new_item_name'              => __( 'New Bank Entity Name', FAKTURO_TEXT_DOMAIN ),
-			'separate_items_with_commas' => __( 'Separate Bank Entity with commas', FAKTURO_TEXT_DOMAIN ),
-			'add_or_remove_items'        => __( 'Add or remove Bank Entities', FAKTURO_TEXT_DOMAIN ),
-			'choose_from_most_used'      => __( 'Choose from the most used Bank Entities', FAKTURO_TEXT_DOMAIN ),
-			'not_found'                  => __( 'No Bank Entities found.', FAKTURO_TEXT_DOMAIN ),
-			'menu_name'                  => __( 'Bank Entities', FAKTURO_TEXT_DOMAIN ),
-		);
-
-		$args_model = array(
-			'hierarchical'          => false,
-			'labels'                => $labels_model,
-			'show_ui'               => true,
-			'show_admin_column'     => true,
-			'query_var'             => true,
-			'rewrite'               => array( 'slug' => 'fktr-bank-entities' ),
-		);
-
-		register_taxonomy(
-			'fktr_bank_entities',
-			'fktr_provider',
-			$args_model
-		);
-		
-		$labels_model = array(
-			'name'                       => _x( 'Payment Types', 'Payment Types', FAKTURO_TEXT_DOMAIN ),
-			'singular_name'              => _x( 'Payment Type', 'Payment Type', FAKTURO_TEXT_DOMAIN ),
-			'search_items'               => __( 'Search Payment Types', FAKTURO_TEXT_DOMAIN ),
-			'popular_items'              => __( 'Popular Payment Types', FAKTURO_TEXT_DOMAIN ),
-			'all_items'                  => __( 'All Payment Types', FAKTURO_TEXT_DOMAIN ),
-			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
-			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Payment Type', FAKTURO_TEXT_DOMAIN ),
-			'update_item'                => __( 'Update Payment Type', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item'               => __( 'Add New Payment Type', FAKTURO_TEXT_DOMAIN ),
-			'new_item_name'              => __( 'New Payment Type Name', FAKTURO_TEXT_DOMAIN ),
-			'separate_items_with_commas' => __( 'Separate Payment Type with commas', FAKTURO_TEXT_DOMAIN ),
-			'add_or_remove_items'        => __( 'Add or remove Payment Types', FAKTURO_TEXT_DOMAIN ),
-			'choose_from_most_used'      => __( 'Choose from the most used Payment Types', FAKTURO_TEXT_DOMAIN ),
-			'not_found'                  => __( 'No Payment Types found.', FAKTURO_TEXT_DOMAIN ),
-			'menu_name'                  => __( 'Payment Types', FAKTURO_TEXT_DOMAIN ),
-		);
-
-		$args_model = array(
-			'hierarchical'          => false,
-			'labels'                => $labels_model,
-			'show_ui'               => true,
-			'show_admin_column'     => true,
-			'query_var'             => true,
-			'rewrite'               => array( 'slug' => 'fktr-payment-types' ),
-		);
-		register_taxonomy(
-			'fktr_payment_types',
-			'',
-			$args_model
-		);
-		
-		
-		
-		
-		
-		
-		$labels_model = array(
-			'name'                       => _x( 'Price Scales', 'Price Scales', FAKTURO_TEXT_DOMAIN ),
-			'singular_name'              => _x( 'Price Scale', 'Price Scale', FAKTURO_TEXT_DOMAIN ),
-			'search_items'               => __( 'Search Price Scales', FAKTURO_TEXT_DOMAIN ),
-			'popular_items'              => __( 'Popular Price Scales', FAKTURO_TEXT_DOMAIN ),
-			'all_items'                  => __( 'All Price Scales', FAKTURO_TEXT_DOMAIN ),
-			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
-			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Price Scale', FAKTURO_TEXT_DOMAIN ),
-			'update_item'                => __( 'Update Price Scale', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item'               => __( 'Add New Price Scale', FAKTURO_TEXT_DOMAIN ),
-			'new_item_name'              => __( 'New Price Scale Name', FAKTURO_TEXT_DOMAIN ),
-			'separate_items_with_commas' => __( 'Separate Price Scale with commas', FAKTURO_TEXT_DOMAIN ),
-			'add_or_remove_items'        => __( 'Add or remove Price Scales', FAKTURO_TEXT_DOMAIN ),
-			'choose_from_most_used'      => __( 'Choose from the most used Price Scales', FAKTURO_TEXT_DOMAIN ),
-			'not_found'                  => __( 'No Price Scales found.', FAKTURO_TEXT_DOMAIN ),
-			'menu_name'                  => __( 'Price Scales', FAKTURO_TEXT_DOMAIN ),
-		);
-
-		$args_model = array(
-			'hierarchical'          => false,
-			'labels'                => $labels_model,
-			'show_ui'               => true,
-			'show_admin_column'     => true,
-			'query_var'             => true,
-			'rewrite'               => array( 'slug' => 'fktr-price-scales' ),
-		);
-		register_taxonomy(
-			'fktr_price_scales',
-			'',
-			$args_model
-		);
-		
-		
-		
-		
 		
 	}
 	

@@ -151,41 +151,7 @@ class fktrPostTypeProducts {
 			$args_model
 		);
 		
-		// model taxonomy
-		$labels_model = array(
-			'name'                       => _x( 'Product Types', 'Product Types' ),
-			'singular_name'              => _x( 'Product Type', 'Product Type' ),
-			'search_items'               => __( 'Search Product Types' ),
-			'popular_items'              => __( 'Popular Product Types' ),
-			'all_items'                  => __( 'All Product Types' ),
-			'parent_item'                => null,
-			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Product Type' ),
-			'update_item'                => __( 'Update Product Type' ),
-			'add_new_item'               => __( 'Add New Product Type' ),
-			'new_item_name'              => __( 'New Product Type Name' ),
-			'separate_items_with_commas' => __( 'Separate Product Types with commas' ),
-			'add_or_remove_items'        => __( 'Add or remove Product Types' ),
-			'choose_from_most_used'      => __( 'Choose from the most used Product Types' ),
-			'not_found'                  => __( 'No Product Types found.' ),
-			'menu_name'                  => __( 'Product Types' ),
-		);
-
-		$args_model = array(
-			'hierarchical'          => false,
-			'labels'                => $labels_model,
-			'show_ui'               => true,
-			'show_admin_column'     => true,
-			'query_var'             => true,
-			'rewrite'               => array( 'slug' => 'fktr-product-type' ),
-			'description' => 'porcent'
-		);
-
-		register_taxonomy(
-			'fktr_product_type',
-			'fktr_product',
-			$args_model
-		);
+		
 		
 		
 		
