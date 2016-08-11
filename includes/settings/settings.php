@@ -70,6 +70,7 @@ class fktrSettings {
 			$values['decimal'] = '.';
 			$values['decimal_numbers'] = '2';
 			$values['invoice_type'] = -1;
+			$values['price_scale'] = -1;
 			
 			$values = apply_filters('fktr_system_options_init', $values);
 			update_option('fakturo_system_options_group' , $values);
@@ -227,6 +228,26 @@ class fktrSettings {
 										'taxonomy'           => 'fktr_invoice_types',
 										'hide_if_empty'      => false
 									));
+			$selectPriceScales = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Choose a Price Scale', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => $options['price_scale'],
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[price_scale]',
+										'id'            	 => 'fakturo_system_options_group_price_scale',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_price_scales',
+										'hide_if_empty'      => false
+									));
 		echo '
 		<div id="tab_container">
 			<br/><h1>System Settings</h1>
@@ -299,6 +320,18 @@ class fktrSettings {
 								  '.$selectInvoiceType.'	
 								  <label for="fakturo_system_options_group_invoice_type">
 								  '. __( 'Choose your currency. Note that some payment gateways have currency restrictions.', FAKTURO_TEXT_DOMAIN ) .' 
+							        </label>
+						</td>
+						</td>
+					  </tr>
+					  
+					  
+					   <tr>
+							<th>'. __( 'Default Price Scale', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+								  '.$selectPriceScales.'	
+								  <label for="fakturo_system_options_group_price_scale">
+								  '. __( 'Choose your Price Scale.', FAKTURO_TEXT_DOMAIN ) .' 
 							        </label>
 						</td>
 						</td>
