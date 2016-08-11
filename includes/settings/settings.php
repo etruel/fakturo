@@ -60,6 +60,7 @@ class fktrSettings {
 			'fakturo_system_options_group' // setting name
 		);
 		$value = get_option('fakturo_system_options_group', false);
+		
 		if ($value===false) {
 			$values = array();
 			$values['currency'] = 0;
@@ -67,6 +68,9 @@ class fktrSettings {
 			$values['tax'] = '';
 			$values['thousand'] = ',';
 			$values['decimal'] = '.';
+			$values['decimal_numbers'] = '2';
+			$values['invoice_type'] = -1;
+			
 			$values = apply_filters('fktr_system_options_init', $values);
 			update_option('fakturo_system_options_group' , $values);
 		}
@@ -201,6 +205,28 @@ class fktrSettings {
 										'taxonomy'           => 'fktr_currencies',
 										'hide_if_empty'      => false
 									));
+									
+									
+		$selectInvoiceType = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Choose a Invoice Type', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => $options['invoice_type'],
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[invoice_type]',
+										'id'            	 => 'fakturo_system_options_group_invoice_type',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_invoice_types',
+										'hide_if_empty'      => false
+									));
 		echo '
 		<div id="tab_container">
 			<br/><h1>System Settings</h1>
@@ -255,6 +281,29 @@ class fktrSettings {
 						</td>
 					  </tr>
 					  
+					  <tr>
+							<th>'. __( 'Decimal numbers', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+								<input id="fakturo_system_options_group_decimal_numbers" name="fakturo_system_options_group[decimal_numbers]" size="5" value="'.$options['decimal_numbers'].'">
+								<label for="fakturo_system_decimal_numbers">
+									'. __( 'Enter the number of numbers decimals', FAKTURO_TEXT_DOMAIN ) .'           
+								</label>
+					
+							</td>
+						</td>
+					  </tr>
+					  
+					   <tr>
+							<th>'. __( 'Default Invoice Type', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+								  '.$selectInvoiceType.'	
+								  <label for="fakturo_system_options_group_invoice_type">
+								  '. __( 'Choose your currency. Note that some payment gateways have currency restrictions.', FAKTURO_TEXT_DOMAIN ) .' 
+							        </label>
+						</td>
+						</td>
+					  </tr>
+					  
 					  ';			
 				echo '</table>';
 				submit_button();
@@ -271,7 +320,7 @@ class fktrSettings {
 			'general' => array( 
 				'company_info' => array('text' => __( 'Company Info', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-settings'), 'screen' => 'fakturo_page_fakturo-settings') , 
 				'system_settings' =>  array('text' => __( 'System Settings', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-settings-system'), 'screen' => 'admin_page_fakturo-settings-system'), 
-				'invoice_type' =>  array('text' => __( 'Invoice Types', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => ''),
+				'invoice_type' =>  array('text' => __( 'Invoice Types', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_invoice_types'), 'screen' => 'edit-fktr_invoice_types'),
 				'payment_types' =>  array('text' => __( 'Payment Types', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_payment_types'), 'screen' => 'edit-fktr_payment_types'), 
 				'default' => array('text' => __( '​​General Settings', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-settings'), 'screen' => 'fakturo_page_fakturo-settings')
 	
@@ -460,38 +509,7 @@ class fktrSettings {
 		
 		
 		
-		$labels_model = array(
-			'name'                       => _x( 'Tax Conditions', 'Tax Conditions', FAKTURO_TEXT_DOMAIN ),
-			'singular_name'              => _x( 'Tax Condition', 'Tax Condition', FAKTURO_TEXT_DOMAIN ),
-			'search_items'               => __( 'Search Tax Conditions', FAKTURO_TEXT_DOMAIN ),
-			'popular_items'              => __( 'Popular Tax Conditions', FAKTURO_TEXT_DOMAIN ),
-			'all_items'                  => __( 'All Tax Conditions', FAKTURO_TEXT_DOMAIN ),
-			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
-			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Tax Condition', FAKTURO_TEXT_DOMAIN ),
-			'update_item'                => __( 'Update Tax Condition', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item'               => __( 'Add New Tax Condition', FAKTURO_TEXT_DOMAIN ),
-			'new_item_name'              => __( 'New Tax Condition Name', FAKTURO_TEXT_DOMAIN ),
-			'separate_items_with_commas' => __( 'Separate Tax Condition with commas', FAKTURO_TEXT_DOMAIN ),
-			'add_or_remove_items'        => __( 'Add or remove Tax Conditions', FAKTURO_TEXT_DOMAIN ),
-			'choose_from_most_used'      => __( 'Choose from the most used Tax Conditions', FAKTURO_TEXT_DOMAIN ),
-			'not_found'                  => __( 'No Tax Conditions found.', FAKTURO_TEXT_DOMAIN ),
-			'menu_name'                  => __( 'Tax Conditions', FAKTURO_TEXT_DOMAIN ),
-		);
-
-		$args_model = array(
-			'hierarchical'          => false,
-			'labels'                => $labels_model,
-			'show_ui'               => true,
-			'show_admin_column'     => true,
-			'query_var'             => true,
-			'rewrite'               => array( 'slug' => 'fktr-tax-conditions' ),
-		);
-		register_taxonomy(
-			'fktr_tax_conditions',
-			'',
-			$args_model
-		);
+		
 		
 		
 		$labels_model = array(
@@ -528,38 +546,6 @@ class fktrSettings {
 		);
 		
 		
-		$labels_model = array(
-			'name'                       => _x( 'Currencies', 'Currencies', FAKTURO_TEXT_DOMAIN ),
-			'singular_name'              => _x( 'Currency', 'Currency', FAKTURO_TEXT_DOMAIN ),
-			'search_items'               => __( 'Search Currencies', FAKTURO_TEXT_DOMAIN ),
-			'popular_items'              => __( 'Popular Currencies', FAKTURO_TEXT_DOMAIN ),
-			'all_items'                  => __( 'All Currencies', FAKTURO_TEXT_DOMAIN ),
-			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
-			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Currency', FAKTURO_TEXT_DOMAIN ),
-			'update_item'                => __( 'Update Currency', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item'               => __( 'Add New Currency', FAKTURO_TEXT_DOMAIN ),
-			'new_item_name'              => __( 'New Currency Name', FAKTURO_TEXT_DOMAIN ),
-			'separate_items_with_commas' => __( 'Separate Currency with commas', FAKTURO_TEXT_DOMAIN ),
-			'add_or_remove_items'        => __( 'Add or remove Currencies', FAKTURO_TEXT_DOMAIN ),
-			'choose_from_most_used'      => __( 'Choose from the most used Currencies', FAKTURO_TEXT_DOMAIN ),
-			'not_found'                  => __( 'No Currencies found.', FAKTURO_TEXT_DOMAIN ),
-			'menu_name'                  => __( 'Currencies', FAKTURO_TEXT_DOMAIN ),
-		);
-
-		$args_model = array(
-			'hierarchical'          => false,
-			'labels'                => $labels_model,
-			'show_ui'               => true,
-			'show_admin_column'     => true,
-			'query_var'             => true,
-			'rewrite'               => array( 'slug' => 'fktr-currencies' ),
-		);
-		register_taxonomy(
-			'fktr_currencies',
-			'',
-			$args_model
-		);
 		
 		
 		

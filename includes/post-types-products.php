@@ -188,41 +188,8 @@ class fktrPostTypeProducts {
 		);
 		
 		
-		// model taxonomy
-		$labels_model = array(
-			'name'                       => _x( 'Taxes', 'Taxes' ),
-			'singular_name'              => _x( 'Tax', 'Tax' ),
-			'search_items'               => __( 'Search Taxes' ),
-			'popular_items'              => __( 'Popular Taxes' ),
-			'all_items'                  => __( 'All Taxes' ),
-			'parent_item'                => null,
-			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Tax' ),
-			'update_item'                => __( 'Update Tax' ),
-			'add_new_item'               => __( 'Add New Tax' ),
-			'new_item_name'              => __( 'New Tax Name' ),
-			'separate_items_with_commas' => __( 'Separate Taxes with commas' ),
-			'add_or_remove_items'        => __( 'Add or remove Taxes' ),
-			'choose_from_most_used'      => __( 'Choose from the most used Taxes' ),
-			'not_found'                  => __( 'No Taxes found.' ),
-			'menu_name'                  => __( 'Taxes' ),
-		);
-
-		$args_model = array(
-			'hierarchical'          => false,
-			'labels'                => $labels_model,
-			'show_ui'               => true,
-			'show_admin_column'     => true,
-			'query_var'             => true,
-			'rewrite'               => array( 'slug' => 'fktr-tax' ),
-			'description' => 'porcent'
-		);
-
-		register_taxonomy(
-			'fktr_tax',
-			'fktr_product',
-			$args_model
-		);
+		
+		
 		
 	}
 	public static function styles() {
@@ -248,7 +215,8 @@ class fktrPostTypeProducts {
 			wp_localize_script('post-type-products', 'products_object',
 				array('ajax_url' => admin_url( 'admin-ajax.php' ),
 					'thousand' => $setting_system['thousand'],
-					'decimal' => $setting_system['decimal']
+					'decimal' => $setting_system['decimal'],
+					'decimal_numbers' => $setting_system['decimal_numbers']
 
 				) );
 			
@@ -285,6 +253,10 @@ class fktrPostTypeProducts {
 	public static function prices_box() {
 		global $post;
 		$product_data = self::get_product_data($post->ID);
+		$setting_system = get_option('fakturo_system_options_group', false);
+			
+	
+		
 		$selectCurrencies = wp_dropdown_categories( array(
 			'show_option_all'    => '',
 			'show_option_none'   => __('Choose a Currency', FAKTURO_TEXT_DOMAIN ),
@@ -310,7 +282,7 @@ class fktrPostTypeProducts {
 					<tbody>
 			<tr class="user-address-wrap">
 				<th><label for="cost">'. __('Cost', FAKTURO_TEXT_DOMAIN ). '	</label></th>
-				<td><input type="text" name="cost" id="cost" value="'.$product_data['cost'].'"></td>
+				<td><input type="text" name="cost" id="cost" value="'.number_format($product_data['cost'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).'"></td>
 			</tr>
 			<tr class="user-address-wrap">
 				<th><label for="currency">'.__('Currency', FAKTURO_TEXT_DOMAIN ).'</label></th>

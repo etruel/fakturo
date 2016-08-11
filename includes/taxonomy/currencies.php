@@ -10,6 +10,7 @@ if ( ! class_exists('fktr_tax_currency') ) :
 class fktr_tax_currency {
 	
 	function __construct() {
+		add_action( 'init', array('fktr_tax_currency', 'init'), 1, 99 );
 		add_action('fktr_currencies_edit_form_fields', array('fktr_tax_currency', 'edit_form_fields'));
 		add_action('fktr_currencies_add_form_fields',  array('fktr_tax_currency', 'add_form_fields'));
 		add_action('edited_fktr_currencies', array('fktr_tax_currency', 'save_fields'), 10, 2);
@@ -20,6 +21,42 @@ class fktr_tax_currency {
 		add_action('admin_enqueue_scripts', array('fktr_tax_currency', 'scripts'), 10, 1);
 		
 	}
+	public static function init() {
+		
+		$labels = array(
+			'name'                       => _x( 'Currencies', 'Currencies', FAKTURO_TEXT_DOMAIN ),
+			'singular_name'              => _x( 'Currency', 'Currency', FAKTURO_TEXT_DOMAIN ),
+			'search_items'               => __( 'Search Currencies', FAKTURO_TEXT_DOMAIN ),
+			'popular_items'              => __( 'Popular Currencies', FAKTURO_TEXT_DOMAIN ),
+			'all_items'                  => __( 'All Currencies', FAKTURO_TEXT_DOMAIN ),
+			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
+			'parent_item_colon'          => null,
+			'edit_item'                  => __( 'Edit Currency', FAKTURO_TEXT_DOMAIN ),
+			'update_item'                => __( 'Update Currency', FAKTURO_TEXT_DOMAIN ),
+			'add_new_item'               => __( 'Add New Currency', FAKTURO_TEXT_DOMAIN ),
+			'new_item_name'              => __( 'New Currency Name', FAKTURO_TEXT_DOMAIN ),
+			'separate_items_with_commas' => __( 'Separate Currency with commas', FAKTURO_TEXT_DOMAIN ),
+			'add_or_remove_items'        => __( 'Add or remove Currencies', FAKTURO_TEXT_DOMAIN ),
+			'choose_from_most_used'      => __( 'Choose from the most used Currencies', FAKTURO_TEXT_DOMAIN ),
+			'not_found'                  => __( 'No Currencies found.', FAKTURO_TEXT_DOMAIN ),
+			'menu_name'                  => __( 'Currencies', FAKTURO_TEXT_DOMAIN ),
+		);
+
+		$args = array(
+			'hierarchical'          => false,
+			'labels'                => $labels,
+			'show_ui'               => true,
+			'show_admin_column'     => true,
+			'query_var'             => true,
+			'rewrite'               => array( 'slug' => 'fktr-currencies' ),
+		);
+		register_taxonomy(
+			'fktr_currencies',
+			'',
+			$args
+		);
+		
+	}
 	public static function scripts() {
 		if (isset($_GET['taxonomy']) && $_GET['taxonomy'] == 'fktr_currencies') {
 			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
@@ -28,7 +65,8 @@ class fktr_tax_currency {
 			wp_localize_script('taxonomy-currencies', 'setting_system',
 				array(
 					'thousand' => $setting_system['thousand'],
-					'decimal' => $setting_system['decimal']
+					'decimal' => $setting_system['decimal'],
+					'decimal_numbers' => $setting_system['decimal_numbers']
 
 				) );
 		
@@ -65,13 +103,9 @@ class fktr_tax_currency {
 	}
 	public static function edit_form_fields($term) {
 	
-		$t_id = $term->term_id;
-		$term->description = trim($term->description);
-		$term->description = utf8_encode($term->description);
-		$term->description = str_replace('&quot;', '"', $term->description);
-		$term_meta = json_decode($term->description);
-	
-		
+
+		$term_meta = get_fakturo_term($term->term_id, 'fktr_currencies');
+		$setting_system = get_option('fakturo_system_options_group', false);
 		$echoHtml = '<style type="text/css">.form-field.term-parent-wrap, .form-field.term-slug-wrap {display: none;} .form-field.term-description-wrap { display:none;}  </style>
 		<tr class="form-field">
 			<th scope="row" valign="top">
@@ -96,7 +130,7 @@ class fktr_tax_currency {
 				<label for="term_meta[rate]">'.__( 'Rate', FAKTURO_TEXT_DOMAIN ).'</label>
 			</th>
 			<td>
-				<input style="width: 60px;text-align: right; padding-right: 0px; " type="text" name="term_meta[rate]" id="term_meta_rate" value="'.$term_meta->rate.'">
+				<input style="width: 60px;text-align: right; padding-right: 0px; " type="text" name="term_meta[rate]" id="term_meta_rate" value="'.number_format($term_meta->rate, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).'">
 				<p class="description">'.__( 'Enter a rate', FAKTURO_TEXT_DOMAIN ).'</p>
 			</td>
 		</tr>
@@ -123,18 +157,17 @@ class fktr_tax_currency {
 		return $new_columns;
 	}
 	public static function theme_columns($out, $column_name, $term_id) {
-		$term = get_term( $term_id, 'fktr_currencies' );
-		$term->description = trim($term->description);
-		$term->description = utf8_encode($term->description);
-		$term->description = str_replace('&quot;', '"', $term->description);
-		$term_meta = json_decode($term->description);
+		
+		
+		$term = get_fakturo_term($term_id, 'fktr_currencies');
+		$setting_system = get_option('fakturo_system_options_group', false);
 		switch ($column_name) {
 			case 'symbol': 
-				$out = esc_attr( $term_meta->symbol);
+				$out = esc_attr( $term->symbol);
 				break;
 
 			case 'rate': 
-				$out = esc_attr( $term_meta->rate);
+				$out = esc_attr(number_format($term->rate, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']));
 				break;
 
 			default:
@@ -143,13 +176,18 @@ class fktr_tax_currency {
 		return $out;    
 	}
 	public static function save_fields($term_id, $tt_id) {
-		global $wpdb;
+		$setting_system = get_option('fakturo_system_options_group', false);
 		if (isset( $_POST['term_meta'])) {
 			
-			$wpdb->update( $wpdb->term_taxonomy, array('description' => json_encode($_POST['term_meta'])), array( 'term_taxonomy_id' => $tt_id ) );
-			unset($_POST['term_meta']);
+			if (strpos($_POST['term_meta']['rate'], $setting_system['decimal']) !== false) {
+				$pieceNumber = explode($setting_system['decimal'], $_POST['term_meta']['rate']);
+				$pieceNumber[0] = str_replace($setting_system['thousand'], '', $pieceNumber[0]);
+				$_POST['term_meta']['rate'] = implode('.', $pieceNumber);
+				$_POST['term_meta']['rate'] = filter_var($_POST['term_meta']['rate'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+			}
+			
+			set_fakturo_term($term_id, $tt_id, $_POST['term_meta']);
 		}
-		
 	}
 	
 }

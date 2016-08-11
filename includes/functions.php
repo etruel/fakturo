@@ -47,4 +47,44 @@ function fakturo_get_select_post($args = null) {
 		
 }
 
+function get_fakturo_term($term_id, $taxonomy, $field = null) {
+	
+	$term = get_term($term_id, $taxonomy);
+	if(is_wp_error($term)) {
+		return $term;
+	}
+	$return = new stdClass();
+	$return->term_id = $term->term_id;
+	$return->name = $term->name;
+	$return->slug = $term->slug;
+	$return->term_group = $term->term_group;
+	$return->term_taxonomy_id = $term->term_taxonomy_id;
+	$return->taxonomy = $term->taxonomy;
+	$return->parent = $term->parent;
+	$return->count = $term->count;
+	
+	$term->description = trim($term->description);
+	$term->description = utf8_encode($term->description);
+	$term->description = str_replace('&quot;', '"', $term->description);
+	$term_meta = json_decode($term->description);
+	if (isset($term_meta)) {
+		foreach($term_meta as $fieldmeta => $value) {
+			$return->$fieldmeta = $value;
+		}
+	}
+	if (isset($field) && isset($return->$field)) {
+		return $return->$field;
+	}
+	return $return;
+}
+
+function set_fakturo_term($term_id = null, $tt_id = null, $args = null) {
+	global $wpdb;
+	if (isset($args)) {
+		$wpdb->update( $wpdb->term_taxonomy, array('description' => json_encode($args)), array( 'term_taxonomy_id' => $tt_id ) );
+	}
+	
+}
+
+
 ?>
