@@ -72,7 +72,9 @@ class fktrSettings {
 			$value_system['decimal_numbers'] = '2';
 			$value_system['invoice_type'] = -1;
 			$value_system['price_scale'] = -1;
-			
+			$value_system['ignore_stock'] = 0;
+			$value_system['format_invoice_number'] = '';
+			$value_system['search_code'] = 'reference';
 			$value_system = apply_filters('fktr_system_options_init', $value_system);
 			update_option('fakturo_system_options_group' , $value_system);
 		}
@@ -202,6 +204,18 @@ class fktrSettings {
 		if (empty($options['decimal'])) {
 			$options['decimal'] = '.';
 		}
+		if (!isset($options['ignore_stock'])) {
+			$options['ignore_stock'] = 0;
+		}
+		if (empty($options['format_invoice_number'])) {
+			$options['format_invoice_number'] = '';
+		}
+		if (empty($options['format_number_receipt'])) {
+			$options['format_number_receipt'] = '';
+		}
+		if (empty($options['search_code'])) {
+			$options['search_code'] = 'reference';
+		}
 		
 		update_option('fakturo_system_options_group' , $options);
 		
@@ -268,6 +282,22 @@ class fktrSettings {
 										'taxonomy'           => 'fktr_price_scales',
 										'hide_if_empty'      => false
 									));
+									
+		$selectSearchCode = array();
+		$selectSearchCode['reference'] = __( 'Reference', FAKTURO_TEXT_DOMAIN );
+		$selectSearchCode['internal_code'] = __( 'Internal code', FAKTURO_TEXT_DOMAIN );
+		$selectSearchCode['manufacturers_code'] = __( 'Manufacturers code', FAKTURO_TEXT_DOMAIN );							
+		$selectSearchCode = apply_filters('fktr_search_code_array', $selectSearchCode);
+		
+		$echoSelectSearchCode = '<select id="fakturo_system_options_group_search_code" name="fakturo_system_options_group[search_code]">';
+		foreach ($selectSearchCode as $key => $txt) {
+			$echoSelectSearchCode .= '<option value="'.$key.'"'.selected($key, $options['search_code'], false).'>'.$txt.'</option>';
+		}
+		$echoSelectSearchCode .= '</select>';						
+										
+									
+			
+									
 		echo '
 		<div id="tab_container">
 			<br/><h1>System Settings</h1>
@@ -339,7 +369,7 @@ class fktrSettings {
 							<td class="italic-label">
 								  '.$selectInvoiceType.'	
 								  <label for="fakturo_system_options_group_invoice_type">
-								  '. __( 'Choose your currency. Note that some payment gateways have currency restrictions.', FAKTURO_TEXT_DOMAIN ) .' 
+								  '. __( 'Choose the default Invoice Type used in the system', FAKTURO_TEXT_DOMAIN ) .' 
 							        </label>
 						</td>
 						</td>
@@ -351,18 +381,61 @@ class fktrSettings {
 							<td class="italic-label">
 								  '.$selectPriceScales.'	
 								  <label for="fakturo_system_options_group_price_scale">
-								  '. __( 'Choose your Price Scale.', FAKTURO_TEXT_DOMAIN ) .' 
+								  '. __( 'Choose the default Price Scale used in the system', FAKTURO_TEXT_DOMAIN ) .' 
 							        </label>
 						</td>
 						</td>
 					  </tr>
 					  
-					  ';			
+					  <tr>
+							<th>'. __( 'Ignore stock?', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+								<input id="fakturo_system_options_group_ignore_stock" type="checkbox" name="fakturo_system_options_group[ignore_stock]" value="1" '.(($options['ignore_stock'])?'checked="checked"':'').'>
+								<label for="fakturo_system_options_group_ignore_stock"><span class="ui"></span>'. __( 'Ignore stock used in the system', FAKTURO_TEXT_DOMAIN ).'	</label>
+							
+							</td>
+						</td>
+					  </tr>
+					   <tr>
+							<th>'. __( 'Format of invoice number', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+								<input id="fakturo_system_options_group_format_invoice_number" name="fakturo_system_options_group[format_invoice_number]" type="text" value="'.$options['format_invoice_number'].'">
+								<label for="fakturo_system_format_invoice_number">
+									'. __( 'Choose the default Format of invoice number used in the system', FAKTURO_TEXT_DOMAIN ) .'           
+								</label>
+					
+							</td>
+						</td>
+					  </tr>
+					  <tr>
+							<th>'. __( 'Format of number of receipt', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+								<input id="fakturo_system_options_group_format_number_receipt" name="fakturo_system_options_group[format_number_receipt]" type="text" value="'.$options['format_number_receipt'].'">
+								<label for="fakturo_system_format_invoice_number">
+									'. __( 'Choose the default Format of number of receipt used in the system', FAKTURO_TEXT_DOMAIN ) .'           
+								</label>
+					
+							</td>
+						</td>
+					  </tr>
+					  <tr>
+							<th>'. __( 'Search code on invoices, budgets, etc..', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+									'.$echoSelectSearchCode.'
+									<label for="fakturo_system_position">
+										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
+									</label>
+							</td>
+						</td>
+					  </tr>
+					  ';
+				
 				echo '</table>';
 				submit_button();
 			echo '</form>
 		</div><!-- #tab_container-->
 		';
+		
 	}
 	
 	public static function add_setting_tabs() {
