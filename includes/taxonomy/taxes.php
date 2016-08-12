@@ -79,7 +79,7 @@ class fktr_tax_taxes {
 
 		<div class="form-field" id="rate_div">
 			<label for="term_meta[percentage]">'.__( 'Percentage', FAKTURO_TEXT_DOMAIN ).'</label>
-			<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[percentage]" id="term_meta_percentage" value="0">
+			<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[percentage]" id="term_meta_percentage" value="0"/>%
 			<p class="description">'.__( 'Enter a percentage', FAKTURO_TEXT_DOMAIN ).'</p>
 		</div>
 		
@@ -99,7 +99,7 @@ class fktr_tax_taxes {
 				<label for="term_meta[percentage]">'.__( 'Percentage', FAKTURO_TEXT_DOMAIN ).'</label>
 			</th>
 			<td>
-				<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[percentage]" id="term_meta_percentage" value="'.$term_meta->percentage.'">
+				<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[percentage]" id="term_meta_percentage" value="'.$term_meta->percentage.'"/>%
 				<p class="description">'.__( 'Enter a percentage', FAKTURO_TEXT_DOMAIN ).'</p>
 			</td>
 		</tr>
@@ -123,7 +123,7 @@ class fktr_tax_taxes {
 		
 		switch ($column_name) {
 			case 'percentage': 
-				$out = esc_attr( $term->percentage);
+				$out = esc_attr( $term->percentage).'%';
 				break;
 
 			default:

@@ -356,7 +356,7 @@ class fktrPostTypeClients {
 			'class'              => 'form-no-clear',
 			'depth'              => 1,
 			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_locations',
+			'taxonomy'           => 'fktr_countries',
 			'hide_if_empty'      => false
 		));
 		
@@ -377,7 +377,7 @@ class fktrPostTypeClients {
 			'class'              => 'form-no-clear',
 			'depth'              => 1,
 			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_locations',
+			'taxonomy'           => 'fktr_countries',
 			'hide_if_empty'      => false
 		));
 
@@ -397,7 +397,7 @@ class fktrPostTypeClients {
 			'class'              => 'form-no-clear',
 			'depth'              => 1,
 			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_locations',
+			'taxonomy'           => 'fktr_countries',
 			'hide_if_empty'      => false
 		));
 		
@@ -551,7 +551,7 @@ class fktrPostTypeClients {
 			'class'              => 'form-no-clear',
 			'depth'              => 1,
 			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_locations',
+			'taxonomy'           => 'fktr_countries',
 			'hide_if_empty'      => false
 		));
 		if ($_POST['country_id'] < 1 ) {

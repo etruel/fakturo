@@ -201,7 +201,7 @@ class fktrPostTypeProviders {
 			'class'              => 'form-no-clear',
 			'depth'              => 1,
 			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_locations',
+			'taxonomy'           => 'fktr_countries',
 			'hide_if_empty'      => false
 		));
 		if (strlen($selectCountry) < 95) {
@@ -227,7 +227,7 @@ class fktrPostTypeProviders {
 			'class'              => 'form-no-clear',
 			'depth'              => 1,
 			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_locations',
+			'taxonomy'           => 'fktr_countries',
 			'hide_if_empty'      => false
 		));
 		
@@ -418,7 +418,7 @@ class fktrPostTypeProviders {
 			'class'              => 'form-no-clear',
 			'depth'              => 1,
 			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_locations',
+			'taxonomy'           => 'fktr_countries',
 			'hide_if_empty'      => false
 		));
 		if ($_POST['country_id'] == 0 || strlen($selectState) < 90) {

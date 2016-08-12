@@ -84,7 +84,7 @@ class fktr_tax_nvoice_types {
 		
 		<div class="form-field" id="Symbol_div">
 			<label for="term_meta[symbol]">'.__( 'Symbol', FAKTURO_TEXT_DOMAIN ).'</label>
-			<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="1" type="text" name="term_meta[symbol]" id="term_meta_symbol" value="">
+			<input style="width: 60px;text-align: center; padding-right: 0px; " maxlength="1" type="text" name="term_meta[symbol]" id="term_meta_symbol" value="">
 			<p class="description">'.__( 'Enter a symbol', FAKTURO_TEXT_DOMAIN ).'</p>
 		</div>
 		
@@ -124,7 +124,7 @@ class fktr_tax_nvoice_types {
 				<label for="term_meta[symbol]">'.__( 'Symbol', FAKTURO_TEXT_DOMAIN ).'</label>
 			</th>
 			<td>
-				<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="1" type="text" name="term_meta[symbol]" id="term_meta_symbol" value="'.$term_meta->symbol.'">
+				<input style="width: 60px;text-align: center; padding-right: 0px; " maxlength="1" type="text" name="term_meta[symbol]" id="term_meta_symbol" value="'.$term_meta->symbol.'">
 				<p class="description">'.__( 'Enter a symbol', FAKTURO_TEXT_DOMAIN ).'</p>
 			</td>
 		</tr>

@@ -23,6 +23,7 @@ class fktrSettings {
 		wp_enqueue_script('media-upload');
 		wp_enqueue_script('thickbox');
 		wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+		wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 		wp_enqueue_script( 'jquery-settings', FAKTURO_PLUGIN_URL . 'assets/js/settings.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 	}
 	public static function styles() {
@@ -53,27 +54,27 @@ class fktrSettings {
 			$values['url'] = FAKTURO_PLUGIN_URL . 'assets/images/etruel-logo.png';
 			$values = apply_filters('fktr_info_options_init', $values);
 			update_option('fakturo_info_options_group' , $values);
-		}
+		} 
 		
 		register_setting(
 			'fakturo-settings-system',  // settings section
 			'fakturo_system_options_group' // setting name
 		);
-		$value = get_option('fakturo_system_options_group', false);
+		$value_system = get_option('fakturo_system_options_group', false);
 		
-		if ($value===false) {
-			$values = array();
-			$values['currency'] = 0;
-			$values['currency_position'] = 'before';
-			$values['tax'] = '';
-			$values['thousand'] = ',';
-			$values['decimal'] = '.';
-			$values['decimal_numbers'] = '2';
-			$values['invoice_type'] = -1;
-			$values['price_scale'] = -1;
+		if ($value_system===false) {
+			$value_system = array();
+			$value_system['currency'] = 0;
+			$value_system['currency_position'] = 'before';
+			$value_system['tax'] = '';
+			$value_system['thousand'] = ',';
+			$value_system['decimal'] = '.';
+			$value_system['decimal_numbers'] = '2';
+			$value_system['invoice_type'] = -1;
+			$value_system['price_scale'] = -1;
 			
-			$values = apply_filters('fktr_system_options_init', $values);
-			update_option('fakturo_system_options_group' , $values);
+			$value_system = apply_filters('fktr_system_options_init', $value_system);
+			update_option('fakturo_system_options_group' , $value_system);
 		}
 
 	}
@@ -82,6 +83,12 @@ class fktrSettings {
 	public static function fakturo_settings() {  
 		global $current_screen;
 		$options = get_option('fakturo_info_options_group');
+		if (empty($options['url'])) {
+			$options['url'] = FAKTURO_PLUGIN_URL . 'assets/images/etruel-logo.png';
+		}
+		update_option('fakturo_info_options_group' , $options);
+		
+		
 		echo '<div id="tab_container">
 			<br/><h1>Company Info</h1>
 			<form method="post" action="options.php">';
@@ -97,7 +104,7 @@ class fktrSettings {
 					<tr valign="top">
 						<th scope="row">'. __( 'Taxpayer ID', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
-							<input type="text" size="36" name="fakturo_info_options_group[taxpayer]" value="'.$options['taxpayer'].'"/>
+							<input type="text" size="36" id="fakturo_info_options_group_taxpayer" name="fakturo_info_options_group[taxpayer]" value="'.$options['taxpayer'].'"/>
                         </td>
                     </tr>
 					<tr valign="top">
@@ -186,6 +193,19 @@ class fktrSettings {
 	public static function fakturo_settings_system() {  
 		global $current_screen;
 		$options = get_option('fakturo_system_options_group');
+		if (empty($options['decimal_numbers'])) {
+			$options['decimal_numbers'] = 2;
+		}
+		if (empty($options['thousand'])) {
+			$options['thousand'] = ',';
+		}
+		if (empty($options['decimal'])) {
+			$options['decimal'] = '.';
+		}
+		
+		update_option('fakturo_system_options_group' , $options);
+		
+		
 		$selectCurrency = wp_dropdown_categories( array(
 										'show_option_all'    => '',
 										'show_option_none'   => __('Choose a Currency', FAKTURO_TEXT_DOMAIN ),
@@ -281,7 +301,7 @@ class fktrSettings {
 					  <tr>
 							<th>'. __( 'Thousands Separator', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
-								<input id="fakturo_system_options_group_thousand" name="fakturo_system_options_group[thousand]" size="5" value="'.$options['thousand'].'">
+								<input id="fakturo_system_options_group_thousand" name="fakturo_system_options_group[thousand]" type="text" size="5" value="'.$options['thousand'].'">
 								<label for="fakturo_system_thousand">
 									'. __( 'The symbol (usually , or .) to separate thousands', FAKTURO_TEXT_DOMAIN ) .'           
 								</label>
@@ -293,7 +313,7 @@ class fktrSettings {
 					  <tr>
 							<th>'. __( 'Decimal Separator', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
-								<input id="fakturo_system_options_group_decimal" name="fakturo_system_options_group[decimal]" size="5" value="'.$options['decimal'].'">
+								<input id="fakturo_system_options_group_decimal" name="fakturo_system_options_group[decimal]" type="text" size="5" value="'.$options['decimal'].'">
 								<label for="fakturo_system_decimal">
 									'. __( 'The symbol (usually , or .) to separate decimal points', FAKTURO_TEXT_DOMAIN ) .'           
 								</label>
@@ -305,7 +325,7 @@ class fktrSettings {
 					  <tr>
 							<th>'. __( 'Decimal numbers', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
-								<input id="fakturo_system_options_group_decimal_numbers" name="fakturo_system_options_group[decimal_numbers]" size="5" value="'.$options['decimal_numbers'].'">
+								<input id="fakturo_system_options_group_decimal_numbers" type="number" min="0" max="9" maxlength="1" name="fakturo_system_options_group[decimal_numbers]" value="'.$options['decimal_numbers'].'">
 								<label for="fakturo_system_decimal_numbers">
 									'. __( 'Enter the number of numbers decimals', FAKTURO_TEXT_DOMAIN ) .'           
 								</label>
