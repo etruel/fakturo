@@ -4,6 +4,8 @@ jQuery(document).ready(function() {
 	jQuery('#category').select2();
 	jQuery('#product_type').select2();
 	jQuery('#tax').select2();
+	jQuery('#packaging').select2();
+	jQuery('#origin').select2();
 	
 	var decimal_numbers = parseInt(products_object.decimal_numbers);
 	var decimal_ex = '';

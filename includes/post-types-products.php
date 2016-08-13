@@ -196,27 +196,51 @@ class fktrPostTypeProducts {
 		//add_action('wp_ajax_webcam_shot', 'fakturo_ajax_webcam_shot');
 		
 		// Remove Custom Fields Metabox
+		add_meta_box('fakturo-price-box', __('Price', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'price_box'),'fktr_product','side', 'high' );
 		add_meta_box('fakturo-prices', __('Prices', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'prices_box'), 'fktr_product', 'side', 'high');
+		
 		remove_meta_box( 'postimagediv', 'fakturo_product', 'side' );
-		add_meta_box('postimagediv', __('Product Image', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'fktr_post_thumbnail_meta_box'), 'fktr_product', 'side', 'high');
+		add_meta_box('postimagediv', __('Product Image', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'thumbnail_meta_box'), 'fktr_product', 'side', 'high');
 		add_meta_box( 'fakturo-seller-box', __('Assign Seller', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'fktr_product_seller_box'),'fktr_product','side', 'high' );
 		add_meta_box( 'fakturo-data-box', __('Complete Product Data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'data_box'),'fktr_product','normal', 'default' );
 
-		add_meta_box( 'fakturo-price-box', __('Price', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'fktr_product_price_box'),'fktr_product','side', 'default' );
+		
 		add_meta_box( 'fakturo-stock-box', __('Stock', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'fktr_product_stock_box'),'fktr_product','normal', 'default' );
 		
 		do_action('add_ftkr_product_meta_boxes');
 	}
 	
-	public static function fktr_post_thumbnail_meta_box() {
-		
+	public static function thumbnail_meta_box() {
+		global $post;
+		$thumbnail_id = get_post_meta($post->ID, '_thumbnail_id', true );
+		$echoHtml = '
+			<div id="snapshot_container_wrapper">
+				<div id="snapshot_container_buttons">
+					<a id="snapshot_btn" href="javascript:showSnapshot()" class="nobutton">' . __( 'Take a snapshot', FAKTURO_TEXT_DOMAIN ) . '</a>
+					<div id="my_camera" style="display:none;">				
+					</div>
+					<img src="" id="snap_image" style="display:none;">
+					<input type="hidden" name="webcam_image">
+					<a href="javascript:take_snapshot()" class="button" id="take_snapshot" style="display:none;">'.__( 'Snapshot').'</a>
+					<a href="javascript:reset_webcam()" class="button" id="snapshot_reset" style="display:none;">'.__( 'Reset').'</a>
+					<a href="javascript:snapshot_cancel()" class="button" id="snapshot_cancel" style="display:none;">'.__( 'Cancel').'</a>
+				</div>
+			</div>
+			<div class="featured-image-client">
+							'._wp_post_thumbnail_html( $thumbnail_id, $post->ID ).'
+				</div>
+			';
+			
+		$echoHtml = apply_filters('fktr_product_thumbnail_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_product_thumbnail_box', $echoHtml);
 		
 	}
 	public static function fktr_product_seller_box() {
 		
 		
 	}
-	public static function prices_box() {
+	public static function price_box() {
 		global $post;
 		$product_data = self::get_product_data($post->ID);
 		$setting_system = get_option('fakturo_system_options_group', false);
@@ -263,6 +287,22 @@ class fktrPostTypeProducts {
 		echo $echoHtml;
 		do_action('add_fktr_product_prices_box', $echoHtml);
 		
+		
+	}
+	public static function prices_box() {
+		$terms = get_fakturo_terms(array(
+							'taxonomy' => 'fktr_price_scales',
+							'hide_empty' => false,
+				));
+		$echoHtml = '';
+		foreach ($terms as $t) {
+			
+			$echoHtml .= ''.$t->name.': <input type="text" name="prices[]"/>';
+		}
+		
+		$echoHtml = apply_filters('fktr_product_prices_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_product_prices_box', $echoHtml);
 	}
 
 	public static function data_box() {
@@ -354,9 +394,48 @@ class fktrPostTypeProducts {
 			'tab_index'          => 0,
 			'taxonomy'           => 'fktr_tax',
 			'hide_if_empty'      => false
+		));	
+		
+		$selectPackaging = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a Packaging', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $product_data['packaging'],
+			'hierarchical'       => 1, 
+			'name'               => 'packaging',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_packaging',
+			'hide_if_empty'      => false
+		));		
+		$selectOrigin = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a Origin', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $product_data['origin'],
+			'hierarchical'       => 1, 
+			'name'               => 'origin',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_origins',
+			'hide_if_empty'      => false
 		));		
 		
-		
+
 		$echoHtml = '<table class="form-table">
 					<tbody>
 			
@@ -409,11 +488,14 @@ class fktrPostTypeProducts {
 			</tr>
 			<tr class="user-facebook-wrap">
 				<th><label for="min_alert">'.__('Minimal stock alert', FAKTURO_TEXT_DOMAIN ).'</label></th>
-				<td><input id="min_alert" type="checkbox" name="min_alert" value="1" '.(($product_data['min_alert'])?'checked="checked"':'').'</td>
+				<td>
+					<input id="min_alert" type="checkbox" name="min_alert" value="1" '.(($product_data['min_alert'])?'checked="checked"':'').'>
+					<label for="min_alert"><span class="ui"></span>'.__('Minimal stock alert', FAKTURO_TEXT_DOMAIN ).'	</label>
+				</td>
 			</tr>
 			<tr class="user-facebook-wrap">
 				<th><label for="tax">'. __('Packaging', FAKTURO_TEXT_DOMAIN). '</label></th>
-				<td></td> 
+				<td>'.$selectPackaging.'</td> 
 			</tr>
 			<tr class="user-address-wrap">
 				<th><label for="unit">'.__('Units per package', FAKTURO_TEXT_DOMAIN ).'</label></th>
@@ -425,7 +507,7 @@ class fktrPostTypeProducts {
 			</tr>
 			<tr class="user-address-wrap">
 				<th><label for="origin">'.__('Origin', FAKTURO_TEXT_DOMAIN ).'</label></th>
-				<td></td>
+				<td>'.$selectOrigin.'</td>
 			</tr>
 		</tbody>
 	</table>';
@@ -435,10 +517,7 @@ class fktrPostTypeProducts {
 		do_action('add_fktr_product_data_box', $echoHtml);
 		
 	}
-	public static function fktr_product_price_box() {
-		
-		
-	}
+	
 	public static function fktr_product_stock_box() {
 		
 		
@@ -488,13 +567,20 @@ class fktrPostTypeProducts {
 		if (!isset($fields['min_alert'])) {
 			$fields['min_alert'] = '';
 		}
+		if (!isset($fields['packaging'])) {
+			$fields['packaging'] = 0;
+		}
+		
 		if (!isset($fields['unit'])) {
 			$fields['unit'] = '';
 		}
 		if (!isset($fields['note'])) {
 			$fields['note'] = '';
 		}
-		
+		if (!isset($fields['origin'])) {
+			$fields['origin'] = 0;
+		}
+	
 		return $fields;
 	}
 	public static function before_save($fields) {
@@ -534,8 +620,10 @@ class fktrPostTypeProducts {
 			$fields['short'] = '';
 			$fields['min'] = '';
 			$fields['min_alert'] = '';
+			$fields['packaging'] = 0;
 			$fields['unit'] = '';
 			$fields['note'] = '';
+			$fields['origin'] = 0;
 			$fields = apply_filters('fktr_clean_product_fields', $fields);
 
 			foreach ( $fields as $field => $value ) {

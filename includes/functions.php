@@ -46,7 +46,37 @@ function fakturo_get_select_post($args = null) {
 	}
 		
 }
-
+function get_fakturo_terms($args = array()) {
+	$return_terms = array();
+	$terms = get_terms($args);
+	if ($terms) {
+		foreach ($terms as $t) {
+			$newTerm = new stdClass();
+			$newTerm->term_id = $t->term_id;
+			$newTerm->name = $t->name;
+			$newTerm->slug = $t->slug;
+			$newTerm->term_group = $t->term_group;
+			$newTerm->term_taxonomy_id = $t->term_taxonomy_id;
+			$newTerm->taxonomy = $t->taxonomy;
+			$newTerm->parent = $t->parent;
+			$newTerm->count = $t->count;
+			
+			$t->description = trim($t->description);
+			$t->description = utf8_encode($t->description);
+			$t->description = str_replace('&quot;', '"', $t->description);
+			$term_meta = json_decode($t->description);
+			if (isset($term_meta)) {
+				foreach($term_meta as $fieldmeta => $value) {
+					$newTerm->$fieldmeta = $value;
+				}
+			}
+			
+			$return_terms[] = $newTerm;
+			
+		}
+	}
+	return $return_terms;
+}
 function get_fakturo_term($term_id, $taxonomy, $field = null) {
 	
 	$term = get_term($term_id, $taxonomy);
