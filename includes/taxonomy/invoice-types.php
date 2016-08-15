@@ -58,7 +58,7 @@ class fktr_tax_nvoice_types {
 
 		register_taxonomy(
 			self::$tax_name,
-			'fktr_product',
+			'',
 			$args
 		);
 		

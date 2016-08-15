@@ -59,7 +59,7 @@ class fktr_tax_taxes {
 
 		register_taxonomy(
 			self::$tax_name,
-			'fktr_product',
+			'',
 			$args
 		);
 		

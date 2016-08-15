@@ -151,12 +151,19 @@ class fktrPostTypeProducts {
 			$args_model
 		);
 		
+		add_filter('enter_title_here', array('fktrPostTypeProducts', 'name_placeholder'),10,2);
 		
 		
 		
 		
 		
-		
+	}
+	public static function name_placeholder( $title_placeholder , $post ) {
+		if($post->post_type == 'fktr_product') {
+			$title_placeholder = __('Enter Product name here', FAKTURO_TEXT_DOMAIN );
+			
+		}
+		return $title_placeholder;
 	}
 	public static function styles() {
 		global $post_type;
@@ -176,13 +183,17 @@ class fktrPostTypeProducts {
 			wp_enqueue_script( 'post-type-products', FAKTURO_PLUGIN_URL . 'assets/js/post-type-products.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			
 			$setting_system = get_option('fakturo_system_options_group', false);
-			
+			$taxes = get_fakturo_terms(array(
+							'taxonomy' => 'fktr_tax',
+							'hide_empty' => false,
+				));
 			
 			wp_localize_script('post-type-products', 'products_object',
 				array('ajax_url' => admin_url( 'admin-ajax.php' ),
 					'thousand' => $setting_system['thousand'],
 					'decimal' => $setting_system['decimal'],
-					'decimal_numbers' => $setting_system['decimal_numbers']
+					'decimal_numbers' => $setting_system['decimal_numbers'],
+					'taxes' => json_encode($taxes)
 
 				) );
 			
@@ -197,15 +208,14 @@ class fktrPostTypeProducts {
 		
 		// Remove Custom Fields Metabox
 		add_meta_box('fakturo-price-box', __('Price', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'price_box'),'fktr_product','side', 'high' );
-		add_meta_box('fakturo-prices', __('Prices', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'prices_box'), 'fktr_product', 'side', 'high');
+		add_meta_box('fakturo-prices', __('Prices', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'prices_box'), 'fktr_product', 'normal', 'default');
 		
 		remove_meta_box( 'postimagediv', 'fakturo_product', 'side' );
 		add_meta_box('postimagediv', __('Product Image', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'thumbnail_meta_box'), 'fktr_product', 'side', 'high');
-		add_meta_box( 'fakturo-seller-box', __('Assign Seller', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'fktr_product_seller_box'),'fktr_product','side', 'high' );
 		add_meta_box( 'fakturo-data-box', __('Complete Product Data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'data_box'),'fktr_product','normal', 'default' );
 
 		
-		add_meta_box( 'fakturo-stock-box', __('Stock', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'fktr_product_stock_box'),'fktr_product','normal', 'default' );
+		add_meta_box( 'fakturo-stock-box', __('Stock', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'stock_box'),'fktr_product','side', 'high' );
 		
 		do_action('add_ftkr_product_meta_boxes');
 	}
@@ -236,10 +246,7 @@ class fktrPostTypeProducts {
 		do_action('add_fktr_product_thumbnail_box', $echoHtml);
 		
 	}
-	public static function fktr_product_seller_box() {
-		
-		
-	}
+	
 	public static function price_box() {
 		global $post;
 		$product_data = self::get_product_data($post->ID);
@@ -290,21 +297,66 @@ class fktrPostTypeProducts {
 		
 	}
 	public static function prices_box() {
+		global $post;
+		$product_data = self::get_product_data($post->ID);
 		$terms = get_fakturo_terms(array(
 							'taxonomy' => 'fktr_price_scales',
 							'hide_empty' => false,
 				));
-		$echoHtml = '';
+		$echoHtml = '<table class="form-table">
+					
+			
+			<tr class="user-facebook-wrap">
+				<th></th>
+				<th style="text-align: center;">'.__('Price', FAKTURO_TEXT_DOMAIN ).'</th>
+				<th style="text-align: center;">'.__('Suggested', FAKTURO_TEXT_DOMAIN ).'</th>
+				<th style="text-align: center;">'.__('Final', FAKTURO_TEXT_DOMAIN ).'</th>
+			</tr>
+			';
 		foreach ($terms as $t) {
 			
-			$echoHtml .= ''.$t->name.': <input type="text" name="prices[]"/>';
+			$echoHtml .= '<tr class="pricestr" data-id="'.$t->term_id.'" data-porcentage="'.$t->percentage.'">
+				<td style="text-align: center;">'.$t->name.' ('.$t->percentage.'%)</td>
+				<td style="text-align: center;"><input type="text" value="'.(isset($product_data['prices'][$t->term_id])?$product_data['prices'][$t->term_id]:'').'"  id="prices_'.$t->term_id.'" class="prices" name="prices['.$t->term_id.']"/></td>
+				<td style="text-align: center;" id="suggested_'.$t->term_id.'"></td>
+				<td style="text-align: center;"><input type="text" value="'.(isset($product_data['prices_final'][$t->term_id])?$product_data['prices_final'][$t->term_id]:'').'" id="prices_final_'.$t->term_id.'" class="prices_final" name="prices_final['.$t->term_id.']"/></td>
+			</tr>';
 		}
-		
+		$echoHtml .= '</table>';
 		$echoHtml = apply_filters('fktr_product_prices_box', $echoHtml);
 		echo $echoHtml;
 		do_action('add_fktr_product_prices_box', $echoHtml);
 	}
-
+	public static function stock_box() {
+		global $post;
+		$product_data = self::get_product_data($post->ID);
+		$product_data['stocks'];
+		$terms = get_fakturo_terms(array(
+							'taxonomy' => 'fktr_locations',
+							'hide_empty' => false,
+				));
+		$echoHtml = '<table>
+			<tr class="user-facebook-wrap">
+				<th style="text-align: left;">'.__('Location', FAKTURO_TEXT_DOMAIN ).'</th>
+				<th style="text-align: center;">'.__('Quantity', FAKTURO_TEXT_DOMAIN ).'</th>
+			</tr>';
+		$total = 0;
+		foreach ($terms as $t) {
+			$total = $total+(isset($product_data['stocks'][$t->term_id])?$product_data['prices'][$t->term_id]:0);
+			$echoHtml .= '<tr>
+							<td>'.$t->name.': </td>
+							<td style="text-align: center;">'.(isset($product_data['stocks'][$t->term_id])?$product_data['prices'][$t->term_id]:'0').'</td>
+						</tr>';
+		}
+		$echoHtml .= '<tr>
+						<td>'.__('Total', FAKTURO_TEXT_DOMAIN ).':</td>
+						<td style="text-align: center;">'.$total.'</td>
+					</tr>
+					</table>';
+		$echoHtml = apply_filters('fktr_product_stock_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_product_stock_box', $echoHtml);
+	}
 	public static function data_box() {
 		global $post;
 		
@@ -443,14 +495,7 @@ class fktrPostTypeProducts {
 				<th><label for="provider">'.__('Provider', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 				<td>'.$selectProvider.'</td>
 			</tr>
-			<tr class="user-facebook-wrap">
-				<th><label for="product_type">'.__('Model', FAKTURO_TEXT_DOMAIN ).'	</label></th>
-				<td>'.$selectModel.'</td>
-			</tr>
-			<tr class="user-facebook-wrap">
-				<th><label for="product_type">'.__('Category', FAKTURO_TEXT_DOMAIN ).'	</label></th>
-				<td>'.$selectCategory.'</td>
-			</tr>
+			
 			<tr class="user-facebook-wrap">
 				<th><label for="product_type">'.__('Product Type', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 				<td>'.$selectProductType.'</td>
@@ -489,7 +534,7 @@ class fktrPostTypeProducts {
 			<tr class="user-facebook-wrap">
 				<th><label for="min_alert">'.__('Minimal stock alert', FAKTURO_TEXT_DOMAIN ).'</label></th>
 				<td>
-					<input id="min_alert" type="checkbox" name="min_alert" value="1" '.(($product_data['min_alert'])?'checked="checked"':'').'>
+					<input id="min_alert" class="slidercheck" type="checkbox" name="min_alert" value="1" '.(($product_data['min_alert'])?'checked="checked"':'').'>
 					<label for="min_alert"><span class="ui"></span>'.__('Minimal stock alert', FAKTURO_TEXT_DOMAIN ).'	</label>
 				</td>
 			</tr>
@@ -518,10 +563,7 @@ class fktrPostTypeProducts {
 		
 	}
 	
-	public static function fktr_product_stock_box() {
-		
-		
-	}
+
 	public static function clean_fields($fields) {
 		
 		if (!isset($fields['cost'])) {
@@ -580,7 +622,15 @@ class fktrPostTypeProducts {
 		if (!isset($fields['origin'])) {
 			$fields['origin'] = 0;
 		}
-	
+		if (!isset($fields['prices'])) {
+			$fields['prices']  = array();
+		}
+		if (!isset($fields['prices_final'])) {
+			$fields['prices_final']  = array();
+		}
+		if (!isset($fields['stocks'])) {
+			$fields['stocks']  = array();
+		}
 		return $fields;
 	}
 	public static function before_save($fields) {
@@ -624,6 +674,11 @@ class fktrPostTypeProducts {
 			$fields['unit'] = '';
 			$fields['note'] = '';
 			$fields['origin'] = 0;
+			
+			$fields['prices'] = array();
+			$fields['prices_final'] = array();
+			$fields['stocks'] = array();
+			
 			$fields = apply_filters('fktr_clean_product_fields', $fields);
 
 			foreach ( $fields as $field => $value ) {
