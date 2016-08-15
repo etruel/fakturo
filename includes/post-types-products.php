@@ -330,7 +330,6 @@ class fktrPostTypeProducts {
 	public static function stock_box() {
 		global $post;
 		$product_data = self::get_product_data($post->ID);
-		$product_data['stocks'];
 		$terms = get_fakturo_terms(array(
 							'taxonomy' => 'fktr_locations',
 							'hide_empty' => false,
