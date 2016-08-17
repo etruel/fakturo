@@ -12,7 +12,7 @@ class fktr_tax_product_types {
 	public static $tax_name = 'fktr_product_type';
 	function __construct() {
 		add_action( 'init', array(__CLASS__, 'init'), 1, 99 );
-		
+		add_action( 'activated_plugin', array(__CLASS__, 'init'), 1 );
 		add_action(self::$tax_name.'_edit_form_fields', array(__CLASS__, 'edit_form_fields'));
 		add_action(self::$tax_name.'_add_form_fields',  array(__CLASS__, 'add_form_fields'));
 		
@@ -56,6 +56,12 @@ class fktr_tax_product_types {
 			'show_admin_column'     => true,
 			'query_var'             => true,
 			'rewrite'               => array( 'slug' => 'fktr-product-type' ),
+			'capabilities' => array(
+				'manage_terms' => 'manage_fktr_product_type',
+				'edit_terms' => 'edit_fktr_product_type',
+				'delete_terms' => 'delete_fktr_product_type',
+				'assign_terms' => 'assign_fktr_product_type'
+			)
 		);
 
 		register_taxonomy(

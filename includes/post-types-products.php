@@ -12,6 +12,7 @@ class fktrPostTypeProducts {
 	function __construct() {
 		
 		add_action( 'init', array('fktrPostTypeProducts', 'setup'), 1 );
+		add_action( 'activated_plugin', array('fktrPostTypeProducts', 'setup'), 1 );
 		add_action('transition_post_status', array('fktrPostTypeProducts', 'default_fields'), 10, 3);
 		add_action('save_post', array('fktrPostTypeProducts', 'save'), 99, 2 );
 		
@@ -43,20 +44,20 @@ class fktrPostTypeProducts {
 			'menu_name' => __( 'Products', FAKTURO_TEXT_DOMAIN ),
 		);
 		$capabilities = array(
-			'publish_post' => 'publish_fakturo_product',
-			'publish_posts' => 'publish_fakturo_products',
-			'read_post' => 'read_fakturo_product',
-			'read_private_posts' => 'read_private_fakturo_products',
-			'edit_post' => 'edit_fakturo_product',
-			'edit_published_posts' => 'edit_published_fakturo_products',
-			'edit_private_posts' => 'edit_private_fakturo_products',
-			'edit_posts' => 'edit_fakturo_products',
-			'edit_others_posts' => 'edit_others_fakturo_products',
-			'delete_post' => 'delete_fakturo_product',
-			'delete_posts' => 'delete_fakturo_products',
-			'delete_published_posts' => 'delete_published_fakturo_products',
-			'delete_private_posts' => 'delete_private_fakturo_products',
-			'delete_others_posts' => 'delete_others_fakturo_products',
+			'publish_post' => 'publish_fktr_product',
+			'publish_posts' => 'publish_fktr_products',
+			'read_post' => 'read_fktr_product',
+			'read_private_posts' => 'read_private_fktr_products',
+			'edit_post' => 'edit_fktr_product',
+			'edit_published_posts' => 'edit_published_fktr_products',
+			'edit_private_posts' => 'edit_private_fktr_products',
+			'edit_posts' => 'edit_fktr_products',
+			'edit_others_posts' => 'edit_others_fktr_products',
+			'delete_post' => 'delete_fktr_product',
+			'delete_posts' => 'delete_fktr_products',
+			'delete_published_posts' => 'delete_published_fktr_products',
+			'delete_private_posts' => 'delete_private_fktr_products',
+			'delete_others_posts' => 'delete_others_fktr_products',
 		);
 
 		$args = array( 
@@ -76,7 +77,8 @@ class fktrPostTypeProducts {
 			'has_archive' => false,
 			'query_var' => true,
 			'can_export' => true,
-			'rewrite' => true
+			'rewrite' => true,
+			'capabilities' => $capabilities
 		);
 
 		register_post_type( 'fktr_product', $args );
@@ -108,6 +110,12 @@ class fktrPostTypeProducts {
 			'show_admin_column'     => true,
 			'query_var'             => true,
 			'rewrite'               => array( 'slug' => 'fktr-category' ),
+			'capabilities' => array(
+				'manage_terms' => 'manage_fktr_category',
+				'edit_terms' => 'edit_fktr_category',
+				'delete_terms' => 'delete_fktr_category',
+				'assign_terms' => 'assign_fktr_category'
+			)
 		);
 
 		register_taxonomy(
@@ -143,6 +151,12 @@ class fktrPostTypeProducts {
 			'show_admin_column'     => true,
 			'query_var'             => true,
 			'rewrite'               => array( 'slug' => 'fktr-model' ),
+			'capabilities' => array(
+				'manage_terms' => 'manage_fktr_model',
+				'edit_terms' => 'edit_fktr_model',
+				'delete_terms' => 'delete_fktr_model',
+				'assign_terms' => 'assign_fktr_model'
+			)
 		);
 
 		register_taxonomy(
@@ -249,6 +263,9 @@ class fktrPostTypeProducts {
 	
 	public static function price_box() {
 		global $post;
+		
+		
+		
 		$product_data = self::get_product_data($post->ID);
 		$setting_system = get_option('fakturo_system_options_group', false);
 			
@@ -634,16 +651,14 @@ class fktrPostTypeProducts {
 	}
 	public static function before_save($fields) {
 		$setting_system = get_option('fakturo_system_options_group', false);
-		if (!isset($fields['cost'])) {
-			$fields['cost'] = '0';
-		}
-		if (strpos($fields['cost'], $setting_system['decimal']) !== false) {
-			$pieceNumber = explode($setting_system['decimal'], $fields['cost']);
-			$pieceNumber[0] = str_replace($setting_system['thousand'], '', $pieceNumber[0]);
-			$fields['cost'] = implode('.', $pieceNumber);
-			$fields['cost'] = filter_var($fields['cost'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-		}
+		$fields['cost'] = fakturo_mask_to_float($fields['cost']);
 		
+		foreach ($fields['prices'] as $key => $value) {
+			$fields['prices'][$key] = fakturo_mask_to_float($value);
+		}
+		foreach ($fields['prices_final'] as $key => $value) {
+			$fields['prices_final'][$key] = fakturo_mask_to_float($value);
+		}
 		return $fields;
 	}
 	public static function default_fields($new_status, $old_status, $post ) {

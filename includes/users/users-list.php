@@ -13,7 +13,7 @@ if ( !defined('ABSPATH') ) {
 
 //$fktruserslist = new fktrUsersList();
 
-if ( class_exists( 'fktrUsersList' ) ) return;
+if (!class_exists( 'fktrUsersList' ) ):
 class fktrUsersList {
 
 	public function __construct( ) {
@@ -29,19 +29,19 @@ class fktrUsersList {
 		
 		/****** Users list tweaks, filters, views and columns ***************/
 		add_filter( 'manage_users_columns', array(__CLASS__, 'manage_users_columns'),90 );
-		add_filter( 'views_users', array(__CLASS__, 'views_plugin_users'),90 );
+		//add_filter( 'views_users', array(__CLASS__, 'views_plugin_users'),90 );
 		add_filter( 'pre_user_query', array(__CLASS__, 'users_role_filter'),90 );
 		
 		add_filter( 'editable_roles', array(__CLASS__, 'just_plugin_roles'),90 );
 
-		/****** Funciones para estilos y javascripts en perfil de usuario y edicion  ***************/
+		/*
 		add_action('admin_print_styles-user-edit.php', array( __CLASS__, 'only_profile_user_styles') );
 		add_action('admin_print_styles-user-new.php', array( __CLASS__, 'only_profile_user_styles') );
 		add_action('admin_print_styles-profile.php', array( __CLASS__, 'only_profile_user_styles') );
 		add_action('admin_print_scripts-user-edit.php', array( __CLASS__, 'only_profile_user_scripts') );
 		add_action('admin_print_scripts-user-new.php', array( __CLASS__, 'only_profile_user_scripts') );
 		add_action('admin_print_scripts-profile.php', array( __CLASS__, 'only_profile_user_scripts') );
-
+		*/
 	}
 	
 
@@ -53,8 +53,10 @@ class fktrUsersList {
 	/******  Role Filters  ***************/
 	public static function views_plugin_users($views){
 		global $pagenow,$wp_user_query,$current_user,$wpdb;
-		if ( !is_admin() || (!$pagenow=='user-new.php' && !$pagenow=='user-edit.php') ) 
+		if ( !is_admin() || (!$pagenow=='user-new.php' && !$pagenow=='user-edit.php') ) {
 			return $views;
+		}
+			
 		$fakturo_role = current_user_can('fakturo_manager') || current_user_can('fakturo_seller') || current_user_can('fakturo_customer');
 		if($fakturo_role){
 			$fakturo_roles = array('fakturo_manager','fakturo_seller','fakturo_customer');
@@ -242,3 +244,5 @@ class fktrUsersList {
 
 	
 }
+endif;
+$fktrUsersList = new fktrUsersList();

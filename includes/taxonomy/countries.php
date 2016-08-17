@@ -12,7 +12,7 @@ class fktr_tax_countries {
 	public static $tax_name = 'fktr_countries';
 	function __construct() {
 		add_action( 'init', array(__CLASS__, 'init'), 1, 99 );
-		
+		add_action( 'activated_plugin', array(__CLASS__, 'init'), 1 );
 		add_action(self::$tax_name.'_edit_form_fields', array(__CLASS__, 'edit_form_fields'));
 		add_action(self::$tax_name.'_add_form_fields',  array(__CLASS__, 'add_form_fields'));
 		
@@ -55,6 +55,12 @@ class fktr_tax_countries {
 			'show_admin_column'     => true,
 			'query_var'             => true,
 			'rewrite'               => array( 'slug' => 'fktr-countries' ),
+			'capabilities' => array(
+				'manage_terms' => 'manage_fktr_countries',
+				'edit_terms' => 'edit_fktr_countries',
+				'delete_terms' => 'delete_fktr_countries',
+				'assign_terms' => 'assign_fktr_countries'
+			)
 		);
 
 		register_taxonomy(

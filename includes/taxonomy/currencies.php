@@ -11,6 +11,7 @@ class fktr_tax_currency {
 	
 	function __construct() {
 		add_action( 'init', array('fktr_tax_currency', 'init'), 1, 99 );
+		add_action( 'activated_plugin', array(__CLASS__, 'init'), 1 );
 		add_action('fktr_currencies_edit_form_fields', array('fktr_tax_currency', 'edit_form_fields'));
 		add_action('fktr_currencies_add_form_fields',  array('fktr_tax_currency', 'add_form_fields'));
 		add_action('edited_fktr_currencies', array('fktr_tax_currency', 'save_fields'), 10, 2);
@@ -49,6 +50,12 @@ class fktr_tax_currency {
 			'show_admin_column'     => true,
 			'query_var'             => true,
 			'rewrite'               => array( 'slug' => 'fktr-currencies' ),
+			'capabilities' => array(
+				'manage_terms' => 'manage_fktr_currencies',
+				'edit_terms' => 'edit_fktr_currencies',
+				'delete_terms' => 'delete_fktr_currencies',
+				'assign_terms' => 'assign_fktr_currencies'
+			)
 		);
 		register_taxonomy(
 			'fktr_currencies',

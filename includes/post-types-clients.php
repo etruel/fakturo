@@ -12,6 +12,8 @@ class fktrPostTypeClients {
 	function __construct() {
 		
 		add_action( 'init', array('fktrPostTypeClients', 'setup'), 1 );
+		add_action( 'activated_plugin', array('fktrPostTypeClients', 'setup'), 1 );
+		
 		add_action('transition_post_status', array('fktrPostTypeClients', 'default_fields'), 10, 3);
 		add_action('save_post', array('fktrPostTypeClients', 'save'), 10, 2 );
 		
@@ -43,20 +45,20 @@ class fktrPostTypeClients {
 			'menu_name' => __( 'Clients', FAKTURO_TEXT_DOMAIN ),
 		);
 		$capabilities = array(
-			'publish_post' => 'publish_fakturo_client',
-			'publish_posts' => 'publish_fakturo_clients',
-			'read_post' => 'read_fakturo_client',
-			'read_private_posts' => 'read_private_fakturo_clients',
-			'edit_post' => 'edit_fakturo_client',
-			'edit_published_posts' => 'edit_published_fakturo_clients',
-			'edit_private_posts' => 'edit_private_fakturo_clients',
-			'edit_posts' => 'edit_fakturo_clients',
-			'edit_others_posts' => 'edit_others_fakturo_clients',
-			'delete_post' => 'delete_fakturo_client',
-			'delete_posts' => 'delete_fakturo_clients',
-			'delete_published_posts' => 'delete_published_fakturo_clients',
-			'delete_private_posts' => 'delete_private_fakturo_clients',
-			'delete_others_posts' => 'delete_others_fakturo_clients',
+			'publish_post' => 'publish_fktr_client',
+			'publish_posts' => 'publish_fktr_clients',
+			'read_post' => 'read_fktr_client',
+			'read_private_posts' => 'read_private_fktr_clients',
+			'edit_post' => 'edit_fktr_client',
+			'edit_published_posts' => 'edit_published_fktr_clients',
+			'edit_private_posts' => 'edit_private_fktr_clients',
+			'edit_posts' => 'edit_fktr_clients',
+			'edit_others_posts' => 'edit_others_fktr_clients',
+			'delete_post' => 'delete_fktr_client',
+			'delete_posts' => 'delete_fktr_clients',
+			'delete_published_posts' => 'delete_published_fktr_clients',
+			'delete_private_posts' => 'delete_private_fktr_clients',
+			'delete_others_posts' => 'delete_others_fktr_clients',
 			);
 
 		$args = array( 
@@ -77,6 +79,7 @@ class fktrPostTypeClients {
 			'query_var' => true,
 			'can_export' => true,
 			'rewrite' => true,
+			'capabilities' => $capabilities
 		);
 
 		register_post_type( 'fktr_client', $args );

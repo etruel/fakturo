@@ -12,7 +12,7 @@ class fktr_tax_tax_conditions {
 	public static $tax_name = 'fktr_tax_conditions';
 	function __construct() {
 		add_action( 'init', array(__CLASS__, 'init'), 1, 99 );
-		
+		add_action( 'activated_plugin', array(__CLASS__, 'init'), 1 );
 		add_action(self::$tax_name.'_edit_form_fields', array(__CLASS__, 'edit_form_fields'));
 		add_action(self::$tax_name.'_add_form_fields',  array(__CLASS__, 'add_form_fields'));
 		
@@ -54,6 +54,12 @@ class fktr_tax_tax_conditions {
 			'show_admin_column'     => true,
 			'query_var'             => true,
 			'rewrite'               => array( 'slug' => 'fktr-tax-conditions' ),
+			'capabilities' => array(
+				'manage_terms' => 'manage_'.self::$tax_name,
+				'edit_terms' => 'edit_'.self::$tax_name,
+				'delete_terms' => 'delete_'.self::$tax_name,
+				'assign_terms' => 'assign_'.self::$tax_name
+			)
 		);
 		register_taxonomy(
 			self::$tax_name,

@@ -116,5 +116,18 @@ function set_fakturo_term($term_id = null, $tt_id = null, $args = null) {
 	
 }
 
+function fakturo_mask_to_float($value) {
+	$setting_system = get_option('fakturo_system_options_group', false);
+	if (!isset($value)) {
+		$value = '0';
+	}
+	if (strpos($value, $setting_system['decimal']) !== false) {
+		$pieceNumber = explode($setting_system['decimal'], $value);
+		$pieceNumber[0] = str_replace($setting_system['thousand'], '', $pieceNumber[0]);
+		$value = implode('.', $pieceNumber);
+		$value = filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+	}
+	return $value;
+}
 
 ?>

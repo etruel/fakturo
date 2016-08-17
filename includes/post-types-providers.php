@@ -12,6 +12,7 @@ class fktrPostTypeProviders {
 	function __construct() {
 		
 		add_action( 'init', array('fktrPostTypeProviders', 'setup'), 1 );
+		add_action( 'activated_plugin', array('fktrPostTypeProviders', 'setup'), 1 );
 		add_action('transition_post_status', array('fktrPostTypeProviders', 'default_fields'), 10, 3);
 		add_action('save_post', array('fktrPostTypeProviders', 'save'), 10, 2 );
 		
@@ -41,20 +42,20 @@ class fktrPostTypeProviders {
 			'menu_name' => __( 'Providers', FAKTURO_TEXT_DOMAIN ),
 		);
 		$capabilities = array(
-			'publish_post' => 'publish_fakturo_provider',
-			'publish_posts' => 'publish_fakturo_providers',
-			'read_post' => 'read_fakturo_provider',
-			'read_private_posts' => 'read_private_fakturo_providers',
-			'edit_post' => 'edit_fakturo_provider',
-			'edit_published_posts' => 'edit_published_fakturo_providers',
-			'edit_private_posts' => 'edit_private_fakturo_providers',
-			'edit_posts' => 'edit_fakturo_providers',
-			'edit_others_posts' => 'edit_others_fakturo_providers',
-			'delete_post' => 'delete_fakturo_provider',
-			'delete_posts' => 'delete_fakturo_providers',
-			'delete_published_posts' => 'delete_published_fakturo_providers',
-			'delete_private_posts' => 'delete_private_fakturo_providers',
-			'delete_others_posts' => 'delete_others_fakturo_providers',
+			'publish_post' => 'publish_fktr_provider',
+			'publish_posts' => 'publish_fktr_providers',
+			'read_post' => 'read_fktr_provider',
+			'read_private_posts' => 'read_private_fktr_providers',
+			'edit_post' => 'edit_fktr_provider',
+			'edit_published_posts' => 'edit_published_fktr_providers',
+			'edit_private_posts' => 'edit_private_fktr_providers',
+			'edit_posts' => 'edit_fktr_providers',
+			'edit_others_posts' => 'edit_others_fktr_providers',
+			'delete_post' => 'delete_fktr_provider',
+			'delete_posts' => 'delete_fktr_providers',
+			'delete_published_posts' => 'delete_published_fktr_providers',
+			'delete_private_posts' => 'delete_private_fktr_providers',
+			'delete_others_posts' => 'delete_others_fktr_providers',
 			);
 
 		$args = array( 
@@ -74,7 +75,8 @@ class fktrPostTypeProviders {
 			'has_archive' => false,
 			'query_var' => true,
 			'can_export' => true,
-			'rewrite' => true
+			'rewrite' => true,
+			'capabilities' => $capabilities
 		);
 
 		register_post_type( 'fktr_provider', $args );
