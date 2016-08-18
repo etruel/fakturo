@@ -67,15 +67,11 @@ class fktrUserRoles {
 		foreach ($post_types  as $post_type_name ) {
 			if (strpos($post_type_name, 'fktr') !== false)  {
 				$newArrayCaps = array();
-				$cap_object = new stdClass();
-				$cap_object->capability_type = $post_type_name;
-				$cap_object->capabilities = array();
-				$cap_object->map_meta_cap = null;
-				$cap_cpt = get_post_type_capabilities($cap_object);
+				$cap_cpt = get_post_type_object($post_type_name)->cap;
 				foreach ($cap_cpt as $c) {
 					$newArrayCaps[$c] = true;
 				}
-				
+				//error_log(print_r($newArrayCaps, true));
 				self::$fakturo_manager_caps = array_merge(self::$fakturo_manager_caps, $newArrayCaps);
 			}
 		}
@@ -108,7 +104,7 @@ class fktrUserRoles {
 
 		
 	public function __construct() {
-		add_action('activated_plugin', array( __CLASS__,'activate' ) );
+		add_action('activated_plugin', array( __CLASS__,'activate' ), 10 );
 		add_action('deactivated_plugin', array( __CLASS__,'deactivate' ), 10, 2 );
 
 		add_filter('login_redirect', array( __CLASS__ ,'fakturo_login_redirect'), 10, 3);
@@ -121,7 +117,8 @@ class fktrUserRoles {
 
 	public static function fakturo_login_redirect($redirect_url, $POST_redirect_url, $user) {
 		if ( isset($user->ID) and ( user_can($user, 'fakturo_manager') || user_can($user, 'fakturo_seller') ) ) {
-			return admin_url('http://plugins_svn_git/wp-admin/fakturo/admin/fakturo_admin.php');
+			return admin_url('/admin.php?page=fakturo_dashboard');
+			
 		}
 		return $redirect_url;
 	}

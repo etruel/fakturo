@@ -75,11 +75,15 @@ class fktrAdminMenu {
 			'edit-tags.php?taxonomy=fktr_model'
 		);
 	
+		add_menu_page( __( 'Fakturo Sales', FAKTURO_TEXT_DOMAIN ), __( 'Fakturo Sales', FAKTURO_TEXT_DOMAIN ), 'edit_fktr_sales', 'edit.php?post_type=fktr_sale', '', 'dashicons-tickets', 27  );
 		
-//		remove_submenu_page( 'fakturo_dashboard', 'fakturo_dashboard' ); //remuevo 1º subitem repetido Fakturo
-
-		
-		
+		$page = add_submenu_page(
+			'edit.php?post_type=fktr_sale',
+			__( 'Add new', FAKTURO_TEXT_DOMAIN ),
+			__( 'Add new', FAKTURO_TEXT_DOMAIN ),
+			'edit_fktr_sales',
+			'post-new.php?post_type=fktr_sale'
+		);
 	}
 	
 	public static function styles() {
