@@ -1,6 +1,6 @@
 <?php
 /**
- * Description of users-roles: CLASE PARA NUEVOS ROLES DE USUARIOS
+ * Description of users-roles.
  * @author esteban
  */
 
@@ -102,29 +102,75 @@ class fktrUserRoles {
 	}
 
 
-		
+	public static function fakturo_map_meta_caps( $caps, $cap, $user_id, $args ) {
+		global $post;
+//		if( is_null($post) ) return $caps;
+		/* If editing, deleting, or reading a fktr_product, get the post and post type object. */
+		if ( 'edit_fktr_product' == $cap || 'delete_fktr_product' == $cap || 'read_fktr_product' == $cap ) {
+			//$post = get_post($args[0]);
+			$post_type = get_post_type_object( $post->post_type );
+
+			/* Set an empty array for the caps. */
+			$caps = array();
+		}
+
+		/* If editing a edit_fktr_product, assign the required capability. */
+		if ( 'edit_fktr_product' == $cap ) {
+			if ( $user_id == $post->post_author )
+				$caps[] = $post_type->cap->edit_posts;
+			else
+				$caps[] = $post_type->cap->edit_others_posts;
+		}
+
+		/* If deleting a fktr_product, assign the required capability. */
+		elseif ( 'delete_fktr_product' == $cap ) {
+			if ( $user_id == $post->post_author )
+				$caps[] = $post_type->cap->delete_posts;
+			else
+				$caps[] = $post_type->cap->delete_others_posts;
+		}
+
+		/* If reading a private fktr_product, assign the required capability. */
+		elseif ( 'read_fktr_product' == $cap ) {
+
+			if ( 'private' != $post->post_status )
+				$caps[] = 'read';
+			elseif ( $user_id == $post->post_author )
+				$caps[] = 'read';
+			else
+				$caps[] = $post_type->cap->read_private_posts;
+		}
+
+		/* Return the capabilities required by the user. */
+		return $caps;
+	}
+
+	
 	public function __construct() {
 		add_action('activated_plugin', array( __CLASS__,'activate' ), 10 );
 		add_action('deactivated_plugin', array( __CLASS__,'deactivate' ), 10, 2 );
 
 		add_filter('login_redirect', array( __CLASS__ ,'fakturo_login_redirect'), 10, 3);
-		//Remove Wordpress core dashboard widgets
+
+		add_action('admin_init', array( __CLASS__,'admin_init' ), 10 );
+	}
+
+	public static function admin_init() {
+		//global $current_user;
 		if (get_current_user_id() && ( current_user_can('fakturo_manager') ||  current_user_can('fakturo_seller') ) ) {
+			//Remove Wordpress core dashboard widgets
 			add_action('wp_dashboard_setup',  array( __CLASS__, 'remove_dashboard_widgets' ));
+			//Remove Media Wordpress menu
 			add_action( 'admin_menu', array( __CLASS__, 'remove_menus' ) );
+			
+//			add_filter( 'map_meta_cap', array( __CLASS__, 'fakturo_map_meta_caps'), 99, 4 );
 		}
 	}
 
-	public static function fakturo_login_redirect($redirect_url, $POST_redirect_url, $user) {
-		if ( isset($user->ID) and ( user_can($user, 'fakturo_manager') || user_can($user, 'fakturo_seller') ) ) {
-			return admin_url('/admin.php?page=fakturo_dashboard');
-			
-		}
-		return $redirect_url;
-	}
 	static function remove_menus() {
 		remove_menu_page( 'upload.php' );			
 	}
+
 	public static function remove_dashboard_widgets() {
 		global $wp_meta_boxes;
 		unset($wp_meta_boxes['dashboard']['side']['core']['dashboard_quick_press']);
@@ -138,6 +184,13 @@ class fktrUserRoles {
 		unset($wp_meta_boxes['dashboard']['normal']['core']['dashboard_activity']);
 	}
 
+	public static function fakturo_login_redirect($redirect_url, $POST_redirect_url, $user) {
+		if ( isset($user->ID) and ( user_can($user, 'fakturo_manager') || user_can($user, 'fakturo_seller') ) ) {
+			return admin_url('/admin.php?page=fakturo_dashboard');
+			
+		}
+		return $redirect_url;
+	}
 	
 	public static function activate() {
 		global $wp_roles;

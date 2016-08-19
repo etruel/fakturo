@@ -58,8 +58,8 @@ class fktrAdminMenu {
 		
 	
 	
-		add_menu_page( __( 'Fakturo Products', FAKTURO_TEXT_DOMAIN ), __( 'Fakturo Products', FAKTURO_TEXT_DOMAIN ), 'edit_fktr_product', 'edit.php?post_type=fktr_product', '', 'dashicons-tickets', 27  );
-		$page = add_submenu_page(
+		//add_menu_page( __( 'Fakturo Products', FAKTURO_TEXT_DOMAIN ), __( 'Fakturo Products', FAKTURO_TEXT_DOMAIN ), 'edit_fktr_product', 'edit.php?post_type=fktr_product', '', 'dashicons-tickets', 27  );
+/*		$page = add_submenu_page(
 			'edit.php?post_type=fktr_product',
 			__( 'Category', FAKTURO_TEXT_DOMAIN ),
 			__( 'Category', FAKTURO_TEXT_DOMAIN ),
@@ -84,6 +84,7 @@ class fktrAdminMenu {
 			'edit_fktr_sales',
 			'post-new.php?post_type=fktr_sale'
 		);
+*/
 	}
 	
 	public static function styles() {
