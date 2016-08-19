@@ -169,10 +169,108 @@ class fktrPostTypeSales {
 		
 
 		add_meta_box('fakturo-client-box', __('Client Data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeSales', 'client_box'),'fktr_sale','side', 'high' );
+		add_meta_box('fakturo-invoice-data-box', __('Invoice Data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeSales', 'invoice_data_box'),'fktr_sale','normal', 'high' );
 		
 		do_action('add_ftkr_sale_meta_boxes');
 	}
+	public static function invoice_data_box() {
+		global $post;
+		$sale_data = self::get_sale_data($post->ID);
+		
+		$selectInvoiceTypes = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a Invoice Type', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $sale_data['invoice_type'],
+			'hierarchical'       => 1, 
+			'name'               => 'invoice_type',
+			'class'              => 'form-no-clear',
+			'id'				 => 'invoice_type',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_invoice_types',
+			'hide_if_empty'      => false
+		));
+		
+		$selectCurrencies = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a Currency', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $sale_data['invoice_currency'],
+			'hierarchical'       => 1, 
+			'name'               => 'invoice_currency',
+			'class'              => 'form-no-clear',
+			'id'				 => 'invoice_currency',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_currencies',
+			'hide_if_empty'      => false
+		));
+		$allsellers = get_users( array( 'role' => 'fakturo_seller' ) );
+			
+		$select_sale_mans = '<select name="invoice_saleman" id="invoice_saleman">';
+		$select_sale_mans .= '<option value="'.(($sale_data['invoice_saleman'] == 0)?' selected="selected"':'').'">'. __('Choose a Salesman', FAKTURO_TEXT_DOMAIN  ) . '</option>';
+		foreach ( $allsellers as $suser ) {
+			$select_sale_mans .= '<option value="' . $suser->ID . '" ' . selected($sale_data['invoice_saleman'], $suser->ID, false) . '>' . esc_html( $suser->display_name ) . '</option>';
+		}
+		$select_sale_mans .= '</select>';
+		
+		$echoHtml = '<table class="form-table">
+					<tbody>
+			
+			
+				<tr>
+					<th><label for="invoice_type">'.__('Invoice Type', FAKTURO_TEXT_DOMAIN ).'</label></th>
+					<td>
+						'.$selectInvoiceTypes.'
+					</td>		
+				</tr>
+				
+				<tr>
+					<th><label for="invoice_number">'.__('Invoice Number', FAKTURO_TEXT_DOMAIN ).'</label></th>
+					<td>
+						<input type="text" class="regular-text" name="invoice_number" id="invoice_number" value="'.$sale_data['invoice_number'].'"/>
+					</td>		
+				</tr>
+				
+				<tr>
+					<th><label for="date">'.__('Date', FAKTURO_TEXT_DOMAIN ).'</label></th>
+					<td>
+						<input type="text" name="date" id="date" value="'.$sale_data['date'].'"/>
+					</td>		
+				</tr>
+				<tr>
+					<th><label for="invoice_currency">'.__('Invoice Currency', FAKTURO_TEXT_DOMAIN ).'</label></th>
+					<td>
+						'.$selectCurrencies.'
+					</td>		
+				</tr>
+				<tr>
+					<th><label for="invoice_saleman">'.__('Salesman', FAKTURO_TEXT_DOMAIN ).'</label></th>
+					<td>
+						'.$select_sale_mans.'
+					</td>		
+				</tr>
+			</tbody>
+		</table>';
 	
+		$echoHtml = apply_filters('fktr_sale_client_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_sale_client_box', $echoHtml);
+		
+	}
 	
 	public static function client_box() {
 		global $post;
@@ -328,9 +426,9 @@ class fktrPostTypeSales {
 			</tbody>
 		</table>';
 	
-		$echoHtml = apply_filters('fktr_product_prices_box', $echoHtml);
+		$echoHtml = apply_filters('fktr_sale_client_box', $echoHtml);
 		echo $echoHtml;
-		do_action('add_fktr_product_prices_box', $echoHtml);
+		do_action('add_fktr_sale_client_box', $echoHtml);
 		
 		
 	}
@@ -363,6 +461,22 @@ class fktrPostTypeSales {
 			
 			
 		}
+		if (!isset($fields['invoice_type'])) {
+			$fields['invoice_type'] = 0;
+		}
+		if (!isset($fields['invoice_number'])) {
+			$fields['invoice_number'] = '';
+		}
+		if (!isset($fields['date'])) {
+			$fields['date'] = '';
+		}
+		if (!isset($fields['invoice_currency'])) {
+			$fields['invoice_currency'] = 0;
+		}
+		if (!isset($fields['invoice_saleman'])) {
+			$fields['invoice_saleman'] = 0;
+		}
+
 		return $fields;
 	}
 	public static function before_save($fields) {
@@ -394,6 +508,12 @@ class fktrPostTypeSales {
 			$fields['client_data']['price_scale']['id'] = 0;
 			$fields['client_data']['price_scale']['name'] = __('No price scale', FAKTURO_TEXT_DOMAIN );
 			$fields['client_data']['credit_limit'] = 0;
+
+			$fields['invoice_type'] = 0;
+			$fields['invoice_number'] = '';
+			$fields['date'] = '';
+			$fields['invoice_currency'] = 0;
+			$fields['invoice_saleman'] = 0;
 			
 			$fields = apply_filters('fktr_clean_sale_fields', $fields);
 

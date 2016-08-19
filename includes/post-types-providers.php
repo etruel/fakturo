@@ -113,7 +113,7 @@ class fktrPostTypeProviders {
 					<tbody>
 					<tr class="user-facebook-wrap">
 						<th rowspan="2">
-						<input id="active" type="checkbox" name="active" value="1" '.(($provider_data['active'])?'checked="checked"':'').'><label for="active"><span class="ui"></span>'.__('Active', FAKTURO_TEXT_DOMAIN ).'	</label>
+						<input id="active" type="checkbox" class="slidercheck" name="active" value="1" '.(($provider_data['active'])?'checked="checked"':'').'><label for="active"><span class="ui"></span>'.__('Active', FAKTURO_TEXT_DOMAIN ).'	</label>
 						</th>
 					</tr>
 					</tbody>

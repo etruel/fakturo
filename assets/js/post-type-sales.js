@@ -2,6 +2,9 @@ jQuery(document).ready(function() {
 	jQuery("#client_id").select2();
 	jQuery("#client_data_tax_condition").select2();
 	jQuery("#client_data_payment_type").select2();
+	jQuery("#invoice_type").select2();
+	jQuery("#invoice_currency").select2();
+	
 	
 	jQuery("#client_id").change(function() {
 		if (jQuery("#client_id").val() < 1) {
