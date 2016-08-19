@@ -16,8 +16,10 @@ class fktrPostTypeProviders {
 		add_action('transition_post_status', array('fktrPostTypeProviders', 'default_fields'), 10, 3);
 		add_action('save_post', array('fktrPostTypeProviders', 'save'), 10, 2 );
 		
-		add_action('parent_file',  array( __CLASS__, 'parent_menu_correction'),12);
-
+/*		add_action('parent_file',  array( __CLASS__, 'parent_menu_correction'),12);
+		add_filter('custom_menu_order',  array( __CLASS__, 'toggle_custom_menu_order'),10,0);
+		add_filter('menu_order',  array( __CLASS__, 'remove_those_menu_items'));
+*/		
 		add_action( 'admin_print_scripts-post-new.php', array('fktrPostTypeProviders','scripts'), 11 );
 		add_action( 'admin_print_scripts-post.php', array('fktrPostTypeProviders','scripts'), 11 );
 		
@@ -28,11 +30,29 @@ class fktrPostTypeProviders {
 		
 		add_filter('fktr_clean_provider_fields', array('fktrPostTypeProviders', 'clean_fields'), 10, 1);
 	}
-	
+
+
+	static function toggle_custom_menu_order(){
+		return true;
+	}
+	static function remove_those_menu_items( $menu_order ){
+		global $menu, $submenu;
+		//return $menu_order;
+
+		foreach ( $menu as $mkey => $m ) {
+			$key = array_search( 'edit.php?post_type=fktr_client', $m );
+			$keyb = array_search( 'edit.php?post_type=some_other_post_type', $m );
+			if ( $key || $keyb )
+				unset( $menu[$mkey] );			
+		}
+
+		return $menu_order;
+	}
+
 	// highlight the proper top level menu
 	static function parent_menu_correction($parent_file) {
 		global $current_screen;
-		if ($current_screen->post_type == "fktr_provider") {  
+		if ($current_screen->post_type == "fktr_client") {  
 			$parent_file = 'fakturo_dashboard';   // pasa por aca pero no lo cambia en el menu
 		}
 		return $parent_file;
@@ -78,8 +98,8 @@ class fktrPostTypeProviders {
 			'register_meta_box_cb' => array('fktrPostTypeProviders', 'meta_boxes'),
 			'public' => true,
 			'show_ui' => true,
-			'show_in_menu' => 'admin.php?page=fakturo_dashboard',
-			'menu_position' => 5,
+			'show_in_menu' => false, //'fakturo_dashboard',
+			'menu_position' => 27,
 //			'menu_icon' => 'dashicons-tickets',
 			'show_in_nav_menus' => true,
 			'publicly_queryable' => false,
@@ -88,6 +108,7 @@ class fktrPostTypeProviders {
 			'query_var' => true,
 			'can_export' => true,
 			'rewrite' => true,
+//			'map_meta_cap' => true,
 			'capabilities' => $capabilities
 		);
 

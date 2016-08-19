@@ -16,8 +16,6 @@ class fktrPostTypeProducts {
 		add_action('transition_post_status', array('fktrPostTypeProducts', 'default_fields'), 10, 3);
 		add_action('save_post', array('fktrPostTypeProducts', 'save'), 99, 2 );
 		
-//		add_action('parent_file',  array( __CLASS__, 'parent_menu_correction'));
-		
 		add_action( 'admin_print_scripts-post-new.php', array('fktrPostTypeProducts','scripts'), 11 );
 		add_action( 'admin_print_scripts-post.php', array('fktrPostTypeProducts','scripts'), 11 );
 		
@@ -28,6 +26,13 @@ class fktrPostTypeProducts {
 		add_filter('fktr_clean_product_fields', array('fktrPostTypeProducts', 'clean_fields'), 10, 1);
 		add_filter('fktr_product_before_save', array('fktrPostTypeProducts', 'before_save'), 10, 1);
 		
+	}
+	// highlight the proper top level menu
+	static function hide_add_new_menu() {
+		global $parent_file, $menu, $submenu, $pagenow, $typenow,
+		$plugin_page, $_wp_real_parent_file, $_wp_menu_nopriv, $_wp_submenu_nopriv;
+		// replace my_type with the name of your post type
+		unset($submenu['edit.php?post_type=fktr_product'][10]);
 	}
 	// highlight the proper top level menu
 	static function parent_menu_correction($parent_file) {
@@ -79,9 +84,9 @@ class fktrPostTypeProducts {
 			'register_meta_box_cb' => array('fktrPostTypeProducts','meta_boxes'),
 			'public' => true,
 			'show_ui' => true,
-			'show_in_menu' => true, //'edit.php?post_type=fktr_product',
+			'show_in_menu' => false,
 			'menu_position' => 27,
-			'menu_icon' => 'dashicons-tickets', // '/images/icon_20.png',
+			'menu_icon' => 'dashicons-tickets', 
 			'show_in_nav_menus' => false,
 			'publicly_queryable' => false,
 			'exclude_from_search' => false,

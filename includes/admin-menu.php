@@ -16,6 +16,8 @@ class fktrAdminMenu {
 	}
 	
 	public static function add_menu() {
+		global $submenu;
+		
 		add_menu_page( 
 			__( 'Fakturo', FAKTURO_TEXT_DOMAIN ), 
 			__( 'Fakturo', FAKTURO_TEXT_DOMAIN ), 
@@ -33,10 +35,24 @@ class fktrAdminMenu {
 		);
 		$page = add_submenu_page(
 			'fakturo_dashboard',
+			__( 'Add New', FAKTURO_TEXT_DOMAIN ),
+			__( 'Add Provider', FAKTURO_TEXT_DOMAIN ),
+			'edit_fktr_provider',
+			'post-new.php?post_type=fktr_provider'
+		);
+		$page = add_submenu_page(
+			'fakturo_dashboard',
 			__( 'Clients', FAKTURO_TEXT_DOMAIN ),
 			__( 'Clients', FAKTURO_TEXT_DOMAIN ),
 			'edit_fktr_client',
 			'edit.php?post_type=fktr_client'
+		);
+		$page = add_submenu_page(
+			'fakturo_dashboard',
+			__( 'Add New', FAKTURO_TEXT_DOMAIN ),
+			__( 'Add Client', FAKTURO_TEXT_DOMAIN ),
+			'edit_fktr_provider',
+			'post-new.php?post_type=fktr_client'
 		);
 
 		$page = add_submenu_page(
@@ -51,15 +67,29 @@ class fktrAdminMenu {
 			null,
 			__( 'Settings', FAKTURO_TEXT_DOMAIN ), 
 			__( 'Settings', FAKTURO_TEXT_DOMAIN ), 
-			'manage_options', 
+			'edit_fakturo_settings', 
 			'fakturo-settings-system',
 			array('fktrSettings','fakturo_settings_system'), 
 			'dashicons-tickets', 27  );	
 		
 	
-	
-		//add_menu_page( __( 'Fakturo Products', FAKTURO_TEXT_DOMAIN ), __( 'Fakturo Products', FAKTURO_TEXT_DOMAIN ), 'edit_fktr_product', 'edit.php?post_type=fktr_product', '', 'dashicons-tickets', 27  );
-/*		$page = add_submenu_page(
+		add_menu_page( 
+			__( 'Products', FAKTURO_TEXT_DOMAIN ), 
+			__( 'Products', FAKTURO_TEXT_DOMAIN ), 
+			'edit_fktr_product', 
+			'edit.php?post_type=fktr_product', 
+			'', 
+			'dashicons-tickets', 27  );
+		
+		$page = add_submenu_page(
+			'edit.php?post_type=fktr_product',
+			__( 'Add New', FAKTURO_TEXT_DOMAIN ),
+			__( 'Add Product', FAKTURO_TEXT_DOMAIN ),
+			'edit_fktr_product',
+			'post-new.php?post_type=fktr_product'
+		);
+
+		$page = add_submenu_page(
 			'edit.php?post_type=fktr_product',
 			__( 'Category', FAKTURO_TEXT_DOMAIN ),
 			__( 'Category', FAKTURO_TEXT_DOMAIN ),
@@ -75,16 +105,28 @@ class fktrAdminMenu {
 			'edit-tags.php?taxonomy=fktr_model'
 		);
 	
-		add_menu_page( __( 'Fakturo Sales', FAKTURO_TEXT_DOMAIN ), __( 'Fakturo Sales', FAKTURO_TEXT_DOMAIN ), 'edit_fktr_sales', 'edit.php?post_type=fktr_sale', '', 'dashicons-tickets', 27  );
-		
+		add_menu_page( 
+			__( 'Sales Invoices', FAKTURO_TEXT_DOMAIN ), 
+			__( 'Sales Invoices', FAKTURO_TEXT_DOMAIN ), 
+			'edit_fktr_sales', 
+			'edit.php?post_type=fktr_sale', 
+			'', 
+			'dashicons-tickets', 26  );
 		$page = add_submenu_page(
 			'edit.php?post_type=fktr_sale',
-			__( 'Add new', FAKTURO_TEXT_DOMAIN ),
-			__( 'Add new', FAKTURO_TEXT_DOMAIN ),
+			__( 'Add New', FAKTURO_TEXT_DOMAIN ),
+			__( 'Add Invoice', FAKTURO_TEXT_DOMAIN ),
 			'edit_fktr_sales',
 			'post-new.php?post_type=fktr_sale'
 		);
-*/
+		
+		echo '<style>.wp-submenu li a[href="post-new.php?post_type=fktr_provider"] {display: none !important;}</style>';
+		echo '<style>.wp-submenu li a[href="post-new.php?post_type=fktr_client"] {display: none !important;}</style>';
+		echo '<style>.wp-submenu li a[href="post-new.php?post_type=fktr_product"] {display: none !important;}</style>';
+		// other tests
+//		remove_submenu_page('fakturo_dashboard', 'post-new.php?post_type=fktr_provider');
+//		unset($submenu['edit.php?post_type=fktr_provider'][10]);
+
 	}
 	
 	public static function styles() {
