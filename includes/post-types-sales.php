@@ -135,7 +135,7 @@ class fktrPostTypeSales {
 		global $post_type;
 		if($post_type == 'fktr_sale') {
 			wp_enqueue_style('style-select2',FAKTURO_PLUGIN_URL .'assets/css/select2.min.css');	
-			wp_enqueue_style('post-type-products',FAKTURO_PLUGIN_URL .'assets/css/post-type-products.css');	
+			wp_enqueue_style('post-type-sales',FAKTURO_PLUGIN_URL .'assets/css/post-type-sales.css');	
 		}
 	}
 	public static function scripts() {
@@ -168,14 +168,54 @@ class fktrPostTypeSales {
 	public static function meta_boxes() {
 		
 
-		//add_meta_box('fakturo-client-box', __('Client Data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeSales', 'client_box'),'fktr_sale','side', 'high' );
-		add_meta_box('fakturo-invoice-data-box', __('Invoice Data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeSales', 'invoice_data_box'),'fktr_sale','normal', 'high' );
+		add_meta_box('fakturo-currencies-box', __('Currencies', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeSales', 'currencies_box'),'fktr_sale','side', 'high' );
+		add_meta_box('fakturo-discount-box', __('Discount', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeSales', 'discount_box'),'fktr_sale','side', 'high' );
 		
+		add_meta_box('fakturo-invoice-data-box', __('Invoice Data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeSales', 'invoice_data_box'),'fktr_sale','normal', 'high' );
+		add_meta_box('fakturo-invoice-box', __('Invoice', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeSales', 'invoice_box'),'fktr_sale','normal', 'high' );
 		do_action('add_ftkr_sale_meta_boxes');
+	}
+	public static function invoice_box() {
+		global $post;
+		$sale_data = self::get_sale_data($post->ID);
+		$setting_system = get_option('fakturo_system_options_group', false);
+		
+		$echoHtml = '<table class="form-table">
+					<tbody>
+						<tr class="user-display-name-wrap">
+						<td>
+							<div class="uc_header">
+							<div class="uc_column">'.__('Code', FAKTURO_TEXT_DOMAIN  ).'</div>
+							<div class="uc_column">'.__('Description', FAKTURO_TEXT_DOMAIN  ) .'</div>
+							<div class="uc_column">'. __('Quantity', FAKTURO_TEXT_DOMAIN  ) .'</div>
+							<div class="uc_column">'. __('Unit price', FAKTURO_TEXT_DOMAIN  ) .'</div>
+							<div class="uc_column">'. __('Tax', FAKTURO_TEXT_DOMAIN  ) .'</div>
+							<div class="uc_column">'. __('Amount', FAKTURO_TEXT_DOMAIN  ) .'</div>
+							</div>
+							<br />
+			
+							<div id="invoice_products"> 
+								
+							</div>
+							
+							<div id="paging-box">		  
+								<a href="#" class="button-primary add" id="addmoreuc" style="font-weight: bold; text-decoration: none;"> '.__('Add a product', FAKTURO_TEXT_DOMAIN  ).'</a>
+								<label id="msgdrag"></label>
+							</div>
+						</td>
+						</tr>
+					</tbody>
+				</table>';
+	
+		$echoHtml = apply_filters('fktr_sale_invoice_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_sale_invoice_box', $echoHtml);
+		
 	}
 	public static function invoice_data_box() {
 		global $post;
 		$sale_data = self::get_sale_data($post->ID);
+		$setting_system = get_option('fakturo_system_options_group', false);
 		
 		$selectInvoiceTypes = wp_dropdown_categories( array(
 			'show_option_all'    => '',
@@ -197,6 +237,10 @@ class fktrPostTypeSales {
 			'taxonomy'           => 'fktr_invoice_types',
 			'hide_if_empty'      => false
 		));
+		$selected_currency = $setting_system['currency'];
+		if ($sale_data['invoice_currency'] > 0) {
+			$selected_currency = $sale_data['invoice_currency'];
+		}
 		
 		$selectCurrencies = wp_dropdown_categories( array(
 			'show_option_all'    => '',
@@ -208,7 +252,7 @@ class fktrPostTypeSales {
 			'child_of'           => 0,
 			'exclude'            => '',
 			'echo'               => 0,
-			'selected'           => $sale_data['invoice_currency'],
+			'selected'           => $selected_currency,
 			'hierarchical'       => 1, 
 			'name'               => 'invoice_currency',
 			'class'              => 'form-no-clear',
@@ -436,167 +480,57 @@ class fktrPostTypeSales {
 		
 	}
 	
-	public static function client_box() {
+	public static function currencies_box() {
 		global $post;
 		
 	
 		$sale_data = self::get_sale_data($post->ID);
 		$setting_system = get_option('fakturo_system_options_group', false);
 		
-		$show_client_data = true;
-		if ($sale_data['client_id'] < 1) {
-			$show_client_data = false;
-		}
-		
-		$selectClients = fakturo_get_select_post(array(
-											'echo' => 0,
-											'post_type' => 'fktr_client',
-											'show_option_none' => __('Choose a Client', FAKTURO_TEXT_DOMAIN ),
-											'name' => 'client_id',
-											'id' => 'client_id',
-											'class' => '',
-											'selected' => $sale_data['client_id']
+		$currencies = get_fakturo_terms(array(
+											'taxonomy' => 'fktr_currencies',
+											'hide_empty' => false,
+											'exclude' => $setting_system['currency']
 										));
-										
-										
-		$selectTaxCondition = wp_dropdown_categories( array(
-			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Tax Condition', FAKTURO_TEXT_DOMAIN ),
-			'orderby'            => 'name', 
-			'order'              => 'ASC',
-			'show_count'         => 0,
-			'hide_empty'         => 0, 
-			'child_of'           => 0,
-			'exclude'            => '',
-			'echo'               => 0,
-			'selected'           => $sale_data['client_data']['tax_condition'],
-			'hierarchical'       => 1, 
-			'name'               => 'client_data[tax_condition]',
-			'class'              => '',
-			'id'				 => 'client_data_tax_condition',
-			'depth'              => 1,
-			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_tax_conditions',
-			'hide_if_empty'      => false
-		));
 		
-		$selectPaymentTypes = wp_dropdown_categories( array(
-			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Payment Type', FAKTURO_TEXT_DOMAIN ),
-			'orderby'            => 'name', 
-			'order'              => 'ASC',
-			'show_count'         => 0,
-			'hide_empty'         => 0, 
-			'child_of'           => 0,
-			'exclude'            => '',
-			'echo'               => 0,
-			'selected'           => $sale_data['client_data']['payment_type'],
-			'hierarchical'       => 1, 
-			'name'               => 'client_data[payment_type]',
-			'class'              => 'form-no-clear',
-			'id'				 => 'client_data_payment_type',
-			'depth'              => 1,
-			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_payment_types',
-			'hide_if_empty'      => false
-		));
+		
+		
 		
 		$echoHtml = '<table>
-					<tbody>
+					<tbody>';
+		
+		foreach ($currencies as $cur) {
+			$echoHtml .= '<tr>
+							'.(($setting_system['currency_position'] == 'before')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</td>':'').'</label><td> <input type="text" value="'.$cur->rate.'" name="invoice_currencies['.$cur->term_id.']" id="invoice_currencies_'.$cur->term_id.'" class="invoice_currencies"/> '.(($setting_system['currency_position'] == 'after')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'</td>
+						</tr>';
 			
-			<tr class="user-address-wrap">
-				<th style="text-align:left;"><label for="client">'.__('Client', FAKTURO_TEXT_DOMAIN ).'</label></th>
-				<td style="text-align:right;">
-					'.$selectClients.'
-				</td>		
-			</tr>
-			<tr class="client_data"'.($show_client_data?'':' style="display:none;"').'>
-				<th style="text-align:left;">'.__('Client ID', FAKTURO_TEXT_DOMAIN ).'</th>
-				<td style="text-align:right;" id="client_data_id">
-					'.$sale_data['client_id'].'
-				</td>		
-			</tr>
-			<tr class="client_data"'.($show_client_data?'':' style="display:none;"').'>
-				<th style="text-align:left;">'.__('Client name', FAKTURO_TEXT_DOMAIN ).'</th>
-				<td style="text-align:right;" id="client_name">
-					'.$sale_data['client_data']['name'].'
-					<input type="hidden" name="client_data[name]" value="'.$sale_data['client_data']['name'].'" id="client_data_name"/>
-				</td>		
-			</tr>
-			<tr class="client_data"'.($show_client_data?'':' style="display:none;"').'>
-				<th style="text-align:left;">'.__('Client address', FAKTURO_TEXT_DOMAIN ).'</th>
-				<td style="text-align:right;" id="client_address">
-					'.$sale_data['client_data']['address'].'
-					<input type="hidden" name="client_data[address]" value="'.$sale_data['client_data']['address'].'" id="client_data_address"/>
-				</td>		
-			</tr>
-			<tr class="client_data"'.($show_client_data?'':' style="display:none;"').'>
-				<th style="text-align:left;">'.__('City', FAKTURO_TEXT_DOMAIN ).'</th>
-				<td style="text-align:right;" id="client_city">
-					'.$sale_data['client_data']['city'].'
-					<input type="hidden" name="client_data[city]" value="'.$sale_data['client_data']['city'].'" id="client_data_city"/>
-				</td>		
-			</tr>
-			<tr class="client_data"'.($show_client_data?'':' style="display:none;"').'>
-				<th style="text-align:left;">'.__('State', FAKTURO_TEXT_DOMAIN ).'</th>
-				<td style="text-align:right;" id="client_state">
-					'.$sale_data['client_data']['state']['name'].'
-					<input type="hidden" name="client_data[state][id]" value="'.$sale_data['client_data']['state']['id'].'" id="client_data_state_id"/>
-					<input type="hidden" name="client_data[state][name]" value="'.$sale_data['client_data']['state']['name'].'" id="client_data_state_name"/>
-				</td>		
-			</tr>
-			<tr class="client_data"'.($show_client_data?'':' style="display:none;"').'>
-				<th style="text-align:left;">'.__('Country', FAKTURO_TEXT_DOMAIN ).'</th>
-				<td style="text-align:right;" id="client_country">
-					'.$sale_data['client_data']['country']['name'].'
-					<input type="hidden" name="client_data[country][id]" value="'.$sale_data['client_data']['country']['id'].'" id="client_data_country_id"/>
-					<input type="hidden" name="client_data[country][name]" value="'.$sale_data['client_data']['country']['name'].'" id="client_data_country_name"/>
-				</td>		
-			</tr>
-			<tr class="client_data"'.($show_client_data?'':' style="display:none;"').'>
-				<th style="text-align:left;">'.__('Taxpayer ID', FAKTURO_TEXT_DOMAIN ).'</th>
-				<td style="text-align:right;" id="client_taxpayer">
-					'.$sale_data['client_data']['taxpayer'].'
-					<input type="hidden" name="client_data[taxpayer]" value="'.$sale_data['client_data']['taxpayer'].'" id="client_data_taxpayer"/>
-				</td>		
-			</tr>
-			<tr class="client_data"'.($show_client_data?'':' style="display:none;"').'>
-				<th style="text-align:left;">'.__('Tax condition', FAKTURO_TEXT_DOMAIN ).'</th>
-				<td style="text-align:right;" id="client_tax_condition">
-					'.$selectTaxCondition.'
-				</td>		
-			</tr>
-			<tr class="client_data"'.($show_client_data?'':' style="display:none;"').'>
-				<th style="text-align:left;">'.__('Payment Type', FAKTURO_TEXT_DOMAIN ).'</th>
-				<td style="text-align:right;" id="client_payment_type">
-					'.$selectPaymentTypes.'
-				</td>		
-			</tr>
-			<tr class="client_data"'.($show_client_data?'':' style="display:none;"').'>
-				<th style="text-align:left;">'.__('Price scale', FAKTURO_TEXT_DOMAIN ).'</th>
-				<td style="text-align:right;" id="client_price_scale">
-					'.$sale_data['client_data']['price_scale']['name'].'
-					<input type="hidden" name="client_data[price_scale][id]" value="'.$sale_data['client_data']['price_scale']['id'].'" id="client_data_price_scale_id"/>
-					<input type="hidden" name="client_data[price_scale][name]" value="'.$sale_data['client_data']['price_scale']['name'].'" id="client_data_price_scale_name"/>
-				</td>		
-			</tr>
-			<tr class="client_data"'.($show_client_data?'':' style="display:none;"').'>
-				<th style="text-align:left;">'.__('Credit limit', FAKTURO_TEXT_DOMAIN ).'</th>
-				<td style="text-align:right;" id="client_credit_limit">
-					'.$sale_data['client_data']['credit_limit'].'
-					<input type="hidden" name="client_data[credit_limit]" value="'.$sale_data['client_data']['credit_limit'].'" id="client_data_credit_limit"/>
-				</td>		
-			</tr>
-			</tbody>
-		</table>';
+		}
+			
+		$echoHtml .= '</tbody>
+				</table>';
 	
-		$echoHtml = apply_filters('fktr_sale_client_box', $echoHtml);
+		$echoHtml = apply_filters('fktr_sale_currencies_box', $echoHtml);
 		echo $echoHtml;
-		do_action('add_fktr_sale_client_box', $echoHtml);
+		do_action('add_fktr_sale_currencies_box', $echoHtml);
 		
 		
 	}
 	
+	public static function discount_box() {
+		global $post;
+		$sale_data = self::get_sale_data($post->ID);
+		$echoHtml = '<table>
+					<tbody>
+						<td>%</td>
+						<td><input type="text" name="invoice_discount" id="invoice_discount"/></td>
+					</tbody>
+				</table>';
+	
+		$echoHtml = apply_filters('fktr_sale_discount_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_sale_discount_box', $echoHtml);
+		
+	}
 	
 
 	public static function clean_fields($fields) {

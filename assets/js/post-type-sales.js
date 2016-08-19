@@ -1,4 +1,15 @@
+var DefaultMaskNumbers = '';
 jQuery(document).ready(function() {
+	
+	var decimal_numbers = parseInt(sales_object.decimal_numbers);
+	var decimal_ex = '';
+	for (var i = 0; i < decimal_numbers; i++) {
+		decimal_ex = decimal_ex+'0';
+	}
+	DefaultMaskNumbers = "#"+sales_object.thousand+"##0"+sales_object.decimal+decimal_ex;
+	jQuery('.invoice_currencies').mask(DefaultMaskNumbers, {reverse: true});
+	jQuery('#invoice_discount').mask("##0.00", {reverse: true});
+	
 	jQuery("#client_id").select2();
 	jQuery("#client_data_tax_condition").select2();
 	jQuery("#client_data_payment_type").select2();

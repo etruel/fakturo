@@ -153,13 +153,25 @@ class fktr_tax_tax_conditions {
 		$new_columns = array(
 			'cb' => '<input type="checkbox" />',
 			'name' => __('Name', FAKTURO_TEXT_DOMAIN),
+			'invoice_type' => __('Invoice Type', FAKTURO_TEXT_DOMAIN),
 		);
 		return $new_columns;
 	}
 	public static function theme_columns($out, $column_name, $term_id) {
 		
+		$term = get_fakturo_term($term_id, self::$tax_name);
 		
 		switch ($column_name) {
+			case 'invoice_type': 
+				$invoice_name = 'No invoice type';
+				if ($term->invoice_type > 0) {
+					$invoice_type_data = get_fakturo_term($term->invoice_type, 'fktr_invoice_types');
+					if(!is_wp_error($invoice_type_data)) {
+						$invoice_name = $invoice_type_data->name;
+					}
+				}
+				$out = esc_attr($invoice_name).'';
+				break;
 			default:
 				break;
 		}

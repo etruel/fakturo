@@ -27,21 +27,7 @@ class fktrPostTypeProducts {
 		add_filter('fktr_product_before_save', array('fktrPostTypeProducts', 'before_save'), 10, 1);
 		
 	}
-	// highlight the proper top level menu
-	static function hide_add_new_menu() {
-		global $parent_file, $menu, $submenu, $pagenow, $typenow,
-		$plugin_page, $_wp_real_parent_file, $_wp_menu_nopriv, $_wp_submenu_nopriv;
-		// replace my_type with the name of your post type
-		unset($submenu['edit.php?post_type=fktr_product'][10]);
-	}
-	// highlight the proper top level menu
-	static function parent_menu_correction($parent_file) {
-		global $current_screen;
-		if ($current_screen->post_type == "fktr_product") {
-			$parent_file = 'edit.php?post_type=fktr_product';
-		}
-		return $parent_file;
-	}
+	
 
 	public static function setup() {
 		$slug     = defined( 'FAKTURO_PRODUCT_SLUG' ) ? FAKTURO_PRODUCT_SLUG : 'fktr_products';

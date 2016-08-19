@@ -1,0 +1,25 @@
+#invoice_products {background:#E2E2E2;}
+		.sortitem{background:#fff;border:2px solid #ccc;padding-left:20px; display: flex;}
+		.sortitem .sorthandle{position:absolute;top:5px;bottom:5px;left:3px;width:8px;display:none;background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAB3RJTUUH3wIDBycZ/Cj09AAAAAlwSFlzAAALEgAACxIB0t1+/AAAAARnQU1BAACxjwv8YQUAAAAWSURBVHjaY2DABhoaGupBGMRmYiAEAKo2BAFbROu9AAAAAElFTkSuQmCC');}
+		.sortitem:hover .sorthandle{display:block;}
+		div.uc_column {
+    float: left;
+    width: 16%;
+}
+.delete:hover {
+    color: red;
+}
+.delete {
+    color: #F88;
+    font-size: 1.6em;
+}
+label {
+    cursor: pointer;
+}
+#msgdrag {
+    display: none;
+    color: red;
+    padding: 0 0 0 20px;
+    font-weight: 600;
+    font-size: 1em;
+}
