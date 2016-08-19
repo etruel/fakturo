@@ -45,6 +45,9 @@ jQuery(document).ready(function() {
 				jQuery("#client_data_tax_condition").val(data_client.selected_tax_condition);
 				jQuery("#client_data_tax_condition").select2();
 				
+				jQuery("#invoice_type").val(getInvoiceTypeFromTaxCondition());
+				jQuery("#invoice_type").select2();
+				
 				jQuery("#client_payment_type").fadeIn();
 				jQuery("#client_data_payment_type").val(data_client.selected_payment_type);
 				jQuery("#client_data_payment_type").select2();
@@ -60,9 +63,25 @@ jQuery(document).ready(function() {
 		
 		
 	});
-	
+	jQuery("#client_data_tax_condition").change(function(){
+		
+		jQuery("#invoice_type").val(getInvoiceTypeFromTaxCondition());
+		jQuery("#invoice_type").select2();
+	});
   
 });
 
-
+function getInvoiceTypeFromTaxCondition() {
+	var r = 0;
+	var tax_conditions = jQuery.parseJSON(sales_object.tax_coditions);
+	for (var i = 0; i < tax_conditions.length; i++) {
+		if (tax_conditions[i].term_id == jQuery("#client_data_tax_condition").val()) {
+			r = tax_conditions[i].invoice_type;
+			break;
+		}
+		
+	}
+	return parseInt(r);
+	
+}
 

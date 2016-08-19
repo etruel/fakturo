@@ -70,6 +70,7 @@ class fktr_tax_tax_conditions {
 	}
 	public static function scripts() {
 		if (isset($_GET['taxonomy']) && $_GET['taxonomy'] == self::$tax_name) {
+			wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'taxonomy-taxes', FAKTURO_PLUGIN_URL . 'assets/js/taxonomy-tax-conditions.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			
@@ -78,9 +79,35 @@ class fktr_tax_tax_conditions {
 		
 	}
 	public static function add_form_fields() {
+		$selectInvoiceTypes = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a Invoice Type', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => -1,
+			'hierarchical'       => 1, 
+			'name'               => 'term_meta[invoice_type]',
+			'class'              => 'form-no-clear',
+			'id'				 => 'term_meta_invoice_type',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_invoice_types',
+			'hide_if_empty'      => false
+		));
+		
 		$echoHtml = '
 		<style type="text/css">.form-field.term-parent-wrap,.form-field.term-slug-wrap, .form-field label[for="parent"], .form-field #parent {display: none;}  .form-field.term-description-wrap { display:none;} .inline.hide-if-no-js{ display:none;} .view{ display:none;}</style>
-
+		
+		<div class="form-field" id="rate_div">
+			<label for="term_meta[invoice_type]">'.__( 'Invoice Types', FAKTURO_TEXT_DOMAIN ).'</label>
+			'.$selectInvoiceTypes.'
+			<p class="description">'.__( 'Select default Invoice Type for this Tax Condition.', FAKTURO_TEXT_DOMAIN ).'</p>
+		</div>
 		';
 		echo $echoHtml;
 	}
@@ -88,9 +115,36 @@ class fktr_tax_tax_conditions {
 	
 
 		$term_meta = get_fakturo_term($term->term_id, self::$tax_name);
-	
+		$selectInvoiceTypes = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a Invoice Type', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $term_meta->invoice_type,
+			'hierarchical'       => 1, 
+			'name'               => 'term_meta[invoice_type]',
+			'class'              => 'form-no-clear',
+			'id'				 => 'term_meta_invoice_type',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_invoice_types',
+			'hide_if_empty'      => false
+		));
 		$echoHtml = '<style type="text/css">.form-field.term-parent-wrap, .form-field.term-slug-wrap {display: none;} .form-field.term-description-wrap { display:none;}  </style>
-	
+					<tr class="form-field">
+			<th scope="row" valign="top">
+				<label for="term_meta[invoice_type]">'.__( 'Invoice Types', FAKTURO_TEXT_DOMAIN ).'</label>
+			</th>
+			<td>
+				'.$selectInvoiceTypes.'
+				<p class="description">'.__( 'Select default Invoice Type for this Tax Condition.', FAKTURO_TEXT_DOMAIN ).'</p>
+			</td>
+		</tr>
 		';
 		echo $echoHtml;
 		
