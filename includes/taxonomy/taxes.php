@@ -25,6 +25,7 @@ class fktr_tax_taxes {
 		
 		add_action('admin_enqueue_scripts', array(__CLASS__, 'scripts'), 10, 1);
 		
+		add_filter('before_save_tax_'.self::$tax_name, array(__CLASS__, 'before_save'), 10, 1);
 		
 	}
 	public static function init() {
@@ -73,6 +74,15 @@ class fktr_tax_taxes {
 		if (isset($_GET['taxonomy']) && $_GET['taxonomy'] == self::$tax_name) {
 			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'taxonomy-taxes', FAKTURO_PLUGIN_URL . 'assets/js/taxonomy-taxes.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			
+			$setting_system = get_option('fakturo_system_options_group', false);
+			wp_localize_script('taxonomy-taxes', 'system_setting',
+				array('thousand' => $setting_system['thousand'],
+					'decimal' => $setting_system['decimal'],
+					'decimal_numbers' => $setting_system['decimal_numbers'],
+				));
+			
+			
 			
 		}
 		
@@ -128,7 +138,9 @@ class fktr_tax_taxes {
 		
 		switch ($column_name) {
 			case 'percentage': 
-				$out = esc_attr( $term->percentage).'%';
+				$setting_system = get_option('fakturo_system_options_group', false);
+				$percentage = number_format($term->percentage, 2, $setting_system['decimal'], $setting_system['thousand']);
+				$out = esc_attr($percentage).'%';
 				break;
 
 			default:
@@ -136,8 +148,16 @@ class fktr_tax_taxes {
 		}
 		return $out;    
 	}
+	public static function before_save($fields)  {
+		if (isset($fields['percentage'])) {
+			$fields['percentage'] = fakturo_mask_to_float($fields['percentage']);
+			
+		}
+		return $fields;
+	}
 	public static function save_fields($term_id, $tt_id) {
 		if (isset( $_POST['term_meta'])) {
+			$_POST['term_meta'] = apply_filters('before_save_tax_'.self::$tax_name, $_POST['term_meta']);
 			set_fakturo_term($term_id, $tt_id, $_POST['term_meta']);
 		}
 	}

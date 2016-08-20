@@ -179,18 +179,27 @@ class fktrPostTypeSales {
 		global $post;
 		$sale_data = self::get_sale_data($post->ID);
 		$setting_system = get_option('fakturo_system_options_group', false);
+		$selectProducts = fakturo_get_select_post(array(
+													'echo' => 0,
+													'post_type' => 'fktr_product',
+													'show_option_none' => __('Choose a Product', FAKTURO_TEXT_DOMAIN ),
+													'name' => 'product_select',
+													'id' => 'product_select',
+													'class' => '',
+													'selected' => -1
+												));
 		
 		$echoHtml = '<table class="form-table">
 					<tbody>
 						<tr class="user-display-name-wrap">
 						<td>
 							<div class="uc_header">
-							<div class="uc_column">'.__('Code', FAKTURO_TEXT_DOMAIN  ).'</div>
-							<div class="uc_column">'.__('Description', FAKTURO_TEXT_DOMAIN  ) .'</div>
-							<div class="uc_column">'. __('Quantity', FAKTURO_TEXT_DOMAIN  ) .'</div>
-							<div class="uc_column">'. __('Unit price', FAKTURO_TEXT_DOMAIN  ) .'</div>
-							<div class="uc_column">'. __('Tax', FAKTURO_TEXT_DOMAIN  ) .'</div>
-							<div class="uc_column">'. __('Amount', FAKTURO_TEXT_DOMAIN  ) .'</div>
+								<div class="uc_column">'.__('Code', FAKTURO_TEXT_DOMAIN  ).'</div>
+								<div class="uc_column">'.__('Description', FAKTURO_TEXT_DOMAIN  ) .'</div>
+								<div class="uc_column">'. __('Quantity', FAKTURO_TEXT_DOMAIN  ) .'</div>
+								<div class="uc_column">'. __('Unit price', FAKTURO_TEXT_DOMAIN  ) .'</div>
+								<div class="uc_column">'. __('Tax', FAKTURO_TEXT_DOMAIN  ) .'</div>
+								<div class="uc_column">'. __('Amount', FAKTURO_TEXT_DOMAIN  ) .'</div>
 							</div>
 							<br />
 			
@@ -199,7 +208,7 @@ class fktrPostTypeSales {
 							</div>
 							
 							<div id="paging-box">		  
-								<a href="#" class="button-primary add" id="addmoreuc" style="font-weight: bold; text-decoration: none;"> '.__('Add a product', FAKTURO_TEXT_DOMAIN  ).'</a>
+								'.$selectProducts.' <a href="#" class="button-primary add" id="addmoreuc" style="font-weight: bold; text-decoration: none;"> '.__('Add product', FAKTURO_TEXT_DOMAIN  ).'</a>
 								<label id="msgdrag"></label>
 							</div>
 						</td>
@@ -522,7 +531,7 @@ class fktrPostTypeSales {
 		$echoHtml = '<table>
 					<tbody>
 						<td>%</td>
-						<td><input type="text" name="invoice_discount" id="invoice_discount"/></td>
+						<td><input type="text" name="invoice_discount" value="'.$sale_data['invoice_discount'].'" id="invoice_discount"/></td>
 					</tbody>
 				</table>';
 	
@@ -574,6 +583,9 @@ class fktrPostTypeSales {
 		if (!isset($fields['invoice_saleman'])) {
 			$fields['invoice_saleman'] = 0;
 		}
+		if (!isset($fields['invoice_discount'])) {
+			$fields['invoice_discount'] = 0;
+		}
 
 		return $fields;
 	}
@@ -612,7 +624,7 @@ class fktrPostTypeSales {
 			$fields['date'] = '';
 			$fields['invoice_currency'] = 0;
 			$fields['invoice_saleman'] = 0;
-			
+			$fields['invoice_discount'] = 0;
 			$fields = apply_filters('fktr_clean_sale_fields', $fields);
 
 			foreach ( $fields as $field => $value ) {

@@ -95,13 +95,13 @@ class fktr_tax_nvoice_types {
 		</div>
 		
 		<div class="form-field" id="discriminates_taxes_div">
-			<input type="checkbox" value="1" name="term_meta_discriminates_taxes" id="term_meta_discriminates_taxes">
+			<input type="checkbox" class="slidercheck" value="1" name="term_meta_discriminates_taxes" id="term_meta_discriminates_taxes">
 			<label for="term_meta_discriminates_taxes"><span class="ui"></span>'.__('Discriminates taxes', FAKTURO_TEXT_DOMAIN ).'	</label>
 			
 		</div>
 		
 		<div class="form-field" id="sum_div">
-			<input type="checkbox" value="1" name="term_meta_sum" id="term_meta_sum">
+			<input type="checkbox" class="slidercheck" value="1" name="term_meta_sum" id="term_meta_sum">
 			<label for="term_meta_sum"><span class="ui"></span>'.__('Sum', FAKTURO_TEXT_DOMAIN ).'	</label>
 			
 		</div>
@@ -140,7 +140,7 @@ class fktr_tax_nvoice_types {
 				
 			</th>
 			<td>
-				<input type="checkbox" value="1" name="term_meta_discriminates_taxes" id="term_meta_discriminates_taxes" '.(($term_meta->discriminates_taxes)?'checked="checked"':'').'>
+				<input type="checkbox" class="slidercheck" value="1" name="term_meta_discriminates_taxes" id="term_meta_discriminates_taxes" '.(($term_meta->discriminates_taxes)?'checked="checked"':'').'>
 				<label for="term_meta_discriminates_taxes"><span class="ui"></span>'.__('Discriminates taxes', FAKTURO_TEXT_DOMAIN ).'	</label>
 			</td>
 		</tr>
@@ -150,7 +150,7 @@ class fktr_tax_nvoice_types {
 				
 			</th>
 			<td>
-				<input type="checkbox" value="1" name="term_meta_sum" id="term_meta_sum" '.(($term_meta->sum)?'checked="checked"':'').'>
+				<input type="checkbox" class="slidercheck" value="1" name="term_meta_sum" id="term_meta_sum" '.(($term_meta->sum)?'checked="checked"':'').'>
 				<label for="term_meta_sum"><span class="ui"></span>'.__('Sum', FAKTURO_TEXT_DOMAIN ).'	</label>
 			</td>
 		</tr>

@@ -14,7 +14,7 @@ class fktrPostTypeProducts {
 		add_action( 'init', array('fktrPostTypeProducts', 'setup'), 1 );
 		add_action( 'activated_plugin', array('fktrPostTypeProducts', 'setup'), 1 );
 		add_action('transition_post_status', array('fktrPostTypeProducts', 'default_fields'), 10, 3);
-		add_action('save_post', array('fktrPostTypeProducts', 'save'), 99, 2 );
+		add_action('save_post', array('fktrPostTypeProducts', 'save'), 999, 2 );
 		
 		add_action( 'admin_print_scripts-post-new.php', array('fktrPostTypeProducts','scripts'), 11 );
 		add_action( 'admin_print_scripts-post.php', array('fktrPostTypeProducts','scripts'), 11 );
@@ -293,7 +293,7 @@ class fktrPostTypeProducts {
 			'hide_if_empty'      => false
 		));		
 		
-		
+
 		$echoHtml = '<table class="form-table">
 					<tbody>
 			<tr class="user-address-wrap">
@@ -322,6 +322,8 @@ class fktrPostTypeProducts {
 							'taxonomy' => 'fktr_price_scales',
 							'hide_empty' => false,
 				));
+				
+
 		$echoHtml = '<table class="form-table">
 					
 			
@@ -585,8 +587,8 @@ class fktrPostTypeProducts {
 	public static function clean_fields($fields) {
 		
 		if (!isset($fields['cost'])) {
-			$fields['cost'] = '0';
-		}
+			$fields['cost'] = 0;
+		} 
 		if (!isset($fields['currency'])) {
 			$fields['currency'] = 0;
 		}
@@ -654,7 +656,6 @@ class fktrPostTypeProducts {
 	public static function before_save($fields) {
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$fields['cost'] = fakturo_mask_to_float($fields['cost']);
-		
 		foreach ($fields['prices'] as $key => $value) {
 			$fields['prices'][$key] = fakturo_mask_to_float($value);
 		}
@@ -668,7 +669,7 @@ class fktrPostTypeProducts {
 		if( $post->post_type == 'fktr_product' && $old_status == 'new'){		
 			
 			$fields = array();
-			$fields['cost'] = '0';
+			$fields['cost'] = 0;
 			$fields['currency'] = 0;
 			
 			
@@ -762,6 +763,7 @@ class fktrPostTypeProducts {
 		foreach ($fields as $field => $value ) {
 			
 			if ( !is_null( $value ) ) {
+				
 				$new = apply_filters('fktr_product_metabox_save_' . $field, $value );  //filtra cada campo antes de grabar
 				update_post_meta( $post_id, $field, $new );
 				

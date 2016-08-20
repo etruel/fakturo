@@ -390,7 +390,7 @@ class fktrSettings {
 					  <tr>
 							<th>'. __( 'Ignore stock?', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
-								<input id="fakturo_system_options_group_ignore_stock" type="checkbox" name="fakturo_system_options_group[ignore_stock]" value="1" '.(($options['ignore_stock'])?'checked="checked"':'').'>
+								<input id="fakturo_system_options_group_ignore_stock" class="slidercheck" type="checkbox" name="fakturo_system_options_group[ignore_stock]" value="1" '.(($options['ignore_stock'])?'checked="checked"':'').'>
 								<label for="fakturo_system_options_group_ignore_stock"><span class="ui"></span>'. __( 'Ignore stock used in the system', FAKTURO_TEXT_DOMAIN ).'	</label>
 							
 							</td>

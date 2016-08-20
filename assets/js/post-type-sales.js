@@ -8,13 +8,14 @@ jQuery(document).ready(function() {
 	}
 	DefaultMaskNumbers = "#"+sales_object.thousand+"##0"+sales_object.decimal+decimal_ex;
 	jQuery('.invoice_currencies').mask(DefaultMaskNumbers, {reverse: true});
-	jQuery('#invoice_discount').mask("##0.00", {reverse: true});
+	jQuery('#invoice_discount').mask("##0"+sales_object.decimal+"00", {reverse: true});
 	
 	jQuery("#client_id").select2();
 	jQuery("#client_data_tax_condition").select2();
 	jQuery("#client_data_payment_type").select2();
 	jQuery("#invoice_type").select2();
 	jQuery("#invoice_currency").select2();
+	jQuery("#invoice_saleman").select2();
 	
 	
 	jQuery("#client_id").change(function() {
@@ -78,6 +79,29 @@ jQuery(document).ready(function() {
 		
 		jQuery("#invoice_type").val(getInvoiceTypeFromTaxCondition());
 		jQuery("#invoice_type").select2();
+	});
+	
+	
+	jQuery('#addmoreuc').click(function(e) {
+		
+			
+			/*jQuery('#ucfield_max').val( parseInt(jQuery('#ucfield_max').val(),10) + 1 );
+			oldval = jQuery('#ucfield_max').val();
+			var newHTML = '<div id="uc_ID'+oldval+'" class="sortitem"><div class="sorthandle"> </div> <div class="uc_column" id=""><input name="uc_description[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_phone[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_email[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_position[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_address[]" type="text" value="" class="large-text"/></div><div class="" id="uc_actions"><label title="'+providers_object.privider_delete_this_item+'" data-id="'+oldval+'" class="delete"></label></div></div>';
+			
+			jQuery('#user_contacts').append(newHTML);
+			jQuery('#uc_actions label').click(function() {
+				delete_user_contact('#uc_ID'+jQuery(this).attr('data-id'));
+				jQuery('#user_contacts').vSort();
+			});
+			
+			jQuery('#invoice_products').vSort();
+			e.preventDefault();
+			*/
+		});
+	jQuery('#uc_actions label').click(function() {
+		//delete_user_contact('#uc_ID'+jQuery(this).attr('data-id'));
+		//jQuery('#user_contacts').vSort();
 	});
   
 });
