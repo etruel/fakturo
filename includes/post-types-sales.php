@@ -28,7 +28,45 @@ class fktrPostTypeSales {
 		add_filter('fktr_sale_before_save', array('fktrPostTypeSales', 'before_save'), 10, 1);
 		
 		add_action('wp_ajax_get_client_data', array('fktrPostTypeSales', 'get_client_data'));
+		add_action('wp_ajax_get_products', array('fktrPostTypeSales', 'get_products'));
 		
+	}
+	public static function get_products() {
+		$args = array(	'showposts'           =>  10,
+						'post_type'           => 'fktr_product',
+						'post_status'         => 'publish',
+						'orderby'             => 'title',
+						'order'               => 'ASC',
+						'paged' 			  => 1, 
+						'meta_query' => array(),
+				);
+		$r = wp_parse_args($_GET, $args );
+		
+		$return = new stdClass();
+		$return->total_count = 1;
+		$return->incomplete_results = false;
+		$return->items = array();
+		$products = new WP_Query($r);
+		if ($products->have_posts()) {
+
+			while($products->have_posts()) {
+				$products->the_post();
+				$dataProduct = fktrPostTypeProducts::get_product_data(get_the_ID());
+				$newProduct = new stdClass();
+				$newProduct->id = get_the_ID();
+				$newProduct->title = get_the_title();
+				$newProduct->description = $dataProduct['description'];
+				$newProduct->img = FAKTURO_PLUGIN_URL . 'assets/images/default_produc.png';
+				$newProduct->datacomplete = $dataProduct;
+				if (has_post_thumbnail()) {
+					$newProduct->img = wp_get_attachment_url( get_post_thumbnail_id(get_the_ID()));
+				} 
+				$return->items[] = $newProduct;
+				//error_log(var_export(fktrPostTypeProducts::get_product_data(get_the_ID()), true));
+			}
+		}
+		echo json_encode($return);
+		wp_die();
 	}
 	public static function setup() {
 		
@@ -151,14 +189,25 @@ class fktrPostTypeSales {
 							'taxonomy' => 'fktr_tax_conditions',
 							'hide_empty' => false,
 				));
+				
+			$currencies = get_fakturo_terms(array(
+							'taxonomy' => 'fktr_currencies',
+							'hide_empty' => false,
+				));
 			
 			wp_localize_script('post-type-sales', 'sales_object',
 				array('ajax_url' => admin_url( 'admin-ajax.php' ),
 					'thousand' => $setting_system['thousand'],
 					'decimal' => $setting_system['decimal'],
 					'decimal_numbers' => $setting_system['decimal_numbers'],
-					'tax_coditions' => json_encode($tax_coditions)
-
+					'currency_position' => $setting_system['currency_position'],
+					'characters_to_search' => apply_filters('fktr_sales_characters_to_search_product', 3),
+					
+					'txt_cost' => __('Cost', FAKTURO_TEXT_DOMAIN ),
+					'txt_search_products' => __('Search products...', FAKTURO_TEXT_DOMAIN ),
+					
+					'tax_coditions' => json_encode($tax_coditions),
+					'currencies' => json_encode($currencies),
 				));
 		
 		}
@@ -185,8 +234,9 @@ class fktrPostTypeSales {
 													'show_option_none' => __('Choose a Product', FAKTURO_TEXT_DOMAIN ),
 													'name' => 'product_select',
 													'id' => 'product_select',
-													'class' => '',
-													'selected' => -1
+													'class' => 'js-example-basic-multiple',
+													'selected' => -2,
+													'attributes' => array('multiple' => 'multiple', 'style' => 'width:400px;'),
 												));
 		
 		$echoHtml = '<table class="form-table">
@@ -194,12 +244,14 @@ class fktrPostTypeSales {
 						<tr class="user-display-name-wrap">
 						<td>
 							<div class="uc_header">
+								<div class="uc_column"></div>
 								<div class="uc_column">'.__('Code', FAKTURO_TEXT_DOMAIN  ).'</div>
 								<div class="uc_column">'.__('Description', FAKTURO_TEXT_DOMAIN  ) .'</div>
 								<div class="uc_column">'. __('Quantity', FAKTURO_TEXT_DOMAIN  ) .'</div>
 								<div class="uc_column">'. __('Unit price', FAKTURO_TEXT_DOMAIN  ) .'</div>
 								<div class="uc_column">'. __('Tax', FAKTURO_TEXT_DOMAIN  ) .'</div>
 								<div class="uc_column">'. __('Amount', FAKTURO_TEXT_DOMAIN  ) .'</div>
+								
 							</div>
 							<br />
 			

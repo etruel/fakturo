@@ -16,7 +16,8 @@ function fakturo_get_select_post($args = null) {
 		'class'				=> '',
 		'selected'			=> -1,
 		'show_option_none'	=> '',
-		'echo'				=> 1
+		'echo'				=> 1,
+		'attributes'     	=> array(),
 	);
  
 	$r = wp_parse_args( $args, $defaults );
@@ -27,7 +28,12 @@ function fakturo_get_select_post($args = null) {
 								'meta_key'			=> $r['meta_key'],
 								'posts_per_page'	=> $r['posts_per_page'],
 							));
-	$select = '<select name="'.$r['name'].'" id="'.$r['id'].'" class="'.$r['class'].'">';
+	
+	$htmlAttributes	= '';
+	foreach ($r['attributes'] as $att => $val) {
+		$htmlAttributes	.= ' '.$att.'="'.$val.'"';
+	}
+	$select = '<select name="'.$r['name'].'" id="'.$r['id'].'" class="'.$r['class'].'"'.$htmlAttributes.'>';
 	if (!empty($r['show_option_none'])) {
 		$select .= '<option value="-1" '.selected($r['selected'], -1, false).'>'.$r['show_option_none']. '</option>';
 	}

@@ -1,3 +1,5 @@
+var count_products = 0;
+var product_data = new Array();
 var DefaultMaskNumbers = '';
 jQuery(document).ready(function() {
 	
@@ -84,27 +86,83 @@ jQuery(document).ready(function() {
 	
 	jQuery('#addmoreuc').click(function(e) {
 		
+			if (jQuery('#product_select').val() == null) {
+				jQuery('#product_select').focus();
+				return false;
+			}
 			
-			/*jQuery('#ucfield_max').val( parseInt(jQuery('#ucfield_max').val(),10) + 1 );
-			oldval = jQuery('#ucfield_max').val();
-			var newHTML = '<div id="uc_ID'+oldval+'" class="sortitem"><div class="sorthandle"> </div> <div class="uc_column" id=""><input name="uc_description[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_phone[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_email[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_position[]" type="text" value="" class="large-text"/></div><div class="uc_column" id=""><input name="uc_address[]" type="text" value="" class="large-text"/></div><div class="" id="uc_actions"><label title="'+providers_object.privider_delete_this_item+'" data-id="'+oldval+'" class="delete"></label></div></div>';
+			count_products = count_products+1;
 			
-			jQuery('#user_contacts').append(newHTML);
+			var current_product = product_data[jQuery('#product_select').val()[0]];
+			
+			
+			var newHTML = '<div id="uc_ID'+count_products+'" class="sortitem"><div class="sorthandle"> </div> <div class="uc_column" id=""><input name="uc_code[]" type="text" value="'+current_product.id+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_description[]" type="text" value="'+current_product.description+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_quality[]" type="text" value="1" class="large-text"/></div><div class="uc_column" id=""><input name="uc_unit_price[]" type="text" value="'+current_product.datacomplete.cost+'" class="products_unit_prices large-text"/></div><div class="uc_column" id=""><input name="uc_tax[]" type="text" value="'+current_product.datacomplete.tax+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_amount[]" type="text" value="'+current_product.datacomplete.cost+'" class="products_amounts large-text"/></div><div class="" id="uc_actions"><label title="" data-id="'+count_products+'" class="delete"></label></div></div>';
+			
+			jQuery('#invoice_products').append(newHTML);
 			jQuery('#uc_actions label').click(function() {
-				delete_user_contact('#uc_ID'+jQuery(this).attr('data-id'));
-				jQuery('#user_contacts').vSort();
+				delete_product('#uc_ID'+jQuery(this).attr('data-id'));
+				jQuery('#invoice_products').vSort();
 			});
-			
 			jQuery('#invoice_products').vSort();
+			
+			jQuery('.products_unit_prices').mask(DefaultMaskNumbers, {reverse: true});
+			jQuery('.products_amounts').mask(DefaultMaskNumbers, {reverse: true});
+			
+			jQuery('#product_select').val(null);
+			activate_search_products();
 			e.preventDefault();
-			*/
+			
 		});
 	jQuery('#uc_actions label').click(function() {
 		//delete_user_contact('#uc_ID'+jQuery(this).attr('data-id'));
 		//jQuery('#user_contacts').vSort();
 	});
+	
+	activate_search_products();
+	
   
 });
+
+function activate_search_products() {
+	jQuery("#product_select").select2({
+	  
+	  ajax: {
+		url: sales_object.ajax_url,
+		dataType: 'json',
+		delay: 250,
+		data: function (params) {
+		  return {
+			action: 'get_products',
+			s: params.term, // search term
+			paged: params.page
+		  };
+		},
+		processResults: function (data, params) {
+		  // parse the results into the format expected by Select2
+		  // since we are using custom formatting functions we do not need to
+		  // alter the remote JSON data, except to indicate that infinite
+		  // scrolling can be used
+		  params.page = params.page || 1;
+
+		  return {
+			results: data.items,
+			pagination: {
+			  more: (params.page * 30) < data.total_count
+			}
+		  };
+		},
+		cache: true
+	  },
+		escapeMarkup: function (markup) { return markup; }, 
+		minimumInputLength: sales_object.characters_to_search,
+		templateResult: formatRepo, 
+		templateSelection: formatRepoSelection,
+		maximumSelectionLength: 1,
+		placeholder: sales_object.txt_search_products,
+	});
+	
+}
+
 
 function getInvoiceTypeFromTaxCondition() {
 	var r = 0;
@@ -117,6 +175,56 @@ function getInvoiceTypeFromTaxCondition() {
 		
 	}
 	return parseInt(r);
-	
 }
 
+function getSymbolFromCurrencyId(term_id) {
+	var r = '$';
+	var currencies = jQuery.parseJSON(sales_object.currencies);
+	for (var i = 0; i < currencies.length; i++) {
+		if (currencies[i].term_id == term_id) {
+			r = currencies[i].symbol;
+			break;
+		}
+	}
+	return r;
+}
+function delete_product(row_id){
+	jQuery(row_id).fadeOut(); 
+	jQuery(row_id).remove();
+	jQuery('#msgdrag').html(providers_object.update_provider_contacts).fadeIn();
+}
+
+Number.prototype.formatMoney = function(c, d, t){
+var n = this, 
+    c = isNaN(c = Math.abs(c)) ? 2 : c, 
+    d = d == undefined ? "." : d, 
+    t = t == undefined ? "," : t, 
+    s = n < 0 ? "-" : "", 
+    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
+    j = (j = i.length) > 3 ? j % 3 : 0;
+   return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+ };
+
+function formatRepo (repo) {
+		if (repo.loading) return repo.text; 
+		product_data[repo.id] = repo;
+		var markup = "<div class='select2-result-product clearfix'>" +
+			"<div class='select2-result-product__avatar'><img src='" + repo.img + "' /></div>" +
+			"<div class='select2-result-product__meta'>" +
+			"<div class='select2-result-product__title'>" + repo.title + "</div>";
+
+		if (repo.description) {
+			markup += "<div class='select2-result-product__description'>" + repo.description + "</div>";
+		}
+		repo.datacomplete.cost = parseFloat(repo.datacomplete.cost);
+		markup += "<div class='select2-result-product__statistics'>" +
+			"<div class='select2-result-product__forks'>"+sales_object.txt_cost+": "+((sales_object.currency_position == 'before') ? getSymbolFromCurrencyId(repo.datacomplete.currency) : "")+" " + repo.datacomplete.cost.formatMoney(sales_object.decimal_numbers, sales_object.decimal,  sales_object.thousand) + " "+((sales_object.currency_position == 'after') ? getSymbolFromCurrencyId(repo.datacomplete.currency) : "")+"</div>" +
+      
+			"</div>" +
+			"</div></div>";
+
+    return markup;
+}
+ function formatRepoSelection (repo) {
+    return repo.title || repo.text;
+}
