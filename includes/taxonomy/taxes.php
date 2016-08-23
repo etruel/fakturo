@@ -138,8 +138,7 @@ class fktr_tax_taxes {
 		
 		switch ($column_name) {
 			case 'percentage': 
-				$setting_system = get_option('fakturo_system_options_group', false);
-				$percentage = number_format($term->percentage, 2, $setting_system['decimal'], $setting_system['thousand']);
+				$percentage = fakturo_porcent_to_mask($term->percentage);
 				$out = esc_attr($percentage).'%';
 				break;
 

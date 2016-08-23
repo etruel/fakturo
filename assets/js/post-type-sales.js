@@ -84,32 +84,13 @@ jQuery(document).ready(function() {
 	});
 	
 	
+	jQuery('#product_select').change(function(){
+		add_selected_product();
+	});
+	
 	jQuery('#addmoreuc').click(function(e) {
 		
-			if (jQuery('#product_select').val() == null) {
-				jQuery('#product_select').focus();
-				return false;
-			}
-			
-			count_products = count_products+1;
-			
-			var current_product = product_data[jQuery('#product_select').val()[0]];
-			
-			
-			var newHTML = '<div id="uc_ID'+count_products+'" class="sortitem"><div class="sorthandle"> </div> <div class="uc_column" id=""><input name="uc_code[]" type="text" value="'+current_product.id+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_description[]" type="text" value="'+current_product.description+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_quality[]" type="text" value="1" class="large-text"/></div><div class="uc_column" id=""><input name="uc_unit_price[]" type="text" value="'+current_product.datacomplete.cost+'" class="products_unit_prices large-text"/></div><div class="uc_column" id=""><input name="uc_tax[]" type="text" value="'+current_product.datacomplete.tax+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_amount[]" type="text" value="'+current_product.datacomplete.cost+'" class="products_amounts large-text"/></div><div class="" id="uc_actions"><label title="" data-id="'+count_products+'" class="delete"></label></div></div>';
-			
-			jQuery('#invoice_products').append(newHTML);
-			jQuery('#uc_actions label').click(function() {
-				delete_product('#uc_ID'+jQuery(this).attr('data-id'));
-				jQuery('#invoice_products').vSort();
-			});
-			jQuery('#invoice_products').vSort();
-			
-			jQuery('.products_unit_prices').mask(DefaultMaskNumbers, {reverse: true});
-			jQuery('.products_amounts').mask(DefaultMaskNumbers, {reverse: true});
-			
-			jQuery('#product_select').val(null);
-			activate_search_products();
+			add_selected_product();
 			e.preventDefault();
 			
 		});
@@ -122,6 +103,34 @@ jQuery(document).ready(function() {
 	
   
 });
+function add_selected_product() {
+	if (jQuery('#product_select').val() == null) {
+		jQuery('#product_select').focus();
+		return false;
+	}
+			
+	count_products = count_products+1;
+			
+	var current_product = product_data[jQuery('#product_select').val()[0]];
+	var price = getPriceProduct(current_product);
+	
+	//prices_final		
+	var newHTML = '<div id="uc_ID'+count_products+'" class="sortitem"><div class="sorthandle"> </div> <div class="uc_column" id=""><input name="uc_code[]" type="text" value="'+current_product.id+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_description[]" type="text" value="'+current_product.description+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_quality[]" type="text" value="1" class="large-text"/></div><div class="uc_column" id=""><input name="uc_unit_price[]" type="text" value="'+price+'" class="products_unit_prices large-text"/></div><div class="uc_column" id=""><input name="uc_tax[]" type="text" value="'+current_product.datacomplete.tax+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_amount[]" type="text" value="'+price+'" class="products_amounts large-text"/></div><div class="" id="uc_actions"><label title="" data-id="'+count_products+'" class="delete"></label></div></div>';
+			
+	jQuery('#invoice_products').append(newHTML);
+	jQuery('#uc_actions label').click(function() {
+		delete_product('#uc_ID'+jQuery(this).attr('data-id'));
+		jQuery('#invoice_products').vSort();
+	});
+	jQuery('#invoice_products').vSort();
+			
+	jQuery('.products_unit_prices').mask(DefaultMaskNumbers, {reverse: true});
+	jQuery('.products_amounts').mask(DefaultMaskNumbers, {reverse: true});
+	jQuery('#product_select').val(null);
+	activate_search_products();
+	
+}
+
 
 function activate_search_products() {
 	jQuery("#product_select").select2({
@@ -176,6 +185,14 @@ function getInvoiceTypeFromTaxCondition() {
 	}
 	return parseInt(r);
 }
+function getPriceProduct(current_product) {
+	var retorno = current_product.datacomplete.cost;
+	if (current_product.datacomplete.prices_final[parseInt(jQuery("#client_data_price_scale_id").val())] != undefined)  {
+		retorno = current_product.datacomplete.prices_final[parseInt(jQuery("#client_data_price_scale_id").val())];
+	}
+	return retorno;
+}
+
 
 function getSymbolFromCurrencyId(term_id) {
 	var r = '$';

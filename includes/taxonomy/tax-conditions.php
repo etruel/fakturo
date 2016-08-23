@@ -210,8 +210,7 @@ class fktr_tax_tax_conditions {
 			case 'overwrite_taxes': 
 				$overwrite_taxes = __('No', FAKTURO_TEXT_DOMAIN );
 				if ($term->overwrite_taxes > 0) {
-					$setting_system = get_option('fakturo_system_options_group', false);
-					$tax_percentage = number_format($term->tax_percentage, 2, $setting_system['decimal'], $setting_system['thousand']);
+					$tax_percentage = fakturo_porcent_to_mask($term->tax_percentage);
 					$overwrite_taxes =  __('Yes:', FAKTURO_TEXT_DOMAIN).' '.$tax_percentage.'%';
 				}
 				$out = esc_attr($overwrite_taxes).'';

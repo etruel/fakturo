@@ -138,4 +138,13 @@ function fakturo_mask_to_float($value) {
 	return $value;
 }
 
+function fakturo_porcent_to_mask($value) {
+	if (!is_numeric($value)) {
+		$value = 0;
+	}
+	$setting_system = get_option('fakturo_system_options_group', false);
+	$value = number_format($value, 2, $setting_system['decimal'], $setting_system['thousand']);
+	return $value;
+}
+
 ?>
