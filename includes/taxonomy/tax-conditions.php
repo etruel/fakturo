@@ -24,7 +24,7 @@ class fktr_tax_tax_conditions {
 		add_filter('manage_'.self::$tax_name.'_custom_column',  array(__CLASS__, 'theme_columns'), 10, 3);
 		
 		add_action('admin_enqueue_scripts', array(__CLASS__, 'scripts'), 10, 1);
-		
+		add_filter('before_save_tax_'.self::$tax_name, array(__CLASS__, 'before_save'), 10, 1);
 		
 	}
 	public static function init() {
@@ -73,7 +73,12 @@ class fktr_tax_tax_conditions {
 			wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'taxonomy-taxes', FAKTURO_PLUGIN_URL . 'assets/js/taxonomy-tax-conditions.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			
+			$setting_system = get_option('fakturo_system_options_group', false);
+			wp_localize_script('taxonomy-taxes', 'system_setting',
+				array('thousand' => $setting_system['thousand'],
+					'decimal' => $setting_system['decimal'],
+					'decimal_numbers' => $setting_system['decimal_numbers'],
+				));
 		}
 		
 		
@@ -107,6 +112,17 @@ class fktr_tax_tax_conditions {
 			<label for="term_meta[invoice_type]">'.__( 'Invoice Types', FAKTURO_TEXT_DOMAIN ).'</label>
 			'.$selectInvoiceTypes.'
 			<p class="description">'.__( 'Select default Invoice Type for this Tax Condition.', FAKTURO_TEXT_DOMAIN ).'</p>
+		</div>
+		
+		<div class="form-field" id="overwrite_taxes_div">
+			<input type="checkbox" class="slidercheck" value="1" name="term_meta_overwrite_taxes" id="term_meta_overwrite_taxes">
+			<label for="term_meta_overwrite_taxes"><span class="ui"></span>'.__('Overwrite Taxes', FAKTURO_TEXT_DOMAIN ).'	</label>
+			
+		</div>
+		<div class="form-field" id="tax_percentage_div" style="display:none;">
+			<label for="term_meta[tax_percentage]">'.__('Tax Percentage', FAKTURO_TEXT_DOMAIN ).'</label>
+			<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[tax_percentage]" id="term_meta_tax_percentage" value="0"/>%
+			<p class="description">'.__( 'Enter a tax percentage', FAKTURO_TEXT_DOMAIN ).'</p>
 		</div>
 		';
 		echo $echoHtml;
@@ -145,6 +161,24 @@ class fktr_tax_tax_conditions {
 				<p class="description">'.__( 'Select default Invoice Type for this Tax Condition.', FAKTURO_TEXT_DOMAIN ).'</p>
 			</td>
 		</tr>
+		<tr class="form-field">
+			<th scope="row" valign="top">
+				
+			</th>
+			<td>
+				<input type="checkbox" class="slidercheck" value="1" name="term_meta_overwrite_taxes" id="term_meta_overwrite_taxes" '.(($term_meta->overwrite_taxes)?'checked="checked"':'').'>
+				<label for="term_meta_overwrite_taxes"><span class="ui"></span>'.__('Overwrite Taxes', FAKTURO_TEXT_DOMAIN ).'	</label>
+			</td>
+		</tr>
+		<tr class="form-field" id="tax_percentage_div" '.(($term_meta->overwrite_taxes)?'':'style="display:none;"').'>
+			<th scope="row" valign="top">
+				<label for="term_meta[tax_percentage]">'.__( 'Tax Percentage', FAKTURO_TEXT_DOMAIN ).'</label>
+			</th>
+			<td>
+				<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[tax_percentage]" id="term_meta_tax_percentage" value="'.$term_meta->tax_percentage.'"/>%
+				<p class="description">'.__( 'Enter a tax percentage', FAKTURO_TEXT_DOMAIN ).'</p>
+			</td>
+		</tr>
 		';
 		echo $echoHtml;
 		
@@ -154,6 +188,7 @@ class fktr_tax_tax_conditions {
 			'cb' => '<input type="checkbox" />',
 			'name' => __('Name', FAKTURO_TEXT_DOMAIN),
 			'invoice_type' => __('Invoice Type', FAKTURO_TEXT_DOMAIN),
+			'overwrite_taxes' => __('Overwrite Taxes', FAKTURO_TEXT_DOMAIN),
 		);
 		return $new_columns;
 	}
@@ -163,7 +198,7 @@ class fktr_tax_tax_conditions {
 		
 		switch ($column_name) {
 			case 'invoice_type': 
-				$invoice_name = 'No invoice type';
+				$invoice_name = __( 'No invoice type', FAKTURO_TEXT_DOMAIN );
 				if ($term->invoice_type > 0) {
 					$invoice_type_data = get_fakturo_term($term->invoice_type, 'fktr_invoice_types');
 					if(!is_wp_error($invoice_type_data)) {
@@ -172,13 +207,34 @@ class fktr_tax_tax_conditions {
 				}
 				$out = esc_attr($invoice_name).'';
 				break;
+			case 'overwrite_taxes': 
+				$overwrite_taxes = __('No', FAKTURO_TEXT_DOMAIN );
+				if ($term->overwrite_taxes > 0) {
+					$setting_system = get_option('fakturo_system_options_group', false);
+					$tax_percentage = number_format($term->tax_percentage, 2, $setting_system['decimal'], $setting_system['thousand']);
+					$overwrite_taxes =  __('Yes:', FAKTURO_TEXT_DOMAIN).' '.$tax_percentage.'%';
+				}
+				$out = esc_attr($overwrite_taxes).'';
+				break;
+			
 			default:
 				break;
 		}
 		return $out;    
 	}
+	public static function before_save($fields)  {
+		if (isset($fields['tax_percentage'])) {
+			$fields['tax_percentage'] = fakturo_mask_to_float($fields['tax_percentage']);
+		}
+		return $fields;
+	}
 	public static function save_fields($term_id, $tt_id) {
+		if (!isset($_POST['term_meta_overwrite_taxes'])) {
+			$_POST['term_meta_overwrite_taxes'] = 0;
+		}
 		if (isset( $_POST['term_meta'])) {
+			$_POST['term_meta']['overwrite_taxes'] = $_POST['term_meta_overwrite_taxes'];
+			$_POST['term_meta'] = apply_filters('before_save_tax_'.self::$tax_name, $_POST['term_meta']);
 			set_fakturo_term($term_id, $tt_id, $_POST['term_meta']);
 		}
 	}

@@ -56,7 +56,7 @@ class fktrPostTypeSales {
 				$newProduct->id = get_the_ID();
 				$newProduct->title = get_the_title();
 				$newProduct->description = $dataProduct['description'];
-				$newProduct->img = FAKTURO_PLUGIN_URL . 'assets/images/default_produc.png';
+				$newProduct->img = FAKTURO_PLUGIN_URL . 'assets/images/default_product.png';
 				$newProduct->datacomplete = $dataProduct;
 				if (has_post_thumbnail()) {
 					$newProduct->img = wp_get_attachment_url( get_post_thumbnail_id(get_the_ID()));
