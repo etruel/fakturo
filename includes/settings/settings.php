@@ -75,6 +75,7 @@ class fktrSettings {
 			$value_system['ignore_stock'] = 0;
 			$value_system['format_invoice_number'] = '';
 			$value_system['search_code'] = 'reference';
+			$value_system['default_code'] = 'reference';
 			$value_system = apply_filters('fktr_system_options_init', $value_system);
 			update_option('fakturo_system_options_group' , $value_system);
 		}
@@ -216,7 +217,10 @@ class fktrSettings {
 		if (empty($options['search_code'])) {
 			$options['search_code'] = 'reference';
 		}
-		
+		if (empty($options['default_code'])) {
+			$options['default_code'] = 'reference';
+		}
+
 		update_option('fakturo_system_options_group' , $options);
 		
 		
@@ -296,7 +300,17 @@ class fktrSettings {
 		$echoSelectSearchCode .= '</select>';						
 										
 									
-			
+		$selectDefaultCode = array();
+		$selectDefaultCode['reference'] = __( 'Reference', FAKTURO_TEXT_DOMAIN );
+		$selectDefaultCode['internal_code'] = __( 'Internal code', FAKTURO_TEXT_DOMAIN );
+		$selectDefaultCode['manufacturers_code'] = __( 'Manufacturers code', FAKTURO_TEXT_DOMAIN );							
+		$selectDefaultCode = apply_filters('fktr_default_code_array', $selectDefaultCode);
+		
+		$echoSelectDefaultCode = '<select id="fakturo_system_options_group_default_code" name="fakturo_system_options_group[default_code]">';
+		foreach ($selectDefaultCode as $key => $txt) {
+			$echoSelectDefaultCode .= '<option value="'.$key.'"'.selected($key, $options['default_code'], false).'>'.$txt.'</option>';
+		}
+		$echoSelectDefaultCode .= '</select>';		
 									
 		echo '
 		<div id="tab_container">
@@ -428,6 +442,19 @@ class fktrSettings {
 							</td>
 						</td>
 					  </tr>
+					   <tr>
+							<th>'. __( 'Default code for invoice', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+									'.$echoSelectDefaultCode.'
+									<label for="fakturo_system_position">
+										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
+									</label>
+							</td>
+						</td>
+					  </tr>
+					  
+					  
+					  
 					  ';
 				
 				echo '</table>';

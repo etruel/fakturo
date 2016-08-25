@@ -98,24 +98,66 @@ jQuery(document).ready(function() {
 		//delete_user_contact('#uc_ID'+jQuery(this).attr('data-id'));
 		//jQuery('#user_contacts').vSort();
 	});
-	
+	jQuery('#invoice_type').change(function(){
+		updateDiscriminatesTaxes();
+	});
 	activate_search_products();
 	
   
 });
+
+function updateDiscriminatesTaxes() {
+	var invoice_type = getCurrentInvoiceType();
+	if (invoice_type) {
+		
+		if (invoice_type.discriminates_taxes == 1) {
+			jQuery(".taxes_column").fadeIn();
+		} else {
+			jQuery(".taxes_column").fadeOut();
+		}
+	}
+	
+}
+function getCurrentInvoiceType() {
+	var r = false;
+	var invoice_types = jQuery.parseJSON(sales_object.invoice_types);
+	for (var i = 0; i < invoice_types.length; i++) {
+		if (invoice_types[i].term_id == jQuery("#invoice_type").val()) {
+			r = invoice_types[i];
+			break;
+		}
+	}
+	return r;
+	
+}
+function getDescriminateTaxes() {
+	var discriminates_taxes = 0;
+	var invoice_type = getCurrentInvoiceType();
+	if (invoice_type) {
+		if (invoice_type.discriminates_taxes == 1) {
+			discriminates_taxes = 1;
+		} 
+	}		
+	return discriminates_taxes;
+}
 function add_selected_product() {
 	if (jQuery('#product_select').val() == null) {
 		jQuery('#product_select').focus();
 		return false;
 	}
-			
+		
 	count_products = count_products+1;
-			
-	var current_product = product_data[jQuery('#product_select').val()[0]];
-	var price = getPriceProduct(current_product);
 	
-	//prices_final		
-	var newHTML = '<div id="uc_ID'+count_products+'" class="sortitem"><div class="sorthandle"> </div> <div class="uc_column" id=""><input name="uc_code[]" type="text" value="'+current_product.id+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_description[]" type="text" value="'+current_product.description+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_quality[]" type="text" value="1" class="large-text"/></div><div class="uc_column" id=""><input name="uc_unit_price[]" type="text" value="'+price+'" class="products_unit_prices large-text"/></div><div class="uc_column" id=""><input name="uc_tax[]" type="text" value="'+current_product.datacomplete.tax+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_amount[]" type="text" value="'+price+'" class="products_amounts large-text"/></div><div class="" id="uc_actions"><label title="" data-id="'+count_products+'" class="delete"></label></div></div>';
+	
+	var current_product = product_data[jQuery('#product_select').val()[0]];
+	
+	var price = getPriceProduct(current_product).formatMoney(sales_object.decimal_numbers, sales_object.decimal,  sales_object.thousand);
+	var code = getCodeProduct(current_product);
+	var percentage_tax = getPorcentTaxProduct(current_product);
+	var tax_with_mask = percentage_tax.formatMoney(2, sales_object.decimal,  sales_object.thousand);
+	var discriminates_taxes = getDescriminateTaxes();
+	
+	var newHTML = '<div id="uc_ID'+count_products+'" class="sortitem"><div class="sorthandle"> </div> <div class="uc_column" id=""><label class="code_product">'+code+'</label><input name="uc_code[]" type="hidden" value="'+code+'" class="large-text"/> <input name="uc_id[]" type="hidden" value="'+current_product.id+'"/></div><div class="uc_column" id=""><input name="uc_description[]" type="text" value="'+current_product.description+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_quality[]" type="text" value="1" class="large-text"/></div><div class="uc_column" id=""><input name="uc_unit_price[]" type="text" value="'+price+'" class="products_unit_prices large-text"/></div><div class="uc_column taxes_column" id="" '+((discriminates_taxes == 1)?'':'style="display:none;"')+'><label class="code_product">'+tax_with_mask+'%</label><input name="uc_tax[]" type="hidden" value="'+current_product.datacomplete.tax+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_amount[]" type="text" value="'+price+'" class="products_amounts large-text"/></div><div class="" id="uc_actions"><label title="" data-id="'+count_products+'" class="delete"></label></div></div>';
 			
 	jQuery('#invoice_products').append(newHTML);
 	jQuery('#uc_actions label').click(function() {
@@ -127,6 +169,8 @@ function add_selected_product() {
 	jQuery('.products_unit_prices').mask(DefaultMaskNumbers, {reverse: true});
 	jQuery('.products_amounts').mask(DefaultMaskNumbers, {reverse: true});
 	jQuery('#product_select').val(null);
+	
+	updateDiscriminatesTaxes();
 	activate_search_products();
 	
 }
@@ -185,14 +229,91 @@ function getInvoiceTypeFromTaxCondition() {
 	}
 	return parseInt(r);
 }
-function getPriceProduct(current_product) {
-	var retorno = current_product.datacomplete.cost;
-	if (current_product.datacomplete.prices_final[parseInt(jQuery("#client_data_price_scale_id").val())] != undefined)  {
-		retorno = current_product.datacomplete.prices_final[parseInt(jQuery("#client_data_price_scale_id").val())];
+function getCodeProduct(current_product) {
+	var retorno = current_product.id;
+	if (current_product.datacomplete[sales_object.code_meta_post_key] != undefined)  {
+		retorno = current_product.datacomplete[sales_object.code_meta_post_key];
 	}
 	return retorno;
 }
+function getPorcentTaxProduct(current_product) {
+	var r = 0;
+	var taxes = jQuery.parseJSON(sales_object.taxes);
+	for (var i = 0; i < taxes.length; i++) {
+		if (taxes[i].term_id == current_product.datacomplete.tax) {
+			r = taxes[i].percentage;
+			break;
+		}
+	}
+	var current_tax_codition = getCurrentTaxConditions();
+	if (current_tax_codition) {
+		if (current_tax_codition.overwrite_taxes) {
+			r = current_tax_codition.tax_percentage;
+		}
+	}
+	return parseFloat(r);
+}
 
+function getCurrentTaxConditions() {
+	var r = false;
+	var tax_conditions = jQuery.parseJSON(sales_object.tax_coditions);
+	for (var i = 0; i < tax_conditions.length; i++) {
+		if (tax_conditions[i].term_id == jQuery("#client_data_tax_condition").val()) {
+			r = tax_conditions[i];
+			break;
+		}
+	}
+	return r;
+}
+
+function getPriceProduct(current_product) {
+	var retorno = current_product.datacomplete.cost;
+	var discriminates_taxes = getDescriminateTaxes();
+	
+	if (current_product.datacomplete.prices[parseInt(jQuery("#client_data_price_scale_id").val())] != undefined)  {
+		retorno = current_product.datacomplete.prices[parseInt(jQuery("#client_data_price_scale_id").val())];
+	}
+	
+	
+	retorno = parseFloat(retorno);
+	if (current_product.datacomplete.currency != sales_object.default_currency) {
+		var rate = getCurrentRateFromCurrencies(current_product.datacomplete.currency);
+		retorno = retorno*rate;
+		current_product.datacomplete.currency = sales_object.default_currency;
+	}
+	
+	if (current_product.datacomplete.currency != jQuery("#invoice_currency").val()) {
+		var rate = getCurrentRateFromCurrencies(jQuery("#invoice_currency").val());
+		retorno = retorno/rate;
+	}
+	if (discriminates_taxes == 0) {
+		var porcent_tax = getPorcentTaxProduct(current_product);
+		retorno = retorno+((retorno/100)*porcent_tax);
+	}
+	
+	return retorno;
+}
+function getCurrentRateFromCurrencies(term_id) {
+	var r = 1;
+	if(jQuery('#invoice_currencies_'+term_id).length ) {
+		r = converMaskToStandar(jQuery('#invoice_currencies_'+term_id).val(), sales_object);
+	} else {
+		alert("Currency no found. This can cause a problem in the transaction.");
+	}
+	return parseFloat(r);
+}
+
+function getRateFromCurrencyId(term_id) {
+	var r = 1;
+	var currencies = jQuery.parseJSON(sales_object.currencies);
+	for (var i = 0; i < currencies.length; i++) {
+		if (currencies[i].term_id == term_id) {
+			r = currencies[i].rate;
+			break;
+		}
+	}
+	return parseFloat(r);
+}
 
 function getSymbolFromCurrencyId(term_id) {
 	var r = '$';
@@ -210,7 +331,17 @@ function delete_product(row_id){
 	jQuery(row_id).remove();
 	jQuery('#msgdrag').html(providers_object.update_provider_contacts).fadeIn();
 }
-
+function converMaskToStandar(valueMasked, maskObject) {
+	if (valueMasked == '') {
+		return valueMasked;
+	}
+	if (valueMasked.indexOf(maskObject.decimal) !== -1) {
+		var pieceNumber = valueMasked.split(maskObject.decimal);
+		pieceNumber[0] = pieceNumber[0].replace(maskObject.thousand, '');
+		valueMasked = pieceNumber.join('.');
+	}
+	return valueMasked;
+}
 Number.prototype.formatMoney = function(c, d, t){
 var n = this, 
     c = isNaN(c = Math.abs(c)) ? 2 : c, 

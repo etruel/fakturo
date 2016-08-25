@@ -20,7 +20,7 @@ class fktr_tax_currency {
 		add_filter('manage_edit-fktr_currencies_columns', array('fktr_tax_currency', 'columns'), 10, 3);
 		add_filter('manage_fktr_currencies_custom_column',  array('fktr_tax_currency', 'theme_columns'), 10, 3);
 		add_action('admin_enqueue_scripts', array('fktr_tax_currency', 'scripts'), 10, 1);
-		
+		add_filter('before_save_tax_fktr_currencies', array(__CLASS__, 'before_save'), 10, 1);
 	}
 	public static function init() {
 		
@@ -182,17 +182,17 @@ class fktr_tax_currency {
 		}
 		return $out;    
 	}
+	public static function before_save($fields)  {
+		if (isset($fields['rate'])) {
+			$fields['rate'] = fakturo_mask_to_float($fields['rate']);
+		}
+		return $fields;
+	}
 	public static function save_fields($term_id, $tt_id) {
 		$setting_system = get_option('fakturo_system_options_group', false);
 		if (isset( $_POST['term_meta'])) {
 			
-			if (strpos($_POST['term_meta']['rate'], $setting_system['decimal']) !== false) {
-				$pieceNumber = explode($setting_system['decimal'], $_POST['term_meta']['rate']);
-				$pieceNumber[0] = str_replace($setting_system['thousand'], '', $pieceNumber[0]);
-				$_POST['term_meta']['rate'] = implode('.', $pieceNumber);
-				$_POST['term_meta']['rate'] = filter_var($_POST['term_meta']['rate'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-			}
-			
+			$_POST['term_meta'] = apply_filters('before_save_tax_fktr_currencies', $_POST['term_meta']);
 			set_fakturo_term($term_id, $tt_id, $_POST['term_meta']);
 		}
 	}

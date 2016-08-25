@@ -30,7 +30,36 @@ class fktrPostTypeSales {
 		add_action('wp_ajax_get_client_data', array('fktrPostTypeSales', 'get_client_data'));
 		add_action('wp_ajax_get_products', array('fktrPostTypeSales', 'get_products'));
 		
+		add_filter('fktr_text_code_product_reference', array('fktrPostTypeSales', 'text_code_product_reference'), 10, 1);
+		add_filter('fktr_text_code_product_internal_code', array('fktrPostTypeSales', 'text_code_product_internal_code'), 10, 1);
+		add_filter('fktr_text_code_product_manufacturers_code', array('fktrPostTypeSales', 'text_code_product_manufacturers_code'), 10, 1);
+		
+		add_filter('fktr_meta_key_code_product_reference', array('fktrPostTypeSales', 'meta_key_code_product_reference'), 10, 1);
+		add_filter('fktr_meta_key_code_product_internal_code', array('fktrPostTypeSales', 'meta_key_code_product_internal_code'), 10, 1);
+		add_filter('fktr_meta_key_code_product_manufacturers_code', array('fktrPostTypeSales', 'meta_key_code_product_manufacturers_code'), 10, 1);
+		
+		
+	
 	}
+	public static function text_code_product_reference($txt) {
+		return __( 'Reference', FAKTURO_TEXT_DOMAIN );
+	}
+	public static function text_code_product_internal_code($txt) {
+		return __( 'Internal code', FAKTURO_TEXT_DOMAIN );
+	}
+	public static function text_code_product_manufacturers_code($txt) {
+		return __( 'Manufacturers code', FAKTURO_TEXT_DOMAIN );
+	}
+	public static function meta_key_code_product_reference($txt) {
+		return 'reference';
+	}
+	public static function meta_key_code_product_internal_code($txt) {
+		return 'internal';
+	}
+	public static function meta_key_code_product_manufacturers_code($txt) {
+		return 'manufacturers';
+	}
+	
 	public static function get_products() {
 		$args = array(	'showposts'           =>  10,
 						'post_type'           => 'fktr_product',
@@ -194,20 +223,35 @@ class fktrPostTypeSales {
 							'taxonomy' => 'fktr_currencies',
 							'hide_empty' => false,
 				));
-			
+			$taxes = get_fakturo_terms(array(
+							'taxonomy' => 'fktr_tax',
+							'hide_empty' => false,
+				));
+			$invoice_types = get_fakturo_terms(array(
+							'taxonomy' => 'fktr_invoice_types',
+							'hide_empty' => false,
+				));
 			wp_localize_script('post-type-sales', 'sales_object',
 				array('ajax_url' => admin_url( 'admin-ajax.php' ),
 					'thousand' => $setting_system['thousand'],
 					'decimal' => $setting_system['decimal'],
 					'decimal_numbers' => $setting_system['decimal_numbers'],
 					'currency_position' => $setting_system['currency_position'],
+					'default_currency' => $setting_system['currency'],
+					'default_code' => $setting_system['default_code'],
+					
+					
+					'code_meta_post_key' => apply_filters('fktr_meta_key_code_product_'.$setting_system['default_code'], 'internal'),
 					'characters_to_search' => apply_filters('fktr_sales_characters_to_search_product', 3),
+					
 					
 					'txt_cost' => __('Cost', FAKTURO_TEXT_DOMAIN ),
 					'txt_search_products' => __('Search products...', FAKTURO_TEXT_DOMAIN ),
 					
 					'tax_coditions' => json_encode($tax_coditions),
 					'currencies' => json_encode($currencies),
+					'taxes' => json_encode($taxes),
+					'invoice_types' => json_encode($invoice_types),
 				));
 		
 		}
@@ -236,20 +280,21 @@ class fktrPostTypeSales {
 													'id' => 'product_select',
 													'class' => 'js-example-basic-multiple',
 													'selected' => -2,
-													'attributes' => array('multiple' => 'multiple', 'style' => 'width:400px;'),
+													'attributes' => array('multiple' => 'multiple', 'style' => 'width:65%;'),
 												));
 		
+		$textCodeForProduct = apply_filters('fktr_text_code_product_'.$setting_system['default_code'], '');
 		$echoHtml = '<table class="form-table">
 					<tbody>
 						<tr class="user-display-name-wrap">
 						<td>
 							<div class="uc_header">
 								<div class="uc_column"></div>
-								<div class="uc_column">'.__('Code', FAKTURO_TEXT_DOMAIN  ).'</div>
+								<div class="uc_column">'.$textCodeForProduct.'</div>
 								<div class="uc_column">'.__('Description', FAKTURO_TEXT_DOMAIN  ) .'</div>
 								<div class="uc_column">'. __('Quantity', FAKTURO_TEXT_DOMAIN  ) .'</div>
 								<div class="uc_column">'. __('Unit price', FAKTURO_TEXT_DOMAIN  ) .'</div>
-								<div class="uc_column">'. __('Tax', FAKTURO_TEXT_DOMAIN  ) .'</div>
+								<div class="uc_column taxes_column">'. __('Tax', FAKTURO_TEXT_DOMAIN  ) .'</div>
 								<div class="uc_column">'. __('Amount', FAKTURO_TEXT_DOMAIN  ) .'</div>
 								
 							</div>
@@ -259,9 +304,14 @@ class fktrPostTypeSales {
 								
 							</div>
 							
-							<div id="paging-box">		  
-								'.$selectProducts.' <a href="#" class="button-primary add" id="addmoreuc" style="font-weight: bold; text-decoration: none;"> '.__('Add product', FAKTURO_TEXT_DOMAIN  ).'</a>
-								<label id="msgdrag"></label>
+							<div id="paging-box">
+								'.$selectProducts.' <a href="#" class="button-primary add" id="addmoreuc" style="width:33%; font-weight: bold; text-decoration: none; height: 31px;line-height: 29px;"> '.__('Add product', FAKTURO_TEXT_DOMAIN  ).'</a>
+							</div>
+							<div id="totals-box">
+								<div id="sub_total">Subtotal:</div>
+								<div id="discount_total"></div>
+								<div id="tax_total"></div>
+								<div id="total">Total:</div>
 							</div>
 						</td>
 						</tr>
