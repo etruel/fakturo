@@ -1,4 +1,7 @@
 jQuery(document).ready(function() {
+	
+	jQuery('#fakturo_info_options_group_tax_condition').select2();
+	
 	jQuery('#fakturo_system_options_group_currency').select2();
 	jQuery('#fakturo_system_options_group_invoice_type').select2();
 	jQuery('#fakturo_system_options_group_price_scale').select2();

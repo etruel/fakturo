@@ -318,6 +318,8 @@ class fktrPostTypeProducts {
 	public static function prices_box() {
 		global $post;
 		$product_data = self::get_product_data($post->ID);
+		$setting_system = get_option('fakturo_system_options_group', false);
+		
 		$terms = get_fakturo_terms(array(
 							'taxonomy' => 'fktr_price_scales',
 							'hide_empty' => false,
@@ -338,9 +340,9 @@ class fktrPostTypeProducts {
 			
 			$echoHtml .= '<tr class="pricestr" data-id="'.$t->term_id.'" data-porcentage="'.$t->percentage.'">
 				<td style="text-align: center;">'.$t->name.' ('.$t->percentage.'%)</td>
-				<td style="text-align: center;"><input type="text" value="'.(isset($product_data['prices'][$t->term_id])?$product_data['prices'][$t->term_id]:'').'"  id="prices_'.$t->term_id.'" class="prices" name="prices['.$t->term_id.']"/></td>
+				<td style="text-align: center;"><input type="text" value="'.(isset($product_data['prices'][$t->term_id])?number_format($product_data['prices'][$t->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']):'').'"  id="prices_'.$t->term_id.'" class="prices" name="prices['.$t->term_id.']"/></td>
 				<td style="text-align: center;" id="suggested_'.$t->term_id.'"></td>
-				<td style="text-align: center;"><input type="text" value="'.(isset($product_data['prices_final'][$t->term_id])?$product_data['prices_final'][$t->term_id]:'').'" id="prices_final_'.$t->term_id.'" class="prices_final" name="prices_final['.$t->term_id.']"/></td>
+				<td style="text-align: center;"><input type="text" value="'.(isset($product_data['prices_final'][$t->term_id])?number_format($product_data['prices_final'][$t->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']):'').'" id="prices_final_'.$t->term_id.'" class="prices_final" name="prices_final['.$t->term_id.']"/></td>
 			</tr>';
 		}
 		$echoHtml .= '</table>';
@@ -381,7 +383,6 @@ class fktrPostTypeProducts {
 		global $post;
 		
 		$product_data = self::get_product_data($post->ID);
-		
 		$selectProvider = fakturo_get_select_post(array(
 											'echo' => 0,
 											'post_type' => 'fktr_provider',
@@ -531,7 +532,7 @@ class fktrPostTypeProducts {
 			</tr>
 			<tr class="user-address-wrap">
 				<th><label for="internal">'.__('Internal code', FAKTURO_TEXT_DOMAIN ).'</label></th>
-				<td><input type="text" name="internal" id="internal" value="'.$product_data['internal'].'" class="regular-text"></td>
+				<td id="td_internal_code">'.(isset($product_data['ID'])?$product_data['ID']:'').'</td>
 			</tr>
 			<tr class="user-address-wrap">
 				<th><label for="manufacturers">'.__('Manufacturers code', FAKTURO_TEXT_DOMAIN ).'</label></th>

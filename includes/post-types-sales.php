@@ -374,7 +374,9 @@ class fktrPostTypeSales {
 			'hide_if_empty'      => false
 		));
 		$allsellers = get_users( array( 'role' => 'fakturo_seller' ) );
-			
+		$allmanagers = get_users( array( 'role' => 'fakturo_manager' ) );	
+		$alladmins = get_users( array( 'role' => 'administrator' ) );
+		$allsellers = array_merge($allsellers, $allmanagers, $alladmins);
 		$select_sale_mans = '<select name="invoice_saleman" id="invoice_saleman">';
 		$select_sale_mans .= '<option value="'.(($sale_data['invoice_saleman'] == 0)?' selected="selected"':'').'">'. __('Choose a Salesman', FAKTURO_TEXT_DOMAIN  ) . '</option>';
 		foreach ( $allsellers as $suser ) {

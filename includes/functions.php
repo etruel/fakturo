@@ -91,6 +91,9 @@ function get_fakturo_term($term_id, $taxonomy, $field = null) {
 	if(is_wp_error($term)) {
 		return $term;
 	}
+	if(!is_object($term)) {
+        return new WP_Error( 'incorrect_term_id', __('You has send a incorrect term_id', FAKTURO_TEXT_DOMAIN));
+    }
 	$return = new stdClass();
 	$return->term_id = $term->term_id;
 	$return->name = $term->name;

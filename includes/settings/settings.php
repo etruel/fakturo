@@ -90,7 +90,26 @@ class fktrSettings {
 			$options['url'] = FAKTURO_PLUGIN_URL . 'assets/images/etruel-logo.png';
 		}
 		update_option('fakturo_info_options_group' , $options);
-		
+		$selectTaxCondition = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a Tax Condition', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $options['tax_condition'],
+			'hierarchical'       => 1, 
+			'name'               => 'fakturo_info_options_group[tax_condition]',
+			'class'              => '',
+			'id'				 => 'fakturo_info_options_group_tax_condition',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_tax_conditions',
+			'hide_if_empty'      => false
+		));
 		
 		echo '<div id="tab_container">
 			<br/><h1>Company Info</h1>
@@ -167,7 +186,7 @@ class fktrSettings {
 					<tr valign="top">
 						<th scope="row">'. __( 'Tax condition', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
-							<input type="text" size="36" name="fakturo_info_options_group[tax_condition]" value="'.$options['tax_condition'].'"/>
+							'.$selectTaxCondition.'
 						</td>
                     </tr>
 					<tr valign="top">

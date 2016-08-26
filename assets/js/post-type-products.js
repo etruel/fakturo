@@ -7,6 +7,8 @@ jQuery(document).ready(function() {
 	jQuery('#tax').select2();
 	jQuery('#packaging').select2();
 	jQuery('#origin').select2();
+	jQuery('#td_internal_code').html(jQuery('#post_ID').val());
+	
 	
 	var decimal_numbers = parseInt(products_object.decimal_numbers);
 	var decimal_ex = '';

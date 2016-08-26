@@ -3,6 +3,9 @@ var product_data = new Array();
 var DefaultMaskNumbers = '';
 jQuery(document).ready(function() {
 	
+	jQuery('form input').on('keypress', function(e) {
+		return e.which !== 13;
+	});
 	var decimal_numbers = parseInt(sales_object.decimal_numbers);
 	var decimal_ex = '';
 	for (var i = 0; i < decimal_numbers; i++) {
@@ -69,8 +72,12 @@ jQuery(document).ready(function() {
 				jQuery("#client_price_scale").html(data_client.selected_price_scale_name+'<input type="hidden" name="client_data[price_scale][id]" value="'+data_client.selected_price_scale+'" id="client_data_price_scale_id"/><input type="hidden" name="client_data[price_scale][name]" value="'+data_client.selected_price_scale_name+'" id="client_data_price_scale_name"/>');
 				jQuery("#client_credit_limit").html(data_client.credit_limit+'<input type="hidden" name="client_data[credit_limit]" value="'+data_client.credit_limit+'" id="client_data_credit_limit"/>');
 				
-			
-
+				if (data_client.selected_currency > 0) {
+					jQuery('#invoice_currency').val(data_client.selected_currency);
+				} else {
+					jQuery('#invoice_currency').val(sales_object.default_currency);
+				}
+				jQuery('#invoice_currency').select2();
 			});
 		}
 		
