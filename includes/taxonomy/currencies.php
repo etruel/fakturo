@@ -91,7 +91,7 @@ class fktr_tax_currency {
 		</div>
 		<div class="form-field" id="symbol_div">
 			<label for="term_meta[symbol]">'.__( 'Symbol', FAKTURO_TEXT_DOMAIN ).'</label>
-			<input style="width: 60px;text-align: center; padding-right: 0px; " type="text" name="term_meta[symbol]" id="term_meta[symbol]" value="">
+			<input style="width: 60px;text-align: center; padding-right: 0px; " type="text" name="term_meta[symbol]" id="term_meta_symbol" value="">
 			<p class="description">'.__( 'Enter a symbol like $', FAKTURO_TEXT_DOMAIN ).'</p>
 		</div>
 		<div class="form-field" id="rate_div">
@@ -101,7 +101,7 @@ class fktr_tax_currency {
 		</div>
 		<div class="form-field" id="reference_div">
 			<label for="term_meta[reference]">'.__( 'Reference', FAKTURO_TEXT_DOMAIN ).'</label>
-			<input type="text" name="term_meta[reference]" id="term_meta[reference]" value="">
+			<input type="text" name="term_meta[reference]" id="term_meta_reference" value="">
 			<p class="description">'.__( 'Enter a reference website to find the conversion rate', FAKTURO_TEXT_DOMAIN ).'</p>
 		</div>
 		
@@ -128,7 +128,7 @@ class fktr_tax_currency {
 				<label for="term_meta[symbol]">'.__( 'Symbol', FAKTURO_TEXT_DOMAIN ).'</label>
 			</th>
 			<td>
-				<input type="text" style="width: 60px;text-align: center; padding-right: 0px; " name="term_meta[symbol]" id="term_meta[symbol]" value="'.$term_meta->symbol.'">
+				<input type="text" style="width: 60px;text-align: center; padding-right: 0px; " name="term_meta[symbol]" id="term_meta_symbol" value="'.$term_meta->symbol.'">
 				<p class="description">'.__( 'Enter a symbol like $', FAKTURO_TEXT_DOMAIN ).'</p>
 			</td>
 		</tr>
@@ -146,7 +146,7 @@ class fktr_tax_currency {
 				<label for="term_meta[reference]">'.__( 'Reference', FAKTURO_TEXT_DOMAIN ).'</label>
 			</th>
 			<td>
-				<input type="text" name="term_meta[reference]" id="term_meta[reference]" value="'.$term_meta->reference.'">
+				<input type="text" name="term_meta[reference]" id="term_meta_reference" value="'.$term_meta->reference.'">
 				<p class="description">'.__( 'Enter a reference website to find the conversion rate', FAKTURO_TEXT_DOMAIN ).'</p>
 			</td>
 		</tr>

@@ -544,10 +544,7 @@ class fktrPostTypeProducts {
 					<textarea style="width:95%;" rows="4" name="description" id="description">'.$product_data['description'].'</textarea>
 				</td>
 			</tr>
-			<tr class="user-address-wrap">
-				<th><label for="short">'.__('Short description', FAKTURO_TEXT_DOMAIN ).'</label></th>
-				<td><input type="text" name="short" id="short" value="'.$product_data['short'].'" class="regular-text"></td>
-			</tr>
+			
 			<tr class="user-address-wrap">
 				<th><label for="min">'.__('Minimal stock', FAKTURO_TEXT_DOMAIN ).'</label></th>
 				<td><input type="number" name="min" id="min" value="'.$product_data['min'].'" class="regular-text"></td>
@@ -612,18 +609,13 @@ class fktrPostTypeProducts {
 		if (!isset($fields['reference'])) {
 			$fields['reference'] = '';
 		}
-		if (!isset($fields['internal'])) {
-			$fields['internal'] = '';
-		}
 		if (!isset($fields['manufacturers'])) {
 			$fields['manufacturers'] = '';
 		}
 		if (!isset($fields['description'])) {
 			$fields['description'] = '';
 		}
-		if (!isset($fields['short'])) {
-			$fields['short'] = '';
-		}
+		
 		if (!isset($fields['min'])) {
 			$fields['min'] = '';
 		}
@@ -682,10 +674,8 @@ class fktrPostTypeProducts {
 			
 			
 			$fields['reference'] = '';
-			$fields['internal'] = '';
 			$fields['manufacturers'] = '';
 			$fields['description'] = '';
-			$fields['short'] = '';
 			$fields['min'] = '';
 			$fields['min_alert'] = '';
 			$fields['packaging'] = 0;

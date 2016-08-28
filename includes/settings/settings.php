@@ -76,6 +76,7 @@ class fktrSettings {
 			$value_system['format_invoice_number'] = '';
 			$value_system['search_code'] = 'reference';
 			$value_system['default_code'] = 'reference';
+			$value_system['default_description'] = 'short_description';
 			$value_system = apply_filters('fktr_system_options_init', $value_system);
 			update_option('fakturo_system_options_group' , $value_system);
 		}
@@ -239,6 +240,9 @@ class fktrSettings {
 		if (empty($options['default_code'])) {
 			$options['default_code'] = 'reference';
 		}
+		if (empty($options['default_description'])) {
+			$options['default_description'] = 'short_description';
+		}
 
 		update_option('fakturo_system_options_group' , $options);
 		
@@ -330,6 +334,21 @@ class fktrSettings {
 			$echoSelectDefaultCode .= '<option value="'.$key.'"'.selected($key, $options['default_code'], false).'>'.$txt.'</option>';
 		}
 		$echoSelectDefaultCode .= '</select>';		
+		
+		
+		$selectDefaultDescription = array();
+		$selectDefaultDescription['short_description'] = __( 'Short Description', FAKTURO_TEXT_DOMAIN );
+		$selectDefaultDescription['description'] = __( 'Description', FAKTURO_TEXT_DOMAIN );						
+		$selectDefaultDescription = apply_filters('fktr_default_description_array', $selectDefaultDescription);
+		
+		$echoSelectDefaultDescription = '<select id="fakturo_system_options_group_default_description" name="fakturo_system_options_group[default_description]">';
+		foreach ($selectDefaultDescription as $key => $txt) {
+			$echoSelectDefaultDescription .= '<option value="'.$key.'"'.selected($key, $options['default_description'], false).'>'.$txt.'</option>';
+		}
+		$echoSelectDefaultDescription .= '</select>';		
+			
+		
+		
 									
 		echo '
 		<div id="tab_container">
@@ -471,6 +490,16 @@ class fktrSettings {
 							</td>
 						</td>
 					  </tr>
+					   <tr>
+							<th>'. __( 'Default description for invoice', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+									'.$echoSelectDefaultDescription.'
+									<label for="fakturo_system_options_group_default_description">
+										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
+									</label>
+							</td>
+						</td>
+					  </tr>
 					  
 					  
 					  
@@ -481,7 +510,7 @@ class fktrSettings {
 			echo '</form>
 		</div><!-- #tab_container-->
 		';
-		
+
 	}
 	
 	public static function add_setting_tabs() {

@@ -39,7 +39,24 @@ class fktrPostTypeSales {
 		add_filter('fktr_meta_key_code_product_manufacturers_code', array('fktrPostTypeSales', 'meta_key_code_product_manufacturers_code'), 10, 1);
 		
 		
-	
+		add_filter('fktr_text_description_product_short_description', array('fktrPostTypeSales', 'text_description_product_short_description'), 10, 1);
+		add_filter('fktr_text_description_product_description', array('fktrPostTypeSales', 'text_description_product_description'), 10, 1);
+		
+		add_filter('fktr_meta_key_description_product_short_description', array('fktrPostTypeSales', 'meta_key_description_product_short_description'), 10, 1);
+		add_filter('fktr_meta_key_description_product_description', array('fktrPostTypeSales', 'meta_key_description_product_description'), 10, 1);
+		
+	}
+	public static function text_description_product_short_description($txt) {
+		return __( 'Short Description', FAKTURO_TEXT_DOMAIN );
+	}
+	public static function text_description_product_description($txt) {
+		return __( 'Description', FAKTURO_TEXT_DOMAIN );
+	}
+	public static function meta_key_description_product_short_description($txt) {
+		return 'title';
+	}
+	public static function meta_key_description_product_description($txt) {
+		return 'description';
 	}
 	public static function text_code_product_reference($txt) {
 		return __( 'Reference', FAKTURO_TEXT_DOMAIN );
@@ -54,7 +71,7 @@ class fktrPostTypeSales {
 		return 'reference';
 	}
 	public static function meta_key_code_product_internal_code($txt) {
-		return 'internal';
+		return 'ID';
 	}
 	public static function meta_key_code_product_manufacturers_code($txt) {
 		return 'manufacturers';
@@ -242,6 +259,7 @@ class fktrPostTypeSales {
 					
 					
 					'code_meta_post_key' => apply_filters('fktr_meta_key_code_product_'.$setting_system['default_code'], 'internal'),
+					'description_meta_post_key' => apply_filters('fktr_meta_key_description_product_'.$setting_system['default_description'], 'title'),
 					'characters_to_search' => apply_filters('fktr_sales_characters_to_search_product', 3),
 					
 					
@@ -284,6 +302,7 @@ class fktrPostTypeSales {
 												));
 		
 		$textCodeForProduct = apply_filters('fktr_text_code_product_'.$setting_system['default_code'], '');
+		$textDescriptionForProduct = apply_filters('fktr_text_description_product_'.$setting_system['default_description'], '');
 		$echoHtml = '<table class="form-table">
 					<tbody>
 						<tr class="user-display-name-wrap">
@@ -291,7 +310,7 @@ class fktrPostTypeSales {
 							<div class="uc_header">
 								<div class="uc_column"></div>
 								<div class="uc_column">'.$textCodeForProduct.'</div>
-								<div class="uc_column">'.__('Description', FAKTURO_TEXT_DOMAIN  ) .'</div>
+								<div class="uc_column">'.$textDescriptionForProduct.'</div>
 								<div class="uc_column">'. __('Quantity', FAKTURO_TEXT_DOMAIN  ) .'</div>
 								<div class="uc_column">'. __('Unit price', FAKTURO_TEXT_DOMAIN  ) .'</div>
 								<div class="uc_column taxes_column">'. __('Tax', FAKTURO_TEXT_DOMAIN  ) .'</div>
@@ -305,7 +324,7 @@ class fktrPostTypeSales {
 							</div>
 							
 							<div id="paging-box">
-								'.$selectProducts.' <a href="#" class="button-primary add" id="addmoreuc" style="width:33%; font-weight: bold; text-decoration: none; height: 31px;line-height: 29px;"> '.__('Add product', FAKTURO_TEXT_DOMAIN  ).'</a>
+								'.$selectProducts.' <a href="#" class="button-primary add" id="addmoreuc" style="font-weight: bold; text-decoration: none; height: 31px;line-height: 29px;"> '.__('Add product', FAKTURO_TEXT_DOMAIN  ).'</a>
 							</div>
 							<div id="totals-box">
 								<div id="sub_total">Subtotal:</div>
@@ -614,7 +633,7 @@ class fktrPostTypeSales {
 		
 		foreach ($currencies as $cur) {
 			$echoHtml .= '<tr>
-							'.(($setting_system['currency_position'] == 'before')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</td>':'').'</label><td> <input type="text" value="'.$cur->rate.'" name="invoice_currencies['.$cur->term_id.']" id="invoice_currencies_'.$cur->term_id.'" class="invoice_currencies"/> '.(($setting_system['currency_position'] == 'after')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'</td>
+							'.(($setting_system['currency_position'] == 'before')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.((empty($cur->reference))?'':'<a href="'.$cur->reference.'">').''.$cur->symbol.''.((empty($cur->reference))?'':'</a>').'</label></td>':'').'<td> <input type="text" style="text-align: right;" value="'.$cur->rate.'" name="invoice_currencies['.$cur->term_id.']" id="invoice_currencies_'.$cur->term_id.'" class="invoice_currencies"/> '.(($setting_system['currency_position'] == 'after')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.((empty($cur->reference))?'':'<a href="'.$cur->reference.'">').''.$cur->symbol.''.((empty($cur->reference))?'':'</a>').'</label></td>':'').'</td>
 						</tr>';
 			
 		}

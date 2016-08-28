@@ -160,11 +160,13 @@ function add_selected_product() {
 	
 	var price = getPriceProduct(current_product).formatMoney(sales_object.decimal_numbers, sales_object.decimal,  sales_object.thousand);
 	var code = getCodeProduct(current_product);
+	var description = getDescriptionProduct(current_product);
+	
 	var percentage_tax = getPorcentTaxProduct(current_product);
 	var tax_with_mask = percentage_tax.formatMoney(2, sales_object.decimal,  sales_object.thousand);
 	var discriminates_taxes = getDescriminateTaxes();
 	
-	var newHTML = '<div id="uc_ID'+count_products+'" class="sortitem"><div class="sorthandle"> </div> <div class="uc_column" id=""><label class="code_product">'+code+'</label><input name="uc_code[]" type="hidden" value="'+code+'" class="large-text"/> <input name="uc_id[]" type="hidden" value="'+current_product.id+'"/></div><div class="uc_column" id=""><input name="uc_description[]" type="text" value="'+current_product.description+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_quality[]" type="text" value="1" class="large-text"/></div><div class="uc_column" id=""><input name="uc_unit_price[]" type="text" value="'+price+'" class="products_unit_prices large-text"/></div><div class="uc_column taxes_column" id="" '+((discriminates_taxes == 1)?'':'style="display:none;"')+'><label class="code_product">'+tax_with_mask+'%</label><input name="uc_tax[]" type="hidden" value="'+current_product.datacomplete.tax+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_amount[]" type="text" value="'+price+'" class="products_amounts large-text"/></div><div class="" id="uc_actions"><label title="" data-id="'+count_products+'" class="delete"></label></div></div>';
+	var newHTML = '<div id="uc_ID'+count_products+'" class="sortitem"><div class="sorthandle"> </div> <div class="uc_column" id=""><label class="code_product">'+code+'</label><input name="uc_code[]" type="hidden" value="'+code+'" class="large-text"/> <input name="uc_id[]" type="hidden" value="'+current_product.id+'"/></div><div class="uc_column" id=""><input name="uc_description[]" type="text" value="'+description+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_quality[]" type="text" value="1" class="large-text"/></div><div class="uc_column" id=""><input name="uc_unit_price[]" type="text" value="'+price+'" class="products_unit_prices large-text"/></div><div class="uc_column taxes_column" id="" '+((discriminates_taxes == 1)?'':'style="display:none;"')+'><label class="code_product">'+tax_with_mask+'%</label><input name="uc_tax[]" type="hidden" value="'+current_product.datacomplete.tax+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_amount[]" type="text" value="'+price+'" class="products_amounts large-text"/></div><div class="" id="uc_actions"><label title="" data-id="'+count_products+'" class="delete"></label></div></div>';
 			
 	jQuery('#invoice_products').append(newHTML);
 	jQuery('#uc_actions label').click(function() {
@@ -243,6 +245,15 @@ function getCodeProduct(current_product) {
 	}
 	return retorno;
 }
+function getDescriptionProduct(current_product) {
+	var retorno = current_product.title;
+	if (current_product.datacomplete[sales_object.description_meta_post_key] != undefined)  {
+		retorno = current_product.datacomplete[sales_object.description_meta_post_key];
+	}
+	return retorno;
+}
+
+
 function getPorcentTaxProduct(current_product) {
 	var r = 0;
 	var taxes = jQuery.parseJSON(sales_object.taxes);
