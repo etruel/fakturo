@@ -290,6 +290,7 @@ class fktrPostTypeSales {
 		global $post;
 		$sale_data = self::get_sale_data($post->ID);
 		$setting_system = get_option('fakturo_system_options_group', false);
+		$currencyDefault = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
 		$selectProducts = fakturo_get_select_post(array(
 													'echo' => 0,
 													'post_type' => 'fktr_product',
@@ -327,10 +328,10 @@ class fktrPostTypeSales {
 								'.$selectProducts.' <a href="#" class="button-primary add" id="addmoreuc" style="font-weight: bold; text-decoration: none; height: 31px;line-height: 29px;"> '.__('Add product', FAKTURO_TEXT_DOMAIN  ).'</a>
 							</div>
 							<div id="totals-box">
-								<div id="sub_total">Subtotal:</div>
-								<div id="discount_total"></div>
-								<div id="tax_total"></div>
-								<div id="total">Total:</div>
+								<div id="sub_total">Subtotal: <label id="label_sub_total">'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').'0'.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'</label><input type="hidden" name="in_sub_total" id="in_sub_total" value="0"/>  </div>
+								<div id="discount_total" style="display:none;">Discount: <label id="label_discount">'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').'0'.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'</label><input type="hidden" name="in_discount" id="in_discount" value="0"/> </div>
+								<div id="tax_total" style="display:none;"></div>
+								<div id="total">Total: <label id="label_total">'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').'0'.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'</label><input type="hidden" name="in_total" id="in_total" value="0"/>  </div>
 							</div>
 						</td>
 						</tr>
@@ -633,7 +634,7 @@ class fktrPostTypeSales {
 		
 		foreach ($currencies as $cur) {
 			$echoHtml .= '<tr>
-							'.(($setting_system['currency_position'] == 'before')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.((empty($cur->reference))?'':'<a href="'.$cur->reference.'">').''.$cur->symbol.''.((empty($cur->reference))?'':'</a>').'</label></td>':'').'<td> <input type="text" style="text-align: right;" value="'.$cur->rate.'" name="invoice_currencies['.$cur->term_id.']" id="invoice_currencies_'.$cur->term_id.'" class="invoice_currencies"/> '.(($setting_system['currency_position'] == 'after')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.((empty($cur->reference))?'':'<a href="'.$cur->reference.'">').''.$cur->symbol.''.((empty($cur->reference))?'':'</a>').'</label></td>':'').'</td>
+							<td>'.((empty($cur->reference))?'':'<a href="'.$cur->reference.'">').''.$cur->name.''.((empty($cur->reference))?'':'</a>').'</td>'.(($setting_system['currency_position'] == 'before')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'<td><input type="text" style="text-align: right; width: 120px;" value="'.$cur->rate.'" name="invoice_currencies['.$cur->term_id.']" id="invoice_currencies_'.$cur->term_id.'" class="invoice_currencies"/> '.(($setting_system['currency_position'] == 'after')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'</td>
 						</tr>';
 			
 		}
