@@ -343,7 +343,7 @@ function updateSubTotals() {
 		if (current_tax_codition) {
 			if (current_tax_codition.overwrite_taxes) {
 				money_taxs = (total/100)*parseFloat(current_tax_codition.tax_percentage);
-				var html_taxs = '<label>Tax '+parseFloat(current_tax_codition.tax_percentage).formatMoney(2, sales_object.decimal,  sales_object.thousand)+'%</label>:'+((sales_object.currency_position == 'before')?getSymbolFromCurrencyId(getCurrentCurrencyId())+' ':'')+''+money_taxs.formatMoney(sales_object.decimal_numbers, sales_object.decimal,  sales_object.thousand)+''+((sales_object.currency_position == 'after')?' '+getSymbolFromCurrencyId(getCurrentCurrencyId()):'')+' <input type="hidden" name="taxes_in_products[0]" value="'+money_taxs+'"/>';
+				var html_taxs = '<label id="label_tax_in_0">Tax '+parseFloat(current_tax_codition.tax_percentage).formatMoney(2, sales_object.decimal,  sales_object.thousand)+'%:'+((sales_object.currency_position == 'before')?getSymbolFromCurrencyId(getCurrentCurrencyId())+' ':'')+''+money_taxs.formatMoney(sales_object.decimal_numbers, sales_object.decimal,  sales_object.thousand)+''+((sales_object.currency_position == 'after')?' '+getSymbolFromCurrencyId(getCurrentCurrencyId()):'')+'</label> <input type="hidden" name="taxes_in_products[0]" value="'+money_taxs+'"/>';
 				jQuery('#tax_total').html(html_taxs);
 				jQuery('#tax_total').fadeIn();
 			} else {
@@ -364,9 +364,17 @@ function updateSubTotals() {
 				var newTaxMoney = ((amount_standar/100)*porcent);
 				
 				money_taxs = money_taxs+newTaxMoney;
-				
-				var html_taxs = '<label>'+tax.name+' '+parseFloat(porcent).formatMoney(2, sales_object.decimal,  sales_object.thousand)+'%</label>:'+((sales_object.currency_position == 'before')?getSymbolFromCurrencyId(getCurrentCurrencyId())+' ':'')+''+newTaxMoney.formatMoney(sales_object.decimal_numbers, sales_object.decimal,  sales_object.thousand)+''+((sales_object.currency_position == 'after')?' '+getSymbolFromCurrencyId(getCurrentCurrencyId()):'')+' <input type="hidden" name="taxes_in_products['+tax.term_id+']" value="'+newTaxMoney+'"/><br/>';
-				jQuery('#tax_total').append(html_taxs);				
+				if(jQuery('#label_tax_in_'+tax.term_id).length ) {
+					
+					var old_val = parseFloat(jQuery('#taxes_in_products_'+tax.term_id).val());
+					newTaxMoney = newTaxMoney+old_val;
+					jQuery('#taxes_in_products_'+tax.term_id).val(newTaxMoney);
+					jQuery('#label_tax_in_'+tax.term_id).html(''+tax.name+' '+parseFloat(porcent).formatMoney(2, sales_object.decimal,  sales_object.thousand)+'%:'+((sales_object.currency_position == 'before')?getSymbolFromCurrencyId(getCurrentCurrencyId())+' ':'')+''+newTaxMoney.formatMoney(sales_object.decimal_numbers, sales_object.decimal,  sales_object.thousand)+''+((sales_object.currency_position == 'after')?' '+getSymbolFromCurrencyId(getCurrentCurrencyId()):'')+'');
+				} else {
+					var html_taxs = '<label id="label_tax_in_'+tax.term_id+'">'+tax.name+' '+parseFloat(porcent).formatMoney(2, sales_object.decimal,  sales_object.thousand)+'%:'+((sales_object.currency_position == 'before')?getSymbolFromCurrencyId(getCurrentCurrencyId())+' ':'')+''+newTaxMoney.formatMoney(sales_object.decimal_numbers, sales_object.decimal,  sales_object.thousand)+''+((sales_object.currency_position == 'after')?' '+getSymbolFromCurrencyId(getCurrentCurrencyId()):'')+'</label> <input type="hidden" id="taxes_in_products_'+tax.term_id+'" name="taxes_in_products['+tax.term_id+']" value="'+newTaxMoney+'"/><br/>';
+					jQuery('#tax_total').append(html_taxs);		
+				}
+						
 			});
 			jQuery('#tax_total').fadeIn();
 		} 
