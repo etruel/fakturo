@@ -77,6 +77,7 @@ class fktrSettings {
 			$value_system['search_code'] = 'reference';
 			$value_system['default_code'] = 'reference';
 			$value_system['default_description'] = 'short_description';
+			$value_system['dateformat'] = 'dd/mm/YYYY';
 			$value_system = apply_filters('fktr_system_options_init', $value_system);
 			update_option('fakturo_system_options_group' , $value_system);
 		}
@@ -243,6 +244,9 @@ class fktrSettings {
 		if (empty($options['default_description'])) {
 			$options['default_description'] = 'short_description';
 		}
+		if (empty($options['dateformat'])) {
+			$options['dateformat'] = 'd/m/Y';
+		}
 
 		update_option('fakturo_system_options_group' , $options);
 		
@@ -347,7 +351,16 @@ class fktrSettings {
 		}
 		$echoSelectDefaultDescription .= '</select>';		
 			
+		$selectDefaultDate = array();
+		$selectDefaultDate['d/m/Y'] = __( 'dd/mm/YYYY', FAKTURO_TEXT_DOMAIN );
+		$selectDefaultDate['m/d/Y'] = __( 'mm/dd/YYYY', FAKTURO_TEXT_DOMAIN );						
+		$selectDefaultDate = apply_filters('fktr_default_format_date_array', $selectDefaultDate);
 		
+		$echoSelectDefaultDate = '<select id="fakturo_system_options_group_dateformat" name="fakturo_system_options_group[dateformat]">';
+		foreach ($selectDefaultDate as $key => $txt) {
+			$echoSelectDefaultDate .= '<option value="'.$key.'"'.selected($key, $options['dateformat'], false).'>'.$txt.'</option>';
+		}
+		$echoSelectDefaultDate .= '</select>';		
 		
 									
 		echo '
@@ -501,7 +514,16 @@ class fktrSettings {
 						</td>
 					  </tr>
 					  
-					  
+					   <tr>
+							<th>'. __( 'Default date format', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+									'.$echoSelectDefaultDate.'
+									<label for="fakturo_system_options_group_dateformat">
+										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
+									</label>
+							</td>
+						</td>
+					  </tr>
 					  
 					  ';
 				
