@@ -16,6 +16,8 @@ class fktr_tax_countries {
 		add_action(self::$tax_name.'_edit_form_fields', array(__CLASS__, 'edit_form_fields'));
 		add_action(self::$tax_name.'_add_form_fields',  array(__CLASS__, 'add_form_fields'));
 		
+		add_filter('parent_file',  array( __CLASS__, 'tax_menu_correction'));
+		add_filter('submenu_file',  array( __CLASS__, 'tax_submenu_correction'));
 		
 		add_action('edited_'.self::$tax_name, array(__CLASS__, 'save_fields'), 10, 2);
 		add_action('created_'.self::$tax_name, array(__CLASS__,'save_fields'), 10, 2);
@@ -69,17 +71,31 @@ class fktr_tax_countries {
 			$args_model
 		);
 		
-		
-		
 	}
+	// highlight the proper top level menu
+	static function tax_menu_correction($parent_file) {
+		global $current_screen;
+		if ($current_screen->id == "edit-fktr_countries") {
+			$parent_file = 'fakturo_dashboard';
+		}
+		return $parent_file;
+	}
+	
+	// highlight the proper sub level menu
+	static function tax_submenu_correction($submenu_file) {
+		global $current_screen;
+		if ($current_screen->id == "edit-fktr_countries") {
+			$submenu_file = 'fakturo-settings';
+		}
+		return $submenu_file;
+	}
+	
 	public static function scripts() {
 		if (isset($_GET['taxonomy']) && $_GET['taxonomy'] == self::$tax_name) {
 			
-			
 		}
-		
-		
 	}
+	
 	public static function add_form_fields() {
 		$echoHtml = '
 		<style type="text/css">.form-field.term-slug-wrap, .form-field.term-description-wrap { display:none;} .inline.hide-if-no-js{ display:none;} .view{ display:none;}</style>

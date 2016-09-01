@@ -18,6 +18,7 @@ class fktr_tax_stock {
 			add_action(self::$tax_name.'_edit_form_fields', array(__CLASS__, 'edit_form_fields'));
 			add_action(self::$tax_name.'_add_form_fields',  array(__CLASS__, 'add_form_fields'));
 			
+			add_filter('parent_file',  array( __CLASS__, 'tax_menu_correction'));
 	
 			add_action('edited_'.self::$tax_name, array(__CLASS__, 'save_fields'), 10, 2);
 			add_action('created_'.self::$tax_name, array(__CLASS__,'save_fields'), 10, 2);
@@ -71,6 +72,16 @@ class fktr_tax_stock {
 		);
 		
 	}
+
+	// highlight the proper top level menu
+	static function tax_menu_correction($parent_file) {
+		global $current_screen;
+		if ($current_screen->id == "edit-fktr_stock") {
+			$parent_file = 'edit.php?post_type=fktr_product';
+		}
+		return $parent_file;
+	}
+	
 	public static function date_format_php_to_js( $sFormat ) {
 
 		switch( $sFormat ) {

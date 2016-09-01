@@ -17,6 +17,9 @@ class fktr_tax_currency {
 		add_action('edited_fktr_currencies', array('fktr_tax_currency', 'save_fields'), 10, 2);
 		add_action('created_fktr_currencies', array('fktr_tax_currency','save_fields'), 10, 2);
 		
+		add_filter('parent_file',  array( __CLASS__, 'tax_menu_correction'));
+		add_filter('submenu_file',  array( __CLASS__, 'tax_submenu_correction'));
+		
 		add_filter('manage_edit-fktr_currencies_columns', array('fktr_tax_currency', 'columns'), 10, 3);
 		add_filter('manage_fktr_currencies_custom_column',  array('fktr_tax_currency', 'theme_columns'), 10, 3);
 		add_action('admin_enqueue_scripts', array('fktr_tax_currency', 'scripts'), 10, 1);
@@ -64,6 +67,25 @@ class fktr_tax_currency {
 		);
 		
 	}
+
+	// highlight the proper top level menu
+	static function tax_menu_correction($parent_file) {
+		global $current_screen;
+		if ($current_screen->id == "edit-fktr_currencies") {
+			$parent_file = 'fakturo_dashboard';
+		}
+		return $parent_file;
+	}
+	
+	// highlight the proper sub level menu
+	static function tax_submenu_correction($submenu_file) {
+		global $current_screen;
+		if ($current_screen->id == "edit-fktr_currencies") {
+			$submenu_file = 'fakturo-settings';
+		}
+		return $submenu_file;
+	}
+		
 	public static function scripts() {
 		if (isset($_GET['taxonomy']) && $_GET['taxonomy'] == 'fktr_currencies') {
 			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );

@@ -22,6 +22,7 @@ class fktrPostTypeProducts {
 		add_action('admin_print_styles-post-new.php', array('fktrPostTypeProducts','styles'));
 		add_action('admin_print_styles-post.php', array('fktrPostTypeProducts','styles'));
 		
+		add_filter('parent_file',  array( __CLASS__, 'tax_menu_correction'));
 		
 		add_filter('fktr_clean_product_fields', array('fktrPostTypeProducts', 'clean_fields'), 10, 1);
 		add_filter('fktr_product_before_save', array('fktrPostTypeProducts', 'before_save'), 10, 1);
@@ -169,11 +170,18 @@ class fktrPostTypeProducts {
 		
 		add_filter('enter_title_here', array('fktrPostTypeProducts', 'name_placeholder'),10,2);
 		
-		
-		
-		
-		
 	}
+
+	
+	// highlight the proper top level menu
+	static function tax_menu_correction($parent_file) {
+		global $current_screen;
+		if ($current_screen->id == "edit-fktr_category" || $current_screen->id == "edit-fktr_model") {
+			$parent_file = 'edit.php?post_type=fktr_product';
+		}
+		return $parent_file;
+	}
+
 	public static function name_placeholder( $title_placeholder , $post ) {
 		if($post->post_type == 'fktr_product') {
 			$title_placeholder = __('Enter Product name here', FAKTURO_TEXT_DOMAIN );
@@ -271,7 +279,7 @@ class fktrPostTypeProducts {
 		$product_data = self::get_product_data($post->ID);
 		$setting_system = get_option('fakturo_system_options_group', false);
 			
-	
+		$currency = (isset($product_data['currency']) && !empty($product_data['currency']) ) ? $product_data['currency'] : $setting_system['currency'];
 		
 		$selectCurrencies = wp_dropdown_categories( array(
 			'show_option_all'    => '',
@@ -283,7 +291,7 @@ class fktrPostTypeProducts {
 			'child_of'           => 0,
 			'exclude'            => '',
 			'echo'               => 0,
-			'selected'           => $product_data['currency'],
+			'selected'           => $currency,
 			'hierarchical'       => 1, 
 			'name'               => 'currency',
 			'class'              => 'form-no-clear',
@@ -298,7 +306,7 @@ class fktrPostTypeProducts {
 					<tbody>
 			<tr class="user-address-wrap">
 				<th><label for="cost">'. __('Cost', FAKTURO_TEXT_DOMAIN ). '	</label></th>
-				<td><input type="text" name="cost" id="cost" value="'.number_format($product_data['cost'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).'"></td>
+				<td><input type="text" class="large-text" name="cost" id="cost" value="'.number_format($product_data['cost'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).'"></td>
 			</tr>
 			<tr class="user-address-wrap">
 				<th><label for="currency">'.__('Currency', FAKTURO_TEXT_DOMAIN ).'</label></th>
@@ -383,6 +391,9 @@ class fktrPostTypeProducts {
 		global $post;
 		
 		$product_data = self::get_product_data($post->ID);
+		
+		$setting_system = get_option('fakturo_system_options_group', false);
+		
 		$selectProvider = fakturo_get_select_post(array(
 											'echo' => 0,
 											'post_type' => 'fktr_provider',
@@ -543,20 +554,23 @@ class fktrPostTypeProducts {
 				<td>
 					<textarea style="width:95%;" rows="4" name="description" id="description">'.$product_data['description'].'</textarea>
 				</td>
-			</tr>
+			</tr>';
+		
+			if (isset($setting_system['use_stock_product']) && $setting_system['use_stock_product']) {
+				$echoHtml .= '<tr class="user-address-wrap">
+					<th><label for="min">'.__('Minimal stock', FAKTURO_TEXT_DOMAIN ).'</label></th>
+					<td><input type="number" name="min" id="min" value="'.$product_data['min'].'" class="regular-text"></td>
+				</tr>
+				<tr class="user-facebook-wrap">
+					<th><label for="min_alert">'.__('Minimal stock alert', FAKTURO_TEXT_DOMAIN ).'</label></th>
+					<td>
+						<input id="min_alert" class="slidercheck" type="checkbox" name="min_alert" value="1" '.(($product_data['min_alert'])?'checked="checked"':'').'>
+						<label for="min_alert"><span class="ui"></span>'.__('Minimal stock alert', FAKTURO_TEXT_DOMAIN ).'	</label>
+					</td>
+				</tr>';
+			}
 			
-			<tr class="user-address-wrap">
-				<th><label for="min">'.__('Minimal stock', FAKTURO_TEXT_DOMAIN ).'</label></th>
-				<td><input type="number" name="min" id="min" value="'.$product_data['min'].'" class="regular-text"></td>
-			</tr>
-			<tr class="user-facebook-wrap">
-				<th><label for="min_alert">'.__('Minimal stock alert', FAKTURO_TEXT_DOMAIN ).'</label></th>
-				<td>
-					<input id="min_alert" class="slidercheck" type="checkbox" name="min_alert" value="1" '.(($product_data['min_alert'])?'checked="checked"':'').'>
-					<label for="min_alert"><span class="ui"></span>'.__('Minimal stock alert', FAKTURO_TEXT_DOMAIN ).'	</label>
-				</td>
-			</tr>
-			<tr class="user-facebook-wrap">
+			$echoHtml .= '<tr class="user-facebook-wrap">
 				<th><label for="tax">'. __('Packaging', FAKTURO_TEXT_DOMAIN). '</label></th>
 				<td>'.$selectPackaging.'</td> 
 			</tr>

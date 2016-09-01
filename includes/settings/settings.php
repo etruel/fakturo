@@ -11,13 +11,34 @@ if ( ! class_exists('fktrSettings') ) :
 class fktrSettings {
 
 	function __construct() {
-		add_action( 'init', array('fktrSettings', 'load_taxonomies'), 1, 99 );
-		//add_action( 'in_admin_header', array('fktrSettings', 'probandoarriba'), 1, 0 );
+		//add_action( 'init', array('fktrSettings', 'load_taxonomies'), 1, 99 );
+		
 		add_action( 'all_admin_notices', array('fktrSettings', 'add_setting_tabs'), 1, 0 );
 		add_action( 'admin_init', array('fktrSettings', 'register_settings'));
 				
+		add_filter('parent_file',  array( __CLASS__, 'tax_menu_correction'));
+		add_filter('submenu_file',  array( __CLASS__, 'tax_submenu_correction'));
+		
 		add_action('admin_print_scripts', array('fktrSettings', 'scripts'));
 		add_action('admin_print_styles', array('fktrSettings', 'styles'));
+	}
+	// highlight the proper top level menu
+	static function tax_menu_correction($parent_file) {
+		global $current_screen;  // este no lo toma
+		if ($current_screen->id == "admin_page_fakturo-settings-system") {
+			//$pagenow = null;
+			$parent_file = 'admin.php?page=fakturo_dashboard';
+		}
+		return $parent_file;
+	}
+	
+	// highlight the proper sub level menu
+	static function tax_submenu_correction($submenu_file) {
+		global $current_screen;  //este lo toma pero el menu superior no
+		if ($current_screen->id == "admin_page_fakturo-settings-system") {
+			$submenu_file = 'fakturo-settings';
+		}
+		return $submenu_file;
 	}
 	public static function scripts() {
 		wp_enqueue_script('media-upload');

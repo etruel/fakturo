@@ -16,6 +16,8 @@ class fktr_tax_taxes {
 		add_action(self::$tax_name.'_edit_form_fields', array(__CLASS__, 'edit_form_fields'));
 		add_action(self::$tax_name.'_add_form_fields',  array(__CLASS__, 'add_form_fields'));
 		
+		add_filter('parent_file',  array( __CLASS__, 'tax_menu_correction'));
+		add_filter('submenu_file',  array( __CLASS__, 'tax_submenu_correction'));
 		
 		add_action('edited_'.self::$tax_name, array(__CLASS__, 'save_fields'), 10, 2);
 		add_action('created_'.self::$tax_name, array(__CLASS__,'save_fields'), 10, 2);
@@ -70,6 +72,24 @@ class fktr_tax_taxes {
 		);
 		
 	}
+	// highlight the proper top level menu
+	static function tax_menu_correction($parent_file) {
+		global $current_screen;
+		if ($current_screen->id == "edit-fktr_tax") {
+			$parent_file = 'fakturo_dashboard';
+		}
+		return $parent_file;
+	}
+	
+	// highlight the proper sub level menu
+	static function tax_submenu_correction($submenu_file) {
+		global $current_screen;
+		if ($current_screen->id == "edit-fktr_tax") {
+			$submenu_file = 'fakturo-settings';
+		}
+		return $submenu_file;
+	}
+
 	public static function scripts() {
 		if (isset($_GET['taxonomy']) && $_GET['taxonomy'] == self::$tax_name) {
 			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
