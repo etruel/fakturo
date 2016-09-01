@@ -72,7 +72,7 @@ class fktrSettings {
 			$value_system['decimal_numbers'] = '2';
 			$value_system['invoice_type'] = -1;
 			$value_system['price_scale'] = -1;
-			$value_system['ignore_stock'] = 0;
+			$value_system['use_stock_product'] = 0;
 			$value_system['format_invoice_number'] = '';
 			$value_system['search_code'] = 'reference';
 			$value_system['default_code'] = 'reference';
@@ -226,8 +226,8 @@ class fktrSettings {
 		if (empty($options['decimal'])) {
 			$options['decimal'] = '.';
 		}
-		if (!isset($options['ignore_stock'])) {
-			$options['ignore_stock'] = 0;
+		if (!isset($options['use_stock_product'])) {
+			$options['use_stock_product'] = 0;
 		}
 		if (empty($options['format_invoice_number'])) {
 			$options['format_invoice_number'] = '';
@@ -453,10 +453,10 @@ class fktrSettings {
 					  </tr>
 					  
 					  <tr>
-							<th>'. __( 'Ignore stock?', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Use stock for products', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
-								<input id="fakturo_system_options_group_ignore_stock" class="slidercheck" type="checkbox" name="fakturo_system_options_group[ignore_stock]" value="1" '.(($options['ignore_stock'])?'checked="checked"':'').'>
-								<label for="fakturo_system_options_group_ignore_stock"><span class="ui"></span>'. __( 'Ignore stock used in the system', FAKTURO_TEXT_DOMAIN ).'	</label>
+								<input id="fakturo_system_options_group_use_stock_product" class="slidercheck" type="checkbox" name="fakturo_system_options_group[use_stock_product]" value="1" '.(($options['use_stock_product'])?'checked="checked"':'').'>
+								<label for="fakturo_system_options_group_use_stock_product"><span class="ui"></span>'. __( 'Activate for use stock for products', FAKTURO_TEXT_DOMAIN ).'	</label>
 							
 							</td>
 						</td>

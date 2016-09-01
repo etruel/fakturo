@@ -104,7 +104,18 @@ class fktrAdminMenu {
 			'edit_fktr_product',
 			'edit-tags.php?taxonomy=fktr_model'
 		);
-	
+		$setting_system = get_option('fakturo_system_options_group', false);
+		if (isset($setting_system['use_stock_product']) && $setting_system['use_stock_product']) {
+			$page = add_submenu_page(
+			'edit.php?post_type=fktr_product',
+			__( 'Stock', FAKTURO_TEXT_DOMAIN ),
+			__( 'Stock', FAKTURO_TEXT_DOMAIN ),
+			'edit_fktr_product',
+			'edit-tags.php?taxonomy=fktr_stock'
+		);
+			
+		}
+			
 		add_menu_page( 
 			__( 'Sales Invoices', FAKTURO_TEXT_DOMAIN ), 
 			__( 'Sales Invoices', FAKTURO_TEXT_DOMAIN ), 
