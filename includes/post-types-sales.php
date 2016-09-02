@@ -116,7 +116,7 @@ class fktrPostTypeSales {
 		}
 		$where = $where.")";
 		$sqlSearch = "SELECT * FROM {$prefix}posts".$innerJoin." WHERE".$where." GROUP BY {$prefix}posts.ID LIMIT 10";
-		error_log($sqlSearch);
+	
 		$sqlSearch = apply_filters('fktr_search_product_sql_query', $sqlSearch);
 		$results = $wpdb->get_results($sqlSearch, OBJECT);
 		
