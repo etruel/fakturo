@@ -22,7 +22,9 @@ class fktr_tax_stock {
 	
 			add_action('edited_'.self::$tax_name, array(__CLASS__, 'save_fields'), 10, 2);
 			add_action('created_'.self::$tax_name, array(__CLASS__,'save_fields'), 10, 2);
-			
+
+			add_filter( 'list_table_primary_column', array(__CLASS__, 'primary_column'), 10, 2);
+			add_filter( self::$tax_name.'_row_actions', array(__CLASS__, 'row_actions'), 10, 2);
 			add_filter('manage_edit-'.self::$tax_name.'_columns', array(__CLASS__, 'columns'), 10, 3);
 			add_filter('manage_'.self::$tax_name.'_custom_column',  array(__CLASS__, 'theme_columns'), 10, 3);
 			
@@ -36,7 +38,7 @@ class fktr_tax_stock {
 			'name'                       => _x( 'Stocks', 'Stocks', FAKTURO_TEXT_DOMAIN ),
 			'singular_name'              => _x( 'Stock', 'Stock', FAKTURO_TEXT_DOMAIN ),
 			'search_items'               => __( 'Search Stocks', FAKTURO_TEXT_DOMAIN ),
-			'popular_items'              => __( 'Popular Stocks', FAKTURO_TEXT_DOMAIN ),
+			'popular_items'              => null, // para que no aparezca la nube de populares  __( 'Popular Stocks', FAKTURO_TEXT_DOMAIN ),
 			'all_items'                  => __( 'All Stocks', FAKTURO_TEXT_DOMAIN ),
 			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
 			'parent_item_colon'          => null,
@@ -117,20 +119,14 @@ class fktr_tax_stock {
 			wp_enqueue_script( 'jquery-datetimepicker', FAKTURO_PLUGIN_URL . 'assets/js/jquery.datetimepicker.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'taxonomy-stocks', FAKTURO_PLUGIN_URL . 'assets/js/taxonomy-stocks.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			$setting_system = get_option('fakturo_system_options_group', false);
+
 			$objectL10n = (object)array(
-
 				'lang'			=> substr($locale, 0, 2),
-
 				'UTC'			=> get_option( 'gmt_offset' ),
-
 				'timeFormat'    => get_option( 'time_format' ),
-
 				'dateFormat'    => self::date_format_php_to_js( $setting_system['dateformat'] ),
-
 				'printFormat'   => self::date_format_php_to_js( $setting_system['dateformat'] ),
-
 				'firstDay'      => get_option( 'start_of_week' ),
-
 			);		
 			
 			wp_localize_script('taxonomy-stocks', 'system_setting',
@@ -177,10 +173,9 @@ class fktr_tax_stock {
 		));
 		$date = time();
 		$echoHtml = '
-		<style type="text/css">.form-field.term-parent-wrap,.form-field.term-slug-wrap, .form-field label[for="parent"], .form-field #parent {display: none;}  .form-field.term-description-wrap { display:none;} .inline.hide-if-no-js{ display:none;} .view{ display:none;}
-			.edit {
-				display:none;
-			}
+		<style type="text/css">
+		.form-field.term-parent-wrap,.form-field.term-slug-wrap, .form-field label[for="parent"], .form-field #parent {display: none;}  
+		.form-field.term-description-wrap { display:none;} 
 			.term-name-wrap {
 				float: left;
 				    width: 67%;
@@ -261,10 +256,10 @@ class fktr_tax_stock {
 			<input style="width: 120px;" type="text" name="term_meta[cost]" id="term_meta_cost" value=""/>
 			<p class="description">'.__( 'Enter the cost.', FAKTURO_TEXT_DOMAIN ).'</p>
 		</div>
-		<div class="form-field" id="quality_div">
-			<label for="term_meta[quality]">'.__('Quality', FAKTURO_TEXT_DOMAIN ).'</label>
-			<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[quality]" id="term_meta_quality" value="1"/>
-			<p class="description">'.__( 'Enter a quality.', FAKTURO_TEXT_DOMAIN ).'</p>
+		<div class="form-field" id="quantity_div">
+			<label for="term_meta[quantity]">'.__('Quantity', FAKTURO_TEXT_DOMAIN ).'</label>
+			<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[quantity]" id="term_meta_quantity" value="1"/>
+			<p class="description">'.__( 'Enter a quantity.', FAKTURO_TEXT_DOMAIN ).'</p>
 		</div>
 		
 		
@@ -273,31 +268,45 @@ class fktr_tax_stock {
 		echo $echoHtml;
 	}
 	public static function edit_form_fields($term) {
-	
 
 		$term_meta = get_fakturo_term($term->term_id, self::$tax_name);
 		
-		
 	}
+
+	static function row_actions( $actions, $tag ){
+		unset($actions['edit']);
+		unset($actions['view']);
+		unset($actions['inline hide-if-no-js']);
+		return $actions;
+	}
+
 	public static function columns($columns) {
 		$new_columns = array(
 			'cb' => '<input type="checkbox" />',
-			'name' => __('Order number', FAKTURO_TEXT_DOMAIN),
+			'order' => __('Order number', FAKTURO_TEXT_DOMAIN),
 			'product' => __('Product', FAKTURO_TEXT_DOMAIN),
 			'location' => __('Location', FAKTURO_TEXT_DOMAIN),
-			'quality' => __('Quality', FAKTURO_TEXT_DOMAIN),
+			'quantity' => __('Quantity', FAKTURO_TEXT_DOMAIN),
 			'type' => __('Type', FAKTURO_TEXT_DOMAIN),
 		);
-		return $new_columns;
-	}
-	public static function theme_columns($out, $column_name, $term_id) {
 		
+		return $new_columns;
+		
+	}		
+
+	public static function primary_column( $default, $screen_id ) {
+		
+		return 'order';
+		
+	}
+	public static function theme_columns($out, $column_name, $term_id) {		
+		global $primary;
+		$primary = 'order';
 		$term = get_fakturo_term($term_id, self::$tax_name);
 		
 		switch ($column_name) {
-			case 'name': 
-				
-				$out = esc_attr($term->order_number).'';
+			case 'order': 				
+				$out = esc_attr($term->name).'';
 				break;
 			case 'product': 
 				$product_name = __( 'No product', FAKTURO_TEXT_DOMAIN );
@@ -318,12 +327,12 @@ class fktr_tax_stock {
 				}
 				$out = esc_attr($location).'';
 				break;
-			case 'quality': 
-				$quality = 0;
-				if (isset($term->quality)) {
-					$quality =  $term->quality;
+			case 'quantity': 
+				$quantity = 0;
+				if (isset($term->quantity)) {
+					$quantity =  $term->quantity;
 				}
-				$out = esc_attr($quality).'';
+				$out = esc_attr($quantity).'';
 				break;
 			case 'type': 
 				$type = 'Entry';

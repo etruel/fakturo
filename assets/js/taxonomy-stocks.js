@@ -4,15 +4,6 @@ jQuery(document).ready(function() {
 	jQuery('.term-name-wrap label').html('Order number');
 	jQuery('.term-name-wrap p').html('Enter a Order number.');
 	
-	
-	jQuery('.column-name strong').map(function(){
-		jQuery(this).html(jQuery(this).children('a').html())
-	});
-	jQuery('#the-list').bind('DOMNodeInserted DOMNodeRemoved', function() {
-		jQuery('.column-name strong').map(function(){
-			jQuery(this).html(jQuery(this).children('a').html())
-		});
-	});
 	activate_search_products();
 	
 	var decimal_numbers = parseInt(system_setting.decimal_numbers);
