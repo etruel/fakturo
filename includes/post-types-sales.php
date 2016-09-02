@@ -45,7 +45,12 @@ class fktrPostTypeSales {
 		add_filter('fktr_meta_key_description_product_short_description', array('fktrPostTypeSales', 'meta_key_description_product_short_description'), 10, 1);
 		add_filter('fktr_meta_key_description_product_description', array('fktrPostTypeSales', 'meta_key_description_product_description'), 10, 1);
 		
+		add_filter('fktr_search_product_parameter_reference', array('fktrPostTypeSales', 'product_parameter_reference'), 10, 3);
+		add_filter('fktr_search_product_parameter_internal_code', array('fktrPostTypeSales', 'product_parameter_internal_code'), 10, 3);
+		add_filter('fktr_search_product_parameter_manufacturers_code', array('fktrPostTypeSales', 'product_parameter_manufacturers_code'), 10, 3);
+		
 	}
+	
 	public static function text_description_product_short_description($txt) {
 		return __( 'Short Description', FAKTURO_TEXT_DOMAIN );
 	}
@@ -76,41 +81,67 @@ class fktrPostTypeSales {
 	public static function meta_key_code_product_manufacturers_code($txt) {
 		return 'manufacturers';
 	}
-	
+	public static function product_parameter_reference($search, $innerJoin, $where) {
+		$where = $where." OR (meta_value LIKE '%".$search."%' AND meta_key = 'reference')";
+		return array($innerJoin, $where);
+	}
+	public static function product_parameter_internal_code($search, $innerJoin, $where) {
+		if (is_numeric($search)) {
+			$where = $where." OR ID = ".$search."";
+		}
+		return array($innerJoin, $where);
+	}
+	public static function product_parameter_manufacturers_code($search, $innerJoin, $where) {
+		$where = $where." OR (meta_value LIKE '%".$search."%' AND meta_key = 'manufacturers')";
+		return array($innerJoin, $where);
+	}
 	public static function get_products() {
-		$args = array(	'showposts'           =>  10,
-						'post_type'           => 'fktr_product',
-						'post_status'         => 'publish',
-						'orderby'             => 'title',
-						'order'               => 'ASC',
-						'paged' 			  => 1, 
-						'meta_query' => array(),
-				);
-		$r = wp_parse_args($_GET, $args );
+		global $wpdb;
+		$search = addslashes($_GET['s']);
+		$setting_system = get_option('fakturo_system_options_group', false);
+		$prefix = $wpdb->prefix;
+		$innerJoin = " INNER JOIN {$prefix}postmeta ON {$prefix}postmeta.post_id = {$prefix}posts.ID ";
+		$descriptionWhere = "post_title LIKE '%".$search."%'";
+		if ($setting_system['default_description'] == 'short_description') {
+			$descriptionWhere = "post_title LIKE '%".$search."%'";
+		} else if ($setting_system['default_description']=='description') {
+			$descriptionColumn = "(meta_value LIKE '%".$search."%' AND meta_key = 'description')";
+		}
+		$where = " {$prefix}posts.post_status = 'publish' AND {$prefix}posts.post_type ='fktr_product' AND (".$descriptionColumn."";
+		
+		foreach ($setting_system['search_code'] as $k => $val) {
+			$values = apply_filters('fktr_search_product_parameter_'.$val, $search, $innerJoin, $where);
+			$innerJoin = $values[0];
+			$where = $values[1];
+		}
+		$where = $where.")";
+		$sqlSearch = "SELECT * FROM {$prefix}posts".$innerJoin." WHERE".$where." GROUP BY {$prefix}posts.ID LIMIT 10";
+		$sqlSearch = apply_filters('fktr_search_product_sql_query', $sqlSearch);
+		$results = $wpdb->get_results($sqlSearch, OBJECT);
+		
+		
 		
 		$return = new stdClass();
 		$return->total_count = 1;
 		$return->incomplete_results = false;
 		$return->items = array();
-		$products = new WP_Query($r);
-		if ($products->have_posts()) {
-
-			while($products->have_posts()) {
-				$products->the_post();
-				$dataProduct = fktrPostTypeProducts::get_product_data(get_the_ID());
-				$newProduct = new stdClass();
-				$newProduct->id = get_the_ID();
-				$newProduct->title = get_the_title();
-				$newProduct->description = $dataProduct['description'];
-				$newProduct->img = FAKTURO_PLUGIN_URL . 'assets/images/default_product.png';
-				$newProduct->datacomplete = $dataProduct;
-				if (has_post_thumbnail()) {
-					$newProduct->img = wp_get_attachment_url( get_post_thumbnail_id(get_the_ID()));
-				} 
-				$return->items[] = $newProduct;
-				//error_log(var_export(fktrPostTypeProducts::get_product_data(get_the_ID()), true));
-			}
+		$dataProduct = array();
+		foreach ($results as $post) {
+			$newProduct = new stdClass();
+			$dataProduct = fktrPostTypeProducts::get_product_data($post->ID);
+			$newProduct->id = $post->ID;
+			$newProduct->title = $post->post_title;
+			$newProduct->description = $dataProduct['description'];
+			$newProduct->img = FAKTURO_PLUGIN_URL . 'assets/images/default_product.png';
+			$newProduct->datacomplete = $dataProduct;
+			
+			if (isset($dataProduct['_thumbnail_id']) && $dataProduct['_thumbnail_id'] > 0) {
+				$newProduct->img = wp_get_attachment_url( get_post_thumbnail_id($post->ID));
+			} 
+			$return->items[] = $newProduct;
+			
 		}
+		
 		echo json_encode($return);
 		wp_die();
 	}

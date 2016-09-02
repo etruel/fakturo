@@ -95,7 +95,7 @@ class fktrSettings {
 			$value_system['price_scale'] = -1;
 			$value_system['use_stock_product'] = 0;
 			$value_system['format_invoice_number'] = '';
-			$value_system['search_code'] = 'reference';
+			$value_system['search_code'] = array('reference');
 			$value_system['default_code'] = 'reference';
 			$value_system['default_description'] = 'short_description';
 			$value_system['dateformat'] = 'dd/mm/YYYY';
@@ -257,7 +257,7 @@ class fktrSettings {
 			$options['format_number_receipt'] = '';
 		}
 		if (empty($options['search_code'])) {
-			$options['search_code'] = 'reference';
+			$options['search_code'] = array();
 		}
 		if (empty($options['default_code'])) {
 			$options['default_code'] = 'reference';
@@ -341,9 +341,11 @@ class fktrSettings {
 		$selectSearchCode['manufacturers_code'] = __( 'Manufacturers code', FAKTURO_TEXT_DOMAIN );							
 		$selectSearchCode = apply_filters('fktr_search_code_array', $selectSearchCode);
 		
-		$echoSelectSearchCode = '<select id="fakturo_system_options_group_search_code" name="fakturo_system_options_group[search_code]">';
+		//echo print_r($options['search_code'], true);
+		//
+		$echoSelectSearchCode = '<select id="fakturo_system_options_group_search_code" name="fakturo_system_options_group[search_code][]" multiple="multiple" style="width:150px;">';
 		foreach ($selectSearchCode as $key => $txt) {
-			$echoSelectSearchCode .= '<option value="'.$key.'"'.selected($key, $options['search_code'], false).'>'.$txt.'</option>';
+			$echoSelectSearchCode .= '<option value="'.$key.'"'.selected($key, (array_search($key, $options['search_code'])!==false) ? $key : '' , false).'>'.$txt.'</option>';
 		}
 		$echoSelectSearchCode .= '</select>';						
 										
@@ -396,7 +398,7 @@ class fktrSettings {
 						<td class="italic-label">
 								  '.$selectCurrency.'	
 								  <label for="fakturo_system_currency">
-								  '. __( 'Choose your currency. Note that some payment gateways have currency restrictions.', FAKTURO_TEXT_DOMAIN ) .' 
+								  '. __( 'Choose your currency.', FAKTURO_TEXT_DOMAIN ) .' 
 							        </label>
 						</td>
 					  </tr>
