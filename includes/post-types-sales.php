@@ -105,9 +105,9 @@ class fktrPostTypeSales {
 		if ($setting_system['default_description'] == 'short_description') {
 			$descriptionWhere = "post_title LIKE '%".$search."%'";
 		} else if ($setting_system['default_description']=='description') {
-			$descriptionColumn = "(meta_value LIKE '%".$search."%' AND meta_key = 'description')";
+			$descriptionWhere = "(meta_value LIKE '%".$search."%' AND meta_key = 'description')";
 		}
-		$where = " {$prefix}posts.post_status = 'publish' AND {$prefix}posts.post_type ='fktr_product' AND (".$descriptionColumn."";
+		$where = " {$prefix}posts.post_status = 'publish' AND {$prefix}posts.post_type ='fktr_product' AND (".$descriptionWhere."";
 		
 		foreach ($setting_system['search_code'] as $k => $val) {
 			$values = apply_filters('fktr_search_product_parameter_'.$val, $search, $innerJoin, $where);
@@ -116,6 +116,7 @@ class fktrPostTypeSales {
 		}
 		$where = $where.")";
 		$sqlSearch = "SELECT * FROM {$prefix}posts".$innerJoin." WHERE".$where." GROUP BY {$prefix}posts.ID LIMIT 10";
+		error_log($sqlSearch);
 		$sqlSearch = apply_filters('fktr_search_product_sql_query', $sqlSearch);
 		$results = $wpdb->get_results($sqlSearch, OBJECT);
 		
