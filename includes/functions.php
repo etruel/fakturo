@@ -150,4 +150,21 @@ function fakturo_porcent_to_mask($value) {
 	return $value;
 }
 
+	################### DATE FUNCS
+	/* function date2time (also datetime to time)
+	 * @param $value	str date or date time as '22-09-2008' or '22-09-2008 15:35:00' 
+	 * @param $format	str format of the date in $value, as 'm-d-Y' or 'd-m-Y' 
+	 * 
+	 * @return int timestamp or false if error
+	 */
+    function fakturo_date2time($value ,  $dateformat = 'd-m-Y' ){
+		$date = date_parse_from_format( $dateformat , $value);
+		$timestamp = mktime($date['hour'], $date['minute'], $date['second'], $date['month'], $date['day'], $date['year']);
+		if($timestamp['error_count'] !=0 ) $timestamp=false;  // if error return false
+		return $timestamp; 
+	}
+
+
+
+
 ?>

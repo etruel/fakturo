@@ -26,6 +26,7 @@ class fktrPostTypeSales {
 		
 		add_filter('fktr_clean_sale_fields', array('fktrPostTypeSales', 'clean_fields'), 10, 1);
 		add_filter('fktr_sale_before_save', array('fktrPostTypeSales', 'before_save'), 10, 1);
+		add_filter('fktr_save_sale_summary', array('fktrPostTypeSales', 'fktr_save_sale_summary'), 10, 2);
 		
 		add_action('wp_ajax_get_client_data', array('fktrPostTypeSales', 'get_client_data'));
 		add_action('wp_ajax_get_products', array('fktrPostTypeSales', 'get_products'));
@@ -931,7 +932,8 @@ class fktrPostTypeSales {
 			$fields['invoice_number'] = '';
 		}
 		if (!isset($fields['date'])) {
-			$fields['date'] = date('Y-m-d');
+			//$fields['date'] = date('Y-m-d');
+			$fields['date'] = current_time('timestamp');
 		}
 		if (!isset($fields['invoice_currency'])) {
 			$fields['invoice_currency'] = 0;
@@ -977,7 +979,8 @@ class fktrPostTypeSales {
 
 			$fields['invoice_type'] = 0;
 			$fields['invoice_number'] = '';
-			$fields['date'] = '';
+			$fields['date'] = current_time('timestamp');
+;
 			$fields['invoice_currency'] = 0;
 			$fields['invoice_saleman'] = 0;
 			$fields['invoice_discount'] = 0;
@@ -985,7 +988,6 @@ class fktrPostTypeSales {
 
 			foreach ( $fields as $field => $value ) {
 				if ( !is_null( $value ) ) {
-					
 					$new = apply_filters( 'fktr_sale_metabox_save_' . $field, $value );  //filtra cada campo antes de grabar
 					update_post_meta( $post->ID, $field, $new );
 				}
@@ -1000,11 +1002,21 @@ class fktrPostTypeSales {
 		$client_data = array();
 		$client_data['client_data'] = json_decode(get_post_field('post_content', $sale_id), true);
 		$custom_field_keys = array_merge($custom_field_keys, $client_data);
-		$custom_field_keys['date'] = get_post_field('post_date', $sale_id);
+//		$custom_field_keys['date'] = get_post_field('post_date', $sale_id);
 	
 		$custom_field_keys = apply_filters('fktr_clean_sale_fields', $custom_field_keys );
 		return $custom_field_keys;
 	}
+	
+	
+	
+	public static function fktr_save_sale_summary($sale_summary, $fields) {
+		$sale_summary = __('Client', FAKTURO_TEXT_DOMAIN ).': '.$fields['client_data']['name'].'<br>';
+		$sale_summary .= __('SubTotal', FAKTURO_TEXT_DOMAIN ).': '.$fields['in_sub_total'].' - ' .
+			__('Total', FAKTURO_TEXT_DOMAIN ).': '.$fields['in_total'].'<br>';
+		return $sale_summary;
+	}
+	
 	
 	public static function save($post_id, $post) {
 		global $wpdb;
@@ -1019,22 +1031,27 @@ class fktrPostTypeSales {
 			return false;
 		}
 		
-		
 		if ( ! current_user_can( 'manage_options', $post_id ) ) {
 			return false;
 		}
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$fields = apply_filters('fktr_clean_sale_fields',$_POST);
 		$fields = apply_filters('fktr_sale_before_save',$fields);
-		if (isset($fields['date'])) {
-			$timestamp = DateTime::createFromFormat('!'.self::date_format_php_to_js( $setting_system['dateformat'] ), $fields['date'])->getTimestamp();
-			$fields['date'] = date('Y-m-d H:i:s', $timestamp);
+		if(isset($fields['date']) && is_string($fields['date'])) {
+//			$timestamp = DateTime::createFromFormat('!'.self::date_format_php_to_js( $setting_system['dateformat'] ), $fields['date'])->getTimestamp();
+//			$fields['date'] = date('Y-m-d H:i:s', $timestamp);
+			$fields['date'] = fakturo_date2time($fields['date'], $setting_system['dateformat'] );
 		}
 		
 		if (isset($fields['client_data'])) {
-			$wpdb->update( $wpdb->posts, array('post_date' => $fields['date'], 'post_content' => json_encode($fields['client_data'])), array('ID' => $post_id ) );
+			$sale_summary = apply_filters('fktr_save_sale_summary', '', $fields); // string
+			$wpdb->update( 
+				$wpdb->posts, 
+				array(
+					'post_excerpt' => $sale_summary,
+					'post_content' => json_encode($fields['client_data']),
+				), array('ID' => $post_id ) );
 			unset($fields['client_data']);
-			unset($fields['date']);
 		}
 		
 		
