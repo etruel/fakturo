@@ -17,7 +17,7 @@ jQuery(document).ready(function() {
 	
 	jQuery('#term_meta_product').select2();
 	jQuery('#term_meta_location').select2();
-	system_setting.datetimepicker = jQuery.parseJSON(system_setting.datetimepicker)
+	system_setting.datetimepicker = jQuery.parseJSON(system_setting.datetimepicker);
 	jQuery.datetimepicker.setLocale(system_setting.datetimepicker.lang);
 	
 	jQuery('#term_meta_date').datetimepicker({

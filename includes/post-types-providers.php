@@ -574,7 +574,7 @@ class fktrPostTypeProviders {
 			return false;
 		}
 
-		if ( isset( $post->post_type ) && 'revision' == $post->post_type ) {
+		if ( isset( $post->post_type ) &&  $post->post_type == 'revision'  || $post->post_type != 'fktr_client') {
 			return false;
 		}
 

@@ -252,17 +252,46 @@ class fktrPostTypeSales {
 		if($post_type == 'fktr_sale') {
 			wp_enqueue_style('style-select2',FAKTURO_PLUGIN_URL .'assets/css/select2.min.css');	
 			wp_enqueue_style('post-type-sales',FAKTURO_PLUGIN_URL .'assets/css/post-type-sales.css');	
+			wp_enqueue_style('style-datetimepicker',FAKTURO_PLUGIN_URL .'assets/css/jquery.datetimepicker.css');	
 		}
 	}
 	public static function scripts() {
-		global $post_type;
+		global $post_type, $post, $wp_locale, $locale;
 		if($post_type == 'fktr_sale') {
 			wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'jquery-datetimepicker', FAKTURO_PLUGIN_URL . 'assets/js/jquery.datetimepicker.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'jquery-vsort', FAKTURO_PLUGIN_URL . 'assets/js/jquery.vSort.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'post-type-sales', FAKTURO_PLUGIN_URL . 'assets/js/post-type-sales.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			
+			$sale_data = self::get_sale_data($post->ID);
+			$product_data = array();
+			if (!empty($sale_data['uc_id'])) {
+				foreach ($sale_data['uc_id'] as $key => $product_id) {
+					$newProduct = new stdClass();
+					$dataProduct = fktrPostTypeProducts::get_product_data($product_id);
+					$newProduct->id = $product_id;
+					$newProduct->title = $dataProduct['post_title'];
+					$newProduct->description = $dataProduct['description'];
+					$newProduct->img = FAKTURO_PLUGIN_URL . 'assets/images/default_product.png';
+					$newProduct->datacomplete = $dataProduct;
+					
+					if (isset($dataProduct['_thumbnail_id']) && $dataProduct['_thumbnail_id'] > 0) {
+						$newProduct->img = wp_get_attachment_url( get_post_thumbnail_id($product_id));
+					} 
+					$product_data[$product_id] = $newProduct;
+				}
+			}
 			$setting_system = get_option('fakturo_system_options_group', false);
+			
+			$objectL10n = (object)array(
+				'lang'			=> substr($locale, 0, 2),
+				'UTC'			=> get_option( 'gmt_offset' ),
+				'timeFormat'    => get_option( 'time_format' ),
+				'dateFormat'    => self::date_format_php_to_js( $setting_system['dateformat'] ),
+				'printFormat'   => self::date_format_php_to_js( $setting_system['dateformat'] ),
+				'firstDay'      => get_option( 'start_of_week' ),
+			);	
+			
 			$tax_coditions = get_fakturo_terms(array(
 							'taxonomy' => 'fktr_tax_conditions',
 							'hide_empty' => false,
@@ -288,6 +317,10 @@ class fktrPostTypeSales {
 					'currency_position' => $setting_system['currency_position'],
 					'default_currency' => $setting_system['currency'],
 					'default_code' => $setting_system['default_code'],
+					'post_status' => $post->post_status,
+					'product_data' => $product_data,
+					'datetimepicker' => $objectL10n,
+					
 					
 					
 					'code_meta_post_key' => apply_filters('fktr_meta_key_code_product_'.$setting_system['default_code'], 'internal'),
@@ -321,18 +354,116 @@ class fktrPostTypeSales {
 	public static function invoice_box() {
 		global $post;
 		$sale_data = self::get_sale_data($post->ID);
+		
+		
 		$setting_system = get_option('fakturo_system_options_group', false);
-		$currencyDefault = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
-		$selectProducts = fakturo_get_select_post(array(
-													'echo' => 0,
-													'post_type' => 'fktr_product',
-													'show_option_none' => __('Choose a Product', FAKTURO_TEXT_DOMAIN ),
-													'name' => 'product_select',
-													'id' => 'product_select',
-													'class' => 'js-example-basic-multiple',
-													'selected' => -2,
-													'attributes' => array('multiple' => 'multiple', 'style' => 'width:65%;'),
-												));
+		if (empty($sale_data['invoice_currency'])) {
+			$currencyDefault = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
+		} else {
+			$currencyDefault = get_fakturo_term($sale_data['invoice_currency'], 'fktr_currencies');		
+		}
+		$discriminates_taxes = false;
+		if ($sale_data['invoice_type'] > 0) {
+			$term_invoice_type = get_fakturo_term($sale_data['invoice_type'], 'fktr_invoice_types');		
+			if (!is_wp_error($term_invoice_type)) {
+				if ($term_invoice_type->discriminates_taxes) {
+					$discriminates_taxes = true;
+				}
+			}
+		}
+		
+		
+		$selectProducts = '<select name="product_select" id="product_select" class="js-example-basic-multiple" multiple="multiple" style="width:65%;"></select>';					
+		$echoInvoiceProducts = '';
+		if (!empty($sale_data['uc_id'])) {
+			foreach ($sale_data['uc_id'] as $key => $product_id) {
+				$codeProduct = $sale_data['uc_code'][$key]; 
+				$descriptionProduct = $sale_data['uc_description'][$key];
+				$quantityProduct = $sale_data['uc_quality'][$key];
+				$unitPriceProduct = $sale_data['uc_unit_price'][$key];
+				$taxProduct = $sale_data['uc_tax'][$key];
+				$taxPorcentProduct = $sale_data['uc_tax_porcent'][$key];
+				$amountProduct = $sale_data['uc_amount'][$key];
+				$echoInvoiceProducts .= '
+				<div id="uc_ID'.$key.'" class="sortitem" data-identifier="'.$key.'">
+					<div class="sorthandle"></div> 
+					<div class="uc_column" id="">
+						<label class="code_product" id="label_code_'.$key.'">'.$codeProduct.'</label>
+						<input name="uc_code[]" type="hidden" id="code_'.$key.'" value="'.$codeProduct.'" class="large-text"/> 
+						<input name="uc_id[]" type="hidden" id="id_'.$key.'" value="'.$product_id.'"/>
+					</div>
+					<div class="uc_column" id="">
+					'.(($post->post_status != 'publish')?'<input name="uc_description[]" type="text" id="description_'.$key.'" value="'.$descriptionProduct.'" class="large-text"/>':'<label class="code_product">'.$descriptionProduct.'</label>').'
+						
+					</div>
+					<div class="uc_column" id="">
+						'.(($post->post_status != 'publish')?'<input name="uc_quality[]" class="product_quality" id="quality_'.$key.'" type="text" value="'.$quantityProduct.'" class="large-text"/>':'<label class="code_product">'.$quantityProduct.'</label>').'
+						
+					</div>
+					<div class="uc_column" id="">
+						'.(($post->post_status != 'publish')?'<input name="uc_unit_price[]" id="unit_price_'.$key.'" type="text" value="'.$unitPriceProduct.'" class="unit_price_products large-text"/>':'<label class="code_product">'.$unitPriceProduct.'</label>').'
+						
+					</div>
+					<div class="uc_column taxes_column"'.(($discriminates_taxes)?'':' style="display:none;"').'>
+						<label class="code_product" id="label_tax_product_'.$key.'">'.$taxPorcentProduct.'%</label>
+						<input name="uc_tax_porcent[]" type="hidden" id="tax_porcent_product_'.$key.'" value="'.$taxPorcentProduct.'" class="product_tax_porcent"/>
+						<input name="uc_tax[]" type="hidden" id="tax_product_'.$key.'" value="'.$taxProduct.'" class="product_taxs large-text"/>
+					</div>
+					<div class="uc_column" id="">
+						'.(($post->post_status != 'publish')?'<input name="uc_amount[]" id="amount_'.$key.'" type="text" value="'.$amountProduct.'" class="products_amounts large-text"/>':'<label class="code_product">'.$amountProduct.'</label>').'
+						
+					
+					</div>
+					'.(($post->post_status != 'publish')?'<div class="" id="uc_actions"><label title="" data-id="'.$key.'" class="delete"></label></div>':'').'
+						
+					
+				</div>';
+	
+			
+			
+			}
+			
+		}
+		
+		$sub_total = 0;
+		if (!empty($sale_data['in_sub_total'])) {
+			$sub_total = $sale_data['in_sub_total']; 
+		}
+		$discount = 0;
+		if (!empty($sale_data['in_discount'])) {
+			$discount = $sale_data['in_discount']; 
+		}
+		$total = 0;
+		if (!empty($sale_data['in_total'])) {
+			$total = $sale_data['in_total']; 
+		}
+		
+		$taxes = false;
+		$htmltaxes = '';
+		if (!empty($sale_data['taxes_in_products'])) {
+			foreach ($sale_data['taxes_in_products'] as $key => $value) {
+				$taxPorcent = 0;
+				$taxName = 'Tax';
+				if ($key > 0) {
+					$term_tax = get_fakturo_term($key, 'fktr_tax');
+					if(!is_wp_error($term_tax)) {
+						$taxPorcent = $term_tax->percentage;
+						$taxName = $term_tax->name;
+					} 
+				} else {
+					if ($sale_data['client_data']['tax_condition'] > 0) {
+						$term_tax_condition = get_fakturo_term($sale_data['client_data']['tax_condition'], 'fktr_tax_conditions');
+						if(!is_wp_error($term_tax_condition)) {
+							if ($term_tax_condition->overwrite_taxes) {
+								$taxPorcent = $term_tax_condition->tax_percentage;
+							}
+						} 
+					}
+				}
+				
+				$htmltaxes .= '<label id="label_tax_in_'.$key.'">'.$taxName.' '.fakturo_porcent_to_mask($taxPorcent).'%:'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($value, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'</label> <input type="hidden" name="taxes_in_products['.$key.']" value="'.$value.'"/>';
+			}
+		}
 		
 		$textCodeForProduct = apply_filters('fktr_text_code_product_'.$setting_system['default_code'], '');
 		$textDescriptionForProduct = apply_filters('fktr_text_description_product_'.$setting_system['default_description'], '');
@@ -346,24 +477,25 @@ class fktrPostTypeSales {
 								<div class="uc_column">'.$textDescriptionForProduct.'</div>
 								<div class="uc_column">'. __('Quantity', FAKTURO_TEXT_DOMAIN  ) .'</div>
 								<div class="uc_column">'. __('Unit price', FAKTURO_TEXT_DOMAIN  ) .'</div>
-								<div class="uc_column taxes_column">'. __('Tax', FAKTURO_TEXT_DOMAIN  ) .'</div>
+								<div class="uc_column taxes_column"'.(($discriminates_taxes)?'':' style="display:none;"').'>'. __('Tax', FAKTURO_TEXT_DOMAIN  ) .'</div>
 								<div class="uc_column">'. __('Amount', FAKTURO_TEXT_DOMAIN  ) .'</div>
 								
 							</div>
 							<br />
 			
 							<div id="invoice_products"> 
-								
+								'.$echoInvoiceProducts.'
 							</div>
 							
 							<div id="paging-box">
-								'.$selectProducts.' <a href="#" class="button-primary add" id="addmoreuc" style="font-weight: bold; text-decoration: none; height: 31px;line-height: 29px;"> '.__('Add product', FAKTURO_TEXT_DOMAIN  ).'</a>
+								'.(($post->post_status != 'publish')?''.$selectProducts.' <a href="#" class="button-primary add" id="addmoreuc" style="font-weight: bold; text-decoration: none; height: 31px;line-height: 29px;"> '.__('Add product', FAKTURO_TEXT_DOMAIN  ).'</a>':'').'
+								
 							</div>
 							<div id="totals-box">
-								<div id="sub_total">Subtotal: <label id="label_sub_total">'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').'0'.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'</label><input type="hidden" name="in_sub_total" id="in_sub_total" value="0"/>  </div>
-								<div id="discount_total" style="display:none;">Discount: <label id="label_discount">'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').'0'.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'</label><input type="hidden" name="in_discount" id="in_discount" value="0"/> </div>
-								<div id="tax_total" style="display:none;"></div>
-								<div id="total">Total: <label id="label_total">'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').'0'.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'</label><input type="hidden" name="in_total" id="in_total" value="0"/>  </div>
+								<div id="sub_total">Subtotal: <label id="label_sub_total">'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($sub_total, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'</label><input type="hidden" name="in_sub_total" id="in_sub_total" value="'.$sub_total.'"/>  </div>
+								<div id="discount_total"'.(($discount>0)?'':' style="display:none;"').'>Discount: <label id="label_discount">'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($discount, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'</label><input type="hidden" name="in_discount" id="in_discount" value="'.$discount.'"/> </div>
+								<div id="tax_total"'.(($discriminates_taxes)?'':' style="display:none;"').'>'.$htmltaxes.'</div>
+								<div id="total">Total: <label id="label_total">'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($total, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'</label><input type="hidden" name="in_total" id="in_total" value="'.$total.'"/>  </div>
 							</div>
 						</td>
 						</tr>
@@ -378,67 +510,90 @@ class fktrPostTypeSales {
 	public static function invoice_data_box() {
 		global $post;
 		$sale_data = self::get_sale_data($post->ID);
-		$setting_system = get_option('fakturo_system_options_group', false);
 		
-		$selectInvoiceTypes = wp_dropdown_categories( array(
-			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Invoice Type', FAKTURO_TEXT_DOMAIN ),
-			'orderby'            => 'name', 
-			'order'              => 'ASC',
-			'show_count'         => 0,
-			'hide_empty'         => 0, 
-			'child_of'           => 0,
-			'exclude'            => '',
-			'echo'               => 0,
-			'selected'           => $sale_data['invoice_type'],
-			'hierarchical'       => 1, 
-			'name'               => 'invoice_type',
-			'class'              => 'form-no-clear',
-			'id'				 => 'invoice_type',
-			'depth'              => 1,
-			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_invoice_types',
-			'hide_if_empty'      => false
-		));
+		$setting_system = get_option('fakturo_system_options_group', false);
+		$selectInvoiceTypes = 'No invoice type';
+		if ($post->post_status != 'publish') {
+			$selectInvoiceTypes = wp_dropdown_categories( array(
+				'show_option_all'    => '',
+				'show_option_none'   => __('Choose a Invoice Type', FAKTURO_TEXT_DOMAIN ),
+				'orderby'            => 'name', 
+				'order'              => 'ASC',
+				'show_count'         => 0,
+				'hide_empty'         => 0, 
+				'child_of'           => 0,
+				'exclude'            => '',
+				'echo'               => 0,
+				'selected'           => $sale_data['invoice_type'],
+				'hierarchical'       => 1, 
+				'name'               => 'invoice_type',
+				'class'              => 'form-no-clear',
+				'id'				 => 'invoice_type',
+				'depth'              => 1,
+				'tab_index'          => 0,
+				'taxonomy'           => 'fktr_invoice_types',
+				'hide_if_empty'      => false
+			));
+		} else {
+			$term_invoice_type = get_fakturo_term($sale_data['invoice_type'], 'fktr_invoice_types');
+			if(!is_wp_error($term_invoice_type)) {
+				$selectInvoiceTypes = $term_invoice_type->name;
+			}
+		}
 		$selected_currency = $setting_system['currency'];
 		if ($sale_data['invoice_currency'] > 0) {
 			$selected_currency = $sale_data['invoice_currency'];
 		}
-		
-		$selectCurrencies = wp_dropdown_categories( array(
-			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Currency', FAKTURO_TEXT_DOMAIN ),
-			'orderby'            => 'name', 
-			'order'              => 'ASC',
-			'show_count'         => 0,
-			'hide_empty'         => 0, 
-			'child_of'           => 0,
-			'exclude'            => '',
-			'echo'               => 0,
-			'selected'           => $selected_currency,
-			'hierarchical'       => 1, 
-			'name'               => 'invoice_currency',
-			'class'              => 'form-no-clear',
-			'id'				 => 'invoice_currency',
-			'depth'              => 1,
-			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_currencies',
-			'hide_if_empty'      => false
-		));
-		$allsellers = get_users( array( 'role' => 'fakturo_seller' ) );
-		$allmanagers = get_users( array( 'role' => 'fakturo_manager' ) );	
-		$alladmins = get_users( array( 'role' => 'administrator' ) );
-		$allsellers = array_merge($allsellers, $allmanagers, $alladmins);
-		$select_sale_mans = '<select name="invoice_saleman" id="invoice_saleman">';
-		$select_sale_mans .= '<option value="'.(($sale_data['invoice_saleman'] == 0)?' selected="selected"':'').'">'. __('Choose a Salesman', FAKTURO_TEXT_DOMAIN  ) . '</option>';
-		foreach ( $allsellers as $suser ) {
-			$select_sale_mans .= '<option value="' . $suser->ID . '" ' . selected($sale_data['invoice_saleman'], $suser->ID, false) . '>' . esc_html( $suser->display_name ) . '</option>';
+		$selectCurrencies = 'No currency';
+		if ($post->post_status != 'publish') {
+			$selectCurrencies = wp_dropdown_categories( array(
+				'show_option_all'    => '',
+				'show_option_none'   => __('Choose a Currency', FAKTURO_TEXT_DOMAIN ),
+				'orderby'            => 'name', 
+				'order'              => 'ASC',
+				'show_count'         => 0,
+				'hide_empty'         => 0, 
+				'child_of'           => 0,
+				'exclude'            => '',
+				'echo'               => 0,
+				'selected'           => $selected_currency,
+				'hierarchical'       => 1, 
+				'name'               => 'invoice_currency',
+				'class'              => 'form-no-clear',
+				'id'				 => 'invoice_currency',
+				'depth'              => 1,
+				'tab_index'          => 0,
+				'taxonomy'           => 'fktr_currencies',
+				'hide_if_empty'      => false
+			));
+		} else {
+			$term_currency = get_fakturo_term($selected_currency, 'fktr_currencies');
+			if(!is_wp_error($term_currency)) {
+				$selectCurrencies = $term_currency->name;
+			}
 		}
-		$select_sale_mans .= '</select>';
+		$select_sale_mans = 'No Saleman';
+		if ($post->post_status != 'publish') {
+			$allsellers = get_users( array( 'role' => 'fakturo_seller' ) );
+			$allmanagers = get_users( array( 'role' => 'fakturo_manager' ) );	
+			$alladmins = get_users( array( 'role' => 'administrator' ) );
+			$allsellers = array_merge($allsellers, $allmanagers, $alladmins);
+			$select_sale_mans = '<select name="invoice_saleman" id="invoice_saleman">';
+			$select_sale_mans .= '<option value="'.(($sale_data['invoice_saleman'] == 0)?' selected="selected"':'').'">'. __('Choose a Salesman', FAKTURO_TEXT_DOMAIN  ) . '</option>';
+			foreach ( $allsellers as $suser ) {
+				$select_sale_mans .= '<option value="' . $suser->ID . '" ' . selected($sale_data['invoice_saleman'], $suser->ID, false) . '>' . esc_html( $suser->display_name ) . '</option>';
+			}
+			$select_sale_mans .= '</select>';
+		} else {
+			$user_obj = get_user_by('id', $sale_data['invoice_saleman']);
+			if ($user_obj) {
+				$select_sale_mans = $user_obj->display_name;
+			}
+			
+		}
 		
-		
-		
-		$selectClients = fakturo_get_select_post(array(
+		if ($post->post_status != 'publish') {
+			$selectClients = fakturo_get_select_post(array(
 											'echo' => 0,
 											'post_type' => 'fktr_client',
 											'show_option_none' => __('Choose a Client', FAKTURO_TEXT_DOMAIN ),
@@ -447,6 +602,10 @@ class fktrPostTypeSales {
 											'class' => '',
 											'selected' => $sale_data['client_id']
 										));
+		} else {
+			$selectClients = '';
+		}
+		
 										
 										
 		
@@ -454,51 +613,64 @@ class fktrPostTypeSales {
 		if ($sale_data['client_id'] < 1) {
 			$show_client_data = false;
 		}
+		$selectTaxCondition = 'No tax condition';
+		if ($post->post_status != 'publish') {
+			$selectTaxCondition = wp_dropdown_categories( array(
+				'show_option_all'    => '',
+				'show_option_none'   => __('Choose a Tax Condition', FAKTURO_TEXT_DOMAIN ),
+				'orderby'            => 'name', 
+				'order'              => 'ASC',
+				'show_count'         => 0,
+				'hide_empty'         => 0, 
+				'child_of'           => 0,
+				'exclude'            => '',
+				'echo'               => 0,
+				'selected'           => $sale_data['client_data']['tax_condition'],
+				'hierarchical'       => 1, 
+				'name'               => 'client_data[tax_condition]',
+				'class'              => '',
+				'id'				 => 'client_data_tax_condition',
+				'depth'              => 1,
+				'tab_index'          => 0,
+				'taxonomy'           => 'fktr_tax_conditions',
+				'hide_if_empty'      => false
+			));
+		} else {
+			$term_tax_codition = get_fakturo_term($sale_data['client_data']['tax_condition'], 'fktr_tax_conditions');
+			if(!is_wp_error($term_tax_codition)) {
+				$selectTaxCondition = $term_tax_codition->name;
+			}
+		}
+		$selectPaymentTypes = 'No payment type';
+		if ($post->post_status != 'publish') {
+			$selectPaymentTypes = wp_dropdown_categories( array(
+				'show_option_all'    => '',
+				'show_option_none'   => __('Choose a Payment Type', FAKTURO_TEXT_DOMAIN ),
+				'orderby'            => 'name', 
+				'order'              => 'ASC',
+				'show_count'         => 0,
+				'hide_empty'         => 0, 
+				'child_of'           => 0,
+				'exclude'            => '',
+				'echo'               => 0,
+				'selected'           => $sale_data['client_data']['payment_type'],
+				'hierarchical'       => 1, 
+				'name'               => 'client_data[payment_type]',
+				'class'              => 'form-no-clear',
+				'id'				 => 'client_data_payment_type',
+				'depth'              => 1,
+				'tab_index'          => 0,
+				'taxonomy'           => 'fktr_payment_types',
+				'hide_if_empty'      => false
+			));
+		} else {
+			$term_payment_type = get_fakturo_term($sale_data['client_data']['payment_type'], 'fktr_payment_types');
+			if(!is_wp_error($term_payment_type)) {
+				$selectPaymentTypes = $term_payment_type->name;
+			}
+		}
 		
-		
-		$selectTaxCondition = wp_dropdown_categories( array(
-			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Tax Condition', FAKTURO_TEXT_DOMAIN ),
-			'orderby'            => 'name', 
-			'order'              => 'ASC',
-			'show_count'         => 0,
-			'hide_empty'         => 0, 
-			'child_of'           => 0,
-			'exclude'            => '',
-			'echo'               => 0,
-			'selected'           => $sale_data['client_data']['tax_condition'],
-			'hierarchical'       => 1, 
-			'name'               => 'client_data[tax_condition]',
-			'class'              => '',
-			'id'				 => 'client_data_tax_condition',
-			'depth'              => 1,
-			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_tax_conditions',
-			'hide_if_empty'      => false
-		));
-		
-		$selectPaymentTypes = wp_dropdown_categories( array(
-			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Payment Type', FAKTURO_TEXT_DOMAIN ),
-			'orderby'            => 'name', 
-			'order'              => 'ASC',
-			'show_count'         => 0,
-			'hide_empty'         => 0, 
-			'child_of'           => 0,
-			'exclude'            => '',
-			'echo'               => 0,
-			'selected'           => $sale_data['client_data']['payment_type'],
-			'hierarchical'       => 1, 
-			'name'               => 'client_data[payment_type]',
-			'class'              => 'form-no-clear',
-			'id'				 => 'client_data_payment_type',
-			'depth'              => 1,
-			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_payment_types',
-			'hide_if_empty'      => false
-		));
-		
-		
+		$date = strtotime($sale_data['date']);
 		
 		$echoHtml = '<table>
 					<tbody>
@@ -507,7 +679,7 @@ class fktrPostTypeSales {
 								
 								<table style="width: 90%;">
 									<tbody>
-									<tr class="user-address-wrap">
+									<tr class="user-address-wrap"'.(($selectClients == '')?'style="display:none;"':'').'>
 										<th style="text-align:left;"><label for="client">'.__('Client', FAKTURO_TEXT_DOMAIN ).'</label></th>
 										<td style="text-align:right;">
 											'.$selectClients.'
@@ -607,14 +779,14 @@ class fktrPostTypeSales {
 										<tr>
 											<th><label for="invoice_number">'.__('Invoice Number', FAKTURO_TEXT_DOMAIN ).'</label></th>
 											<td>
-												<input type="text" name="invoice_number" id="invoice_number" value="'.$sale_data['invoice_number'].'"/>
+												'.(($post->post_status != 'publish')?'<input type="text" name="invoice_number" id="invoice_number" value="'.$sale_data['invoice_number'].'"/>':$sale_data['invoice_number']).'
 											</td>		
 										</tr>
 										
 										<tr>
 											<th><label for="date">'.__('Date', FAKTURO_TEXT_DOMAIN ).'</label></th>
 											<td>
-												<input type="text" name="date" id="date" value="'.$sale_data['date'].'"/>
+												'.(($post->post_status != 'publish')?'<input type="text" name="date" id="date" value="'.date_i18n($setting_system['dateformat'], $date ).'"/>':date_i18n($setting_system['dateformat'], $date )).'
 											</td>		
 										</tr>
 										<tr>
@@ -666,7 +838,7 @@ class fktrPostTypeSales {
 		
 		foreach ($currencies as $cur) {
 			$echoHtml .= '<tr>
-							<td>'.((empty($cur->reference))?'':'<a href="'.$cur->reference.'">').''.$cur->name.''.((empty($cur->reference))?'':'</a>').'</td>'.(($setting_system['currency_position'] == 'before')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'<td><input type="text" style="text-align: right; width: 120px;" value="'.$cur->rate.'" name="invoice_currencies['.$cur->term_id.']" id="invoice_currencies_'.$cur->term_id.'" class="invoice_currencies"/> '.(($setting_system['currency_position'] == 'after')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'</td>
+							<td>'.((empty($cur->reference))?'':'<a href="'.$cur->reference.'">').''.$cur->name.''.((empty($cur->reference))?'':'</a>').'</td>'.(($setting_system['currency_position'] == 'before')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'<td>'.(($post->post_status != 'publish')?'<input type="text" style="text-align: right; width: 120px;" value="'.$cur->rate.'" name="invoice_currencies['.$cur->term_id.']" id="invoice_currencies_'.$cur->term_id.'" class="invoice_currencies"/> ':number_format($cur->rate, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand'])).''.(($setting_system['currency_position'] == 'after')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'</td>
 						</tr>';
 			
 		}
@@ -687,7 +859,9 @@ class fktrPostTypeSales {
 		$echoHtml = '<table>
 					<tbody>
 						<td>%</td>
-						<td><input type="text" name="invoice_discount" value="'.$sale_data['invoice_discount'].'" id="invoice_discount"/></td>
+						<td>
+							'.(($post->post_status != 'publish')?'<input type="text" name="invoice_discount" value="'.$sale_data['invoice_discount'].'" id="invoice_discount"/>':$sale_data['invoice_discount']).'
+						</td>
 					</tbody>
 				</table>';
 	
@@ -696,7 +870,33 @@ class fktrPostTypeSales {
 		do_action('add_fktr_sale_discount_box', $echoHtml);
 		
 	}
-	
+	public static function date_format_php_to_js( $sFormat ) {
+
+		switch( $sFormat ) {
+
+			//Predefined WP date formats
+
+			case 'F j, Y':
+
+			case 'Y/m/d':
+
+			case 'm/d/Y':
+
+			case 'd/m/Y':
+
+				return $sFormat;
+
+				break;
+
+			default :
+
+				return( 'm/d/Y' );
+
+				break;
+
+		 }
+
+	}
 
 	public static function clean_fields($fields) {
 		
@@ -731,7 +931,7 @@ class fktrPostTypeSales {
 			$fields['invoice_number'] = '';
 		}
 		if (!isset($fields['date'])) {
-			$fields['date'] = '';
+			$fields['date'] = date('Y-m-d');
 		}
 		if (!isset($fields['invoice_currency'])) {
 			$fields['invoice_currency'] = 0;
@@ -753,7 +953,7 @@ class fktrPostTypeSales {
 	}
 	public static function default_fields($new_status, $old_status, $post ) {
 		
-		if( $post->post_type == 'fktr_product' && $old_status == 'new'){		
+		if( $post->post_type == 'fktr_sale' && $old_status == 'new'){		
 			
 			$fields = array();
 			$fields['client_id'] = 0;
@@ -797,27 +997,45 @@ class fktrPostTypeSales {
 		foreach ( $custom_field_keys as $key => $value ) {
 			$custom_field_keys[$key] = maybe_unserialize($value[0]);
 		}
+		$client_data = array();
+		$client_data['client_data'] = json_decode(get_post_field('post_content', $sale_id), true);
+		$custom_field_keys = array_merge($custom_field_keys, $client_data);
+		$custom_field_keys['date'] = get_post_field('post_date', $sale_id);
+	
 		$custom_field_keys = apply_filters('fktr_clean_sale_fields', $custom_field_keys );
 		return $custom_field_keys;
 	}
 	
 	public static function save($post_id, $post) {
-		
+		global $wpdb;
+		if ('publish' == $post->post_status) {
+			return false;
+		}
 		if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ( defined( 'DOING_AJAX') && DOING_AJAX ) || isset( $_REQUEST['bulk_edit'] ) ) {
 			return false;
 		}
 
-		if ( isset( $post->post_type ) && 'revision' == $post->post_type ) {
+		if ( isset( $post->post_type ) && $post->post_type == 'revision' || $post->post_type!= 'fktr_sale') {
 			return false;
 		}
-
+		
+		
 		if ( ! current_user_can( 'manage_options', $post_id ) ) {
 			return false;
 		}
-		
+		$setting_system = get_option('fakturo_system_options_group', false);
 		$fields = apply_filters('fktr_clean_sale_fields',$_POST);
 		$fields = apply_filters('fktr_sale_before_save',$fields);
+		if (isset($fields['date'])) {
+			$timestamp = DateTime::createFromFormat('!'.self::date_format_php_to_js( $setting_system['dateformat'] ), $fields['date'])->getTimestamp();
+			$fields['date'] = date('Y-m-d H:i:s', $timestamp);
+		}
 		
+		if (isset($fields['client_data'])) {
+			$wpdb->update( $wpdb->posts, array('post_date' => $fields['date'], 'post_content' => json_encode($fields['client_data'])), array('ID' => $post_id ) );
+			unset($fields['client_data']);
+			unset($fields['date']);
+		}
 		
 		
 		foreach ($fields as $field => $value ) {

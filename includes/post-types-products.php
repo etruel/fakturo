@@ -727,10 +727,12 @@ class fktrPostTypeProducts {
 			return false;
 		}
 
-		if ( isset( $post->post_type ) && 'revision' == $post->post_type ) {
+		if ( isset( $post->post_type ) && $post->post_type == 'revision' || $post->post_type != 'fktr_product') {
 			return false;
 		}
-
+		
+		
+		
 		if ( ! current_user_can( 'manage_options', $post_id ) ) {
 			return false;
 		}
