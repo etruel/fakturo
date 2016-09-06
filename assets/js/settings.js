@@ -9,6 +9,7 @@ jQuery(document).ready(function() {
 	jQuery('#fakturo_info_options_group_taxpayer').mask("00-00000000-0", {reverse: true});
 	
 	jQuery('#fakturo_system_options_group_search_code').select2();
+	jQuery('#fakturo_system_options_group_sale_point').select2();
 	
 	
 	jQuery('#upload_logo_button').click(function() {

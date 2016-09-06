@@ -211,7 +211,7 @@ class fktrPostTypeSales {
 	}
 	public static function name_placeholder( $title_placeholder , $post ) {
 		if($post->post_type == 'fktr_sale') {
-			$title_placeholder = __('Enter Sale name here', FAKTURO_TEXT_DOMAIN );
+			$title_placeholder = __('Your invoice number', FAKTURO_TEXT_DOMAIN );
 			
 		}
 		return $title_placeholder;
@@ -310,6 +310,11 @@ class fktrPostTypeSales {
 							'taxonomy' => 'fktr_invoice_types',
 							'hide_empty' => false,
 				));
+			$sale_points = get_fakturo_terms(array(
+							'taxonomy' => 'fktr_sale_points',
+							'hide_empty' => false,
+				));	
+				
 			wp_localize_script('post-type-sales', 'sales_object',
 				array('ajax_url' => admin_url( 'admin-ajax.php' ),
 					'thousand' => $setting_system['thousand'],
@@ -336,6 +341,7 @@ class fktrPostTypeSales {
 					'currencies' => json_encode($currencies),
 					'taxes' => json_encode($taxes),
 					'invoice_types' => json_encode($invoice_types),
+					'sale_points' => $sale_points,
 				));
 		
 		}
@@ -541,6 +547,37 @@ class fktrPostTypeSales {
 				$selectInvoiceTypes = $term_invoice_type->name;
 			}
 		}
+		
+		$selectSalePoint = 'No Sale Point';
+		if ($post->post_status != 'publish') {
+			$selectSalePoint = wp_dropdown_categories( array(
+				'show_option_all'    => '',
+				'show_option_none'   => __('Choose a Sale Point', FAKTURO_TEXT_DOMAIN ),
+				'orderby'            => 'name', 
+				'order'              => 'ASC',
+				'show_count'         => 0,
+				'hide_empty'         => 0, 
+				'child_of'           => 0,
+				'exclude'            => '',
+				'echo'               => 0,
+				'selected'           => $sale_data['sale_point'],
+				'hierarchical'       => 1, 
+				'name'               => 'sale_point',
+				'class'              => 'form-no-clear',
+				'id'				 => 'sale_point',
+				'depth'              => 1,
+				'tab_index'          => 0,
+				'taxonomy'           => 'fktr_sale_points',
+				'hide_if_empty'      => false
+			));
+		} else {
+			$term_sale_point = get_fakturo_term($sale_data['sale_point'], 'fktr_sale_points');
+			if(!is_wp_error($term_sale_point)) {
+				$selectSalePoint = $term_sale_point->name;
+			}
+		}
+		
+		
 		$selected_currency = $setting_system['currency'];
 		if ($sale_data['invoice_currency'] > 0) {
 			$selected_currency = $sale_data['invoice_currency'];
@@ -776,11 +813,17 @@ class fktrPostTypeSales {
 												'.$selectInvoiceTypes.'
 											</td>		
 										</tr>
+										<tr>
+											<th><label for="sale_point">'.__('Sale Point', FAKTURO_TEXT_DOMAIN ).'</label></th>
+											<td>
+												'.$selectSalePoint.'
+											</td>		
+										</tr>
 										
 										<tr>
 											<th><label for="invoice_number">'.__('Invoice Number', FAKTURO_TEXT_DOMAIN ).'</label></th>
 											<td>
-												'.(($post->post_status != 'publish')?'<input type="text" name="invoice_number" id="invoice_number" value="'.$sale_data['invoice_number'].'"/>':$sale_data['invoice_number']).'
+												'.(($post->post_status != 'publish')?'<input type="text" name="invoice_number" id="invoice_number" maxlength="8" value="'.$sale_data['invoice_number'].'"/>':$sale_data['invoice_number']).'
 											</td>		
 										</tr>
 										
@@ -900,7 +943,7 @@ class fktrPostTypeSales {
 	}
 
 	public static function clean_fields($fields) {
-		
+		$setting_system = get_option('fakturo_system_options_group', false);
 		if (!isset($fields['client_id'])) {
 			$fields['client_id'] = 0;
 		}
@@ -925,9 +968,17 @@ class fktrPostTypeSales {
 			
 			
 		}
+		if (!isset($fields['client_data']['tax_condition'])) {
+			$fields['client_data']['tax_condition'] = 0;
+		}
+		
 		if (!isset($fields['invoice_type'])) {
 			$fields['invoice_type'] = 0;
 		}
+		if (!isset($fields['sale_point'])) {
+			$fields['sale_point'] = $setting_system['sale_point'];
+		}
+		
 		if (!isset($fields['invoice_number'])) {
 			$fields['invoice_number'] = '';
 		}
@@ -944,6 +995,12 @@ class fktrPostTypeSales {
 		if (!isset($fields['invoice_discount'])) {
 			$fields['invoice_discount'] = 0;
 		}
+		if (!isset($fields['in_sub_total'])) {
+			$fields['in_sub_total'] = 0;
+		}
+		if (!isset($fields['in_total'])) {
+			$fields['in_total'] = 0;
+		}
 
 		return $fields;
 	}
@@ -956,7 +1013,7 @@ class fktrPostTypeSales {
 	public static function default_fields($new_status, $old_status, $post ) {
 		
 		if( $post->post_type == 'fktr_sale' && $old_status == 'new'){		
-			
+			$setting_system = get_option('fakturo_system_options_group', false);
 			$fields = array();
 			$fields['client_id'] = 0;
 			$fields['client_data'] = array();
@@ -976,14 +1033,20 @@ class fktrPostTypeSales {
 			$fields['client_data']['price_scale']['id'] = 0;
 			$fields['client_data']['price_scale']['name'] = __('No price scale', FAKTURO_TEXT_DOMAIN );
 			$fields['client_data']['credit_limit'] = 0;
-
+			
+			
 			$fields['invoice_type'] = 0;
+			$fields['sale_point'] = $setting_system['sale_point'];
 			$fields['invoice_number'] = '';
 			$fields['date'] = current_time('timestamp');
-;
+
 			$fields['invoice_currency'] = 0;
 			$fields['invoice_saleman'] = 0;
 			$fields['invoice_discount'] = 0;
+			
+			$fields['in_sub_total'] = 0;
+			$fields['in_total'] = 0;
+			 
 			$fields = apply_filters('fktr_clean_sale_fields', $fields);
 
 			foreach ( $fields as $field => $value ) {

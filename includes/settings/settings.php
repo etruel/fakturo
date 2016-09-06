@@ -94,6 +94,7 @@ class fktrSettings {
 			$value_system['invoice_type'] = -1;
 			$value_system['price_scale'] = -1;
 			$value_system['use_stock_product'] = 0;
+			$value_system['sale_point'] = 0;
 			$value_system['format_invoice_number'] = '';
 			$value_system['search_code'] = array('reference');
 			$value_system['default_code'] = 'reference';
@@ -250,6 +251,9 @@ class fktrSettings {
 		if (!isset($options['use_stock_product'])) {
 			$options['use_stock_product'] = 0;
 		}
+		if (!isset($options['sale_point'])) {
+			$options['sale_point'] = 0;
+		}
 		if (empty($options['format_invoice_number'])) {
 			$options['format_invoice_number'] = '';
 		}
@@ -270,6 +274,28 @@ class fktrSettings {
 		}
 
 		update_option('fakturo_system_options_group' , $options);
+		
+		$selectSalePoint = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Choose a Sale Point', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => $options['sale_point'],
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[sale_point]',
+										'id'               => 'fakturo_system_options_group_sale_point',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_sale_points',
+										'hide_if_empty'      => false
+									));
+		
 		
 		
 		$selectCurrency = wp_dropdown_categories( array(
@@ -484,6 +510,15 @@ class fktrSettings {
 							</td>
 						</td>
 					  </tr>
+					  <tr>
+						<th>'. __( 'Sale Point', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<td class="italic-label">
+								  '.$selectSalePoint.'	
+								  <label for="fakturo_system_sale_point">
+								  '. __( 'Choose your sale point.', FAKTURO_TEXT_DOMAIN ) .' 
+							        </label>
+						</td>
+					  </tr>
 					   <tr>
 							<th>'. __( 'Format of invoice number', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
@@ -567,6 +602,7 @@ class fktrSettings {
 				'company_info' => array('text' => __( 'Company Info', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-settings'), 'screen' => 'fakturo_page_fakturo-settings') , 
 				'system_settings' =>  array('text' => __( 'System Settings', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-settings-system'), 'screen' => 'admin_page_fakturo-settings-system'), 
 				'invoice_type' =>  array('text' => __( 'Invoice Types', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_invoice_types'), 'screen' => 'edit-fktr_invoice_types'),
+				'sale_points' =>  array('text' => __( 'Sale Points', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_sale_points'), 'screen' => 'edit-fktr_sale_points'),
 				'payment_types' =>  array('text' => __( 'Payment Types', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_payment_types'), 'screen' => 'edit-fktr_payment_types'), 
 				'default' => array('text' => __( '​​General Settings', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-settings'), 'screen' => 'fakturo_page_fakturo-settings')
 	

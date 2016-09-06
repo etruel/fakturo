@@ -5,10 +5,15 @@ var product_data = new Array();
 var DefaultMaskNumbers = '';
 jQuery(document).ready(function() {
 	
-	
+	jQuery('#title-prompt-text').remove();
+	jQuery("#title").attr("readonly","readonly");
 	if (sales_object.post_status == 'publish') {
 		return false;
 	}
+	jQuery("#title").focus(function(e){
+		jQuery("#invoice_number").focus();
+		
+	});
 	loadProductData();
 	updateKeyPress();
 	
@@ -52,6 +57,7 @@ jQuery(document).ready(function() {
 	jQuery("#client_id").select2();
 	jQuery("#client_data_tax_condition").select2();
 	jQuery("#client_data_payment_type").select2();
+	jQuery("#sale_point").select2();
 	jQuery("#invoice_type").select2();
 	jQuery("#invoice_currency").select2();
 	jQuery("#invoice_saleman").select2();
@@ -133,7 +139,13 @@ jQuery(document).ready(function() {
 	jQuery(".invoice_currencies").change(function(){
 		updateProductsDatails();
 	});
-	
+	jQuery("#sale_point").change(function(){
+		updateTitle();
+	});
+	jQuery("#invoice_number").keyup(function(){
+		updateTitle();
+	});
+	updateTitle();
 	
 	
 	
@@ -166,6 +178,25 @@ jQuery(document).ready(function() {
 	updateProductsDatails();
   
 });
+function updateTitle() {
+	var sale_point = getCurrentSalePoint();
+	if (sale_point) {
+		jQuery("#title").val(padLeft(sale_point.code, 4)+'-'+padLeft(jQuery('#invoice_number').val(), 8));
+	}
+	
+}
+function getCurrentSalePoint() {
+	var r = false;
+	var sale_points = sales_object.sale_points;
+	for (var i = 0; i < sale_points.length; i++) {
+		if (sale_points[i].term_id == jQuery("#sale_point").val()) {
+			r = sale_points[i];
+			break;
+		}
+	}
+	return r;
+	
+}
 function loadProductData() {
 	for (var key in sales_object.product_data) {
     // skip loop if the property is from prototype
@@ -681,6 +712,9 @@ var n = this,
     j = (j = i.length) > 3 ? j % 3 : 0;
    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
  };
+function padLeft(nr, n, str) {
+    return Array(n-String(nr).length+1).join(str||'0')+nr;
+}
 
 function formatRepo (repo) {
 		if (repo.loading) {

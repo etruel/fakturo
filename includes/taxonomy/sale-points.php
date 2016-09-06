@@ -6,10 +6,10 @@ if (!defined('ABSPATH'))  {
 	exit;
 }
 
-if ( ! class_exists('fktr_tax_price_scales') ) :
-class fktr_tax_price_scales {
+if ( ! class_exists('fktr_tax_sale_points') ) :
+class fktr_tax_sale_points {
 	
-	public static $tax_name = 'fktr_price_scales';
+	public static $tax_name = 'fktr_sale_points';
 	function __construct() {
 		add_action( 'init', array(__CLASS__, 'init'), 1, 99 );
 		add_action( 'activated_plugin', array(__CLASS__, 'init'), 1 );
@@ -34,22 +34,22 @@ class fktr_tax_price_scales {
 		
 	
 		$labels = array(
-			'name'                       => _x( 'Price Scales', 'Price Scales', FAKTURO_TEXT_DOMAIN ),
-			'singular_name'              => _x( 'Price Scale', 'Price Scale', FAKTURO_TEXT_DOMAIN ),
-			'search_items'               => __( 'Search Price Scales', FAKTURO_TEXT_DOMAIN ),
-			'popular_items'              => __( 'Popular Price Scales', FAKTURO_TEXT_DOMAIN ),
-			'all_items'                  => __( 'All Price Scales', FAKTURO_TEXT_DOMAIN ),
+			'name'                       => _x( 'Sale Points', 'Sale Points', FAKTURO_TEXT_DOMAIN ),
+			'singular_name'              => _x( 'Sale Point', 'Sale Point', FAKTURO_TEXT_DOMAIN ),
+			'search_items'               => __( 'Search Sale Points', FAKTURO_TEXT_DOMAIN ),
+			'popular_items'              => __( 'Popular Sale Points', FAKTURO_TEXT_DOMAIN ),
+			'all_items'                  => __( 'All Sale Points', FAKTURO_TEXT_DOMAIN ),
 			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
 			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Price Scale', FAKTURO_TEXT_DOMAIN ),
-			'update_item'                => __( 'Update Price Scale', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item'               => __( 'Add New Price Scale', FAKTURO_TEXT_DOMAIN ),
-			'new_item_name'              => __( 'New Price Scale Name', FAKTURO_TEXT_DOMAIN ),
-			'separate_items_with_commas' => __( 'Separate Price Scale with commas', FAKTURO_TEXT_DOMAIN ),
-			'add_or_remove_items'        => __( 'Add or remove Price Scales', FAKTURO_TEXT_DOMAIN ),
-			'choose_from_most_used'      => __( 'Choose from the most used Price Scales', FAKTURO_TEXT_DOMAIN ),
-			'not_found'                  => __( 'No Price Scales found.', FAKTURO_TEXT_DOMAIN ),
-			'menu_name'                  => __( 'Price Scales', FAKTURO_TEXT_DOMAIN ),
+			'edit_item'                  => __( 'Edit Sale Point', FAKTURO_TEXT_DOMAIN ),
+			'update_item'                => __( 'Update Sale Point', FAKTURO_TEXT_DOMAIN ),
+			'add_new_item'               => __( 'Add New Sale Point', FAKTURO_TEXT_DOMAIN ),
+			'new_item_name'              => __( 'New Sale Point Name', FAKTURO_TEXT_DOMAIN ),
+			'separate_items_with_commas' => __( 'Separate Sale Point with commas', FAKTURO_TEXT_DOMAIN ),
+			'add_or_remove_items'        => __( 'Add or remove Sale Points', FAKTURO_TEXT_DOMAIN ),
+			'choose_from_most_used'      => __( 'Choose from the most used Sale Points', FAKTURO_TEXT_DOMAIN ),
+			'not_found'                  => __( 'No Sale Points found.', FAKTURO_TEXT_DOMAIN ),
+			'menu_name'                  => __( 'Sale Points', FAKTURO_TEXT_DOMAIN ),
 		);
 
 		$args = array(
@@ -58,7 +58,7 @@ class fktr_tax_price_scales {
 			'show_ui'               => true,
 			'show_admin_column'     => true,
 			'query_var'             => true,
-			'rewrite'               => array( 'slug' => 'fktr-price-scales' ),
+			'rewrite'               => array( 'slug' => 'fktr-sale-points' ),
 			'capabilities' => array(
 				'manage_terms' => 'manage_'.self::$tax_name,
 				'edit_terms' => 'edit_'.self::$tax_name,
@@ -75,7 +75,7 @@ class fktr_tax_price_scales {
 	// highlight the proper top level menu
 	static function tax_menu_correction($parent_file) {
 		global $current_screen;
-		if ($current_screen->id == 'edit-fktr_price_scales') {
+		if ($current_screen->id == 'edit-fktr_sale_points') {
 			$parent_file = 'fakturo_dashboard';
 		}
 		return $parent_file;
@@ -84,7 +84,7 @@ class fktr_tax_price_scales {
 	// highlight the proper sub level menu
 	static function tax_submenu_correction($submenu_file) {
 		global $current_screen;
-		if ($current_screen->id == 'edit-fktr_price_scales') {
+		if ($current_screen->id == 'edit-fktr_sale_points') {
 			$submenu_file = 'fakturo-settings';
 		}
 		return $submenu_file;
@@ -93,25 +93,22 @@ class fktr_tax_price_scales {
 	public static function scripts() {
 		if (isset($_GET['taxonomy']) && $_GET['taxonomy'] == self::$tax_name) {
 			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			wp_enqueue_script( 'taxonomy-price-scales', FAKTURO_PLUGIN_URL . 'assets/js/taxonomy-price-scales.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			$setting_system = get_option('fakturo_system_options_group', false);
-			wp_localize_script('taxonomy-price-scales', 'system_setting',
-				array('thousand' => $setting_system['thousand'],
-					'decimal' => $setting_system['decimal'],
-					'decimal_numbers' => $setting_system['decimal_numbers'],
-				));
+			wp_enqueue_script( 'taxonomy-price-scales', FAKTURO_PLUGIN_URL . 'assets/js/taxonomy-sale-points.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			
 		}
 		
 		
 	}
 	public static function add_form_fields() {
+		$extraHtml = apply_filters('fktr_extra_html_add_form_'.self::$tax_name, '');
 		$echoHtml = '
 		<style type="text/css">.form-field.term-parent-wrap,.form-field.term-slug-wrap, .form-field label[for="parent"], .form-field #parent {display: none;}  .form-field.term-description-wrap { display:none;} .inline.hide-if-no-js{ display:none;} .view{ display:none;}</style>
-		<div class="form-field" id="rate_div">
-			<label for="term_meta[percentage]">'.__( 'Percentage', FAKTURO_TEXT_DOMAIN ).'</label>
-			<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[percentage]" id="term_meta_percentage" value="0"/>%
-			<p class="description">'.__( 'Enter a percentage', FAKTURO_TEXT_DOMAIN ).'</p>
+		<div class="form-field" id="code_div">
+			<label for="term_meta[code]">'.__( 'Code', FAKTURO_TEXT_DOMAIN ).'</label>
+			<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="4" type="text" name="term_meta[code]" id="term_meta_code" value=""/>
+			<p class="description">'.__( 'Enter a code', FAKTURO_TEXT_DOMAIN ).'</p>
 		</div>
+		'.$extraHtml.'
 		';
 		echo $echoHtml;
 	}
@@ -119,16 +116,17 @@ class fktr_tax_price_scales {
 	
 
 		$term_meta = get_fakturo_term($term->term_id, self::$tax_name);
-	
+		$extraHtml = apply_filters('fktr_extra_html_edit_form_'.self::$tax_name, '');
 		$echoHtml = '<style type="text/css">.form-field.term-parent-wrap, .form-field.term-slug-wrap {display: none;} .form-field.term-description-wrap { display:none;}  </style>
 		<tr class="form-field">
 			<th scope="row" valign="top">
-				<label for="term_meta[percentage]">'.__( 'Percentage', FAKTURO_TEXT_DOMAIN ).'</label>
+				<label for="term_meta[code]">'.__( 'Code', FAKTURO_TEXT_DOMAIN ).'</label>
 			</th>
 			<td>
-				<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[percentage]" id="term_meta_percentage" value="'.$term_meta->percentage.'"/>%
-				<p class="description">'.__( 'Enter a percentage', FAKTURO_TEXT_DOMAIN ).'</p>
+				<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="4" type="text" name="term_meta[code]" id="term_meta_code" value="'.$term_meta->code.'"/>
+				<p class="description">'.__( 'Enter a code', FAKTURO_TEXT_DOMAIN ).'</p>
 			</td>
+			'.$extraHtml.'
 		</tr>
 		';
 		echo $echoHtml;
@@ -138,7 +136,7 @@ class fktr_tax_price_scales {
 		$new_columns = array(
 			'cb' => '<input type="checkbox" />',
 			'name' => __('Name', FAKTURO_TEXT_DOMAIN),
-			'percentage' => __('Percentage', FAKTURO_TEXT_DOMAIN),
+			'code' => __('Code', FAKTURO_TEXT_DOMAIN),
 		);
 		return $new_columns;
 	}
@@ -147,10 +145,10 @@ class fktr_tax_price_scales {
 		$term = get_fakturo_term($term_id, self::$tax_name);
 		
 		switch ($column_name) {
-			case 'percentage': 
-				$setting_system = get_option('fakturo_system_options_group', false);
-				$percentage = number_format($term->percentage, 2, $setting_system['decimal'], $setting_system['thousand']);
-				$out = esc_attr($percentage).'%';
+			case 'code': 
+				
+				$code = str_pad($term->code, 4, '0', STR_PAD_LEFT);
+				$out = esc_attr($code);
 				break;
 
 			default:
@@ -159,10 +157,7 @@ class fktr_tax_price_scales {
 		return $out;    
 	}
 	public static function before_save($fields)  {
-		if (isset($fields['percentage'])) {
-			$fields['percentage'] = fakturo_mask_to_float($fields['percentage']);
-			
-		}
+		
 		return $fields;
 	}
 	public static function save_fields($term_id, $tt_id) {
@@ -175,6 +170,6 @@ class fktr_tax_price_scales {
 }
 endif;
 
-$fktr_tax_price_scales = new fktr_tax_price_scales();
+$fktr_tax_sale_points = new fktr_tax_sale_points();
 
 ?>

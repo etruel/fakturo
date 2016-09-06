@@ -77,3 +77,6 @@ label {
     padding: 4px;
     font-size: 16px;
 }
+#misc-publishing-actions {
+	display:none;
+}
