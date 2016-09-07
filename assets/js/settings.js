@@ -1,7 +1,15 @@
 jQuery(document).ready(function() {
 	
 	jQuery('#fakturo_info_options_group_tax_condition').select2();
-	
+	jQuery('#fakturo_system_options_group_list_invoice_number').select2();
+	jQuery('#fakturo_system_options_group_list_invoice_number').on("select2:select", function (evt) {
+		var element = evt.params.data.element;
+		var jelement = jQuery(element);
+
+		jelement.detach();
+		jQuery(this).append(jelement);
+		jQuery(this).trigger("change");
+	});
 	jQuery('#fakturo_system_options_group_currency').select2();
 	jQuery('#fakturo_system_options_group_invoice_type').select2();
 	jQuery('#fakturo_system_options_group_price_scale').select2();

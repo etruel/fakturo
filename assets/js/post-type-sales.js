@@ -179,11 +179,28 @@ jQuery(document).ready(function() {
   
 });
 function updateTitle() {
-	var sale_point = getCurrentSalePoint();
-	if (sale_point) {
-		jQuery("#title").val(padLeft(sale_point.code, 4)+'-'+padLeft(jQuery('#invoice_number').val(), 8));
-	}
 	
+	var newVal = '';
+	var sale_point = getCurrentSalePoint();
+	var add_separator = true;
+	for (var i = 0; i < sales_object.list_invoice_number.length; i++) {
+		
+		if ((i+1) == sales_object.list_invoice_number.length) {
+			add_separator = false;
+		}
+		if (sales_object.list_invoice_number[i] == 'sale_point') {
+			if (sale_point) {
+				newVal = newVal+padLeft(sale_point.code, 4)+(add_separator?sales_object.list_invoice_number_separator:'');
+			}
+		}
+		if (sales_object.list_invoice_number[i] == 'invoice_number') {
+			if (sale_point) {
+				newVal = newVal+padLeft(jQuery('#invoice_number').val(), 8)+(add_separator?sales_object.list_invoice_number_separator:'');
+			}
+		}
+	}
+
+	jQuery("#title").val(newVal);
 }
 function getCurrentSalePoint() {
 	var r = false;

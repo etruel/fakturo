@@ -323,6 +323,10 @@ class fktrPostTypeSales {
 					'currency_position' => $setting_system['currency_position'],
 					'default_currency' => $setting_system['currency'],
 					'default_code' => $setting_system['default_code'],
+					'list_invoice_number' => $setting_system['list_invoice_number'],
+					'list_invoice_number_separator' => apply_filters('fktr_invoice_number_separator', $setting_system['list_invoice_number_separator']),
+					
+					
 					'post_status' => $post->post_status,
 					'product_data' => $product_data,
 					'datetimepicker' => $objectL10n,

@@ -96,6 +96,8 @@ class fktrSettings {
 			$value_system['use_stock_product'] = 0;
 			$value_system['sale_point'] = 0;
 			$value_system['format_invoice_number'] = '';
+			$value_system['list_invoice_number'] = array('sale_point', 'invoice_number');
+			$value_system['list_invoice_number_separator'] = ' ';
 			$value_system['search_code'] = array('reference');
 			$value_system['default_code'] = 'reference';
 			$value_system['default_description'] = 'short_description';
@@ -257,6 +259,13 @@ class fktrSettings {
 		if (empty($options['format_invoice_number'])) {
 			$options['format_invoice_number'] = '';
 		}
+		if (empty($options['list_invoice_number'])) {
+			$options['list_invoice_number'] = array('sale_point', 'invoice_number');
+		}
+		if (!isset($options['list_invoice_number_separator'])) {
+			$options['list_invoice_number_separator'] = ' ';
+		}
+		
 		if (empty($options['format_number_receipt'])) {
 			$options['format_number_receipt'] = '';
 		}
@@ -288,7 +297,7 @@ class fktrSettings {
 										'selected'           => $options['sale_point'],
 										'hierarchical'       => 1, 
 										'name'               => 'fakturo_system_options_group[sale_point]',
-										'id'               => 'fakturo_system_options_group_sale_point',
+										'id'                 => 'fakturo_system_options_group_sale_point',
 										'class'              => 'form-no-clear',
 										'depth'              => 1,
 										'tab_index'          => 0,
@@ -411,6 +420,20 @@ class fktrSettings {
 		}
 		$echoSelectDefaultDate .= '</select>';		
 		
+		$selectListInvoiceNumber = array();
+		$selectListInvoiceNumber['sale_point'] = __( 'Sale point', FAKTURO_TEXT_DOMAIN );
+		$selectListInvoiceNumber['invoice_number'] = __('Invoice number', FAKTURO_TEXT_DOMAIN );
+		$selectListInvoiceNumber = apply_filters('fktr_list_invoice_number_array', $selectListInvoiceNumber);
+		
+		//echo print_r($options['search_code'], true);
+		//
+		$echoSelectListInvoiceNumber = '<select id="fakturo_system_options_group_list_invoice_number" name="fakturo_system_options_group[list_invoice_number][]" multiple="multiple" style="width:150px;">';
+		foreach ($selectListInvoiceNumber as $key => $txt) {
+			$echoSelectListInvoiceNumber .= '<option value="'.$key.'"'.selected($key, (array_search($key, $options['list_invoice_number'])!==false) ? $key : '' , false).'>'.$txt.'</option>';
+		}
+		$echoSelectListInvoiceNumber .= '</select>';			
+		 
+	
 									
 		echo '
 		<div id="tab_container">
@@ -530,6 +553,17 @@ class fktrSettings {
 							</td>
 						</td>
 					  </tr>
+					  <tr>
+							<th>'. __( 'Format invoice numbers in lists and reports', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+									'.$echoSelectListInvoiceNumber.'
+									<label for="fakturo_system_position">
+										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
+									</label>
+							</td>
+						</td>
+					  </tr>
+					  
 					  <tr>
 							<th>'. __( 'Format of number of receipt', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
