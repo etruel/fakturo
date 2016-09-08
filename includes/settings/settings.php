@@ -95,7 +95,7 @@ class fktrSettings {
 			$value_system['price_scale'] = -1;
 			$value_system['use_stock_product'] = 0;
 			$value_system['sale_point'] = 0;
-			$value_system['format_invoice_number'] = '';
+			$value_system['digits_invoice_number'] = 8;
 			$value_system['list_invoice_number'] = array('sale_point', 'invoice_number');
 			$value_system['list_invoice_number_separator'] = ' ';
 			$value_system['search_code'] = array('reference');
@@ -256,8 +256,8 @@ class fktrSettings {
 		if (!isset($options['sale_point'])) {
 			$options['sale_point'] = 0;
 		}
-		if (empty($options['format_invoice_number'])) {
-			$options['format_invoice_number'] = '';
+		if (empty($options['digits_invoice_number'])) {
+			$options['digits_invoice_number'] = 8;
 		}
 		if (empty($options['list_invoice_number'])) {
 			$options['list_invoice_number'] = array('sale_point', 'invoice_number');
@@ -423,6 +423,10 @@ class fktrSettings {
 		$selectListInvoiceNumber = array();
 		$selectListInvoiceNumber['sale_point'] = __( 'Sale point', FAKTURO_TEXT_DOMAIN );
 		$selectListInvoiceNumber['invoice_number'] = __('Invoice number', FAKTURO_TEXT_DOMAIN );
+		$selectListInvoiceNumber['invoice_type_name'] = __('Invoice Type name', FAKTURO_TEXT_DOMAIN );
+		$selectListInvoiceNumber['invoice_type_short_name'] = __('Invoice Type Short-name', FAKTURO_TEXT_DOMAIN );
+		$selectListInvoiceNumber['invoice_type_symbol'] = __('Invoice Type symbol', FAKTURO_TEXT_DOMAIN );
+		
 		$selectListInvoiceNumber = apply_filters('fktr_list_invoice_number_array', $selectListInvoiceNumber);
 		
 		//echo print_r($options['search_code'], true);
@@ -543,11 +547,11 @@ class fktrSettings {
 						</td>
 					  </tr>
 					   <tr>
-							<th>'. __( 'Format of invoice number', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Number of digits of the invoice number', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
-								<input id="fakturo_system_options_group_format_invoice_number" name="fakturo_system_options_group[format_invoice_number]" type="text" value="'.$options['format_invoice_number'].'">
-								<label for="fakturo_system_format_invoice_number">
-									'. __( 'Choose the default Format of invoice number used in the system', FAKTURO_TEXT_DOMAIN ) .'           
+								<input id="fakturo_system_options_group_digits_invoice_number" name="fakturo_system_options_group[digits_invoice_number]" type="number" maxlength="2" min=2 max=20 value="'.$options['digits_invoice_number'].'">
+								<label for="fakturo_system_digits_invoice_number">
+									'. __( 'Choose the default number of digits of the invoice number.', FAKTURO_TEXT_DOMAIN ) .'           
 								</label>
 					
 							</td>

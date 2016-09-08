@@ -27,12 +27,12 @@ class fktr_tax_nvoice_types {
 		
 		add_action('admin_enqueue_scripts', array(__CLASS__, 'scripts'), 10, 1);
 
-		add_filter( 'redirect_term_location', array(__CLASS__, 'redirect_term_location'), 0,2);
+		add_filter('redirect_term_location', array(__CLASS__, 'redirect_term_location'), 0, 2);
 	}
 	
 	static function redirect_term_location($location, $tax ){
 		if($tax->name == self::$tax_name){
-			$location = (isset($location) && !empty($location) ) ? $location : admin_url('edit-tags.php?taxonomy='.self::$tax_name);
+			$location = admin_url('edit-tags.php?taxonomy='.self::$tax_name);
 		}
 		return $location;
 	}

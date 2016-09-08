@@ -16,9 +16,15 @@ jQuery(document).ready(function() {
 	});
 	loadProductData();
 	updateKeyPress();
-	
-	
-	
+	var numbers_ex = '';
+	for (var i = 0; i < sales_object.digits_invoice_number; i++) {
+		numbers_ex = numbers_ex+'0';
+	}
+	jQuery('#invoice_number').val(numbers_ex);
+	jQuery('#invoice_number').mask(numbers_ex, {reverse: true});
+	jQuery('#invoice_number').keyup(function(e){
+		jQuery(this).val(padLeft(jQuery('#invoice_number').val(), sales_object.digits_invoice_number))
+	});
 	jQuery.datetimepicker.setLocale(sales_object.datetimepicker.lang);
 	
 	jQuery('#date').datetimepicker({
@@ -178,10 +184,14 @@ jQuery(document).ready(function() {
 	updateProductsDatails();
   
 });
+var addNewDataToTitle = function(val) {
+	return val;
+}
 function updateTitle() {
 	
 	var newVal = '';
 	var sale_point = getCurrentSalePoint();
+	var invoice_type =getCurrentInvoiceType();
 	var add_separator = true;
 	for (var i = 0; i < sales_object.list_invoice_number.length; i++) {
 		
@@ -193,13 +203,26 @@ function updateTitle() {
 				newVal = newVal+padLeft(sale_point.code, 4)+(add_separator?sales_object.list_invoice_number_separator:'');
 			}
 		}
-		if (sales_object.list_invoice_number[i] == 'invoice_number') {
-			if (sale_point) {
-				newVal = newVal+padLeft(jQuery('#invoice_number').val(), 8)+(add_separator?sales_object.list_invoice_number_separator:'');
+		if (sales_object.list_invoice_number[i] == 'invoice_type_name') {
+			if (invoice_type) {
+				newVal = newVal+invoice_type.name+(add_separator?sales_object.list_invoice_number_separator:'');
 			}
 		}
+		if (sales_object.list_invoice_number[i] == 'invoice_type_short_name') {
+			if (invoice_type) {
+				newVal = newVal+invoice_type.short_name+(add_separator?sales_object.list_invoice_number_separator:'');
+			}
+		}
+		if (sales_object.list_invoice_number[i] == 'invoice_type_symbol') {
+			if (invoice_type) {
+				newVal = newVal+invoice_type.symbol+(add_separator?sales_object.list_invoice_number_separator:'');
+			}
+		}
+		if (sales_object.list_invoice_number[i] == 'invoice_number') {
+			newVal = newVal+padLeft(jQuery('#invoice_number').val(), sales_object.digits_invoice_number)+(add_separator?sales_object.list_invoice_number_separator:'');
+		}
 	}
-
+	newVal = addNewDataToTitle(newVal);
 	jQuery("#title").val(newVal);
 }
 function getCurrentSalePoint() {

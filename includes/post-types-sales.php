@@ -323,6 +323,7 @@ class fktrPostTypeSales {
 					'currency_position' => $setting_system['currency_position'],
 					'default_currency' => $setting_system['currency'],
 					'default_code' => $setting_system['default_code'],
+					'digits_invoice_number' => $setting_system['digits_invoice_number'],
 					'list_invoice_number' => $setting_system['list_invoice_number'],
 					'list_invoice_number_separator' => apply_filters('fktr_invoice_number_separator', $setting_system['list_invoice_number_separator']),
 					
@@ -827,7 +828,7 @@ class fktrPostTypeSales {
 										<tr>
 											<th><label for="invoice_number">'.__('Invoice Number', FAKTURO_TEXT_DOMAIN ).'</label></th>
 											<td>
-												'.(($post->post_status != 'publish')?'<input type="text" name="invoice_number" id="invoice_number" maxlength="8" value="'.$sale_data['invoice_number'].'"/>':$sale_data['invoice_number']).'
+												'.(($post->post_status != 'publish')?'<input type="text" name="invoice_number" id="invoice_number" value="'.$sale_data['invoice_number'].'"/>':$sale_data['invoice_number']).'
 											</td>		
 										</tr>
 										

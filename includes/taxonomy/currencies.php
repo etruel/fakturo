@@ -24,6 +24,13 @@ class fktr_tax_currency {
 		add_filter('manage_fktr_currencies_custom_column',  array('fktr_tax_currency', 'theme_columns'), 10, 3);
 		add_action('admin_enqueue_scripts', array('fktr_tax_currency', 'scripts'), 10, 1);
 		add_filter('before_save_tax_fktr_currencies', array(__CLASS__, 'before_save'), 10, 1);
+		add_filter('redirect_term_location', array(__CLASS__, 'redirect_term_location'), 0, 2);
+	}
+	static function redirect_term_location($location, $tax ){
+		if($tax->name == 'fktr_currencies'){
+			$location = admin_url('edit-tags.php?taxonomy=fktr_currencies');
+		}
+		return $location;
 	}
 	public static function init() {
 		
