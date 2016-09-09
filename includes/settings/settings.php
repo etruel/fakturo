@@ -98,6 +98,8 @@ class fktrSettings {
 			$value_system['digits_invoice_number'] = 8;
 			$value_system['list_invoice_number'] = array('sale_point', 'invoice_number');
 			$value_system['list_invoice_number_separator'] = ' ';
+			$value_system['individual_numeration_by_invoice_type'] = 1;
+			$value_system['individual_numeration_by_sale_point'] = 1;
 			$value_system['search_code'] = array('reference');
 			$value_system['default_code'] = 'reference';
 			$value_system['default_description'] = 'short_description';
@@ -264,6 +266,12 @@ class fktrSettings {
 		}
 		if (!isset($options['list_invoice_number_separator'])) {
 			$options['list_invoice_number_separator'] = ' ';
+		}
+		if (!isset($options['individual_numeration_by_invoice_type'])) {
+			$options['individual_numeration_by_invoice_type'] = 0;
+		}
+		if (!isset($options['individual_numeration_by_sale_point'])) {
+			$options['individual_numeration_by_sale_point'] = 0;
 		}
 		
 		if (empty($options['format_number_receipt'])) {
@@ -567,7 +575,24 @@ class fktrSettings {
 							</td>
 						</td>
 					  </tr>
-					  
+					   <tr>
+							<th>'. __( 'Individual numeration by Invoice Type', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+								<input id="fakturo_system_options_group_individual_numeration_by_invoice_type" class="slidercheck" type="checkbox" name="fakturo_system_options_group[individual_numeration_by_invoice_type]" value="1" '.(($options['individual_numeration_by_invoice_type'])?'checked="checked"':'').'>
+								<label for="fakturo_system_options_group_individual_numeration_by_invoice_type"><span class="ui"></span>'. __( 'Activate for use individual numeration by Invoice Type', FAKTURO_TEXT_DOMAIN ).'	</label>
+							
+							</td>
+						</td>
+					  </tr>
+					   <tr>
+							<th>'. __( 'Individual numeration by Sale Point', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+								<input id="fakturo_system_options_group_individual_numeration_by_sale_point" class="slidercheck" type="checkbox" name="fakturo_system_options_group[individual_numeration_by_sale_point]" value="1" '.(($options['individual_numeration_by_sale_point'])?'checked="checked"':'').'>
+								<label for="fakturo_system_options_group_individual_numeration_by_sale_point"><span class="ui"></span>'. __( 'Activate for use individual numeration by Sale Point ', FAKTURO_TEXT_DOMAIN ).'	</label>
+							
+							</td>
+						</td>
+					  </tr>
 					  <tr>
 							<th>'. __( 'Format of number of receipt', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">

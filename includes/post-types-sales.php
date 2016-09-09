@@ -30,6 +30,11 @@ class fktrPostTypeSales {
 		
 		add_action('wp_ajax_get_client_data', array('fktrPostTypeSales', 'get_client_data'));
 		add_action('wp_ajax_get_products', array('fktrPostTypeSales', 'get_products'));
+		add_action('wp_ajax_get_suggest_invoice_number', array('fktrPostTypeSales', 'get_suggest_invoice_number'));
+		add_action('wp_ajax_validate_sale', array('fktrPostTypeSales', 'ajax_validate_sale'));
+		
+		
+		
 		
 		add_filter('fktr_text_code_product_reference', array('fktrPostTypeSales', 'text_code_product_reference'), 10, 1);
 		add_filter('fktr_text_code_product_internal_code', array('fktrPostTypeSales', 'text_code_product_internal_code'), 10, 1);
@@ -714,7 +719,7 @@ class fktrPostTypeSales {
 		}
 		
 		$date = strtotime($sale_data['date']);
-		
+		$sale_data['invoice_number'] = (($post->post_status != 'publish')? str_pad(self::suggestInvoiceNumber($sale_data['sale_point'], $sale_data['invoice_type']), $setting_system['digits_invoice_number'], '0', STR_PAD_LEFT) : $sale_data['invoice_number'] );
 		$echoHtml = '<table>
 					<tbody>
 						<tr>
@@ -946,7 +951,187 @@ class fktrPostTypeSales {
 		 }
 
 	}
+	public static function ajax_validate_sale() {
+		$response = new WP_Ajax_Response;
+		$fields = array();
+		parse_str($_POST['inputs'], $fields);
+		$fields = apply_filters('fktr_clean_sale_fields',$fields);
+		$invoiceNumberExiste = self::exist_a_invoice_number($fields['invoice_number'], $fields['sale_point'], $fields['invoice_type']);
+		if ($invoiceNumberExiste) {
+			$response->add( array(
+				'data'	=> 'error',
+				'supplemental' => array(
+					'message' => __('This invoice number is already in use.', FAKTURO_TEXT_DOMAIN ),
+					'inputSelector' => '#invoice_number',
+					'function' => 'updateSuggestInvoiceNumber',
+				),
+			)); 
+			$response->send();
+		}
+		do_action('fktr_validate_sale', $fields);
+		
+		$response->add( array(
+				'data'	=> 'success',
+				'supplemental' => array(
+					'message' => '',
+					'inputSelector' => '',
+					'function' => '',
+				),
+			)); 
+		$response->send();
+		wp_die();
+	}
+	public static function exist_a_invoice_number($invoice_number, $sale_point, $invoice_type) {
+		global $wpdb;
+		$return = false;
+		$setting_system = get_option('fakturo_system_options_group', false);
+		if ($setting_system['individual_numeration_by_invoice_type'] && $setting_system['individual_numeration_by_sale_point']) {
+			$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as invoice_number, sale.meta_value as sale_point, invoicet.meta_value as invoice_type FROM {$wpdb->posts} as p
+				 LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
+                 LEFT JOIN {$wpdb->postmeta} as sale ON p.ID = pm.post_id
+                 LEFT JOIN {$wpdb->postmeta} as invoicet ON p.ID = pm.post_id
+                 WHERE 
+                 pm.meta_key = 'invoice_number'
+				 AND p.post_status = 'publish'
+				 AND p.post_type = 'fktr_sale'
+                 AND sale.meta_key = 'sale_point'
+                 AND invoicet.meta_key = 'invoice_type'
+				 AND pm.meta_value = '%s'
+                 AND sale.meta_value = '%s'
+				 AND invoicet.meta_value = '%s'
+                 GROUP BY p.ID 
+				 LIMIT 1
+			 ", $invoice_number, $sale_point, $invoice_type);
+		} else if ($setting_system['individual_numeration_by_sale_point']) {
+			$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as invoice_number, sale.meta_value as sale_point FROM {$wpdb->posts} as p
+				 LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
+                 LEFT JOIN {$wpdb->postmeta} as sale ON p.ID = pm.post_id
+                 WHERE 
+                 pm.meta_key = 'invoice_number'
+				 AND p.post_status = 'publish'
+				 AND p.post_type = 'fktr_sale'
+                 AND sale.meta_key = 'sale_point'
+				 AND pm.meta_value = '%s'
+                 AND sale.meta_value = '%s'
+                 GROUP BY p.ID 
+				 LIMIT 1
+			 ", $invoice_number, $sale_point);
+		} else if ($setting_system['individual_numeration_by_invoice_type']) {
+			$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as invoice_number, invoicet.meta_value as invoice_type FROM {$wpdb->posts} as p
+				 LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
+                 LEFT JOIN {$wpdb->postmeta} as invoicet ON p.ID = pm.post_id
+                 WHERE 
+                 pm.meta_key = 'invoice_number'
+				 AND p.post_status = 'publish'
+				 AND p.post_type = 'fktr_sale'
+                 AND invoicet.meta_key = 'invoice_type'
+				 AND pm.meta_value = '%s'
+				 AND invoicet.meta_value = '%s'
+                 GROUP BY p.ID 
+				 LIMIT 1
+			 ", $invoice_number, $invoice_type);
+		} else {
+			$sql = sprintf("SELECT pm.meta_value FROM {$wpdb->postmeta} pm
+				 LEFT JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+				 WHERE pm.meta_key = 'invoice_number'
+				 AND pm.meta_value = '%s'
+				 AND p.post_status = 'publish'
+				 AND p.post_type = 'fktr_sale'
+				 LIMIT 1
+			 ", $invoice_number);
+		}
+		
+		$r = $wpdb->get_results($sql);
+		if (!empty($r)) {
+			$return = true;
+		}
+		return $return;
+    }
 
+	public static function get_suggest_invoice_number() {
+		$setting_system = get_option('fakturo_system_options_group', false);
+		if (!isset($_POST['sale_point'])) {
+			$_POST['sale_point'] = $setting_system['sale_point'];
+		}
+		if (!isset($_POST['invoice_type'])) {
+			$_POST['invoice_type'] = $setting_system['invoice_type'];;
+		}
+		$suggested = self::suggestInvoiceNumber($_POST['sale_point'], $_POST['invoice_type']);
+		wp_die($suggested);
+	}
+	public static function suggestInvoiceNumber($sale_point = 0, $invoice_type = 0) {
+		$retorno = 0;
+		if ($sale_point < 0 ) {
+			$sale_point = 0;
+		}
+		if ($invoice_type < 0 ) {
+			$invoice_type = 0;
+		}
+		
+		$setting_system = get_option('fakturo_system_options_group', false);
+		$last_invoice_numbers = get_option('last_invoice_number', false);
+		if (!$last_invoice_numbers) {
+			$last_invoice_numbers = array();
+			$last_invoice_numbers[0] = array();
+			update_option('last_invoice_number', $last_invoice_numbers);
+		}
+		$keySale = 0;
+		$keyInvNum = 0;
+		if ($setting_system['individual_numeration_by_invoice_type'] && $setting_system['individual_numeration_by_sale_point']) {
+			$keySale = $sale_point;
+			$keyInvNum = $invoice_type;
+		}  else if ($setting_system['individual_numeration_by_sale_point']) {
+			$keySale = $sale_point;
+		} else if ($setting_system['individual_numeration_by_invoice_type']) {
+			$keyInvNum = $invoice_type;
+		}
+		
+		// 0 - 0 is the invoice number general
+		if (!empty($last_invoice_numbers[$keySale][$keyInvNum])) {
+			$retorno = $last_invoice_numbers[$keySale][$keyInvNum];
+		}
+		$retorno = $retorno+1;
+		return $retorno;
+	} 
+	public static function updateSuggestInvoiceNumber($sale_point = 0, $invoice_type = 0, $invoice_number = 0) {
+		
+		if ($sale_point < 0 ) {
+			$sale_point = 0;
+		}
+		if ($invoice_type < 0 ) {
+			$invoice_type = 0;
+		}
+		$setting_system = get_option('fakturo_system_options_group', false);
+		$last_invoice_numbers = get_option('last_invoice_number', false);
+		if (!$last_invoice_numbers) {
+			$last_invoice_numbers = array();
+			$last_invoice_numbers[0] = array();
+		}
+		$keySale = 0;
+		$keyInvNum = 0;
+		if ($setting_system['individual_numeration_by_invoice_type'] && $setting_system['individual_numeration_by_sale_point']) {
+			$keySale = $sale_point;
+			$keyInvNum = $invoice_type;
+		}  else if ($setting_system['individual_numeration_by_sale_point']) {
+			$keySale = $sale_point;
+		} else if ($setting_system['individual_numeration_by_invoice_type']) {
+			$keyInvNum = $invoice_type;
+		}
+		
+		if (empty($last_invoice_numbers[$keySale])) {
+			$last_invoice_numbers[$keySale] = array();
+		}
+		if (empty($last_invoice_numbers[$keySale][$keyInvNum])) {
+			$last_invoice_numbers[$keySale][$keyInvNum] = $invoice_number;
+		} else {
+			if ($last_invoice_numbers[$keySale][$keyInvNum] < $invoice_number) {
+				$last_invoice_numbers[$keySale][$keyInvNum] = $invoice_number;
+			}
+		}
+				
+		update_option('last_invoice_number', $last_invoice_numbers);
+		
+	}
 	public static function clean_fields($fields) {
 		$setting_system = get_option('fakturo_system_options_group', false);
 		if (!isset($fields['client_id'])) {
@@ -978,7 +1163,7 @@ class fktrPostTypeSales {
 		}
 		
 		if (!isset($fields['invoice_type'])) {
-			$fields['invoice_type'] = 0;
+			$fields['invoice_type'] = $setting_system['invoice_type'];
 		}
 		if (!isset($fields['sale_point'])) {
 			$fields['sale_point'] = $setting_system['sale_point'];
@@ -988,7 +1173,6 @@ class fktrPostTypeSales {
 			$fields['invoice_number'] = '';
 		}
 		if (!isset($fields['date'])) {
-			//$fields['date'] = date('Y-m-d');
 			$fields['date'] = current_time('timestamp');
 		}
 		if (!isset($fields['invoice_currency'])) {
@@ -1040,7 +1224,7 @@ class fktrPostTypeSales {
 			$fields['client_data']['credit_limit'] = 0;
 			
 			
-			$fields['invoice_type'] = 0;
+			$fields['invoice_type'] = $setting_system['invoice_type'];
 			$fields['sale_point'] = $setting_system['sale_point'];
 			$fields['invoice_number'] = '';
 			$fields['date'] = current_time('timestamp');
@@ -1070,8 +1254,7 @@ class fktrPostTypeSales {
 		$client_data = array();
 		$client_data['client_data'] = json_decode(get_post_field('post_content', $sale_id), true);
 		$custom_field_keys = array_merge($custom_field_keys, $client_data);
-//		$custom_field_keys['date'] = get_post_field('post_date', $sale_id);
-	
+
 		$custom_field_keys = apply_filters('fktr_clean_sale_fields', $custom_field_keys );
 		return $custom_field_keys;
 	}
@@ -1088,7 +1271,7 @@ class fktrPostTypeSales {
 	
 	public static function save($post_id, $post) {
 		global $wpdb;
-		if ('publish' == $post->post_status) {
+		if (isset($_POST['original_post_status']) && $_POST['original_post_status'] == 'publish') {
 			return false;
 		}
 		if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ( defined( 'DOING_AJAX') && DOING_AJAX ) || isset( $_REQUEST['bulk_edit'] ) ) {
@@ -1102,12 +1285,15 @@ class fktrPostTypeSales {
 		if ( ! current_user_can( 'manage_options', $post_id ) ) {
 			return false;
 		}
+		
+	
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$fields = apply_filters('fktr_clean_sale_fields',$_POST);
 		$fields = apply_filters('fktr_sale_before_save',$fields);
+		
+		
 		if(isset($fields['date']) && is_string($fields['date'])) {
-//			$timestamp = DateTime::createFromFormat('!'.self::date_format_php_to_js( $setting_system['dateformat'] ), $fields['date'])->getTimestamp();
-//			$fields['date'] = date('Y-m-d H:i:s', $timestamp);
+
 			$fields['date'] = fakturo_date2time($fields['date'], $setting_system['dateformat'] );
 		}
 		
@@ -1132,6 +1318,10 @@ class fktrPostTypeSales {
 			}
 			
 		}
+		if ($post->post_status == 'publish') {
+		   self::updateSuggestInvoiceNumber($fields['sale_point'], $fields['invoice_type'], $fields['invoice_number']);
+		}
+		
 		do_action( 'fktr_save_sale', $post_id, $post );
 		
 	}

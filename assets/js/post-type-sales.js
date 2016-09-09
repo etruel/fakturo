@@ -20,7 +20,7 @@ jQuery(document).ready(function() {
 	for (var i = 0; i < sales_object.digits_invoice_number; i++) {
 		numbers_ex = numbers_ex+'0';
 	}
-	jQuery('#invoice_number').val(numbers_ex);
+	jQuery('#invoice_number').val(padLeft(jQuery('#invoice_number').val(), sales_object.digits_invoice_number));
 	jQuery('#invoice_number').mask(numbers_ex, {reverse: true});
 	jQuery('#invoice_number').keyup(function(e){
 		jQuery(this).val(padLeft(jQuery('#invoice_number').val(), sales_object.digits_invoice_number))
@@ -179,11 +179,65 @@ jQuery(document).ready(function() {
 	});
 	jQuery('#invoice_type').change(function(){
 		updateDiscriminatesTaxes();
+		updateSuggestInvoiceNumber();
+		updateTitle();
+	});
+	jQuery('#sale_point').change(function(){
+		updateSuggestInvoiceNumber();
+		updateTitle();
 	});
 	activate_search_products();
 	updateProductsDatails();
-  
+	
+	jQuery('#post').submit(function(e) {  
+   			
+   			jQuery.ajaxSetup({async:false});
+   			status = 'error';
+			message = '';
+			selector = '';
+			functionEx = '';
+			var data = {
+   				action: 'validate_sale',
+				inputs: jQuery("#post").serialize()
+   			};
+   			jQuery.post(sales_object.ajax_url, data, function(data){  //si todo ok devuelve 1 sino el error
+				status = jQuery(data).find('response_data').text();
+				message = jQuery(data).find('supplemental message').text();
+				selector = jQuery(data).find('supplemental inputSelector').text();
+				functionEx = jQuery(data).find('supplemental function').text();
+   				if(status == 'success'){
+					
+   				} else {
+					jQuery(selector).focus();
+					if (typeof window[functionEx] === 'function' && functionEx!=''){
+						formok = window[functionEx]();
+						e.preventDefault();
+					}
+   				}
+   			});
+			if(status == 'error') {
+				e.preventDefault();
+   				return false; 
+   			} else {
+   				return true; 
+   			}
+		});
+
 });
+function updateSuggestInvoiceNumber() {
+	var sale_point = getCurrentSalePoint();
+	var invoice_type = getCurrentInvoiceType();
+	var data = {
+				action: 'get_suggest_invoice_number',
+				sale_point: sale_point.term_id,
+				invoice_type: invoice_type.term_id,
+			}
+	
+	jQuery.post(sales_object.ajax_url, data, function(data) {
+		jQuery('#invoice_number').val(padLeft(data, sales_object.digits_invoice_number));
+	});
+	
+}
 var addNewDataToTitle = function(val) {
 	return val;
 }
@@ -191,7 +245,7 @@ function updateTitle() {
 	
 	var newVal = '';
 	var sale_point = getCurrentSalePoint();
-	var invoice_type =getCurrentInvoiceType();
+	var invoice_type = getCurrentInvoiceType();
 	var add_separator = true;
 	for (var i = 0; i < sales_object.list_invoice_number.length; i++) {
 		
