@@ -372,10 +372,10 @@ class fktrPostTypeProducts {
 			</tr>';
 		$total = 0;
 		foreach ($terms as $t) {
-			$total = $total+(isset($product_data['stocks'][$t->term_id])?$product_data['prices'][$t->term_id]:0);
+			$total = $total+(isset($product_data['stocks'][$t->term_id])?$product_data['stocks'][$t->term_id]:0);
 			$echoHtml .= '<tr>
 							<td>'.$t->name.': </td>
-							<td style="text-align: center;">'.(isset($product_data['stocks'][$t->term_id])?$product_data['prices'][$t->term_id]:'0').'</td>
+							<td style="text-align: center;">'.(isset($product_data['stocks'][$t->term_id])?$product_data['stocks'][$t->term_id]:'0').'</td>
 						</tr>';
 		}
 		$echoHtml .= '<tr>
@@ -595,7 +595,42 @@ class fktrPostTypeProducts {
 		
 	}
 	
-
+	public static function addStock($product_id, $quantity, $location_id) {
+		$product_data = self::get_product_data($product_id);
+		if (!isset($product_data['stocks'])) {
+			$product_data['stocks'] = array();
+		}
+		if (!is_array($product_data['stocks'])) {
+			$product_data['stocks'] = array();
+		}
+		$quantity_total = 0;
+		if (!empty($product_data['stocks'][$location_id])) {
+			$quantity_total = $product_data['stocks'][$location_id];
+		}
+		$quantity_total = $quantity_total+$quantity;
+		$product_data['stocks'][$location_id] = $quantity_total;
+		$newQuantity = apply_filters('fktr_product_metabox_save_stocks', $product_data['stocks']); 
+		update_post_meta($product_id, 'stocks', $newQuantity);
+		
+	}
+	public static function removeStock($product_id, $quantity, $location_id) {
+		$product_data = self::get_product_data($product_id);
+		if (!isset($product_data['stocks'])) {
+			$product_data['stocks'] = array();
+		}
+		if (!is_array($product_data['stocks'])) {
+			$product_data['stocks'] = array();
+		}
+		$quantity_total = 0;
+		if (!empty($product_data['stocks'][$location_id])) {
+			$quantity_total = $product_data['stocks'][$location_id];
+		}
+		$quantity_total = $quantity_total-$quantity;
+		$product_data['stocks'][$location_id] = $quantity_total;
+		$newQuantity = apply_filters('fktr_product_metabox_save_stocks', $product_data['stocks']); 
+		update_post_meta($product_id, 'stocks', $newQuantity);
+		
+	}
 	public static function clean_fields($fields) {
 		
 		if (!isset($fields['cost'])) {

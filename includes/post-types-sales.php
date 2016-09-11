@@ -319,6 +319,10 @@ class fktrPostTypeSales {
 							'taxonomy' => 'fktr_sale_points',
 							'hide_empty' => false,
 				));	
+			$locations = get_fakturo_terms(array(
+							'taxonomy' => 'fktr_locations',
+							'hide_empty' => false,
+				));	
 				
 			wp_localize_script('post-type-sales', 'sales_object',
 				array('ajax_url' => admin_url( 'admin-ajax.php' ),
@@ -331,6 +335,7 @@ class fktrPostTypeSales {
 					'digits_invoice_number' => $setting_system['digits_invoice_number'],
 					'list_invoice_number' => $setting_system['list_invoice_number'],
 					'list_invoice_number_separator' => apply_filters('fktr_invoice_number_separator', $setting_system['list_invoice_number_separator']),
+					'use_stock_product' => $setting_system['use_stock_product'],
 					
 					
 					'post_status' => $post->post_status,
@@ -346,12 +351,15 @@ class fktrPostTypeSales {
 					
 					'txt_cost' => __('Cost', FAKTURO_TEXT_DOMAIN ),
 					'txt_search_products' => __('Search products...', FAKTURO_TEXT_DOMAIN ),
+					'txt_total_quantity' => __('Total quantity', FAKTURO_TEXT_DOMAIN ),
+					'txt_remaining' => __('Remaining', FAKTURO_TEXT_DOMAIN ),
 					
 					'tax_coditions' => json_encode($tax_coditions),
 					'currencies' => json_encode($currencies),
 					'taxes' => json_encode($taxes),
 					'invoice_types' => json_encode($invoice_types),
 					'sale_points' => $sale_points,
+					'locations' => $locations,
 				));
 		
 		}
@@ -484,7 +492,7 @@ class fktrPostTypeSales {
 		
 		$textCodeForProduct = apply_filters('fktr_text_code_product_'.$setting_system['default_code'], '');
 		$textDescriptionForProduct = apply_filters('fktr_text_description_product_'.$setting_system['default_description'], '');
-		$echoHtml = '<table class="form-table">
+		$echoHtml = '<div id="product_stock_popup" style="display:none;"></div><table class="form-table">
 					<tbody>
 						<tr class="user-display-name-wrap">
 						<td>

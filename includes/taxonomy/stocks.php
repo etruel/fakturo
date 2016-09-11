@@ -360,7 +360,7 @@ class fktr_tax_stock {
 			$fields['date'] = str_replace('/', '-', $fields['date']);
 			$fields['date'] = date('Y-m-d', strtotime($fields['date']));
 		}
-		
+		fktrPostTypeProducts::addStock($fields['product'], $fields['quantity'], $fields['location']);
 		
 		return $fields;
 	}

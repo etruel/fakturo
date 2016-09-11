@@ -224,6 +224,127 @@ jQuery(document).ready(function() {
 		});
 
 });
+function updateStockProduct(identifier) {
+	var productId = jQuery('#id_'+identifier).val();
+	var current_product = product_data[productId];
+	for (var location_id in current_product.datacomplete.stocks) {
+		productLocation = getLocation(location_id);
+		if (productLocation) {
+
+			jQuery('#product_stock_'+identifier+'_'+location_id).val(jQuery('#product_stock_input_popup_'+location_id).val());
+		}
+	}
+}
+function updatePopUpStockRemaining() {
+	total_remaining = 0;
+	jQuery('.product_stock_input_popup').map(function() {
+		var count = 0;
+		if (jQuery(this).val() == '') {
+			count = 0;
+		} else {
+			count = parseInt(jQuery(this).val());
+		}
+		total_remaining = total_remaining+count;
+		
+	});
+	var remaining = parseInt(jQuery('#stock_quantity_total').html())-total_remaining;
+	if (remaining == 0) {
+		jQuery('#stock_remaining').removeClass('remaining_stock_red');
+		jQuery('#stock_remaining').addClass('remaining_stock_green');
+	} else {
+		jQuery('#stock_remaining').removeClass('remaining_stock_green');
+		jQuery('#stock_remaining').addClass('remaining_stock_red');
+	}
+		
+	jQuery('#stock_remaining').html(remaining);
+	
+}
+var first_time_focus = 0;
+var total_remaining = 0;
+function openPopPupStockProduct(identifier) {
+	var quantity_total = jQuery('#quality_'+identifier).val();
+	var productId = jQuery('#id_'+identifier).val();
+	var current_product = product_data[productId];
+	var productLocation = false; 
+	var length_stocks_locations = 0;
+	var first_location = 0;
+	var stocksHtml = '<table class="stock_table">';
+	for (var location_id in current_product.datacomplete.stocks) {
+		productLocation = getLocation(location_id);
+		if (productLocation) {
+			if (first_location == 0) {
+				first_location = location_id;
+			}
+			var valStock = jQuery('#product_stock_'+identifier+'_'+location_id).val();
+			length_stocks_locations++;
+			stocksHtml += '<tr><td class="stock_td_name">'+productLocation.name+' (max:'+current_product.datacomplete.stocks[location_id]+'): </td><td class="stock_td_input"><input type="text" name="product_stock_location_popup[]" value="'+valStock+'" id="product_stock_input_popup_'+location_id+'" class="product_stock_input_popup"/> </td></tr>';
+		}
+	}
+	stocksHtml += '</table>';
+	
+	if (length_stocks_locations<=1) {
+		jQuery('#unit_price_'+identifier).focus();
+		return false;
+	}
+	
+	var newHtml = '<div id="content_popup_stock"><div style="text-align:center">'+sales_object.txt_total_quantity+': <strong id="stock_quantity_total">'+quantity_total+'</strong></div><div style="text-align:center">'+sales_object.txt_remaining+': <strong id="stock_remaining" class="remaining_stock_red">'+quantity_total+'</strong></div>'+stocksHtml+'</div><div id="buttons_stock_popup"><a href="#" class="button" id="btn_cancel_stock_popup" style="margin:3px;">Cancelar</a></div>';
+	jQuery('#product_stock_popup').html(newHtml);
+	console.log('#product_stock_input_popup_'+first_location);
+	
+	jQuery('#product_stock_popup').fadeIn();
+	
+	jQuery('#product_stock_input_popup_'+first_location).focus();
+	jQuery('#btn_cancel_stock_popup').click(function(e){
+		first_time_focus = 0;
+		total_remaining = 0;
+		jQuery('#product_stock_popup').fadeOut();
+		e.preventDefault();
+		return false;
+	});
+	jQuery('form input').on('keypress', function(e) {
+		if (e.which == 13) {
+			e.preventDefault();
+			return false;
+		}
+	});
+	jQuery('.product_stock_input_popup').mask('#0', {reverse: true});
+	jQuery('.product_stock_input_popup').keyup(function(e){
+		
+		if (e.which == 13) {
+			if (parseInt(jQuery('#stock_remaining').html()) == 0) {
+				first_time_focus = 0;
+				total_remaining = 0;
+				jQuery('#product_stock_popup').fadeOut();
+				jQuery('#unit_price_'+identifier).focus();
+				updateStockProduct(identifier);
+				e.preventDefault();
+				return false;
+			}
+			if (first_time_focus == 1) {
+				jQuery(this).closest('tr').next().find('.product_stock_input_popup').focus();
+			}
+			first_time_focus = 1;
+			e.preventDefault();
+			return false;
+		}
+		updatePopUpStockRemaining();
+		
+	});
+	setTimeout(function(){ updatePopUpStockRemaining(); }, 500);
+	
+}
+function getLocation(location_id) {
+	var r = false;
+	var locations = sales_object.locations;
+	for (var i = 0; i < locations.length; i++) {
+		if (locations[i].term_id == location_id) {
+			r = locations[i];
+			break;
+		}
+	}
+	return r;
+}
+
 function updateSuggestInvoiceNumber() {
 	var sale_point = getCurrentSalePoint();
 	var invoice_type = getCurrentInvoiceType();
@@ -310,7 +431,12 @@ function updateKeyPress() {
 		if (e.which == 13) {
 			if (jQuery(this).data('focused') !== undefined) {
 				var identifier = this.id.replace('quality_', '');
-				jQuery('#unit_price_'+identifier).focus();
+				if (sales_object.use_stock_product == 1) {
+					openPopPupStockProduct(identifier);
+				} else {
+					jQuery('#unit_price_'+identifier).focus();
+				}
+				
 			}
 			jQuery(this).data('focused', true);
 			e.preventDefault();
@@ -390,6 +516,15 @@ function add_selected_product() {
 	
 	var current_product = product_data[jQuery('#product_select').val()[0]];
 	
+	var stocksHtml = '';
+	for (var location_id in current_product.datacomplete.stocks) {
+		productLocation = getLocation(location_id);
+		if (productLocation) {
+			stocksHtml += '<input type="hidden" name="product_stock_location['+current_product.id+']['+location_id+'][]" value="" id="product_stock_'+count_products+'_'+location_id+'" class="product_stock_input"/>';
+		}
+	}
+	
+	
 	var price = getPriceProduct(current_product).formatMoney(sales_object.decimal_numbers, sales_object.decimal,  sales_object.thousand);
 	var code = getCodeProduct(current_product);
 	var description = getDescriptionProduct(current_product);
@@ -398,7 +533,7 @@ function add_selected_product() {
 	var tax_with_mask = percentage_tax.formatMoney(2, sales_object.decimal,  sales_object.thousand);
 	var discriminates_taxes = getDescriminateTaxes();
 	
-	var newHTML = '<div id="uc_ID'+count_products+'" class="sortitem" data-identifier="'+count_products+'"><div class="sorthandle"> </div> <div class="uc_column" id=""><label class="code_product" id="label_code_'+count_products+'">'+code+'</label><input name="uc_code[]" type="hidden" id="code_'+count_products+'" value="'+code+'" class="large-text"/> <input name="uc_id[]" type="hidden" id="id_'+count_products+'" value="'+current_product.id+'"/></div><div class="uc_column" id=""><input name="uc_description[]" type="text" id="description_'+count_products+'" value="'+description+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_quality[]" class="product_quality" id="quality_'+count_products+'" type="text" value="1" class="large-text"/></div><div class="uc_column" id=""><input name="uc_unit_price[]" id="unit_price_'+count_products+'" type="text" value="'+price+'" class="unit_price_products large-text"/></div><div class="uc_column taxes_column" '+((discriminates_taxes == 1)?'':'style="display:none;"')+'><label class="code_product" id="label_tax_product_'+count_products+'">'+tax_with_mask+'%</label><input name="uc_tax[]" type="hidden" id="tax_product_'+count_products+'" value="'+current_product.datacomplete.tax+'" class="product_taxs large-text"/><input name="uc_tax_porcent[]" type="hidden" id="tax_porcent_product_'+count_products+'" value="'+percentage_tax+'" class="product_tax_porcent"/></div><div class="uc_column" id=""><input name="uc_amount[]" id="amount_'+count_products+'" type="text" value="'+price+'" class="products_amounts large-text"/></div><div class="" id="uc_actions"><label title="" data-id="'+count_products+'" class="delete"></label></div></div>';
+	var newHTML = '<div id="uc_ID'+count_products+'" class="sortitem" data-identifier="'+count_products+'"><div class="sorthandle"> </div> <div class="uc_column" id=""><label class="code_product" id="label_code_'+count_products+'">'+code+'</label>'+stocksHtml+'<input name="uc_code[]" type="hidden" id="code_'+count_products+'" value="'+code+'" class="large-text"/> <input name="uc_id[]" type="hidden" id="id_'+count_products+'" value="'+current_product.id+'"/></div><div class="uc_column" id=""><input name="uc_description[]" type="text" id="description_'+count_products+'" value="'+description+'" class="large-text"/></div><div class="uc_column" id=""><input name="uc_quality[]" class="product_quality" id="quality_'+count_products+'" type="text" value="1" class="large-text"/></div><div class="uc_column" id=""><input name="uc_unit_price[]" id="unit_price_'+count_products+'" type="text" value="'+price+'" class="unit_price_products large-text"/></div><div class="uc_column taxes_column" '+((discriminates_taxes == 1)?'':'style="display:none;"')+'><label class="code_product" id="label_tax_product_'+count_products+'">'+tax_with_mask+'%</label><input name="uc_tax[]" type="hidden" id="tax_product_'+count_products+'" value="'+current_product.datacomplete.tax+'" class="product_taxs large-text"/><input name="uc_tax_porcent[]" type="hidden" id="tax_porcent_product_'+count_products+'" value="'+percentage_tax+'" class="product_tax_porcent"/></div><div class="uc_column" id=""><input name="uc_amount[]" id="amount_'+count_products+'" type="text" value="'+price+'" class="products_amounts large-text"/></div><div class="" id="uc_actions"><label title="" data-id="'+count_products+'" class="delete"></label></div></div>';
 			
 	jQuery('#invoice_products').append(newHTML);
 	jQuery('#uc_actions label').click(function() {

@@ -80,3 +80,43 @@ label {
 #misc-publishing-actions {
 	display:none;
 }
+
+#product_stock_popup {
+	position:absolute;
+	left: 50%;
+	margin-left: -250px;
+	width:500px;
+	min-height:200px;
+	height:auto;
+	background-color:white;
+	z-index:5;
+	border:1px solid #d9d0d0;
+	border-radius:4px;
+	box-shadow: 0 0 15px rgba(0,0,0,.1);
+}
+#content_popup_stock {
+	min-height:165px;
+	height:auto;
+	padding:4px;
+}
+#buttons_stock_popup {
+	border-top:1px solid #d9d0d0;
+	height:35px;
+	text-align:right;
+}
+.stock_table {
+	width:100%;
+}
+.stock_td_name {
+	width: 55%;
+    text-align: right;
+}
+.stock_td_input {
+	width:65%;
+}
+.remaining_stock_red {
+	color:red;
+}
+.remaining_stock_green {
+	color:green;
+}
