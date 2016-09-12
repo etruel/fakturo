@@ -34,7 +34,7 @@ class fktrPostTypeSales {
 		add_action('wp_ajax_validate_sale', array('fktrPostTypeSales', 'ajax_validate_sale'));
 		
 		
-		
+		add_filter( 'post_updated_messages', array('fktrPostTypeSales', 'updated_messages') );
 		
 		add_filter('fktr_text_code_product_reference', array('fktrPostTypeSales', 'text_code_product_reference'), 10, 1);
 		add_filter('fktr_text_code_product_internal_code', array('fktrPostTypeSales', 'text_code_product_internal_code'), 10, 1);
@@ -214,6 +214,25 @@ class fktrPostTypeSales {
 		
 		
 	}
+	
+
+	public static function updated_messages( $messages ) {
+		global $post, $post_ID;
+		$messages['fktr_sale'] = array(
+			 0 => '', 
+			 1 => __('Sale invoice updated.', FAKTURO_TEXT_DOMAIN ),
+			 2 => '',
+			 3 => '',
+			 4 => __( 'Sale invoice updated.', FAKTURO_TEXT_DOMAIN ),
+			 5 => '',
+			 6 => __('Sale invoice published.', FAKTURO_TEXT_DOMAIN ),
+			 7 => __('Sale invoice saved.', FAKTURO_TEXT_DOMAIN ),
+			 8 => __('Sale invoice submitted.', FAKTURO_TEXT_DOMAIN ),
+			 9 => sprintf(__('Sale scheduled for: <strong>%1$s</strong>.', FAKTURO_TEXT_DOMAIN ), date_i18n( __( 'M j, Y @ G:i', FAKTURO_TEXT_DOMAIN ), strtotime( $post->post_date ) )),
+			10 => __('Pending invoice updated.', FAKTURO_TEXT_DOMAIN ),
+		);
+		return $messages;
+	}
 	public static function name_placeholder( $title_placeholder , $post ) {
 		if($post->post_type == 'fktr_sale') {
 			$title_placeholder = __('Your invoice number', FAKTURO_TEXT_DOMAIN );
@@ -264,6 +283,7 @@ class fktrPostTypeSales {
 	public static function scripts() {
 		global $post_type, $post, $wp_locale, $locale;
 		if($post_type == 'fktr_sale') {
+			wp_dequeue_script( 'autosave' );
 			wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'jquery-datetimepicker', FAKTURO_PLUGIN_URL . 'assets/js/jquery.datetimepicker.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'jquery-vsort', FAKTURO_PLUGIN_URL . 'assets/js/jquery.vSort.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
@@ -900,7 +920,7 @@ class fktrPostTypeSales {
 		
 		foreach ($currencies as $cur) {
 			$echoHtml .= '<tr>
-							<td>'.((empty($cur->reference))?'':'<a href="'.$cur->reference.'">').''.$cur->name.''.((empty($cur->reference))?'':'</a>').'</td>'.(($setting_system['currency_position'] == 'before')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'<td>'.(($post->post_status != 'publish')?'<input type="text" style="text-align: right; width: 120px;" value="'.$cur->rate.'" name="invoice_currencies['.$cur->term_id.']" id="invoice_currencies_'.$cur->term_id.'" class="invoice_currencies"/> ':number_format($cur->rate, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand'])).''.(($setting_system['currency_position'] == 'after')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'</td>
+							<td>'.((empty($cur->reference))?'':'<a href="'.$cur->reference.'" target="_blank">').''.$cur->name.''.((empty($cur->reference))?'':'</a>').'</td>'.(($setting_system['currency_position'] == 'before')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'<td>'.(($post->post_status != 'publish')?'<input type="text" style="text-align: right; width: 120px;" value="'.$cur->rate.'" name="invoice_currencies['.$cur->term_id.']" id="invoice_currencies_'.$cur->term_id.'" class="invoice_currencies"/> ':number_format($cur->rate, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand'])).''.(($setting_system['currency_position'] == 'after')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'</td>
 						</tr>';
 			
 		}

@@ -227,13 +227,18 @@ jQuery(document).ready(function() {
 function updateStockProduct(identifier) {
 	var productId = jQuery('#id_'+identifier).val();
 	var current_product = product_data[productId];
-	for (var location_id in current_product.datacomplete.stocks) {
+	/*for (var location_id in current_product.datacomplete.stocks) {
 		productLocation = getLocation(location_id);
 		if (productLocation) {
 
 			jQuery('#product_stock_'+identifier+'_'+location_id).val(jQuery('#product_stock_input_popup_'+location_id).val());
 		}
 	}
+	*/
+	jQuery('.product_stock_input_popup').map(function() {
+		var location_id = this.id.replace('product_stock_input_popup_', '');
+		jQuery('#product_stock_'+identifier+'_'+location_id).val(jQuery(this).val());
+	});
 }
 function updatePopUpStockRemaining() {
 	total_remaining = 0;
@@ -283,8 +288,27 @@ function openPopPupStockProduct(identifier) {
 	stocksHtml += '</table>';
 	
 	if (length_stocks_locations<=1) {
-		jQuery('#unit_price_'+identifier).focus();
-		return false;
+		if (length_stocks_locations == 1) {
+			jQuery('#product_stock_'+identifier+'_'+first_location).val(quantity_total);
+			jQuery('#unit_price_'+identifier).focus();
+			return false;
+		} else {
+			length_stocks_locations = 0;
+			first_location = 0;
+			var stocksHtml = '<table class="stock_table">';
+			var locations = sales_object.locations;
+			for (var i = 0; i < locations.length; i++) {
+				if (first_location == 0) {
+					first_location = locations[i].term_id;
+				}
+				var valStock = jQuery('#product_stock_'+identifier+'_'+locations[i].term_id).val();
+				console.log('#product_stock_'+identifier+'_'+locations[i].term_id);
+				length_stocks_locations++;
+				stocksHtml += '<tr><td class="stock_td_name">'+locations[i].name+' (max:0): </td><td class="stock_td_input"><input type="text" name="product_stock_location_popup[]" value="'+valStock+'" id="product_stock_input_popup_'+locations[i].term_id+'" class="product_stock_input_popup"/> </td></tr>';
+			}
+			stocksHtml += '</table>';
+		}
+		
 	}
 	
 	var newHtml = '<div id="content_popup_stock"><div style="text-align:center">'+sales_object.txt_total_quantity+': <strong id="stock_quantity_total">'+quantity_total+'</strong></div><div style="text-align:center">'+sales_object.txt_remaining+': <strong id="stock_remaining" class="remaining_stock_red">'+quantity_total+'</strong></div>'+stocksHtml+'</div><div id="buttons_stock_popup"><a href="#" class="button" id="btn_cancel_stock_popup" style="margin:3px;">Cancelar</a></div>';
@@ -517,13 +541,19 @@ function add_selected_product() {
 	var current_product = product_data[jQuery('#product_select').val()[0]];
 	
 	var stocksHtml = '';
+	/*
 	for (var location_id in current_product.datacomplete.stocks) {
 		productLocation = getLocation(location_id);
 		if (productLocation) {
 			stocksHtml += '<input type="hidden" name="product_stock_location['+current_product.id+']['+location_id+'][]" value="" id="product_stock_'+count_products+'_'+location_id+'" class="product_stock_input"/>';
 		}
 	}
-	
+	*/
+	var locations = sales_object.locations;
+	for (var i = 0; i < locations.length; i++) {
+		stocksHtml += '<input type="hidden" name="product_stock_location['+current_product.id+']['+locations[i].term_id+'][]" value="" id="product_stock_'+count_products+'_'+locations[i].term_id+'" class="product_stock_input"/>';
+		
+	}
 	
 	var price = getPriceProduct(current_product).formatMoney(sales_object.decimal_numbers, sales_object.decimal,  sales_object.thousand);
 	var code = getCodeProduct(current_product);
