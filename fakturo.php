@@ -10,7 +10,6 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-
 // Plugin version
 if ( ! defined('WPE_FAKTURO_VERSION' ) ) define('WPE_FAKTURO_VERSION', '0.1' ); 
 

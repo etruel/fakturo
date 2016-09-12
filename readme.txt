@@ -1,10 +1,10 @@
 === Fakturo ===
-Contributors: etruel,sniuk
+Contributors: etruel
 Donate link: 
 Tags: invoice, sales, purchases, billing, receipt, Tax Code, VAT, PDF invoices, bill, bill clients, merchantplus, checkout, online payment, pay, recurring billing, send invoice, web invoice, wp-invoice, wp-sales, e-commerce, e-store, eshop, wp ecommerce
 Requires at least: 4.1
-Tested up to: 4.6
-Stable tag: 0.1 Beta
+Tested up to: 4.6.1
+Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,6 +14,8 @@ An easy and fully-configurable SME Management system for Wordpress.
 
 Fakturo is a complete system SME management, released as a Wordpress plugin with multiple functions for small and medium-sized companies.
 It's FREE, fully-configurable, customizable and upgradable through Wordpress filters and also by AddOns or customized support.
+
+NOTE: This plugin is in very early Beta stage. Check it and test it if you want, but we are working on it every day!!
 
 = Introduction =
 There are many systems that management invoices on the web. Some freeware, some modular, some online, some with addons, some with e-invoicing, some with stock, some easy, some are updated periodically, some of them with technical support, etc... always "some"..., so that's why was born Fakturo, because it is not "some" more, but that have all the above and much more.
