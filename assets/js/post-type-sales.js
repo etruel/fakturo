@@ -7,13 +7,12 @@ jQuery(document).ready(function() {
 	
 	jQuery('#title-prompt-text').remove();
 	jQuery("#title").attr("readonly","readonly");
+
+	
 	if (sales_object.post_status == 'publish') {
 		return false;
 	}
-	jQuery("#title").focus(function(e){
-		jQuery("#invoice_number").focus();
-		
-	});
+	
 	loadProductData();
 	updateKeyPress();
 	var numbers_ex = '';
@@ -124,6 +123,7 @@ jQuery(document).ready(function() {
 					jQuery('#invoice_currency').val(sales_object.default_currency);
 				}
 				jQuery('#invoice_currency').select2();
+				updateSuggestInvoiceNumber();
 			});
 		}
 		
@@ -135,6 +135,7 @@ jQuery(document).ready(function() {
 		jQuery("#invoice_type").val(getInvoiceTypeFromTaxCondition());
 		jQuery("#invoice_type").select2();
 		updateProductsDatails();
+		updateSuggestInvoiceNumber();
 	});
 	jQuery("#invoice_type").change(function(){
 		updateProductsDatails();
@@ -158,6 +159,12 @@ jQuery(document).ready(function() {
 	jQuery('#product_select').change(function(e){
 		
 		var identifier = add_selected_product();
+		jQuery('#quality_'+identifier).focus(function(e) {
+						var save_this = jQuery(this);
+						window.setTimeout (function(){ 
+						   save_this.select(); 
+						},100);
+					});
 		jQuery('#quality_'+identifier).focus();
 		updateKeyPress();
 		e.preventDefault();
@@ -191,6 +198,15 @@ jQuery(document).ready(function() {
 	
 	jQuery('#post').submit(function(e) {  
    			
+			if (jQuery('#invoice_type').val() == null || jQuery('#invoice_type').val() <= 0) {
+				jQuery('#invoice_type').select2('open');
+				e.preventDefault();
+				return false;
+			}
+
+			addNoticeMessage('<img width="12" src="'+sales_object.url_loading_image+'" class="mt2"/> '+sales_object.txt_loading+'...', 'updated');
+			
+			
    			jQuery.ajaxSetup({async:false});
    			status = 'error';
 			message = '';
@@ -208,6 +224,8 @@ jQuery(document).ready(function() {
    				if(status == 'success'){
 					
    				} else {
+					addNoticeMessage(message, 'error');
+			
 					jQuery(selector).focus();
 					if (typeof window[functionEx] === 'function' && functionEx!=''){
 						formok = window[functionEx]();
@@ -224,6 +242,20 @@ jQuery(document).ready(function() {
 		});
 
 });
+
+function addNoticeMessage(msg, classN) {
+	if (jQuery('#fieldNotice').length) {
+		jQuery('#fieldNotice').html('<p>'+msg+'</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Descartar este aviso.</span></button>');
+		jQuery('#fieldNotice').attr('class', ''+classN+' fade he20 notice is-dismissible');
+		jQuery('#fieldNotice').fadeIn();
+	} else {
+		jQuery('#poststuff').prepend('<div id="fieldNotice" class="'+classN+' fade he20 notice is-dismissible"><p>'+msg+'</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Descartar este aviso.</span></button></div>');
+	}
+	jQuery('.notice-dismiss').click(function(){
+		jQuery(this).parent().fadeOut();
+	});
+}
+
 function updateStockProduct(identifier) {
 	var productId = jQuery('#id_'+identifier).val();
 	var current_product = product_data[productId];
@@ -286,10 +318,34 @@ function openPopPupStockProduct(identifier) {
 		}
 	}
 	stocksHtml += '</table>';
-	
+	var invoice_type = getCurrentInvoiceType();
+	if (invoice_type) {
+		if (invoice_type.sum == 1) {
+			length_stocks_locations = 0;
+			first_location = 0;
+			var stocksHtml = '<table class="stock_table">';
+			var locations = sales_object.locations;
+			for (var i = 0; i < locations.length; i++) {
+				if (first_location == 0) {
+					first_location = locations[i].term_id;
+				}
+				var valStock = jQuery('#product_stock_'+identifier+'_'+locations[i].term_id).val();
+				length_stocks_locations++;
+				stocksHtml += '<tr><td class="stock_td_name">'+locations[i].name+' (max:0): </td><td class="stock_td_input"><input type="text" name="product_stock_location_popup[]" value="'+valStock+'" id="product_stock_input_popup_'+locations[i].term_id+'" class="product_stock_input_popup"/> </td></tr>';
+			}
+			stocksHtml += '</table>';
+			
+		}
+	}
 	if (length_stocks_locations<=1) {
 		if (length_stocks_locations == 1) {
 			jQuery('#product_stock_'+identifier+'_'+first_location).val(quantity_total);
+			jQuery('#unit_price_'+identifier).focus(function(e) {
+						var save_this = jQuery(this);
+						window.setTimeout (function(){ 
+						   save_this.select(); 
+						},100);
+					});
 			jQuery('#unit_price_'+identifier).focus();
 			return false;
 		} else {
@@ -302,7 +358,6 @@ function openPopPupStockProduct(identifier) {
 					first_location = locations[i].term_id;
 				}
 				var valStock = jQuery('#product_stock_'+identifier+'_'+locations[i].term_id).val();
-				console.log('#product_stock_'+identifier+'_'+locations[i].term_id);
 				length_stocks_locations++;
 				stocksHtml += '<tr><td class="stock_td_name">'+locations[i].name+' (max:0): </td><td class="stock_td_input"><input type="text" name="product_stock_location_popup[]" value="'+valStock+'" id="product_stock_input_popup_'+locations[i].term_id+'" class="product_stock_input_popup"/> </td></tr>';
 			}
@@ -316,7 +371,12 @@ function openPopPupStockProduct(identifier) {
 	console.log('#product_stock_input_popup_'+first_location);
 	
 	jQuery('#product_stock_popup').fadeIn();
-	
+	jQuery('#product_stock_input_popup_'+first_location).focus(function(e) {
+						var save_this = jQuery(this);
+						window.setTimeout (function(){ 
+						   save_this.select(); 
+						},100);
+					});
 	jQuery('#product_stock_input_popup_'+first_location).focus();
 	jQuery('#btn_cancel_stock_popup').click(function(e){
 		first_time_focus = 0;
@@ -339,12 +399,24 @@ function openPopPupStockProduct(identifier) {
 				first_time_focus = 0;
 				total_remaining = 0;
 				jQuery('#product_stock_popup').fadeOut();
+				jQuery('#unit_price_'+identifier).focus(function(e) {
+						var save_this = jQuery(this);
+						window.setTimeout (function(){ 
+						   save_this.select(); 
+						},100);
+					});
 				jQuery('#unit_price_'+identifier).focus();
 				updateStockProduct(identifier);
 				e.preventDefault();
 				return false;
 			}
 			if (first_time_focus == 1) {
+				jQuery(this).closest('tr').next().find('.product_stock_input_popup').focus(function(e) {
+						var save_this = jQuery(this);
+						window.setTimeout (function(){ 
+						   save_this.select(); 
+						},100);
+					});
 				jQuery(this).closest('tr').next().find('.product_stock_input_popup').focus();
 			}
 			first_time_focus = 1;
@@ -458,6 +530,12 @@ function updateKeyPress() {
 				if (sales_object.use_stock_product == 1) {
 					openPopPupStockProduct(identifier);
 				} else {
+					jQuery('#unit_price_'+identifier).focus(function(e) {
+						var save_this = jQuery(this);
+						window.setTimeout (function(){ 
+						   save_this.select(); 
+						},100);
+					});
 					jQuery('#unit_price_'+identifier).focus();
 				}
 				
@@ -470,6 +548,12 @@ function updateKeyPress() {
 	jQuery('.unit_price_products').on('keypress', function(e) {
 		if (e.which == 13) {
 			var identifier = this.id.replace('unit_price_', '');
+			jQuery('#amount_'+identifier).focus(function(e) {
+				var save_this = jQuery(this);
+				window.setTimeout (function(){ 
+				   save_this.select(); 
+				},100);
+			});
 			jQuery('#amount_'+identifier).focus();
 			e.preventDefault();
 			return false;
