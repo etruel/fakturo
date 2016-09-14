@@ -120,3 +120,16 @@ label {
 .remaining_stock_green {
 	color:green;
 }
+#errors_stocks {
+	border: 3px solid #ac0808;
+    border-radius: 4px;
+    padding: 4px;
+    margin-top: 10px;
+    background-color: #f2cece;
+}
+.error_stock_red {
+	color:red;
+}
+.error_stock_lila {
+	color: #777;
+}

@@ -554,7 +554,9 @@ class fktrPostTypeSales {
 							
 							<div id="paging-box">
 								'.(($post->post_status != 'publish')?''.$selectProducts.' <a href="#" class="button-primary add" id="addmoreuc" style="font-weight: bold; text-decoration: none; height: 31px;line-height: 29px;"> '.__('Add product', FAKTURO_TEXT_DOMAIN  ).'</a>':'').'
-								
+								<div id="errors_stocks" style="display:none;">
+									
+								</div>
 							</div>
 							<div id="totals-box">
 								<div id="sub_total">Subtotal: <label id="label_sub_total">'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($sub_total, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'</label><input type="hidden" name="in_sub_total" id="in_sub_total" value="'.$sub_total.'"/>  </div>

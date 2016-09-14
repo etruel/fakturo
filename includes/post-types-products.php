@@ -690,9 +690,7 @@ class fktrPostTypeProducts {
 		if (!isset($fields['prices_final'])) {
 			$fields['prices_final']  = array();
 		}
-		if (!isset($fields['stocks'])) {
-			$fields['stocks']  = array();
-		}
+		
 		return $fields;
 	}
 	public static function before_save($fields) {
