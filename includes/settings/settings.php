@@ -48,8 +48,14 @@ class fktrSettings {
 		wp_enqueue_script( 'jquery-settings', FAKTURO_PLUGIN_URL . 'assets/js/settings.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 	}
 	public static function styles() {
+		global $current_screen;
+
 		wp_enqueue_style('thickbox');
 		wp_enqueue_style('style-select2',FAKTURO_PLUGIN_URL .'assets/css/select2.min.css');	
+		if ($current_screen->id == 'admin_page_fakturo-settings-system') {
+			wp_enqueue_style('style-settings',FAKTURO_PLUGIN_URL .'assets/css/settings-system.css');	
+		}
+		
 	}
 	public static function register_settings() {
 		register_setting(
@@ -94,6 +100,7 @@ class fktrSettings {
 			$value_system['invoice_type'] = -1;
 			$value_system['price_scale'] = -1;
 			$value_system['use_stock_product'] = 0;
+			$value_system['stock_less_zero'] = 0;
 			$value_system['sale_point'] = 0;
 			$value_system['digits_invoice_number'] = 8;
 			$value_system['list_invoice_number'] = array('sale_point', 'invoice_number');
@@ -255,6 +262,10 @@ class fktrSettings {
 		if (!isset($options['use_stock_product'])) {
 			$options['use_stock_product'] = 0;
 		}
+		if (!isset($options['stock_less_zero'])) {
+			$options['stock_less_zero'] = 0;
+		}
+		
 		if (!isset($options['sale_point'])) {
 			$options['sale_point'] = 0;
 		}
@@ -386,7 +397,7 @@ class fktrSettings {
 		
 		//echo print_r($options['search_code'], true);
 		//
-		$echoSelectSearchCode = '<select id="fakturo_system_options_group_search_code" name="fakturo_system_options_group[search_code][]" multiple="multiple" style="width:150px;">';
+		$echoSelectSearchCode = '<select id="fakturo_system_options_group_search_code" name="fakturo_system_options_group[search_code][]" multiple="multiple" >';
 		foreach ($selectSearchCode as $key => $txt) {
 			$echoSelectSearchCode .= '<option value="'.$key.'"'.selected($key, (array_search($key, $options['search_code'])!==false) ? $key : '' , false).'>'.$txt.'</option>';
 		}
@@ -439,7 +450,7 @@ class fktrSettings {
 		
 		//echo print_r($options['search_code'], true);
 		//
-		$echoSelectListInvoiceNumber = '<select id="fakturo_system_options_group_list_invoice_number" name="fakturo_system_options_group[list_invoice_number][]" multiple="multiple" style="width:150px;">';
+		$echoSelectListInvoiceNumber = '<select id="fakturo_system_options_group_list_invoice_number" name="fakturo_system_options_group[list_invoice_number][]" multiple="multiple">';
 		foreach ($selectListInvoiceNumber as $key => $txt) {
 			$echoSelectListInvoiceNumber .= '<option value="'.$key.'"'.selected($key, (array_search($key, $options['list_invoice_number'])!==false) ? $key : '' , false).'>'.$txt.'</option>';
 		}
@@ -474,7 +485,7 @@ class fktrSettings {
 										'. __( 'Choose the location of the currency sign.', FAKTURO_TEXT_DOMAIN ) .'             
 									</label>
 							</td>
-						</td>
+						
 					  </tr>
 					  
 					  <tr>
@@ -486,7 +497,7 @@ class fktrSettings {
 								</label>
 					
 							</td>
-						</td>
+						
 					  </tr>
 					  
 					  <tr>
@@ -498,7 +509,7 @@ class fktrSettings {
 								</label>
 					
 							</td>
-						</td>
+						
 					  </tr>
 					  
 					  <tr>
@@ -510,7 +521,7 @@ class fktrSettings {
 								</label>
 					
 							</td>
-						</td>
+						
 					  </tr>
 					  
 					   <tr>
@@ -520,8 +531,8 @@ class fktrSettings {
 								  <label for="fakturo_system_options_group_invoice_type">
 								  '. __( 'Choose the default Invoice Type used in the system', FAKTURO_TEXT_DOMAIN ) .' 
 							        </label>
-						</td>
-						</td>
+							</td>
+						
 					  </tr>
 					  
 					  
@@ -532,8 +543,8 @@ class fktrSettings {
 								  <label for="fakturo_system_options_group_price_scale">
 								  '. __( 'Choose the default Price Scale used in the system', FAKTURO_TEXT_DOMAIN ) .' 
 							        </label>
-						</td>
-						</td>
+							</td>
+						
 					  </tr>
 					  
 					  <tr>
@@ -543,8 +554,19 @@ class fktrSettings {
 								<label for="fakturo_system_options_group_use_stock_product"><span class="ui"></span>'. __( 'Activate for use stock for products', FAKTURO_TEXT_DOMAIN ).'	</label>
 							
 							</td>
-						</td>
+						
 					  </tr>
+					  <tr>
+							<th>'. __( 'Allow negative stocks', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+								<input id="fakturo_system_options_group_stock_less_zero" class="slidercheck" type="checkbox" name="fakturo_system_options_group[stock_less_zero]" value="1" '.(($options['stock_less_zero'])?'checked="checked"':'').'>
+								<label for="fakturo_system_options_group_stock_less_zero"><span class="ui"></span>'. __( 'Activate for use stock less than zero.', FAKTURO_TEXT_DOMAIN ).'	</label>
+							
+						
+							</td>
+					  </tr>
+					  
+					  
 					  <tr>
 						<th>'. __( 'Sale Point', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td class="italic-label">
@@ -563,7 +585,7 @@ class fktrSettings {
 								</label>
 					
 							</td>
-						</td>
+						
 					  </tr>
 					  <tr>
 							<th>'. __( 'Format invoice numbers in lists and reports', FAKTURO_TEXT_DOMAIN ) .'</th>
@@ -573,7 +595,7 @@ class fktrSettings {
 										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
 									</label>
 							</td>
-						</td>
+						
 					  </tr>
 					   <tr>
 							<th>'. __( 'Individual numeration by Invoice Type', FAKTURO_TEXT_DOMAIN ) .'</th>
@@ -582,7 +604,7 @@ class fktrSettings {
 								<label for="fakturo_system_options_group_individual_numeration_by_invoice_type"><span class="ui"></span>'. __( 'Activate for use individual numeration by Invoice Type', FAKTURO_TEXT_DOMAIN ).'	</label>
 							
 							</td>
-						</td>
+						
 					  </tr>
 					   <tr>
 							<th>'. __( 'Individual numeration by Sale Point', FAKTURO_TEXT_DOMAIN ) .'</th>
@@ -591,7 +613,7 @@ class fktrSettings {
 								<label for="fakturo_system_options_group_individual_numeration_by_sale_point"><span class="ui"></span>'. __( 'Activate for use individual numeration by Sale Point ', FAKTURO_TEXT_DOMAIN ).'	</label>
 							
 							</td>
-						</td>
+						
 					  </tr>
 					  <tr>
 							<th>'. __( 'Format of number of receipt', FAKTURO_TEXT_DOMAIN ) .'</th>
@@ -602,7 +624,7 @@ class fktrSettings {
 								</label>
 					
 							</td>
-						</td>
+						
 					  </tr>
 					  <tr>
 							<th>'. __( 'Search code on invoices, budgets, etc..', FAKTURO_TEXT_DOMAIN ) .'</th>
@@ -612,7 +634,7 @@ class fktrSettings {
 										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
 									</label>
 							</td>
-						</td>
+						
 					  </tr>
 					   <tr>
 							<th>'. __( 'Default code for invoice', FAKTURO_TEXT_DOMAIN ) .'</th>
@@ -622,7 +644,6 @@ class fktrSettings {
 										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
 									</label>
 							</td>
-						</td>
 					  </tr>
 					   <tr>
 							<th>'. __( 'Default description for invoice', FAKTURO_TEXT_DOMAIN ) .'</th>
@@ -632,7 +653,6 @@ class fktrSettings {
 										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
 									</label>
 							</td>
-						</td>
 					  </tr>
 					  
 					   <tr>
@@ -643,7 +663,7 @@ class fktrSettings {
 										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
 									</label>
 							</td>
-						</td>
+				
 					  </tr>
 					  
 					  ';

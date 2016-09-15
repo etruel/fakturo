@@ -594,7 +594,28 @@ class fktrPostTypeProducts {
 		do_action('add_fktr_product_data_box', $echoHtml);
 		
 	}
-	
+	public static function getStocks($product_id) {
+		$retorno = array();
+		$product_data = self::get_product_data($product_id);
+		$locations = get_fakturo_terms(array(
+								'taxonomy' => 'fktr_locations',
+								'hide_empty' => false,
+							));
+		if (!isset($product_data['stocks'])) {
+			$product_data['stocks'] = array();
+		}
+		if (!is_array($product_data['stocks'])) {
+			$product_data['stocks'] = array();
+		}
+		foreach ($locations as $location) {
+			if (!empty($product_data['stocks'][$location->term_id])) {
+				$retorno[$location->term_id] = $product_data['stocks'][$location->term_id];
+			} else {
+				$retorno[$location->term_id] = 0;
+			}
+		}
+		return $retorno;
+	}
 	public static function addStock($product_id, $quantity, $location_id) {
 		$product_data = self::get_product_data($product_id);
 		if (!isset($product_data['stocks'])) {

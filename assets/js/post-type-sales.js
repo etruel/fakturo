@@ -231,8 +231,10 @@ jQuery(document).ready(function() {
 					
    				} else {
 					addNoticeMessage(message, 'error');
-			
-					jQuery(selector).focus();
+					if (selector != '') {
+						jQuery(selector).focus();
+					}
+					
 					if (typeof window[functionEx] === 'function' && functionEx!=''){
 						formok = window[functionEx]();
 						e.preventDefault();
@@ -265,7 +267,7 @@ function addNoticeMessage(msg, classN) {
 function addStockMessageLila(productId, min) {
 	
 	if (jQuery('#error_lila_stock_'+productId).length == 0) {
-		jQuery('#errors_stocks').prepend('<div id="error_lila_stock_'+productId+'" class="error_stock_lila">Producto superando la alerta minima ('+productId+' - Min: '+min+') </div>');
+		jQuery('#errors_stocks').prepend('<div id="error_lila_stock_'+productId+'" class="error_stock_lila">'+sales_object.txt_product_alert_min+' ('+productId+' - '+sales_object.txt_min+': '+min+') </div>');
 	}
 	jQuery('#errors_stocks').fadeIn();
 	
@@ -274,10 +276,10 @@ function addStockMessageRed(productId, location_id, max) {
 	
 	if (jQuery('#error_stock_'+productId+'_'+location_id).length == 0) {
 		if (location_id == 0) {
-			jQuery('#errors_stocks').prepend('<div id="error_stock_'+productId+'_'+location_id+'" class="error_stock_red">Limite de stock excedido ('+productId+' - Max: '+max+') </div>');
+			jQuery('#errors_stocks').prepend('<div id="error_stock_'+productId+'_'+location_id+'" class="error_stock_red">'+sales_object.txt_exc_stock+' ('+productId+' - '+sales_object.txt_max+': '+max+') </div>');
 		} else {
 			productLocation = getLocation(location_id);
-			jQuery('#errors_stocks').prepend('<div id="error_stock_'+productId+'_'+location_id+'" class="error_stock_red">Sin stock disponible ( '+productId+' / '+productLocation.name+' - Max: '+max+') </div>');
+			jQuery('#errors_stocks').prepend('<div id="error_stock_'+productId+'_'+location_id+'" class="error_stock_red">'+sales_object.txt_no_stock+' ( '+productId+' / '+productLocation.name+' - '+sales_object.txt_max+': '+max+') </div>');
 		}
 	}
 	jQuery('#errors_stocks').fadeIn();
@@ -298,12 +300,12 @@ function updateStockMessages() {
 					var productId = jQuery('#id_'+identifier).val();
 					var current_product = product_data[productId];
 					var current_stock_location = getCurrentProductStock(productId, location_id)
-					if (current_stock_location <= 0) {
+					if (current_stock_location < 0) {
 						addStockMessageRed(productId, location_id, getTotalStockDefault(productId, location_id));
 					}
 					
 					var current_stock_location = getCurrentProductStock(productId, 0)
-					if (current_stock_location <= 0) {
+					if (current_stock_location < 0) {
 						addStockMessageRed(productId, 0, getTotalStockDefault(productId, 0));
 					}
 					
@@ -344,6 +346,19 @@ function getTotalStockDefault(productId, location_id) {
 	}
 	return totalDefault;
 }
+function productHaveStockLocation(identifier) {
+	var retorno = false;
+	var locations = sales_object.locations;
+	for (var i = 0; i < locations.length; i++) {
+		var valStock = jQuery('#product_stock_'+identifier+'_'+locations[i].term_id).val();
+		if (valStock != '') {
+			retorno = true;
+			break;
+		}
+	}
+	return retorno;
+}
+
 function getCurrentProductStock(productId, location_id) {
 	var current_product = product_data[productId];
 	var total = 0;
@@ -495,9 +510,10 @@ function openPopPupStockProduct(identifier) {
 	
 	var newHtml = '<div id="content_popup_stock"><div style="text-align:center">'+sales_object.txt_total_quantity+': <strong id="stock_quantity_total">'+quantity_total+'</strong></div><div style="text-align:center">'+sales_object.txt_remaining+': <strong id="stock_remaining" class="remaining_stock_red">'+quantity_total+'</strong></div>'+stocksHtml+'</div><div id="buttons_stock_popup"><a href="#" class="button" id="btn_cancel_stock_popup" style="margin:3px;">Cancelar</a></div>';
 	jQuery('#product_stock_popup').html(newHtml);
-	console.log('#product_stock_input_popup_'+first_location);
+	
 	
 	jQuery('#product_stock_popup').fadeIn();
+	jQuery('#popup_stock_background').fadeIn();
 	jQuery('#product_stock_input_popup_'+first_location).focus(function(e) {
 						var save_this = jQuery(this);
 						window.setTimeout (function(){ 
@@ -509,6 +525,9 @@ function openPopPupStockProduct(identifier) {
 		first_time_focus = 0;
 		total_remaining = 0;
 		jQuery('#product_stock_popup').fadeOut();
+		jQuery('#popup_stock_background').fadeOut();
+		jQuery('#quality_'+identifier).focus();
+		
 		e.preventDefault();
 		return false;
 	});
@@ -526,6 +545,7 @@ function openPopPupStockProduct(identifier) {
 				first_time_focus = 0;
 				total_remaining = 0;
 				jQuery('#product_stock_popup').fadeOut();
+				jQuery('#popup_stock_background').fadeOut();
 				jQuery('#unit_price_'+identifier).focus(function(e) {
 						var save_this = jQuery(this);
 						window.setTimeout (function(){ 
@@ -672,6 +692,18 @@ function updateKeyPress() {
 			return false;
 		}
 	});
+	jQuery('.product_quality').focusout(function(e) {
+
+		if (!jQuery('#product_stock_popup').is(':visible') && jQuery('#product_stock_popup').is(':hidden')) {
+			var identifier = this.id.replace('quality_', '');
+			if (!productHaveStockLocation(identifier)) {
+				jQuery(this).focus();
+			}
+		} 
+ 
+	});
+	
+	
 	jQuery('.unit_price_products').on('keypress', function(e) {
 		if (e.which == 13) {
 			var identifier = this.id.replace('unit_price_', '');

@@ -374,6 +374,11 @@ class fktrPostTypeSales {
 					'txt_total_quantity' => __('Total quantity', FAKTURO_TEXT_DOMAIN ),
 					'txt_remaining' => __('Remaining', FAKTURO_TEXT_DOMAIN ),
 					'txt_loading' => __('Loading', FAKTURO_TEXT_DOMAIN ),
+					'txt_no_stock' => __('Stock not available', FAKTURO_TEXT_DOMAIN ),
+					'txt_exc_stock' => __('Stock exceeded', FAKTURO_TEXT_DOMAIN ),
+					'txt_max' => __('Max', FAKTURO_TEXT_DOMAIN ),
+					'txt_min' => __('Min', FAKTURO_TEXT_DOMAIN ),
+					'txt_product_alert_min' => __('Alert of minimal stock', FAKTURO_TEXT_DOMAIN ),
 					
 					'tax_coditions' => json_encode($tax_coditions),
 					'currencies' => json_encode($currencies),
@@ -418,7 +423,6 @@ class fktrPostTypeSales {
 			}
 		}
 		
-		
 		$selectProducts = '<select name="product_select" id="product_select" class="js-example-basic-multiple" multiple="multiple" style="width:65%;"></select>';					
 		$echoInvoiceProducts = '';
 		if (!empty($sale_data['uc_id'])) {
@@ -430,6 +434,7 @@ class fktrPostTypeSales {
 								'taxonomy' => 'fktr_locations',
 								'hide_empty' => false,
 							));
+							
 				foreach ($locations as $loc) {
 					$value = '';
 					if (isset($sale_data['product_stock_location'][$product_id][$loc->term_id])) {
@@ -532,7 +537,7 @@ class fktrPostTypeSales {
 		
 		$textCodeForProduct = apply_filters('fktr_text_code_product_'.$setting_system['default_code'], '');
 		$textDescriptionForProduct = apply_filters('fktr_text_description_product_'.$setting_system['default_description'], '');
-		$echoHtml = '<div id="product_stock_popup" style="display:none;"></div><table class="form-table">
+		$echoHtml = '<div id="popup_stock_background" style="display:none;"></div> <div id="product_stock_popup" style="display:none;"></div><table class="form-table">
 					<tbody>
 						<tr class="user-display-name-wrap">
 						<td>
@@ -1018,7 +1023,31 @@ class fktrPostTypeSales {
 		 }
 
 	}
+	public static function getProductStock($productId, $sale_id, $reserved = false) {
+		$stocks = array();
+		$stocks = fktrPostTypeProducts::getStocks($productId);
+		
+		if ($reserved) {
+			$sale_data = self::get_sale_data($sale_id);
+			foreach ($sale_data['product_stock_location'] as $product_id => $arr_locations) {
+				if ($product_id != $productId) {
+					continue;
+				}
+				foreach ($arr_locations as $location_id => $array_quantity) {
+					foreach ($array_quantity as $key => $quantity) {
+						if (!empty($quantity)) {
+							$stocks[$location_id] = $stocks[$location_id]+$quantity;
+						} else {
+							$stocks[$location_id] = 0;
+						}
+					}
+				}
+			} 
+		}
+		return $stocks;
+	}
 	public static function ajax_validate_sale() {
+		$setting_system = get_option('fakturo_system_options_group', false);
 		$response = new WP_Ajax_Response;
 		$fields = array();
 		parse_str($_POST['inputs'], $fields);
@@ -1037,6 +1066,63 @@ class fktrPostTypeSales {
 			)); 
 			$response->send();
 		}
+		
+		$invoice_type = get_fakturo_term($fields['invoice_type'], 'fktr_invoice_types');
+		if(is_wp_error($invoice_type)) {
+			$response->add( array(
+				'data'	=> 'error',
+				'supplemental' => array(
+					'message' => __('This invoice type does not exist, try another.', FAKTURO_TEXT_DOMAIN ),
+					'inputSelector' => '#invoice_type',
+					'function' => '',
+				),
+			)); 
+			$response->send();	
+		}
+		
+		if ($setting_system['use_stock_product'] && $invoice_type->sum == 0 && $setting_system['stock_less_zero'] == 0) {
+			$reserved = false;
+			if ($fields['original_post_status'] == 'draft') {
+				$reserved = true;
+			}
+			$error = 0;
+			$productStocks = array();
+			foreach ($fields['product_stock_location'] as $product_id => $arr_locations) {
+				foreach ($arr_locations as $location_id => $array_quantity) {
+					foreach ($array_quantity as $key => $quantity) {
+						if (!empty($quantity)) {
+							
+							if (empty($productStocks[$product_id])) {
+								
+								$productStocks[$product_id] = self::getProductStock($product_id, $fields['post_ID'], $reserved);
+							}
+							
+							$productStocks[$product_id][$location_id] = $productStocks[$product_id][$location_id]-$quantity;
+							if ($productStocks[$product_id][$location_id] < 0) {
+								$error = $product_id;
+								break 3;
+							}
+						}
+					}
+				}
+			}
+			
+			if ($error > 0) {
+				
+				$response->add( array(
+				'data'	=> 'error',
+					'supplemental' => array(
+						'message' => sprintf(__('The product (%s) does not have enough stock.', FAKTURO_TEXT_DOMAIN ), $error),
+						'inputSelector' => '',
+						'function' => '',
+					),
+				)); 
+				$response->send();	
+				
+			}
+			
+		}
+		
 		do_action('fktr_validate_sale', $fields);
 		
 		$response->add( array(
@@ -1314,6 +1400,9 @@ class fktrPostTypeSales {
 		if (!isset($fields['product_stock_location'])) {
 			$fields['product_stock_location'] = array();
 		}
+		if (!isset($fields['uc_id'])) {
+			$fields['uc_id'] = array();
+		}
 		
 		return $fields;
 	}
@@ -1359,6 +1448,8 @@ class fktrPostTypeSales {
 			
 			$fields['in_sub_total'] = 0;
 			$fields['in_total'] = 0;
+			
+			$fields['uc_id'] = array();
 			$fields['product_stock_location'] = array();
 			 
 			$fields = apply_filters('fktr_clean_sale_fields', $fields);

@@ -90,9 +90,20 @@ label {
 	height:auto;
 	background-color:white;
 	z-index:5;
-	border:1px solid #d9d0d0;
+	border:5px solid #d9d0d0;
 	border-radius:4px;
 	box-shadow: 0 0 15px rgba(0,0,0,.1);
+}
+#popup_stock_background {
+	position:fixed;
+	left: 0%;
+	top: 0%;
+	width:100%;
+	height:100%;
+	background-color:#000;
+	opacity:0.8;
+	z-index:3;
+	margin-left:160px;
 }
 #content_popup_stock {
 	min-height:165px;
