@@ -694,7 +694,7 @@ function updateKeyPress() {
 	});
 	jQuery('.product_quality').focusout(function(e) {
 
-		if (!jQuery('#product_stock_popup').is(':visible') && jQuery('#product_stock_popup').is(':hidden')) {
+		if (!jQuery('#product_stock_popup').is(':visible') && jQuery('#product_stock_popup').is(':hidden') && sales_object.use_stock_product == 1) {
 			var identifier = this.id.replace('quality_', '');
 			if (!productHaveStockLocation(identifier)) {
 				jQuery(this).focus();

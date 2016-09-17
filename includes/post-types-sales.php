@@ -54,9 +54,26 @@ class fktrPostTypeSales {
 		add_filter('fktr_search_product_parameter_reference', array('fktrPostTypeSales', 'product_parameter_reference'), 10, 3);
 		add_filter('fktr_search_product_parameter_internal_code', array('fktrPostTypeSales', 'product_parameter_internal_code'), 10, 3);
 		add_filter('fktr_search_product_parameter_manufacturers_code', array('fktrPostTypeSales', 'product_parameter_manufacturers_code'), 10, 3);
+		add_filter('post_row_actions', array('fktrPostTypeSales', 'action_row'), 10, 2);
+		
+		add_action('before_delete_post', array('fktrPostTypeSales', 'before_delete'), 10, 1);
 		
 	}
 	
+	public static function action_row($actions, $post){
+		
+		if ($post->post_type == 'fktr_sale') {
+			$setting_system = get_option('fakturo_system_options_group', false);
+			if ($post->post_status == 'publish') {
+				unset($actions['trash']);
+			}
+			if ($setting_system['use_stock_product'] && $post->post_status == 'draft') {
+				unset($actions['trash']);
+				$actions['delete'] = '<a class="submitdelete" title="'.esc_attr( __( 'Delete this item permanently')).'" href="'.get_delete_post_link( $post->ID, '', true).'">'. __( 'Delete Permanently' ).'</a>';
+			}
+		}
+		return $actions;
+	}
 	public static function text_description_product_short_description($txt) {
 		return __( 'Short Description', FAKTURO_TEXT_DOMAIN );
 	}
@@ -1287,8 +1304,35 @@ class fktrPostTypeSales {
 		update_option('last_invoice_number', $last_invoice_numbers);
 		
 	}
-	public static function updateStock($fields, $post) {
+	public static function before_delete($post_id) {
+		$post_type = get_post_type($post_id);
+		if ($post_type == 'fktr_sale') {
+			$setting_system = get_option('fakturo_system_options_group', false);
+			if ($setting_system['use_stock_product']) {
+				$sale_data = self::get_sale_data($post_id);
 		
+				$invoice_type = get_fakturo_term($sale_data['invoice_type'], 'fktr_invoice_types');
+				if(!is_wp_error($invoice_type)) {
+					if ($invoice_type->sum == 0) {
+						foreach ($sale_data['product_stock_location'] as $product_id => $arr_locations) {
+							foreach ($arr_locations as $location_id => $array_quantity) {
+								foreach ($array_quantity as $key => $quantity) {
+									if (!empty($quantity)) {
+										fktrPostTypeProducts::addStock($product_id, $quantity, $location_id);
+									}		
+								}
+							}	
+						} 
+					}
+				}
+			}
+		}
+	}
+	public static function updateStock($fields, $post) {
+		$setting_system = get_option('fakturo_system_options_group', false);
+		if (!$setting_system['use_stock_product']) {
+			return false;
+		}
 		$old_fields = self::get_sale_data($post->ID);
 		
 		$invoice_type = get_fakturo_term($fields['invoice_type'], 'fktr_invoice_types');
