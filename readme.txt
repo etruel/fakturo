@@ -72,11 +72,18 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 == Changelog ==
 
+= 0.2 Beta =
+* Added lot of Settings Screens.
+* Added Providers and Clients.
+* Added Products with Categories, Models.
+* Added Stock movements and management.
+* Added Sale Invoices.
+
 = 0.1 Beta =
 First Release
 
 
 == Upgrade Notice ==
 
-= 0.1 Beta =
-* First beta Release
+= 0.2 Beta =
+* Added new features.

@@ -23,6 +23,7 @@ class fktrPostTypeSales {
 		add_action('admin_print_styles-post-new.php', array('fktrPostTypeSales','styles'));
 		add_action('admin_print_styles-post.php', array('fktrPostTypeSales','styles'));
 		
+		add_action('get_delete_post_link', array('fktrPostTypeSales', 'set_delete_post_link'), 10, 3);
 		
 		add_filter('fktr_clean_sale_fields', array('fktrPostTypeSales', 'clean_fields'), 10, 1);
 		add_filter('fktr_sale_before_save', array('fktrPostTypeSales', 'before_save'), 10, 1);
@@ -55,13 +56,53 @@ class fktrPostTypeSales {
 		add_filter('fktr_search_product_parameter_internal_code', array('fktrPostTypeSales', 'product_parameter_internal_code'), 10, 3);
 		add_filter('fktr_search_product_parameter_manufacturers_code', array('fktrPostTypeSales', 'product_parameter_manufacturers_code'), 10, 3);
 		add_filter('post_row_actions', array('fktrPostTypeSales', 'action_row'), 10, 2);
-		
+
+		add_filter('attribute_escape', array('fktrPostTypeSales', 'change_button_texts'), 10, 2);
 		add_action('before_delete_post', array('fktrPostTypeSales', 'before_delete'), 10, 1);
 		
 	}
 	
-	public static function action_row($actions, $post){
+	public static function change_button_texts($safe_text, $text ){
+		global $post, $current_screen, $screen;
 		
+		if (isset($post) && $post->post_type == 'fktr_sale') {
+			switch( $safe_text ) {
+				case 'Save Draft';
+					$safe_text = __('Save as Pendient', FAKTURO_TEXT_DOMAIN );
+					break;
+
+				case 'Publish';
+					$safe_text = __('Finish Invoice', FAKTURO_TEXT_DOMAIN );
+					break;
+
+				default:
+					break;
+			}
+		}
+		return $safe_text;
+	}
+	
+	public static function set_delete_post_link( $delink, $post_id, $force_delete){
+		global $post;
+		if ($post->post_type == 'fktr_sale') {
+			$setting_system = get_option('fakturo_system_options_group', false);
+			if ($post->post_status == 'publish') { // don't allow delete
+				$delink = "javascript:alert('".__('Cannot delete finished Invoices', FAKTURO_TEXT_DOMAIN )."');";
+			}
+			if ($setting_system['use_stock_product'] && $post->post_status == 'draft') {
+				//$delink = str_replace('trash', 'delete', $delink);
+				$action = 'delete';
+				$post_type_object = get_post_type_object( $post->post_type );
+				$delete_link = add_query_arg( 'action', $action, admin_url( sprintf( $post_type_object->_edit_link, $post_id ) ) );
+				$delete_link = wp_nonce_url( $delete_link, "$action-post_{$post->ID}" );
+				
+				$delink = "$delete_link\" onclick=\"return confirm('".__('Delete this item permanently ?', FAKTURO_TEXT_DOMAIN )."')";
+			}
+		}
+		return $delink;
+	}
+	
+	public static function action_row($actions, $post){	
 		if ($post->post_type == 'fktr_sale') {
 			$setting_system = get_option('fakturo_system_options_group', false);
 			if ($post->post_status == 'publish') {
@@ -69,8 +110,10 @@ class fktrPostTypeSales {
 			}
 			if ($setting_system['use_stock_product'] && $post->post_status == 'draft') {
 				unset($actions['trash']);
-				$actions['delete'] = '<a class="submitdelete" title="'.esc_attr( __( 'Delete this item permanently')).'" href="'.get_delete_post_link( $post->ID, '', true).'">'. __( 'Delete Permanently' ).'</a>';
+				$actions['delete'] = '<a class="submitdelete" title="'.esc_attr( __( 'Delete this item permanently', FAKTURO_TEXT_DOMAIN )).'" href="'.get_delete_post_link( $post->ID, '', true).'">'. __( 'Delete Permanently' ).'</a>';
 			}
+			unset( $actions['inline hide-if-no-js'] );
+			$actions = apply_filters('fktr_sales_quick_actions',$actions, $post);
 		}
 		return $actions;
 	}
@@ -1142,7 +1185,8 @@ class fktrPostTypeSales {
 		
 		do_action('fktr_validate_sale', $fields);
 		
-		$response->add( array(
+		// Everything fine, go to save invoice :D
+		$response->add( array(  
 				'data'	=> 'success',
 				'supplemental' => array(
 					'message' => '',
@@ -1150,8 +1194,7 @@ class fktrPostTypeSales {
 					'function' => '',
 				),
 			)); 
-		$response->send();
-		wp_die();
+		$response->send();//		wp_die();
 	}
 	public static function exist_a_invoice_number($invoice_number, $sale_point, $invoice_type) {
 		global $wpdb;
@@ -1304,7 +1347,7 @@ class fktrPostTypeSales {
 		update_option('last_invoice_number', $last_invoice_numbers);
 		
 	}
-	public static function before_delete($post_id) {
+	public static function before_delete($post_id) {  // just permanent delete (when uses stock)
 		$post_type = get_post_type($post_id);
 		if ($post_type == 'fktr_sale') {
 			$setting_system = get_option('fakturo_system_options_group', false);

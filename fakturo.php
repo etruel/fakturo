@@ -3,7 +3,7 @@
  Plugin Name: Fakturo
  Plugin URI: http://www.wpematico.com
  Description: Make invoices with products and clients.  If you like it, please rate it 5 stars.
- Version: 0.1 Beta
+ Version: 0.2 Beta
  Author: etruel <esteban@netmdp.com>
  Author URI: http://www.netmdp.com
  */
@@ -11,7 +11,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Plugin version
-if ( ! defined('WPE_FAKTURO_VERSION' ) ) define('WPE_FAKTURO_VERSION', '0.1' ); 
+if ( ! defined('WPE_FAKTURO_VERSION' ) ) define('WPE_FAKTURO_VERSION', '0.2' ); 
 
 if ( ! class_exists( 'fakturo' ) ) :
 

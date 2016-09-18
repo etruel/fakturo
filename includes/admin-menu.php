@@ -131,9 +131,6 @@ class fktrAdminMenu {
 			'post-new.php?post_type=fktr_sale'
 		);
 		
-		echo '<style>.wp-submenu li a[href="post-new.php?post_type=fktr_provider"] {display: none !important;}</style>';
-		echo '<style>.wp-submenu li a[href="post-new.php?post_type=fktr_client"] {display: none !important;}</style>';
-		echo '<style>.wp-submenu li a[href="post-new.php?post_type=fktr_product"] {display: none !important;}</style>';
 		// other tests
 //		remove_submenu_page('fakturo_dashboard', 'post-new.php?post_type=fktr_provider');
 //		unset($submenu['edit.php?post_type=fktr_provider'][10]);
@@ -146,6 +143,10 @@ class fktrAdminMenu {
 			wp_enqueue_style('main',FAKTURO_PLUGIN_URL .'assets/css/main.css');	
 			wp_enqueue_style('icons',FAKTURO_PLUGIN_URL .'assets/css/icons.css');	
 		}
+		// hide some items that we don't want to show in WP menu
+		echo '<style>.wp-submenu li a[href="post-new.php?post_type=fktr_provider"] {display: none !important;}</style>';
+		echo '<style>.wp-submenu li a[href="post-new.php?post_type=fktr_client"] {display: none !important;}</style>';
+		echo '<style>.wp-submenu li a[href="post-new.php?post_type=fktr_product"] {display: none !important;}</style>';
 		
 	}
 	public static function fakturo_dashboard() {
