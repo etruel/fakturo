@@ -1,7 +1,7 @@
 === Fakturo ===
-Contributors: etruel
+Contributors: etruel, sniuk
 Donate link: 
-Tags: invoice, sales, purchases, billing, receipt, Tax Code, VAT, PDF invoices, bill, bill clients, merchantplus, checkout, online payment, pay, recurring billing, send invoice, web invoice, wp-invoice, wp-sales, e-commerce, e-store, eshop, wp ecommerce
+Tags: invoice, sales, purchases, billing, receipt, Tax Code, VAT, PDF invoices, bill, bill clients, merchantplus, SME, pyme, checkout, online payment, pay, recurring billing, send invoice, web invoice, wp-invoice, wp-sales, e-commerce, e-store, eshop, wp ecommerce
 Requires at least: 4.1
 Tested up to: 4.6.1
 Stable tag: trunk
@@ -86,4 +86,4 @@ First Release
 == Upgrade Notice ==
 
 = 0.2 Beta =
-* Added new features.
+Added new features.
