@@ -1473,7 +1473,7 @@ class fktrPostTypeSales {
 			$fields['invoice_currency'] = 0;
 		}
 		if (!isset($fields['invoice_saleman'])) {
-			$fields['invoice_saleman'] = 0;
+			$fields['invoice_saleman'] = get_current_user_id();
 		}
 		if (!isset($fields['invoice_discount'])) {
 			$fields['invoice_discount'] = 0;
@@ -1530,7 +1530,7 @@ class fktrPostTypeSales {
 			$fields['date'] = current_time('timestamp');
 
 			$fields['invoice_currency'] = 0;
-			$fields['invoice_saleman'] = 0;
+			$fields['invoice_saleman'] = get_current_user_id();
 			$fields['invoice_discount'] = 0;
 			
 			$fields['in_sub_total'] = 0;

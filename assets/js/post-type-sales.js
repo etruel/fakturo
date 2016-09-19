@@ -209,7 +209,13 @@ jQuery(document).ready(function() {
 				e.preventDefault();
 				return false;
 			}
-
+			if (jQuery('#client_id').val() == null || jQuery('#client_id').val() <= 0) {
+				jQuery('#client_id').select2('open');
+				e.preventDefault();
+				return false;
+			}
+			
+			
 			addNoticeMessage('<img width="12" src="'+sales_object.url_loading_image+'" class="mt2"/> '+sales_object.txt_loading+'...', 'updated');
 			
 			
