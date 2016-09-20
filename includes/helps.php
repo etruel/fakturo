@@ -10,6 +10,19 @@ class fktr_helps {
 		$doc_path = FAKTURO_PLUGIN_DIR.'docs/'.$screen->id .'-help.php';
 		if (file_exists($doc_path)) {
 			include $doc_path;
+			/**
+			 * filter 'fktr_help_'.$screen->id
+			 * Parses the help array to add help strings 
+			 * 
+			 * Description of Help Texts Array
+			 * -------------------------------
+			 * array('Text for left tab link' => array(
+			 * 	'field_name' => array( 
+			 * 		'title' => 'Text showed as bold in right side' , 
+			 * 		'tip' => 'Text html shown below the title in right side and also can be used for mouse over tips.' , 
+			 * 		'plustip' => 'Text html added below "tip" in right side in a new paragraph.',
+			 * )));
+			 */
 			$helptexts = apply_filters('fktr_help_'.$screen->id, $helptexts);
 			foreach($helptexts as $key => $section){
 				$tabcontent = '';
