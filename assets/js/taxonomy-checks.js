@@ -9,7 +9,7 @@ jQuery(document).ready(function() {
 	jQuery('#term_meta_provider_id').select2();
 	jQuery('#term_meta_bank_id').select2();
 	jQuery('#term_meta_currency_id').select2();
-	jQuery('#term_meta_status').select2();
+	
 	jQuery('#term_meta_status').change(function(e){
 		if (jQuery(this).val() == 'P') {
 			jQuery('#provider_div').fadeIn();
@@ -123,4 +123,43 @@ jQuery(document).ready(function() {
 
 		return true;
 	}
+	jQuery('form').submit(function(e){
+		if (parseInt(jQuery('#term_meta_client_id').val()) < 1) {
+			jQuery('#term_meta_client_id').select2('open');
+			e.preventDefault();
+			return false; 
+		}
+		if (parseInt(jQuery('#term_meta_bank_id').val()) < 1) {
+			jQuery('#term_meta_bank_id').select2('open');
+			e.preventDefault();
+			return false; 
+		}
+		if (parseInt(jQuery('#term_meta_currency_id').val()) < 1) {
+			jQuery('#term_meta_currency_id').select2('open');
+			e.preventDefault();
+			return false; 
+		}
+		if (jQuery('#term_meta_cost').val() == '') {
+			jQuery('#term_meta_cost').focus();
+			e.preventDefault();
+			return false; 
+		}
+		if (jQuery('#term_meta_value').val() == '') {
+			jQuery('#term_meta_value').focus();
+			e.preventDefault();
+			return false; 
+		}
+		if (jQuery('#term_meta_date').val() == '') {
+			jQuery('#term_meta_date').focus();
+			e.preventDefault();
+			return false; 
+		}
+		if (jQuery('#term_meta_cashing_date').val() == '') {
+			jQuery('#term_meta_cashing_date').focus();
+			e.preventDefault();
+			return false; 
+		}	
+		
+			
+	});
 });

@@ -187,7 +187,7 @@ class fktr_tax_check {
 				'echo'               => 0,
 				'selected'           => 0,
 				'hierarchical'       => 1, 
-				'name'               => 'client_data[bank_id]',
+				'name'               => 'term_meta[bank_id]',
 				'class'              => '',
 				'id'				 => 'term_meta_bank_id',
 				'depth'              => 1,
@@ -207,7 +207,7 @@ class fktr_tax_check {
 				'echo'               => 0,
 				'selected'           => 0,
 				'hierarchical'       => 1, 
-				'name'               => 'client_data[currency_id]',
+				'name'               => 'term_meta[currency_id]',
 				'class'              => '',
 				'id'				 => 'term_meta_currency_id',
 				'depth'              => 1,
@@ -264,8 +264,8 @@ class fktr_tax_check {
 			<p class="description">'.__( 'Select a client.', FAKTURO_TEXT_DOMAIN ).'</p>
 		</div>
 		
-		<div class="form-field" id="client_div">
-			<label for="term_meta[provider_id]">'.__( 'Bank', FAKTURO_TEXT_DOMAIN ).'</label>
+		<div class="form-field" id="bank_id_div">
+			<label for="term_meta[bank_id]">'.__( 'Bank', FAKTURO_TEXT_DOMAIN ).'</label>
 			'.$selectBankEntities.'
 			<p class="description">'.__( 'Select a bank.', FAKTURO_TEXT_DOMAIN ).'</p>
 		</div>
@@ -289,14 +289,9 @@ class fktr_tax_check {
 		<div class="form-field" id="cashing_date_div">
 			<label for="term_meta[cashing_date]">'.__( 'Cashing Date', FAKTURO_TEXT_DOMAIN ).'</label>
 			<input type="text" name="term_meta[cashing_date]" id="term_meta_cashing_date" value="'.date_i18n($setting_system['dateformat'], $date ).'" style="width: 150px; ">
-			<p class="description">'.__( 'Enter a cashing date', FAKTURO_TEXT_DOMAIN ).'</p>
+			<p class="description">'.__( 'Enter a cashing date.', FAKTURO_TEXT_DOMAIN ).'</p>
 		</div>
-		<div class="form-field" id="notes_div">
-			<label for="term_meta[notes]">'.__( 'Notes', FAKTURO_TEXT_DOMAIN ).'</label>
-			<textarea style="width:95%;" rows="4" name="term_meta[notes]" id="term_meta_notes"></textarea>
 		
-			<p class="description">'.__( 'Enter the notes', FAKTURO_TEXT_DOMAIN ).'</p>
-		</div>
 		<div class="form-field" id="status_div">
 			<label for="term_meta[status]">'.__( 'Status', FAKTURO_TEXT_DOMAIN ).'</label>
 			'.$echoSelectStatus.'
@@ -312,13 +307,209 @@ class fktr_tax_check {
 			'.$selectProviders.'
 			<p class="description">'.__( 'Select a provider.', FAKTURO_TEXT_DOMAIN ).'</p>
 		</div>
+		<div class="form-field" id="notes_div">
+			<label for="term_meta[notes]">'.__( 'Notes', FAKTURO_TEXT_DOMAIN ).'</label>
+			<textarea style="width:95%;" rows="4" name="term_meta[notes]" id="term_meta_notes"></textarea>
+		
+			<p class="description">'.__( 'Enter the notes', FAKTURO_TEXT_DOMAIN ).'</p>
+		</div>
 		';
 		echo $echoHtml;
 	}
 	public static function edit_form_fields($term) {
 
 		$term_meta = get_fakturo_term($term->term_id, self::$tax_name);
+		$setting_system = get_option('fakturo_system_options_group', false);
 		
+		$selectClients = fakturo_get_select_post(array(
+											'echo' => 0,
+											'post_type' => 'fktr_client',
+											'show_option_none' => __('Choose a Client', FAKTURO_TEXT_DOMAIN ),
+											'name' => 'term_meta[client_id]',
+											'id' => 'term_meta_client_id',
+											'class' => '',
+											'selected' => $term_meta->client_id
+										));
+		$selectProviders = fakturo_get_select_post(array(
+											'echo' => 0,
+											'post_type' => 'fktr_provider',
+											'show_option_none' => __('Choose a Provider', FAKTURO_TEXT_DOMAIN ),
+											'name' => 'term_meta[provider_id]',
+											'id' => 'term_meta_provider_id',
+											'class' => '',
+											'selected' => $term_meta->provider_id
+										));
+		$selectBankEntities = wp_dropdown_categories( array(
+				'show_option_all'    => '',
+				'show_option_none'   => __('Choose a Bank Entity', FAKTURO_TEXT_DOMAIN ),
+				'orderby'            => 'name', 
+				'order'              => 'ASC',
+				'show_count'         => 0,
+				'hide_empty'         => 0, 
+				'child_of'           => 0,
+				'exclude'            => '',
+				'echo'               => 0,
+				'selected'           => $term_meta->bank_id,
+				'hierarchical'       => 1, 
+				'name'               => 'term_meta[bank_id]',
+				'class'              => '',
+				'id'				 => 'term_meta_bank_id',
+				'depth'              => 1,
+				'tab_index'          => 0,
+				'taxonomy'           => 'fktr_bank_entities',
+				'hide_if_empty'      => false
+			));
+		$selectCurrencies = wp_dropdown_categories( array(
+				'show_option_all'    => '',
+				'show_option_none'   => __('Choose a Currency', FAKTURO_TEXT_DOMAIN ),
+				'orderby'            => 'name', 
+				'order'              => 'ASC',
+				'show_count'         => 0,
+				'hide_empty'         => 0, 
+				'child_of'           => 0,
+				'exclude'            => '',
+				'echo'               => 0,
+				'selected'           => $term_meta->currency_id,
+				'hierarchical'       => 1, 
+				'name'               => 'term_meta[currency_id]',
+				'class'              => '',
+				'id'				 => 'term_meta_currency_id',
+				'depth'              => 1,
+				'tab_index'          => 0,
+				'taxonomy'           => 'fktr_currencies',
+				'hide_if_empty'      => false
+			));
+			
+		$selectStatus = array();
+		$selectStatus['status'] = array();
+		$selectStatus['status'][0] = __( 'Status', FAKTURO_TEXT_DOMAIN );
+		$selectStatus['status']['C'] = __('To be cashed', FAKTURO_TEXT_DOMAIN );
+		
+		$selectStatus['applied'] = array();
+		$selectStatus['applied'][0] = __( 'Applied', FAKTURO_TEXT_DOMAIN );
+		$selectStatus['applied']['D'] = __( 'Deposited', FAKTURO_TEXT_DOMAIN );
+		$selectStatus['applied']['P'] = __( 'Delivered by payments', FAKTURO_TEXT_DOMAIN );
+		$selectStatus['applied']['E'] = __( 'Exchange or delivery', FAKTURO_TEXT_DOMAIN );
+		
+		$selectStatus['canceled'] = array();
+		$selectStatus['canceled'][0] =  __( 'Canceled', FAKTURO_TEXT_DOMAIN );		
+		$selectStatus['canceled']['R'] = __( 'Rejected', FAKTURO_TEXT_DOMAIN );		
+		$selectStatus['canceled']['X'] = __( 'Annulled', FAKTURO_TEXT_DOMAIN );			
+		$selectStatus = apply_filters('fktr_array_check_status', $selectStatus);
+
+  
+		$echoSelectStatus = '<select id="term_meta_status" name="term_meta[status]">';
+		foreach ($selectStatus as $gkey => $arr_options) {
+			$echoSelectStatus .= '<optgroup label="'.$arr_options[0].'">';
+			foreach ($arr_options as $key => $txt) {
+				if ($key === 0) {
+					continue;
+				}
+				$echoSelectStatus .= '<option value="'.$key.'"'.selected($key, $term_meta->status, false).'>'.$txt.'</option>';
+			}
+			$echoSelectStatus .= '</optgroup>';
+		}
+		$echoSelectStatus .= '</select>';
+	
+		
+		$echoHtml = '<style type="text/css">.form-field.term-parent-wrap, .form-field.term-slug-wrap {display: none;} .form-field.term-description-wrap { display:none;}  </style>
+		<tr class="form-field">
+			<th scope="row" valign="top">
+				<label for="term_meta[client_id]">'.__( 'Client', FAKTURO_TEXT_DOMAIN ).'</label>
+			</th>
+			<td>
+				'.$selectClients.'
+				<p class="description">'.__( 'Select a client.', FAKTURO_TEXT_DOMAIN ).'</p>
+			</td>
+		</tr>
+		<tr class="form-field">
+			<th scope="row" valign="top">
+				<label for="term_meta[bank_id]">'.__( 'Bank', FAKTURO_TEXT_DOMAIN ).'</label>
+			</th>
+			<td>
+				'.$selectBankEntities.'
+				<p class="description">'.__( 'Select a bank.', FAKTURO_TEXT_DOMAIN ).'</p>
+			</td>
+		</tr>
+		<tr class="form-field">
+			<th scope="row" valign="top">
+				<label for="term_meta[currency_id]">'.__( 'Currency', FAKTURO_TEXT_DOMAIN ).'</label>
+			</th>
+			<td>
+				'.$selectCurrencies.'
+				<p class="description">'.__( 'Select a currency.', FAKTURO_TEXT_DOMAIN ).'</p>
+			</td>
+		</tr>
+		<tr class="form-field">
+			<th scope="row" valign="top">
+				<label for="term_meta[value]">'.__( 'Value', FAKTURO_TEXT_DOMAIN ).'</label>
+			</th>
+			<td>
+				<input type="text" name="term_meta[value]" id="term_meta_value" value="'.$term_meta->value.'" style="width: 150px;text-align: right; padding-right: 0px; ">
+				<p class="description">'.__( 'Enter a value.', FAKTURO_TEXT_DOMAIN ).'</p>
+			</td>
+		</tr>
+		<tr class="form-field">
+			<th scope="row" valign="top">
+				<label for="term_meta[date]">'.__( 'Date', FAKTURO_TEXT_DOMAIN ).'</label>
+			</th>
+			<td>
+				<input type="text" name="term_meta[date]" id="term_meta_date" value="'.date_i18n($setting_system['dateformat'], $term_meta->date ).'" style="width: 150px;"/>
+				<p class="description">'.__( 'Enter a date.', FAKTURO_TEXT_DOMAIN ).'</p>
+			</td>
+		</tr>
+		<tr class="form-field">
+			<th scope="row" valign="top">
+				<label for="term_meta[cashing_date]">'.__( 'Cashing Date', FAKTURO_TEXT_DOMAIN ).'</label>
+			</th>
+			<td>
+				<input type="text" name="term_meta[cashing_date]" id="term_meta_cashing_date" value="'.date_i18n($setting_system['dateformat'],  $term_meta->cashing_date ).'" style="width: 150px; ">
+				<p class="description">'.__( 'Enter a cashing date.', FAKTURO_TEXT_DOMAIN ).'</p>
+			</td>
+		</tr>
+		<tr class="form-field" id="status_div">
+			<th scope="row" valign="top">
+				<label for="term_meta[status]">'.__( 'Status', FAKTURO_TEXT_DOMAIN ).'</label>
+			</th>
+			<td>
+				'.$echoSelectStatus.'
+				<p class="description">'.__( 'Select a check status.', FAKTURO_TEXT_DOMAIN ).'</p>
+			</td>
+		</tr>
+		<tr class="form-field" id="date_status_div"'.(($term_meta->status!=='C')?'':'style="display:none;"').'>
+			<th scope="row" valign="top">
+				<label for="term_meta[date_status]">'.__( 'Date', FAKTURO_TEXT_DOMAIN ).'</label>
+			</th>
+			<td>
+				<input type="text" name="term_meta[date_status]" id="term_meta_date_status" value="'.date_i18n($setting_system['dateformat'],  $term_meta->date_status ).'" style="width: 150px; ">
+				<p class="description">'.__( 'Enter a date.', FAKTURO_TEXT_DOMAIN ).'</p>
+			</td>
+		</tr>
+		<tr class="form-field" id="provider_div"'.(($term_meta->status==='P')?'':'style="display:none;"').'>
+			<th scope="row" valign="top">
+				<label for="term_meta[provider_id]">'.__( 'Provider', FAKTURO_TEXT_DOMAIN ).'</label>
+			</th>
+			<td>
+				'.$selectProviders.'
+				<p class="description">'.__( 'Select a provider.', FAKTURO_TEXT_DOMAIN ).'</p>
+			</td>
+		</tr>
+		<tr class="form-field" id="notes_div">
+			<th scope="row" valign="top">
+				<label for="term_meta[notes]">'.__( 'Notes', FAKTURO_TEXT_DOMAIN ).'</label>
+			</th>
+			<td>
+				<textarea style="width:95%;" rows="4" name="term_meta[notes]" id="term_meta_notes">'. $term_meta->notes.'</textarea>
+				<p class="description">'.__( 'Enter the notes.', FAKTURO_TEXT_DOMAIN ).'</p>
+			</td>
+		</tr>
+		
+		
+		
+		
+		
+		';
+		echo $echoHtml;
 	}
 
 	static function row_actions( $actions, $tag ){
@@ -390,8 +581,12 @@ class fktr_tax_check {
 		if (isset($fields['date'])) {
 			$fields['date'] = fakturo_date2time($fields['date'], $setting_system['dateformat'] );
 		}
-		
-		
+		if (isset($fields['cashing_date'])) {
+			$fields['cashing_date'] = fakturo_date2time($fields['cashing_date'], $setting_system['dateformat'] );
+		}
+		if (isset($fields['date_status'])) {
+			$fields['date_status'] = fakturo_date2time($fields['date_status'], $setting_system['dateformat'] );
+		}
 		return $fields;
 	}
 	public static function save_fields($term_id, $tt_id) {
