@@ -140,7 +140,7 @@ class fktr_tax_check {
 					'decimal' => $setting_system['decimal'],
 					'decimal_numbers' => $setting_system['decimal_numbers'],
 					
-					'datetimepicker' => json_encode($objectL10n),
+					'datetimepicker' => $objectL10n,
 					
 					'txt_search_products' => __('Search products...', FAKTURO_TEXT_DOMAIN ),
 					'characters_to_search' => apply_filters('fktr_sales_characters_to_search_product', 3),
@@ -587,6 +587,13 @@ class fktr_tax_check {
 		if (isset($fields['date_status'])) {
 			$fields['date_status'] = fakturo_date2time($fields['date_status'], $setting_system['dateformat'] );
 		}
+		if (isset($fields['status'])) {
+			if ($fields['status'] == 'D' || $fields['status'] == 'P' || $fields['status'] == 'E') {
+				$value_in_default_currency = fakturo_transform_money($fields['currency_id'], $setting_system['currency'], $fields['value']);
+				fktrPostTypeClients::add_balance($fields['client_id'], $value_in_default_currency);
+			}
+		}
+		
 		return $fields;
 	}
 	public static function save_fields($term_id, $tt_id) {

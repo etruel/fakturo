@@ -573,7 +573,9 @@ class fktrPostTypeClients {
 		if (!isset($fields['active'])) {
 			$fields['active'] = 1;
 		}
-		
+		if (!isset($fields['balance'])) {
+			$fields['balance'] = 0;
+		}
 		
 		if (!isset($fields['taxpayer'])) {
 			$fields['taxpayer'] = '';
@@ -690,6 +692,28 @@ class fktrPostTypeClients {
 				}
 			}
 		}
+	}
+	public static function remove_balance($client_id, $value) {
+		
+		$data_client = self::get_client_data($client_id);
+		if (!isset($data_client['balance'])) {
+			$data_client['balance'] = 0;
+		}
+		$data_client['balance'] = $data_client['balance']-$value;
+		$new = apply_filters('fktr_client_metabox_save_balance', $data_client['balance']);
+		update_post_meta($client_id, 'balance', $new);
+		return true;
+	}
+	public static function add_balance($client_id, $value) {
+		
+		$data_client = self::get_client_data($client_id);
+		if (!isset($data_client['balance'])) {
+			$data_client['balance'] = 0;
+		}
+		$data_client['balance'] = $data_client['balance']+$value;
+		$new = apply_filters('fktr_client_metabox_save_balance', $data_client['balance']);
+		update_post_meta($client_id, 'balance', $new);
+		return true;
 	}
 	public static function get_client_data($client_id) {
 		$custom_field_keys = get_post_custom($client_id);

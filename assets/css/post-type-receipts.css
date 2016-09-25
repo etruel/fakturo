@@ -1,0 +1,68 @@
+#checks_content {
+	margin:10px;
+}
+.ck_column {
+    width: 24%;
+}
+#checks_table {
+	border: 1px solid #d8d0d0;
+	width:98%;
+	text-align:center;
+}
+#checks_header_table {
+	width:98%;
+}
+
+#invoice_content {
+	margin:10px;
+}
+.in_column {
+    width: 19%;
+}
+#invoices_table {
+	border: 1px solid #d8d0d0;
+	width:98%;
+	text-align:center;
+}
+#invoices_header_table {
+	width:98%;
+}
+.tr_gray {
+	background: #f4f4f4;
+}
+#receipt_check_popup {
+	position:fixed;
+	left: 50%;
+	top: 50%;
+	margin-left: -250px;
+	margin-top: -230px;
+	width:500px;
+	min-height:450px;
+	height:auto;
+	background-color:white;
+	z-index:5;
+	border:5px solid #d9d0d0;
+	border-radius:4px;
+	box-shadow: 0 0 15px rgba(0,0,0,.1);
+}
+#popup_check_background {
+	position:fixed;
+	left: 0%;
+	top: 0%;
+	width:100%;
+	height:100%;
+	background-color:#000;
+	opacity:0.8;
+	z-index:3;
+	margin-left:160px;
+}
+#content_popup_check {
+	min-height:165px;
+	height:auto;
+	padding:4px;
+}
+#buttons_check_popup {
+	border-top:1px solid #d9d0d0;
+	height:35px;
+	text-align:right;
+}

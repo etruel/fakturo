@@ -38,6 +38,7 @@ class fakturo {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-providers.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-clients.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-sales.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-receipts.php'; 
 		
 		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/sale-points.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/currencies.php'; 

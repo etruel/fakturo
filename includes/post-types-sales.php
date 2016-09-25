@@ -439,6 +439,7 @@ class fktrPostTypeSales {
 					'txt_max' => __('Max', FAKTURO_TEXT_DOMAIN ),
 					'txt_min' => __('Min', FAKTURO_TEXT_DOMAIN ),
 					'txt_product_alert_min' => __('Alert of minimal stock', FAKTURO_TEXT_DOMAIN ),
+					'txt_cancel' => __('Cancel', FAKTURO_TEXT_DOMAIN ),
 					
 					'tax_coditions' => json_encode($tax_coditions),
 					'currencies' => json_encode($currencies),

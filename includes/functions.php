@@ -38,9 +38,7 @@ function fakturo_get_select_post($args = null) {
 		$select .= '<option value="-1" '.selected($r['selected'], -1, false).'>'.$r['show_option_none']. '</option>';
 	}
 	foreach ($itemsPosts as $post ) {
-			
 		$select .='<option value="' .$post->ID. '" ' . selected($r['selected'], $post->ID, false) . '>'.esc_html(get_the_title($post->ID)).'</option>';
-			
 	}
 		
 	$select .= '</select>';
@@ -157,14 +155,42 @@ function fakturo_porcent_to_mask($value) {
 	 * 
 	 * @return int timestamp or false if error
 	 */
-    function fakturo_date2time($value ,  $dateformat = 'd-m-Y' ){
-		$date = date_parse_from_format( $dateformat , $value);
-		$timestamp = mktime($date['hour'], $date['minute'], $date['second'], $date['month'], $date['day'], $date['year']);
-		if($timestamp['error_count'] !=0 ) $timestamp=false;  // if error return false
-		return $timestamp; 
+function fakturo_date2time($value ,  $dateformat = 'd-m-Y' ){
+	$date = date_parse_from_format( $dateformat , $value);
+	$timestamp = mktime($date['hour'], $date['minute'], $date['second'], $date['month'], $date['day'], $date['year']);
+	if($timestamp['error_count'] !=0 ) {
+		 $timestamp=false;  // if error return false
 	}
-
-
+	return $timestamp; 
+}
+function getRateFromCurrencyId($currency_id) {
+	$retorno = 1;
+	$currency_data = get_fakturo_term($currency_id, 'fktr_currencies');
+	if(!is_wp_error($currency_data)) {
+		$retorno = $currency_data->rate;
+	}
+	return $retorno;
+}
+	
+	
+function fakturo_transform_money($from_c, $to_c, $value_money) {
+	$setting_system = get_option('fakturo_system_options_group', false);
+	$default_c = $setting_system['currency'];
+	$retorno = $value_money;
+	$current_currency = $from_c;
+	if ($from_c != $to_c) {
+		if ($default_c != $current_currency) {
+			$rate = getRateFromCurrencyId($current_currency);
+			$retorno = $retorno*$rate;
+			$current_currency = $default_c;
+		}
+		if ($current_currency != $to_c) {
+			$rate = getRateFromCurrencyId($to_c);
+			$retorno = $retorno/$rate;
+		}
+	}
+	return $retorno;
+}
 
 
 ?>
