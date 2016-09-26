@@ -290,9 +290,44 @@ class fktrPostTypeReceipts {
 	}
 	
 	public static function meta_boxes() {
-		
+		add_meta_box('fakturo-currencies-box', __('Currencies', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'currencies_box'),'fktr_receipt','side', 'high' );
 		add_meta_box('fakturo-receipt-box', __('Receipt data', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'receipt_box'),'fktr_receipt','normal', 'high' );
 		do_action('add_ftkr_receipt_meta_boxes');
+	}
+	public static function currencies_box() {
+		global $post;
+		
+	
+		$sale_data = self::get_receipt_data($post->ID);
+		$setting_system = get_option('fakturo_system_options_group', false);
+		
+		$currencies = get_fakturo_terms(array(
+											'taxonomy' => 'fktr_currencies',
+											'hide_empty' => false,
+											'exclude' => $setting_system['currency']
+										));
+		
+		
+		
+		
+		$echoHtml = '<table>
+					<tbody>';
+		
+		foreach ($currencies as $cur) {
+			$echoHtml .= '<tr>
+							<td>'.((empty($cur->reference))?'':'<a href="'.$cur->reference.'" target="_blank">').''.$cur->name.''.((empty($cur->reference))?'':'</a>').'</td>'.(($setting_system['currency_position'] == 'before')?'<td><label for="receipt_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'<td>'.(($post->post_status != 'publish')?'<input type="text" style="text-align: right; width: 120px;" value="'.$cur->rate.'" name="receipt_currencies['.$cur->term_id.']" id="receipt_currencies_'.$cur->term_id.'" class="receipt_currencies"/> ':number_format($cur->rate, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand'])).''.(($setting_system['currency_position'] == 'after')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'</td>
+						</tr>';
+			
+		}
+			
+		$echoHtml .= '</tbody>
+				</table>';
+	
+		$echoHtml = apply_filters('fktr_receipt_currencies_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_receipt_currencies_box', $echoHtml);
+		
+		
 	}
 	public static function receipt_box() {
 		global $post;
@@ -392,7 +427,7 @@ class fktrPostTypeReceipts {
 					</tr>
 				</table>
 				<table id="checks_table">
-					<tr>
+					<tr id="message_check_table">
 						<th>'. __('No checks in receipt, You can add a check.', FAKTURO_TEXT_DOMAIN  ) .'</th>
 					</tr>
 				</table>

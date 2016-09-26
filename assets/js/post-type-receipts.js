@@ -5,7 +5,7 @@ jQuery(document).ready(function() {
 	jQuery("#client_id").select2();
 	jQuery("#payment_type_id").select2();
 	jQuery("#currency_id").select2();
-	
+	updateKeyPress();
 	
 	jQuery.datetimepicker.setLocale(receipts_object.datetimepicker.lang);
 	
@@ -17,9 +17,14 @@ jQuery(document).ready(function() {
 	DefaultMaskNumbers = "#"+receipts_object.thousand+"##0"+receipts_object.decimal+decimal_ex;
 	jQuery('#available_to_include').mask(DefaultMaskNumbers, {reverse: true});
 	jQuery('#cash').mask(DefaultMaskNumbers, {reverse: true});
+	jQuery('.receipt_currencies').mask(DefaultMaskNumbers, {reverse: true});
 	jQuery("#currency_id").change(function(e){
 		update_invoices();
 	});
+	jQuery(".receipt_currencies").change(function(){
+		update_invoices();
+	});
+	
 	
 	jQuery("#client_id").change(function(e){
 		if (parseInt(jQuery("#client_id").val()) > 0) {
@@ -68,14 +73,14 @@ function update_invoices() {
 
 function openAddCheckPopPup() {
 	
-	var newHtml = '<div id="content_popup_check"><table class="form-table"><tr><td>Bank</td><td>'+receipts_object.select_bank_entities+'</td></tr><tr><td>Serial number</td><td><input type="text" name="popup_check_serial_number" id="popup_check_serial_number"/> </td></tr> <tr><td>Currency</td><td>'+receipts_object.select_bank_currencies+'</td></tr>  <tr><td>Value</td><td><input type="text" name="popup_check_value" id="popup_check_value"/> </td></tr> </tr>  <tr><td>Due date</td><td><input type="text" name="popup_check_due_date" id="popup_check_due_date" value="'+receipts_object.current_date+'"/> </td></tr> <tr><td>Notes</td><td><textarea style="width:95%;" rows="4" name="popup_check_notes" id="popup_check_notes"></textarea></td></tr> </table></div><div id="buttons_check_popup"><a href="#" class="button-primary add" id="accept_check" style="margin:3px;">Accept</a> <a href="#" class="button" id="btn_cancel_check_popup" style="margin:3px;">'+receipts_object.txt_cancel+'</a></div>';
+	var newHtml = '<div id="content_popup_check"><table class="form-table"><tr><td>Bank</td><td>'+receipts_object.select_bank_entities+'</td></tr><tr><td>Serial number</td><td><input type="text" name="popup_check_serial_number" id="popup_check_serial_number"/> </td></tr> <tr><td>Currency</td><td>'+receipts_object.select_bank_currencies+'</td></tr>  <tr><td>Value</td><td><input type="text" name="popup_check_value" id="popup_check_value"/> </td></tr> </tr>  <tr><td>Date</td><td><input type="text" name="popup_check_date" id="popup_check_date" value="'+receipts_object.current_date+'"/> </td></tr> <tr><td>Cashing Date</td><td><input type="text" name="popup_check_cashing_date" id="popup_check_cashing_date" value="'+receipts_object.current_date+'"/> </td></tr> <tr><td>Notes</td><td><textarea style="width:95%;" rows="4" name="popup_check_notes" id="popup_check_notes"></textarea></td></tr>  </table></div><div id="buttons_check_popup"><a href="#" class="button-primary add" id="accept_check" style="margin:3px;">Accept</a> <a href="#" class="button" id="btn_cancel_check_popup" style="margin:3px;">'+receipts_object.txt_cancel+'</a></div>';
 	jQuery('#receipt_check_popup').html(newHtml);
 	jQuery('#receipt_check_popup').fadeIn();
 	jQuery('#popup_check_background').fadeIn();
 	jQuery('#popup_check_banks').select2();
 	jQuery('#popup_check_currencies').select2();
 
-	jQuery('#popup_check_due_date').datetimepicker({
+	jQuery('#popup_check_date').datetimepicker({
 				lang: receipts_object.datetimepicker.lang,
 				dayOfWeekStart:  receipts_object.datetimepicker.firstDay,
 				formatTime: receipts_object.datetimepicker.timeFormat,
@@ -83,6 +88,23 @@ function openAddCheckPopPup() {
 				formatDate: receipts_object.datetimepicker.dateFormat,
 				timepicker:false
 			});
+	jQuery('#popup_check_cashing_date').datetimepicker({
+				lang: receipts_object.datetimepicker.lang,
+				dayOfWeekStart:  receipts_object.datetimepicker.firstDay,
+				formatTime: receipts_object.datetimepicker.timeFormat,
+				format: receipts_object.datetimepicker.printFormat,
+				formatDate: receipts_object.datetimepicker.dateFormat,
+				timepicker:false
+			});
+	jQuery('#popup_check_banks').select2('open');
+	jQuery('#popup_check_banks').on("select2:select", function(e) { 
+		jQuery('#popup_check_serial_number').focus();
+	});
+		
+
+	jQuery('#popup_check_currencies').on("select2:select", function(e) {
+		jQuery('#popup_check_value').focus();
+	});
 	
 	
 	jQuery('#btn_cancel_check_popup').click(function(e){
@@ -93,37 +115,81 @@ function openAddCheckPopPup() {
 		return false;
 	});
 	jQuery('#accept_check').click(function(e){
-		var error = false;
-		if (!error && parseInt(jQuery('#popup_check_banks').val()) < 1) {
-			jQuery('#popup_check_banks').select2('open');
-			error = true;
-		}
-		if (!error && jQuery('#popup_check_serial_number').val() == '') {
-			jQuery('#popup_check_serial_number').focus();
-			error = true;
-		}
-		
-		if (!error && parseInt(jQuery('#popup_check_currencies').val()) < 1) {
-			jQuery('#popup_check_currencies').select2('open');
-			error = true;
-		}
-		if (!error && jQuery('#popup_check_value').val() == '') {
-			jQuery('#popup_check_value').focus();
-			error = true;
-		}
-		if (!error && jQuery('#popup_check_due_date').val() == '') {
-			jQuery('#popup_check_due_date').focus();
-			error = true;
-		}
-		if (!error) {
-			alert("Add check to list");
-		}
+		submitPopupForm();
 		e.preventDefault();
 		return false;
 	});
 	
 	
 }
+function submitPopupForm() {
+	var error = false;
+	
+	
+	if (!error && parseInt(jQuery('#popup_check_banks').val()) < 1) {
+		jQuery('#popup_check_banks').select2('open');
+		error = true;
+	}
+	if (!error && jQuery('#popup_check_serial_number').val() == '') {
+		jQuery('#popup_check_serial_number').focus();
+		error = true;
+	}
+		
+	if (!error && parseInt(jQuery('#popup_check_currencies').val()) < 1) {
+		jQuery('#popup_check_currencies').select2('open');
+		error = true;
+	}
+	if (!error && jQuery('#popup_check_value').val() == '') {
+		jQuery('#popup_check_value').focus();
+		error = true;
+	}
+	if (!error && jQuery('#popup_check_date').val() == '') {
+		jQuery('#popup_check_date').focus();
+		error = true;
+	}
+	if (!error && jQuery('#popup_check_cashing_date').val() == '') {
+		jQuery('#popup_check_cashing_date').focus();
+		error = true;
+	}
+		
+	if (!error) {
+		jQuery('#message_check_table').remove();
+		jQuery('#checks_table').append('<tr><td class="ck_column">'+jQuery('#popup_check_serial_number').val()+'</td><td class="ck_column">'+jQuery('#popup_check_banks').val()+'</td><td class="ck_column">'+jQuery('#popup_check_value').val()+'</td class="ck_column"><td>Edit - Delete</td></tr>');
+		jQuery('#receipt_check_popup').fadeOut();
+		jQuery('#popup_check_background').fadeOut();
+		jQuery('#receipt_check_popup').html('');
+	}
+	
+	
+}
+
+
+
+function updateKeyPress() {
+	jQuery(document).keypress(function(e) {
+		if (e.which == 13) {
+			if (jQuery('#receipt_check_popup').is(':visible') && !jQuery('#receipt_check_popup').is(':hidden')) {
+				submitPopupForm();
+			}
+			e.preventDefault();
+			return false;	
+		}
+	});
+	
+	
+	
+	jQuery('form input').keypress(function(e) {
+		
+		if (e.which == 13) {
+			
+			e.preventDefault();
+			return false;
+		}
+	});
+	
+	
+}
+
 function getRateFromCurrencyId(term_id) {
 	var r = 1;
 	var currencies = receipts_object.currencies;
@@ -159,16 +225,38 @@ function transformMoney(from_c, to_c, default_c, value_money) {
 	var current_currency = from_c;
 	if (from_c != to_c) {
 		if (default_c != current_currency) {
-			var rate = getRateFromCurrencyId(current_currency);
+			var rate = getCurrentRateFromCurrencies(current_currency);
 			retorno = retorno*rate;
 			current_currency = default_c;
 		}
 		if (current_currency != to_c) {
-			var rate = getRateFromCurrencyId(to_c);
+			var rate = getCurrentRateFromCurrencies(to_c);
 			retorno = retorno/rate;
 		}
 	}
 	return retorno;
+}
+function getCurrentRateFromCurrencies(term_id) {
+	var r = 1;
+	if(jQuery('#receipt_currencies_'+term_id).length ) {
+		r = converMaskToStandar(jQuery('#receipt_currencies_'+term_id).val(), receipts_object);
+	} else {
+		alert("Currency no found. This can cause a problem in the transaction.");
+	}
+	return parseFloat(r);
+}
+function converMaskToStandar(valueMasked, maskObject) {
+	if (valueMasked == '') {
+		return valueMasked;
+	}
+	if (valueMasked.indexOf(maskObject.decimal) !== -1) {
+		var pieceNumber = valueMasked.split(maskObject.decimal);
+		
+		pieceNumber[0] = pieceNumber[0].split(maskObject.thousand).join('');
+
+		valueMasked = pieceNumber.join('.');
+	}
+	return valueMasked;
 }
 
 Number.prototype.formatMoney = function(c, d, t){
