@@ -1,3 +1,4 @@
+var DefaultMaskNumbers = '';
 jQuery(document).ready(function() {
 	
 	jQuery('#title-prompt-text').remove();
@@ -65,10 +66,37 @@ jQuery(document).ready(function() {
 		return false;
 	});
 	
+	jQuery('.ck_delete').click(function(e){
+		var check_id = jQuery(this).data('id');
+		jQuery(this).parent().parent().remove();
+		e.preventDefault();
+		return false;
+	});
+	jQuery('.ck_edit').click(function(e){
+		var check_id = jQuery(this).data('id');
+		openEditCheckPopup(check_id);
+		e.preventDefault();
+		return false;
+	});
+	
+	
 });
 
 function update_invoices() {
 	alert("Update invoices and data.");
+}
+
+function openEditCheckPopup(check_id) {
+	editing_check = check_id;
+	openAddCheckPopPup();
+	jQuery('#popup_check_banks').val(jQuery('#ck_bank_'+check_id+'').val()).trigger("change");
+	jQuery('#popup_check_serial_number').val(jQuery('#ck_number_'+check_id+'').val());
+	jQuery('#popup_check_currencies').val(jQuery('#ck_currency_'+check_id+'').val()).trigger("change");;
+	jQuery('#popup_check_value').val(jQuery('#ck_value_'+check_id+'').val());
+	jQuery('#popup_check_date').val(jQuery('#ck_date_'+check_id+'').val());
+	jQuery('#popup_check_cashing_date').val(jQuery('#ck_cashing_date_'+check_id+'').val());
+	jQuery('#popup_check_notes').val(jQuery('#ck_notes_'+check_id+'').val());
+	
 }
 
 function openAddCheckPopPup() {
@@ -79,7 +107,7 @@ function openAddCheckPopPup() {
 	jQuery('#popup_check_background').fadeIn();
 	jQuery('#popup_check_banks').select2();
 	jQuery('#popup_check_currencies').select2();
-
+	jQuery('#popup_check_value').mask(DefaultMaskNumbers, {reverse: true});
 	jQuery('#popup_check_date').datetimepicker({
 				lang: receipts_object.datetimepicker.lang,
 				dayOfWeekStart:  receipts_object.datetimepicker.firstDay,
@@ -122,6 +150,8 @@ function openAddCheckPopPup() {
 	
 	
 }
+var editing_check = -1;
+var idck = 0;
 function submitPopupForm() {
 	var error = false;
 	
@@ -151,18 +181,53 @@ function submitPopupForm() {
 		jQuery('#popup_check_cashing_date').focus();
 		error = true;
 	}
-		
+	
+	
 	if (!error) {
 		jQuery('#message_check_table').remove();
-		jQuery('#checks_table').append('<tr><td class="ck_column">'+jQuery('#popup_check_serial_number').val()+'</td><td class="ck_column">'+jQuery('#popup_check_banks').val()+'</td><td class="ck_column">'+jQuery('#popup_check_value').val()+'</td class="ck_column"><td>Edit - Delete</td></tr>');
+		var bank_name = getBankNameFromId(jQuery('#popup_check_banks').val());
+		var standarValue = converMaskToStandar(jQuery('#popup_check_value').val(), receipts_object);
+		if (editing_check == -1) {
+			jQuery('#checks_table').append('<tr class="tr_check_list" id="tr_ck_id_'+idck+'"><td class="ck_column">'+jQuery('#popup_check_serial_number').val()+'</td><td class="ck_column">'+bank_name+'</td><td class="ck_column">'+((receipts_object.currency_position=='before')?''+getSymbolFromCurrencyId(jQuery('#popup_check_currencies').val())+' ':'')+''+jQuery('#popup_check_value').val()+''+((receipts_object.currency_position=='after')?' '+getSymbolFromCurrencyId(jQuery('#popup_check_currencies').val())+'':'')+'</td class="ck_column"><td><a href="#" class="ck_edit" data-id="'+idck+'">Edit</a> - <a href="#" class="ck_delete" data-id="'+idck+'">Delete</a>  <input type="hidden" name="ck_ids[]" class="ck_id" id="ck_id_'+idck+'" value="'+idck+'"/><input type="hidden" name="ck_banks[]" class="ck_bank" id="ck_bank_'+idck+'" value="'+jQuery('#popup_check_banks').val()+'"/><input type="hidden" name="ck_numbers[]" class="ck_number" id="ck_number_'+idck+'" value="'+jQuery('#popup_check_serial_number').val()+'"/><input type="hidden" name="ck_currencies[]" class="ck_currency" id="ck_currency_'+idck+'" value="'+jQuery('#popup_check_currencies').val()+'"/><input type="hidden" name="ck_values[]" class="ck_value" id="ck_value_'+idck+'" value="'+standarValue+'"/><input type="hidden" name="ck_dates[]" class="ck_date" id="ck_date_'+idck+'" value="'+jQuery('#popup_check_date').val()+'"/><input type="hidden" name="ck_cashing_dates[]" class="ck_cashing_date" id="ck_cashing_date_'+idck+'" value="'+jQuery('#popup_check_cashing_date').val()+'"/><input type="hidden" name="ck_notes[]" class="ck_notes" id="ck_notes_'+idck+'" value="'+jQuery('#popup_check_notes').val()+'"/></td></tr>');
+			idck = idck+1;
+		} else {
+			jQuery('#tr_ck_id_'+editing_check).html('<td class="ck_column">'+jQuery('#popup_check_serial_number').val()+'</td><td class="ck_column">'+bank_name+'</td><td class="ck_column">'+((receipts_object.currency_position=='before')?''+getSymbolFromCurrencyId(jQuery('#popup_check_currencies').val())+' ':'')+''+jQuery('#popup_check_value').val()+''+((receipts_object.currency_position=='after')?' '+getSymbolFromCurrencyId(jQuery('#popup_check_currencies').val())+'':'')+'</td class="ck_column"><td><a href="#" class="ck_edit" data-id="'+editing_check+'">Edit</a> - <a href="#" class="ck_delete" data-id="'+editing_check+'">Delete</a>  <input type="hidden" name="ck_ids[]" class="ck_id" id="ck_id_'+editing_check+'" value="'+editing_check+'"/><input type="hidden" name="ck_banks[]" class="ck_bank" id="ck_bank_'+editing_check+'" value="'+jQuery('#popup_check_banks').val()+'"/><input type="hidden" name="ck_numbers[]" class="ck_number" id="ck_number_'+editing_check+'" value="'+jQuery('#popup_check_serial_number').val()+'"/><input type="hidden" name="ck_currencies[]" class="ck_currency" id="ck_currency_'+editing_check+'" value="'+jQuery('#popup_check_currencies').val()+'"/><input type="hidden" name="ck_values[]" class="ck_value" id="ck_value_'+editing_check+'" value="'+standarValue+'"/><input type="hidden" name="ck_dates[]" class="ck_date" id="ck_date_'+editing_check+'" value="'+jQuery('#popup_check_date').val()+'"/><input type="hidden" name="ck_cashing_dates[]" class="ck_cashing_date" id="ck_cashing_date_'+editing_check+'" value="'+jQuery('#popup_check_cashing_date').val()+'"/><input type="hidden" name="ck_notes[]" class="ck_notes" id="ck_notes_'+editing_check+'" value="'+jQuery('#popup_check_notes').val()+'"/></td>');
+			editing_check = -1;
+		}
 		jQuery('#receipt_check_popup').fadeOut();
 		jQuery('#popup_check_background').fadeOut();
 		jQuery('#receipt_check_popup').html('');
+		updateChecksList();
+		
+		jQuery('.ck_delete').click(function(e){
+			var check_id = jQuery(this).data('id');
+			jQuery(this).parent().parent().remove();
+			updateChecksList();
+			e.preventDefault();
+			return false;
+		});
+		jQuery('.ck_edit').click(function(e){
+			var check_id = jQuery(this).data('id');
+			openEditCheckPopup(check_id);
+			e.preventDefault();
+			return false;
+		});
 	}
 	
 	
 }
-
+function updateChecksList() {
+	var count = 0;
+	jQuery('.tr_check_list').map(function(){
+		if (count%2 == 0) {
+			jQuery(this).addClass('tr_gray');
+		} else {
+			jQuery(this).removeClass('tr_gray');
+		}
+		count++;
+	});
+	
+}
 
 
 function updateKeyPress() {
@@ -188,6 +253,18 @@ function updateKeyPress() {
 	});
 	
 	
+}
+
+function getBankNameFromId(term_id) {
+	var r = term_id;
+	var bank_entities = receipts_object.bank_entities;
+	for (var i = 0; i < bank_entities.length; i++) {
+		if (bank_entities[i].term_id == term_id) {
+			r = bank_entities[i].name;
+			break;
+		}
+	}
+	return r;
 }
 
 function getRateFromCurrencyId(term_id) {

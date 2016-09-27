@@ -208,6 +208,13 @@ class fktrPostTypeReceipts {
 							'taxonomy' => 'fktr_currencies',
 							'hide_empty' => false,
 				));
+			
+			$bank_entities = get_fakturo_terms(array(
+							'taxonomy' => 'fktr_bank_entities',
+							'hide_empty' => false,
+				));			
+				
+				
 			$selectBankEntities = wp_dropdown_categories( array(
 				'show_option_all'    => '',
 				'show_option_none'   => __('Choose a Bank Entity', FAKTURO_TEXT_DOMAIN ),
@@ -277,6 +284,7 @@ class fktrPostTypeReceipts {
 					'txt_cancel' => __('Cancel', FAKTURO_TEXT_DOMAIN ),
 					
 					'currencies' => $currencies,
+					'bank_entities' => $bank_entities,
 					
 					'select_bank_entities' => $selectBankEntities,
 					'select_bank_currencies' => $selectCurrencies,
