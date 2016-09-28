@@ -130,6 +130,28 @@ class fktrAdminMenu {
 			'edit_fktr_sales',
 			'post-new.php?post_type=fktr_sale'
 		);
+		$page = add_submenu_page(
+			'edit.php?post_type=fktr_sale',
+			__( 'Receipts', FAKTURO_TEXT_DOMAIN ),
+			__( 'Receipts', FAKTURO_TEXT_DOMAIN ),
+			'edit_fktr_receipt',
+			'edit.php?post_type=fktr_receipt'
+		);
+		$page = add_submenu_page(
+			'edit.php?post_type=fktr_sale',
+			__( 'Add New Receipt', FAKTURO_TEXT_DOMAIN ),
+			__( 'Add New Receipt', FAKTURO_TEXT_DOMAIN ),
+			'edit_fktr_receipt',
+			'post-new.php?post_type=fktr_receipt'
+		);
+		$page = add_submenu_page(
+			'edit.php?post_type=fktr_sale',
+			__( 'Checks', FAKTURO_TEXT_DOMAIN ),
+			__( 'Checks', FAKTURO_TEXT_DOMAIN ),
+			'edit_fktr_receipt',
+			'edit-tags.php?taxonomy=fktr_check'
+		);
+		
 		
 		// other tests
 //		remove_submenu_page('fakturo_dashboard', 'post-new.php?post_type=fktr_provider');

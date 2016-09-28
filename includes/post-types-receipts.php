@@ -17,6 +17,10 @@ class fktrPostTypeReceipts {
 		add_action('transition_post_status', array(__CLASS__, 'default_fields'), 10, 3);
 		add_action('save_post', array(__CLASS__, 'save'), 99, 2 );
 		
+		add_filter('parent_file',  array( __CLASS__, 'menu_correction'));
+		add_filter('submenu_file',  array( __CLASS__, 'submenu_correction'));
+		
+		
 		add_action( 'admin_print_scripts-post-new.php', array(__CLASS__,'scripts'), 11 );
 		add_action( 'admin_print_scripts-post.php', array(__CLASS__,'scripts'), 11 );
 		
@@ -35,7 +39,20 @@ class fktrPostTypeReceipts {
 		add_action('before_delete_post', array(__CLASS__, 'before_delete'), 10, 1);
 		
 	}
-	
+	public static function menu_correction($parent_file) {
+		global $current_screen;
+		if ($current_screen->id == 'edit-fktr_receipt') {
+			$parent_file = 'edit.php?post_type=fktr_sale';
+		}
+		return $parent_file;
+	}
+	public static function submenu_correction($submenu_file) {
+		global $current_screen;
+		if ($current_screen->id == 'edit-fktr_receipt') {
+			$submenu_file = 'edit.php?post_type=fktr_sale';
+		}
+		return $submenu_file;
+	}	
 	public static function change_button_texts($safe_text, $text ){
 		global $post, $current_screen, $screen;
 		
@@ -464,11 +481,11 @@ class fktrPostTypeReceipts {
 			<table class="form-table">
 				<tr class="user-facebook-wrap">
 					<th><label>'.__('Current account balance', FAKTURO_TEXT_DOMAIN ).'	</label></th>
-					<td>0$</td>
+					<td id="receipt_acc_current_balance">0$</td>
 				</tr>
 				<tr class="user-facebook-wrap">
 					<th><label>'.__('Future account balance', FAKTURO_TEXT_DOMAIN ).'	</label></th>
-					<td>0$</td>
+					<td id="receipt_acc_future_balance">0$</td>
 				</tr>
 			</table>	
 					

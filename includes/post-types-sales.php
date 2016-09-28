@@ -1491,7 +1491,9 @@ class fktrPostTypeSales {
 		if (!isset($fields['uc_id'])) {
 			$fields['uc_id'] = array();
 		}
-		
+		if (!isset($fields['receipts'])) {
+			$fields['receipts'] = array();
+		}
 		return $fields;
 	}
 	public static function before_save($fields) {

@@ -85,7 +85,7 @@ class fktr_tax_check {
 	static function tax_menu_correction($parent_file) {
 		global $current_screen;
 		if ($current_screen->id == "edit-fktr_check") {
-			$parent_file = 'edit.php?post_type=fktr_product';
+			$parent_file = 'edit.php?post_type=fktr_sale';
 		}
 		return $parent_file;
 	}
