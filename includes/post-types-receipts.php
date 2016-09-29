@@ -484,6 +484,23 @@ class fktrPostTypeReceipts {
 					<td id="receipt_acc_current_balance">0$</td>
 				</tr>
 				<tr class="user-facebook-wrap">
+					<th><label>'.__('Total to impute', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+					<td id="receipt_total_to_impute">0$</td>
+				</tr>
+				<tr class="user-facebook-wrap">
+					<th><label>'.__('Total to pay', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+					<td id="receipt_total_to_pay">0$</td>
+				</tr>
+				<tr class="user-facebook-wrap">
+					<th><label>'.__('Available to include', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+					<td id="receipt_available_to_include">0$</td>
+				</tr>
+				<tr class="user-facebook-wrap">
+					<th><label>'.__('Positive balance', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+					<td id="receipt_positive_balance">0$</td>
+				</tr>
+				
+				<tr class="user-facebook-wrap">
 					<th><label>'.__('Future account balance', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 					<td id="receipt_acc_future_balance">0$</td>
 				</tr>

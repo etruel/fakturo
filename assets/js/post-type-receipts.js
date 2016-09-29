@@ -29,14 +29,18 @@ jQuery(document).ready(function() {
 		updateTotals();
 	});
 	jQuery('#cash').mask(DefaultMaskNumbers, {reverse: true});
-	
+	jQuery("#cash").change(function(e){
+		updateTotals();
+	});
 	jQuery('.receipt_currencies').mask(DefaultMaskNumbers, {reverse: true});
 	jQuery("#currency_id").change(function(e){
 		update_invoices();
 		updateTotals();
 	});
+	
 	jQuery(".receipt_currencies").change(function(){
 		update_invoices();
+		updateTotals();
 	});
 	
 	
@@ -65,13 +69,41 @@ jQuery(document).ready(function() {
 					}
 					var total_account = parseFloat(data_client.invoice_sales[i].in_total)-total_affected;
 					var from_currency = data_client.invoice_sales[i].invoice_currency;
+					var trasm_money_total = transformMoney(from_currency, to_currency, receipts_object.default_currency, data_client.invoice_sales[i].in_total);
 					var trasm_money = transformMoney(from_currency, to_currency, receipts_object.default_currency, total_account);
 					
-					invHtml = invHtml+'<tr id="in_'+i+'"'+((i%2 == 0)?' class="tr_gray"':'')+'><td><input type="checkbox" id="check_inv_'+i+'" class="check_invs"/></td> <td class="in_column">'+data_client.invoice_sales[i].date+'</td><td class="in_column">'+data_client.invoice_sales[i].post_title+'</td><td class="in_column">'+((receipts_object.currency_position=='before')?''+getSymbolFromCurrencyId(data_client.invoice_sales[i].invoice_currency)+' ':'')+''+parseFloat(data_client.invoice_sales[i].in_total).formatMoney(receipts_object.decimal_numbers, receipts_object.decimal, receipts_object.thousand)+''+((receipts_object.currency_position=='after')?' '+getSymbolFromCurrencyId(data_client.invoice_sales[i].invoice_currency)+'':'')+'</td><td class="in_column" id="inv_trans_total_'+i+'">'+((receipts_object.currency_position=='before')?''+getSymbolFromCurrencyId(to_currency)+' ':'')+''+parseFloat(trasm_money).formatMoney(receipts_object.decimal_numbers, receipts_object.decimal, receipts_object.thousand)+''+((receipts_object.currency_position=='after')?' '+getSymbolFromCurrencyId(to_currency)+'':'')+'</td><td class="in_column"><input type="text" class="to_pay" id="to_pay_'+i+'" name="to_pay[]" value=""/> <input type="hidden" name="inv_total_account[]" class="inv_total_account" id="inv_total_account_'+i+'" value="'+trasm_money+'"/> <input type="hidden" name="inv_origin_account[]" class="inv_origin_account" id="inv_origin_account_'+i+'" value="'+total_account+'"/><input type="hidden" name="inv_currency[]" class="inv_currency" id="inv_currency_'+i+'" value="'+from_currency+'"/></td></tr>';
+					invHtml = invHtml+'<tr id="in_'+i+'"'+((i%2 == 0)?' class="tr_gray"':'')+'><td><input type="checkbox" id="check_inv_'+i+'" class="check_invs"/></td> <td class="in_column">'+data_client.invoice_sales[i].date+'</td><td class="in_column">'+data_client.invoice_sales[i].post_title+'</td><td class="in_column">'+((receipts_object.currency_position=='before')?''+getSymbolFromCurrencyId(data_client.invoice_sales[i].invoice_currency)+' ':'')+''+parseFloat(data_client.invoice_sales[i].in_total).formatMoney(receipts_object.decimal_numbers, receipts_object.decimal, receipts_object.thousand)+''+((receipts_object.currency_position=='after')?' '+getSymbolFromCurrencyId(data_client.invoice_sales[i].invoice_currency)+'':'')+'</td><td class="in_column" id="inv_trans_total_'+i+'">'+((receipts_object.currency_position=='before')?''+getSymbolFromCurrencyId(to_currency)+' ':'')+''+parseFloat(trasm_money_total).formatMoney(receipts_object.decimal_numbers, receipts_object.decimal, receipts_object.thousand)+''+((receipts_object.currency_position=='after')?' '+getSymbolFromCurrencyId(to_currency)+'':'')+'</td><td class="in_column"><input type="text" class="to_pay" id="to_pay_'+i+'" name="to_pay[]" value="'+parseFloat(trasm_money).formatMoney(receipts_object.decimal_numbers, receipts_object.decimal, receipts_object.thousand)+'" disabled="true"/> <input type="hidden" name="inv_total_account[]" class="inv_total_account" id="inv_total_account_'+i+'" value="'+trasm_money+'"/> <input type="hidden" name="inv_origin_account[]" class="inv_origin_account" id="inv_origin_account_'+i+'" value="'+total_account+'"/><input type="hidden" name="inv_currency[]" class="inv_currency" id="inv_currency_'+i+'" value="'+from_currency+'"/> <a href="#" class="inv_adjust" id="inv_adjust_'+i+'">Adjust</a> - <a href="#" class="inv_reset" id="inv_reset_'+i+'">Reset</a></td></tr>';
 				}
 				jQuery('#invoices_table').html(invHtml);
 				jQuery('#client_available_to_include').html(''+((receipts_object.currency_position=='before')?''+getSymbolFromCurrencyId(receipts_object.default_currency)+' ':'')+''+parseFloat(data_client.balance).formatMoney(receipts_object.decimal_numbers, receipts_object.decimal, receipts_object.thousand)+''+((receipts_object.currency_position=='after')?' '+getSymbolFromCurrencyId(receipts_object.default_currency)+'':'')+'');
 				jQuery('#client_available_to_include').data('available', parseFloat(data_client.balance));
+				
+				
+				jQuery('.check_invs').change(function(e){
+					var indentifier = this.id.replace('check_inv_', '');
+					if(this.checked) {
+						jQuery('#to_pay_'+indentifier).prop('disabled', false);
+					} else {
+						jQuery('#to_pay_'+indentifier).prop('disabled', true);
+					}
+					jQuery('#to_pay_'+indentifier).mask(DefaultMaskNumbers, {reverse: true});
+					updateTotals();
+				});
+				jQuery('.inv_reset').click(function(e){
+					var indentifier = this.id.replace('inv_reset_', '');
+					jQuery('#to_pay_'+indentifier).val(parseFloat(jQuery('#inv_total_account_'+indentifier).val()).formatMoney(receipts_object.decimal_numbers, receipts_object.decimal, receipts_object.thousand));
+					updateTotals();
+					e.preventDefault();
+					return false;
+				});
+				jQuery('.inv_adjust').click(function(e){
+					var identifier = this.id.replace('inv_adjust_', '');
+					adjustInvoice(identifier);
+					updateTotals();
+					e.preventDefault();
+					return false;
+				});
+				
 				updateTotals();
 			});
 			
@@ -99,6 +131,43 @@ jQuery(document).ready(function() {
 	
 	
 });
+
+
+function adjustInvoice(identifier) {
+	var total_on_invoices = 0;
+	if (jQuery('#cash').val() == '') {
+		var cash = 0;
+	} else {
+		var cash = parseFloat(converMaskToStandar(jQuery('#cash').val(), receipts_object));
+	}
+	if (jQuery('#available_to_include').val() == '') {
+		var current_available_to_include  = 0;
+	} else {
+		var current_available_to_include  = transformMoney(receipts_object.default_currency, getCurrentCurrencyId(), receipts_object.default_currency, parseFloat(converMaskToStandar(jQuery('#available_to_include').val(), receipts_object)));
+	}
+	var total_in_checks = getTotalChecks();
+	var total_av_to_include = total_in_checks+cash+current_available_to_include;
+	jQuery('.check_invs').map(function(){
+		var identifier_inv = this.id.replace('check_inv_', '');
+		if (jQuery(this).is(':checked')) {
+			if (identifier_inv != identifier) {
+				var curr_to_pay = parseFloat(converMaskToStandar(jQuery('#to_pay_'+identifier_inv).val(), receipts_object));
+				total_av_to_include = total_av_to_include-curr_to_pay;
+			} 
+		}
+	});
+
+	var curr_to_pay = parseFloat(jQuery('#inv_total_account_'+identifier).val());
+	var newToPay = 0;
+	if (total_av_to_include > 0 && (total_av_to_include-curr_to_pay) >=0 ) {
+		newToPay = curr_to_pay;
+	} else if (total_av_to_include > 0) {
+		newToPay = total_av_to_include;
+	}
+	jQuery('#to_pay_'+identifier).val(parseFloat(newToPay).formatMoney(receipts_object.decimal_numbers, receipts_object.decimal, receipts_object.thousand));
+	
+}
+
 function getTotalDebt() {
 	var retorno = 0;
 	jQuery('.inv_total_account').map(function(e){
@@ -106,13 +175,64 @@ function getTotalDebt() {
 	});
 	return retorno;
 }
+function getTotalChecks() {
+	var retorno = 0;
+	jQuery('.ck_value').map(function(e){
+		var indentifier = this.id.replace('ck_value_', '');
+		var check_currency = jQuery('#ck_currency_'+indentifier).val();
+		var value_in_current = transformMoney(check_currency, getCurrentCurrencyId(), receipts_object.default_currency, jQuery(this).val());
+		retorno = retorno+parseFloat(value_in_current);
+	});
+	return retorno;
+	
+}
+function getTotalToImpute() {
+	var retorno = 0;
+	jQuery('.check_invs').map(function(){
+		var indentifier = this.id.replace('check_inv_', '');
+		if (jQuery(this).is(':checked')) {
+			retorno = retorno+parseFloat(converMaskToStandar(jQuery('#to_pay_'+indentifier).val(), receipts_object))
+		}			
+	});
+	return retorno;
+}
 function updateTotals() {
+	
+	
 	var available_to_include = parseFloat(jQuery('#client_available_to_include').data('available'));
 	available_to_include = transformMoney(receipts_object.default_currency, getCurrentCurrencyId(), receipts_object.default_currency, available_to_include);
 	
+	if (jQuery('#available_to_include').val() == '') {
+		var current_available_to_include  = 0;
+	} else {
+		var current_available_to_include  = transformMoney(receipts_object.default_currency, getCurrentCurrencyId(), receipts_object.default_currency, parseFloat(converMaskToStandar(jQuery('#available_to_include').val(), receipts_object)));
+	}
+	
 	var total_debt = parseFloat(getTotalDebt());
 	var account_debt_now = available_to_include-total_debt;
+	
+	var total_in_checks = getTotalChecks();
+	if (jQuery('#cash').val() == '') {
+		var cash = 0;
+	} else {
+		var cash = parseFloat(converMaskToStandar(jQuery('#cash').val(), receipts_object));
+	}
+	
+	var total_to_pay = total_in_checks+cash;
+	var total_av_to_include = total_in_checks+cash+current_available_to_include;
+	var total_to_impute = getTotalToImpute();
+	var positive_balance = total_to_pay-total_to_impute;
+	
+	var account_debt_future = (available_to_include+total_in_checks+cash)-total_debt;
+	
+	
 	jQuery('#receipt_acc_current_balance').html(''+((receipts_object.currency_position=='before')?''+getSymbolFromCurrencyId(getCurrentCurrencyId())+' ':'')+''+parseFloat(account_debt_now).formatMoney(receipts_object.decimal_numbers, receipts_object.decimal, receipts_object.thousand)+''+((receipts_object.currency_position=='after')?' '+getSymbolFromCurrencyId(getCurrentCurrencyId())+'':'')+'');
+	jQuery('#receipt_total_to_impute').html(''+((receipts_object.currency_position=='before')?''+getSymbolFromCurrencyId(getCurrentCurrencyId())+' ':'')+''+parseFloat(total_to_impute).formatMoney(receipts_object.decimal_numbers, receipts_object.decimal, receipts_object.thousand)+''+((receipts_object.currency_position=='after')?' '+getSymbolFromCurrencyId(getCurrentCurrencyId())+'':'')+'');
+	jQuery('#receipt_total_to_pay').html(''+((receipts_object.currency_position=='before')?''+getSymbolFromCurrencyId(getCurrentCurrencyId())+' ':'')+''+parseFloat(total_to_pay).formatMoney(receipts_object.decimal_numbers, receipts_object.decimal, receipts_object.thousand)+''+((receipts_object.currency_position=='after')?' '+getSymbolFromCurrencyId(getCurrentCurrencyId())+'':'')+'');
+	jQuery('#receipt_available_to_include').html(''+((receipts_object.currency_position=='before')?''+getSymbolFromCurrencyId(getCurrentCurrencyId())+' ':'')+''+parseFloat(total_av_to_include).formatMoney(receipts_object.decimal_numbers, receipts_object.decimal, receipts_object.thousand)+''+((receipts_object.currency_position=='after')?' '+getSymbolFromCurrencyId(getCurrentCurrencyId())+'':'')+'');
+	jQuery('#receipt_positive_balance').html(''+((receipts_object.currency_position=='before')?''+getSymbolFromCurrencyId(getCurrentCurrencyId())+' ':'')+''+parseFloat(positive_balance).formatMoney(receipts_object.decimal_numbers, receipts_object.decimal, receipts_object.thousand)+''+((receipts_object.currency_position=='after')?' '+getSymbolFromCurrencyId(getCurrentCurrencyId())+'':'')+'');
+	jQuery('#receipt_acc_future_balance').html(''+((receipts_object.currency_position=='before')?''+getSymbolFromCurrencyId(getCurrentCurrencyId())+' ':'')+''+parseFloat(account_debt_future).formatMoney(receipts_object.decimal_numbers, receipts_object.decimal, receipts_object.thousand)+''+((receipts_object.currency_position=='after')?' '+getSymbolFromCurrencyId(getCurrentCurrencyId())+'':'')+'');
+	
 	
 }
 
@@ -125,7 +245,8 @@ function update_invoices() {
 		var trasm_money = transformMoney(invoice_currency, to_currency, receipts_object.default_currency, origin_account);
 		jQuery('#inv_total_account_'+indentifier).val(trasm_money);
 		jQuery('#inv_trans_total_'+indentifier).html(''+((receipts_object.currency_position=='before')?''+getSymbolFromCurrencyId(to_currency)+' ':'')+''+parseFloat(trasm_money).formatMoney(receipts_object.decimal_numbers, receipts_object.decimal, receipts_object.thousand)+''+((receipts_object.currency_position=='after')?' '+getSymbolFromCurrencyId(to_currency)+'':'')+'');
-
+		jQuery('#to_pay_'+indentifier).val(parseFloat(trasm_money).formatMoney(receipts_object.decimal_numbers, receipts_object.decimal, receipts_object.thousand));
+		
 	});
 	
 }
