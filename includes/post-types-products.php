@@ -337,7 +337,7 @@ class fktrPostTypeProducts {
 		$echoHtml = '<table class="form-table">
 					
 			
-			<tr class="user-facebook-wrap">
+			<tr class="tr_fktr">
 				<th></th>
 				<th style="text-align: center;">'.__('Price', FAKTURO_TEXT_DOMAIN ).'</th>
 				<th style="text-align: center;">'.__('Suggested', FAKTURO_TEXT_DOMAIN ).'</th>
@@ -366,7 +366,7 @@ class fktrPostTypeProducts {
 							'hide_empty' => false,
 				));
 		$echoHtml = '<table>
-			<tr class="user-facebook-wrap">
+			<tr class="tr_fktr">
 				<th style="text-align: left;">'.__('Location', FAKTURO_TEXT_DOMAIN ).'</th>
 				<th style="text-align: center;">'.__('Quantity', FAKTURO_TEXT_DOMAIN ).'</th>
 			</tr>';
@@ -523,16 +523,16 @@ class fktrPostTypeProducts {
 		$echoHtml = '<table class="form-table">
 					<tbody>
 			
-			<tr class="user-facebook-wrap">
+			<tr class="tr_fktr">
 				<th><label for="provider">'.__('Provider', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 				<td>'.$selectProvider.'</td>
 			</tr>
 			
-			<tr class="user-facebook-wrap">
+			<tr class="tr_fktr">
 				<th><label for="product_type">'.__('Product Type', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 				<td>'.$selectProductType.'</td>
 			</tr>
-			<tr class="user-facebook-wrap">
+			<tr class="tr_fktr">
 				<th><label for="tax">'.__('Tax', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 				<td>'.$selectTax.'</td>
 			</tr>
@@ -561,7 +561,7 @@ class fktrPostTypeProducts {
 					<th><label for="min">'.__('Minimal stock', FAKTURO_TEXT_DOMAIN ).'</label></th>
 					<td><input type="number" name="min" id="min" value="'.$product_data['min'].'" class="regular-text"></td>
 				</tr>
-				<tr class="user-facebook-wrap">
+				<tr class="tr_fktr">
 					<th><label for="min_alert">'.__('Minimal stock alert', FAKTURO_TEXT_DOMAIN ).'</label></th>
 					<td>
 						<input id="min_alert" class="slidercheck" type="checkbox" name="min_alert" value="1" '.(($product_data['min_alert'])?'checked="checked"':'').'>
@@ -570,7 +570,7 @@ class fktrPostTypeProducts {
 				</tr>';
 			}
 			
-			$echoHtml .= '<tr class="user-facebook-wrap">
+			$echoHtml .= '<tr class="tr_fktr">
 				<th><label for="tax">'. __('Packaging', FAKTURO_TEXT_DOMAIN). '</label></th>
 				<td>'.$selectPackaging.'</td> 
 			</tr>

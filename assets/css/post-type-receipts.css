@@ -66,3 +66,18 @@
 	height:35px;
 	text-align:right;
 }
+#title_checks {
+	text-align: center;
+    font-size: 22px;
+}
+#title_invoices {
+	text-align: center;
+    font-size: 22px;
+}
+#tr_positive_balance {
+   
+}
+.tr_error {
+	border: 1px solid #f4b9b9;
+    background: #c7a2a2;
+}

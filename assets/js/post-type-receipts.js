@@ -129,9 +129,65 @@ jQuery(document).ready(function() {
 		return false;
 	});
 	
+	jQuery('#post').submit(function(e) {  
+   			var error_on_totals = updateTotals();
+			if (error_on_totals) {
+				e.preventDefault();
+				return false;
+			}
+			
+			addNoticeMessage('<img width="12" src="'+receipts_object.url_loading_image+'" class="mt2"/> '+receipts_object.txt_loading+'...', 'updated');
+			
+   			jQuery.ajaxSetup({async:false});
+   			status = 'error';
+			message = '';
+			selector = '';
+			functionEx = '';
+			var data = {
+   				action: 'validate_sale',
+				inputs: jQuery("#post").serialize()
+   			};
+   			jQuery.post(receipts_object.ajax_url, data, function(data){  //si todo ok devuelve 1 sino el error
+				status = jQuery(data).find('response_data').text();
+				message = jQuery(data).find('supplemental message').text();
+				selector = jQuery(data).find('supplemental inputSelector').text();
+				functionEx = jQuery(data).find('supplemental function').text();
+   				if(status == 'success'){
+					
+   				} else {
+					addNoticeMessage(message, 'error');
+					if (selector != '') {
+						jQuery(selector).focus();
+					}
+					
+					if (typeof window[functionEx] === 'function' && functionEx!=''){
+						formok = window[functionEx]();
+						e.preventDefault();
+					}
+   				}
+   			});
+			if(status == 'error') {
+				e.preventDefault();
+   				return false; 
+   			} else {
+   				return true; 
+   			}
+		});
 	
 });
 
+function addNoticeMessage(msg, classN) {
+	if (jQuery('#fieldNotice').length) {
+		jQuery('#fieldNotice').html('<p>'+msg+'</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Descartar este aviso.</span></button>');
+		jQuery('#fieldNotice').attr('class', ''+classN+' fade he20 notice is-dismissible');
+		jQuery('#fieldNotice').fadeIn();
+	} else {
+		jQuery('#poststuff').prepend('<div id="fieldNotice" class="'+classN+' fade he20 notice is-dismissible"><p>'+msg+'</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Descartar este aviso.</span></button></div>');
+	}
+	jQuery('.notice-dismiss').click(function(){
+		jQuery(this).parent().fadeOut();
+	});
+}
 
 function adjustInvoice(identifier) {
 	var total_on_invoices = 0;
@@ -197,7 +253,7 @@ function getTotalToImpute() {
 	return retorno;
 }
 function updateTotals() {
-	
+	var error = false;
 	
 	var available_to_include = parseFloat(jQuery('#client_available_to_include').data('available'));
 	available_to_include = transformMoney(receipts_object.default_currency, getCurrentCurrencyId(), receipts_object.default_currency, available_to_include);
@@ -221,8 +277,7 @@ function updateTotals() {
 	var total_to_pay = total_in_checks+cash;
 	var total_av_to_include = total_in_checks+cash+current_available_to_include;
 	var total_to_impute = getTotalToImpute();
-	var positive_balance = total_to_pay-total_to_impute;
-	
+	var positive_balance = total_av_to_include-total_to_impute;
 	var account_debt_future = (available_to_include+total_in_checks+cash)-total_debt;
 	
 	
@@ -234,6 +289,13 @@ function updateTotals() {
 	jQuery('#receipt_acc_future_balance').html(''+((receipts_object.currency_position=='before')?''+getSymbolFromCurrencyId(getCurrentCurrencyId())+' ':'')+''+parseFloat(account_debt_future).formatMoney(receipts_object.decimal_numbers, receipts_object.decimal, receipts_object.thousand)+''+((receipts_object.currency_position=='after')?' '+getSymbolFromCurrencyId(getCurrentCurrencyId())+'':'')+'');
 	
 	
+	if (positive_balance >= 0) {
+		jQuery('#tr_positive_balance').removeClass('tr_error');
+	}  else {
+		jQuery('#tr_positive_balance').addClass('tr_error');
+		error = true;
+	}
+	return error;
 }
 
 function update_invoices() {

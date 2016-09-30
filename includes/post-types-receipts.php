@@ -38,6 +38,7 @@ class fktrPostTypeReceipts {
 		add_filter('attribute_escape', array(__CLASS__, 'change_button_texts'), 10, 2);
 		add_action('before_delete_post', array(__CLASS__, 'before_delete'), 10, 1);
 		
+		
 	}
 	public static function menu_correction($parent_file) {
 		global $current_screen;
@@ -52,20 +53,23 @@ class fktrPostTypeReceipts {
 			$submenu_file = 'edit.php?post_type=fktr_sale';
 		}
 		return $submenu_file;
-	}	
+	}
+
 	public static function change_button_texts($safe_text, $text ){
 		global $post, $current_screen, $screen;
 		
 		if (isset($post) && $post->post_type == 'fktr_receipt') {
 			switch( $safe_text ) {
-				case 'Save Draft';
+				case __('Save Draft');
 					$safe_text = __('Save as Pendient', FAKTURO_TEXT_DOMAIN );
 					break;
 
-				case 'Publish';
-					$safe_text = __('Finish Invoice', FAKTURO_TEXT_DOMAIN );
+				case __('Publish');
+					$safe_text = __('Save', FAKTURO_TEXT_DOMAIN );
 					break;
-
+				case __('Update');
+					$safe_text = __('Save', FAKTURO_TEXT_DOMAIN );
+					break;
 				default:
 					break;
 			}
@@ -299,6 +303,7 @@ class fktrPostTypeReceipts {
 					
 					'txt_loading' => __('Loading', FAKTURO_TEXT_DOMAIN ),
 					'txt_cancel' => __('Cancel', FAKTURO_TEXT_DOMAIN ),
+					'url_loading_image' => get_bloginfo('wpurl').'/wp-admin/images/wpspin_light.gif',
 					
 					'currencies' => $currencies,
 					'bank_entities' => $bank_entities,
@@ -412,27 +417,27 @@ class fktrPostTypeReceipts {
 			<table class="form-table">
 				<tbody>
 
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="client_id">'.__('Client', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td>'.$selectClients.'</td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="receipt_number">'.__('Receipt Number', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td><input type="text" name="receipt_number" id="receipt_number" value="'.$receipt_data['receipt_number'].'"/></td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="available_to_include">'.__('Available to include', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td><div id="client_available_to_include" data-available="0">No money available to include</div>   <input type="text" name="available_to_include" id="available_to_include" value="'.$receipt_data['available_to_include'].'"/></td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="payment_type_id">'.__('Payment Type', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td>'.$selectPaymentTypes.'</td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="currency_id">'.__('Currency', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td>'.$selectCurrencies.'</td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="cash">'.__('Cash', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td><input type="text" name="cash" id="cash" value="'.$receipt_data['cash'].'"/></td>
 					</tr>
@@ -441,7 +446,7 @@ class fktrPostTypeReceipts {
 			</table>
 			<div id="popup_check_background" style="display:none;"></div> 
 			<div id="receipt_check_popup" style="display:none;"></div>
-			<strong>Checks</strong>
+			<div id="title_checks" class="title_checks">Checks</div>
 			<div id="checks_content">
 				<table id="checks_header_table">
 					<tr>
@@ -459,7 +464,7 @@ class fktrPostTypeReceipts {
 				<a href="#" class="button-primary add" id="add_more_check" style="margin-top:5px; font-weight: bold; text-decoration: none; height: 31px;line-height: 29px;"> '.__('Add ckeck', FAKTURO_TEXT_DOMAIN  ).'</a>
 			</div>
 			
-			<strong>Invoices</strong>
+			<div id="title_invoices" class="title_invoices">Invoices</div>
 			<div id="invoice_content">
 				<table id="invoices_header_table">
 					<tr>
@@ -479,28 +484,28 @@ class fktrPostTypeReceipts {
 				
 			</div>
 			<table class="form-table">
-				<tr class="user-facebook-wrap">
+				<tr class="tr_fktr">
 					<th><label>'.__('Current account balance', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 					<td id="receipt_acc_current_balance">0$</td>
 				</tr>
-				<tr class="user-facebook-wrap">
+				<tr class="tr_fktr">
 					<th><label>'.__('Total to impute', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 					<td id="receipt_total_to_impute">0$</td>
 				</tr>
-				<tr class="user-facebook-wrap">
+				<tr class="tr_fktr">
 					<th><label>'.__('Total to pay', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 					<td id="receipt_total_to_pay">0$</td>
 				</tr>
-				<tr class="user-facebook-wrap">
+				<tr class="tr_fktr">
 					<th><label>'.__('Available to include', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 					<td id="receipt_available_to_include">0$</td>
 				</tr>
-				<tr class="user-facebook-wrap">
+				<tr id="tr_positive_balance" class="tr_fktr">
 					<th><label>'.__('Positive balance', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 					<td id="receipt_positive_balance">0$</td>
 				</tr>
 				
-				<tr class="user-facebook-wrap">
+				<tr class="tr_fktr">
 					<th><label>'.__('Future account balance', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 					<td id="receipt_acc_future_balance">0$</td>
 				</tr>

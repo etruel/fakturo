@@ -116,7 +116,7 @@ class fktrPostTypeProviders {
 		$provider_data = self::get_provider_data($post->ID);
 		$echoHtml = '<table class="form-table">
 					<tbody>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th rowspan="2">
 						<input id="active" type="checkbox" class="slidercheck" name="active" value="1" '.(($provider_data['active'])?'checked="checked"':'').'><label for="active"><span class="ui"></span>'.__('Active', FAKTURO_TEXT_DOMAIN ).'	</label>
 						</th>
@@ -275,7 +275,7 @@ class fktrPostTypeProviders {
 		
 		$echoHtml = '<table class="form-table">
 					<tbody>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="taxpayer">'.__('Taxpayer ID', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td>
 							<input id="taxpayer" type="text" name="taxpayer" value="'.$provider_data['taxpayer'].'" class="regular-text">
@@ -287,37 +287,37 @@ class fktrPostTypeProviders {
 						<th><label for="address">'.__('Address', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td><input type="text" name="address" id="address" value="'.$provider_data['address'].'" class="regular-text"></td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="country">'. __('Country', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td>'.$selectCountry.'</td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="states">'. __('States', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
 						<td id="td_select_state">
 							'.$selectState.'
 						</td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="city">'.__('City', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
 						<td><input id="city" type="text" name="city" value="'.$provider_data['city'].'" class="regular-text"></td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="bank_entity">'.__('Bank Entity', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td>'.$selectBankEntities.'</td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="bank_account">'.__('Bank Account', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
 						<td><input id="bank_account" type="text" name="bank_account" value="'.$provider_data['bank_account'].'" class="regular-text"></td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="postcode">'.__('Postcode', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td><input id="postcode" type="text" name="postcode" value="'.$provider_data['postcode'].'" class="regular-text"></td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="phone">'.__('Phone', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
 						<td><input id="phone" type="text" name="phone" value="'.$provider_data['phone'].'" class="regular-text"></td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="cell_phone">'.__('Cell phone', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
 						<td><input id="cell_phone" type="text" name="cell_phone" value="'.$provider_data['cell_phone'].'" class="regular-text"></td>
 					</tr>
@@ -325,7 +325,7 @@ class fktrPostTypeProviders {
 						<th><label for="email">'.__('E-mail', FAKTURO_TEXT_DOMAIN ) .'</label></th>
 						<td><input type="email" name="email" id="email" value="'.$provider_data['email'].'" class="regular-text ltr"></td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="web">'.__('Web', FAKTURO_TEXT_DOMAIN ).'</label></th>
 						<td><input id="web" type="text" name="web" value="'.$provider_data['web'].'" class="regular-text"></td>
 					</tr>

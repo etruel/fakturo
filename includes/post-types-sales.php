@@ -67,11 +67,11 @@ class fktrPostTypeSales {
 		
 		if (isset($post) && $post->post_type == 'fktr_sale') {
 			switch( $safe_text ) {
-				case 'Save Draft';
+				case __('Save Draft');
 					$safe_text = __('Save as Pendient', FAKTURO_TEXT_DOMAIN );
 					break;
 
-				case 'Publish';
+				case __('Publish');
 					$safe_text = __('Finish Invoice', FAKTURO_TEXT_DOMAIN );
 					break;
 

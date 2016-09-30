@@ -163,7 +163,7 @@ class fktrPostTypeClients {
 		$client_data = self::get_client_data($post->ID);
 		$echoHtml = '<table class="form-table">
 					<tbody>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th rowspan="2">
 						<input id="active" type="checkbox" class="slidercheck" name="active" value="1" '.(($client_data['active'])?'checked="checked"':'').'><label for="active"><span class="ui"></span>'.__('Active', FAKTURO_TEXT_DOMAIN ).'	</label>
 						</th>
@@ -290,7 +290,7 @@ class fktrPostTypeClients {
 		$echoHtml = '<table class="form-table">
 					<tbody>
 					
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="taxpayer">'.__('Taxpayer ID', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td>
 							<input id="taxpayer" type="text" name="taxpayer" value="'.$client_data['taxpayer'].'" class="regular-text">
@@ -298,37 +298,37 @@ class fktrPostTypeClients {
 							<div style="font-size:0.85em;" id="cuit_validation_note">'.__("Cuit number's validation only. Check www.afip.gov.ar", FAKTURO_TEXT_DOMAIN ).'</div>
 						</td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="selected_payment_type">'.__('Payment Type', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td>'.$selectPaymentTypes.'</td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="selected_bank_entity">'.__('Bank Entity', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td>'.$selectBankEntities.'</td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="bank_account">'.__('Bank Account', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
 						<td><input id="bank_account" type="text" name="bank_account" value="'.$client_data['bank_account'].'" class="regular-text"></td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="selected_tax_condition">'.__('Tax Condition', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td>'.$selectTaxCondition.'</td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="selected_price_scale">'.__('Price Scale', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td>'.$selectPriceScale.'</td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="selected_currency">'.__('Currency', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td>'.$selectCurrency.'</td>
 					</tr>
 					
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="credit_limit">'.__('Credit Limit', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td><input id="credit_limit" type="number" name="credit_limit" value="'.$client_data['credit_limit'].'" class="small-text"/></td>
 					</tr>
 					
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="credit_limit_interval">'.__('Credit Limit Interval', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td><input id="credit_limit_interval" type="number" name="credit_limit_interval" value="'.$client_data['credit_limit_interval'].'" class="small-text"/></td>
 					</tr>
@@ -417,30 +417,30 @@ class fktrPostTypeClients {
 						<th><label for="address">'.__('Address', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td><input type="text" name="address" id="address" value="'.$client_data['address'].'" class="regular-text"></td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="country">'. __('Country', FAKTURO_TEXT_DOMAIN ).'	</label></th>
 						<td>'.$selectCountry.'</td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="states">'. __('States', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
 						<td id="td_select_state">
 							'.$selectState.'
 						</td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="city">'.__('City', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
 						<td><input id="city" type="text" name="city" value="'.$client_data['city'].'" class="regular-text"></td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="postcode">'.__('Postcode', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
 						<td><input id="postcode" type="text" name="postcode" value="'.$client_data['postcode'].'" class="regular-text"></td>
 					</tr>
 					
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="phone">'.__('Phone', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
 						<td><input id="phone" type="text" name="phone" value="'.$client_data['phone'].'" class="regular-text"></td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="cell_phone">'.__('Cell phone', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
 						<td><input id="cell_phone" type="text" name="cell_phone" value="'.$client_data['cell_phone'].'" class="regular-text"></td>
 					</tr>
@@ -448,11 +448,11 @@ class fktrPostTypeClients {
 						<th><label for="email">'.__('E-mail', FAKTURO_TEXT_DOMAIN ) .'</label></th>
 						<td><input type="email" name="email" id="email" value="'.$client_data['email'].'" class="regular-text ltr"></td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="facebook_url">'.__('Facebook URL', FAKTURO_TEXT_DOMAIN ).'</label></th>
 						<td><input id="facebook_url" type="text" name="facebook_url" value="'.$client_data['facebook_url'].'" class="regular-text"></td>
 					</tr>
-					<tr class="user-facebook-wrap">
+					<tr class="tr_fktr">
 						<th><label for="web">'.__('Web', FAKTURO_TEXT_DOMAIN ).'</label></th>
 						<td><input id="web" type="text" name="web" value="'.$client_data['web'].'" class="regular-text"></td>
 					</tr>
