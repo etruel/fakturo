@@ -135,7 +135,11 @@ jQuery(document).ready(function() {
 				e.preventDefault();
 				return false;
 			}
-			
+			if (parseInt(jQuery('#client_id').val()) < 1) {
+				jQuery('#client_id').select2('open');
+				e.preventDefault();
+				return false;
+			}
 			addNoticeMessage('<img width="12" src="'+receipts_object.url_loading_image+'" class="mt2"/> '+receipts_object.txt_loading+'...', 'updated');
 			
    			jQuery.ajaxSetup({async:false});
@@ -144,7 +148,7 @@ jQuery(document).ready(function() {
 			selector = '';
 			functionEx = '';
 			var data = {
-   				action: 'validate_sale',
+   				action: 'validate_receipt',
 				inputs: jQuery("#post").serialize()
    			};
    			jQuery.post(receipts_object.ajax_url, data, function(data){  //si todo ok devuelve 1 sino el error
@@ -175,6 +179,21 @@ jQuery(document).ready(function() {
 		});
 	
 });
+
+function updateSuggestReceiptNumber() {
+	
+	var data = {
+				action: 'get_suggest_receipt_number',
+			}
+	
+	jQuery.post(receipts_object.ajax_url, data, function(data) {
+		jQuery('#receipt_number').val(padLeft(data, receipts_object.digits_receipt_number));
+	});
+	
+}
+function padLeft(nr, n, str) {
+    return Array(n-String(nr).length+1).join(str||'0')+nr;
+}
 
 function addNoticeMessage(msg, classN) {
 	if (jQuery('#fieldNotice').length) {

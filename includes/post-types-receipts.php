@@ -33,13 +33,21 @@ class fktrPostTypeReceipts {
 		add_filter('fktr_receipt_before_save', array(__CLASS__, 'before_save'), 10, 1);
 
 		add_action('wp_ajax_receipt_client_data', array(__CLASS__, 'get_client_data'));
+		add_action('wp_ajax_validate_receipt', array(__CLASS__, 'ajax_validate_receipt'));
+		add_action('wp_ajax_get_suggest_receipt_number', array(__CLASS__, 'get_suggest_receipt_number'));
 		
 		add_filter('post_updated_messages', array(__CLASS__, 'updated_messages') );
 		add_filter('attribute_escape', array(__CLASS__, 'change_button_texts'), 10, 2);
 		add_action('before_delete_post', array(__CLASS__, 'before_delete'), 10, 1);
-		
+		add_filter('wp_insert_post_data' , array(__CLASS__, 'dont_draft'), 99, 2);  
 		
 	}
+	public static function dont_draft($data, $postarr) {  
+		if($data['post_type'] == 'fktr_receipt' && $data['post_status'] == 'draft'){
+			$data['post_status'] = 'publish';  
+		}
+		return $data;
+	}  
 	public static function menu_correction($parent_file) {
 		global $current_screen;
 		if ($current_screen->id == 'edit-fktr_receipt') {
@@ -297,6 +305,7 @@ class fktrPostTypeReceipts {
 					'currency_position' => $setting_system['currency_position'],
 					'default_currency' => $setting_system['currency'],
 					'current_date' => date_i18n($setting_system['dateformat'],  time()),
+					'digits_receipt_number' => $setting_system['digits_receipt_number'],
 					
 					'datetimepicker' => $objectL10n,
 					
@@ -362,6 +371,9 @@ class fktrPostTypeReceipts {
 	public static function receipt_box() {
 		global $post;
 		$receipt_data = self::get_receipt_data($post->ID);
+		$setting_system = get_option('fakturo_system_options_group', false);
+		$receipt_data['receipt_number'] = (($post->post_status != 'publish')? str_pad(self::suggestReceiptNumber(), $setting_system['digits_receipt_number'], '0', STR_PAD_LEFT) : $receipt_data['receipt_number'] );
+		
 		$selectClients = fakturo_get_select_post(array(
 											'echo' => 0,
 											'post_type' => 'fktr_client',
@@ -554,7 +566,18 @@ class fktrPostTypeReceipts {
 		parse_str($_POST['inputs'], $fields);
 		$fields = apply_filters('fktr_clean_receipt_fields',$fields);
 		
-		
+		$invoiceNumberExiste = self::exist_a_receipt_number($fields['receipt_number']);
+		if ($invoiceNumberExiste) {
+			$response->add( array(
+				'data'	=> 'error',
+				'supplemental' => array(
+					'message' => __('This receipt number is already in use, Please try again.', FAKTURO_TEXT_DOMAIN ),
+					'inputSelector' => '#receipt_number',
+					'function' => 'updateSuggestReceiptNumber',
+				),
+			)); 
+			$response->send();
+		}
 		
 		do_action('fktr_validate_receipt', $fields);
 		
@@ -569,7 +592,55 @@ class fktrPostTypeReceipts {
 			)); 
 		$response->send();//		wp_die();
 	}
-	
+	public static function get_suggest_receipt_number() {
+		$setting_system = get_option('fakturo_system_options_group', false);
+		
+		$suggested = self::suggestReceiptNumber();
+		wp_die($suggested);
+	}
+	public static function exist_a_receipt_number($receipt_number) {
+		global $wpdb;
+		$return = false;
+		$setting_system = get_option('fakturo_system_options_group', false);
+		
+		$sql = sprintf("SELECT pm.meta_value FROM {$wpdb->postmeta} pm
+			LEFT JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+			WHERE pm.meta_key = 'receipt_number'
+			AND pm.meta_value = '%s'
+			AND p.post_status = 'publish'
+			AND p.post_type = 'fktr_receipt'
+			LIMIT 1
+			", $receipt_number);
+		$r = $wpdb->get_results($sql);
+		if (!empty($r)) {
+			$return = true;
+		}
+		return $return;
+    }
+	public static function suggestReceiptNumber() {
+		$retorno = 0;
+		$setting_system = get_option('fakturo_system_options_group', false);
+		$last_receipt_numbers = get_option('last_receipt_number', false);
+		if (!$last_receipt_numbers) {
+			$last_receipt_numbers = 0;
+			update_option('last_receipt_number', $last_receipt_numbers);
+		}
+		$retorno = $last_receipt_numbers+1;
+		return $retorno;
+	}
+	public static function updateSuggestReceiptNumber($receipt_number = 0) {
+		
+		$setting_system = get_option('fakturo_system_options_group', false);
+		$last_receipt_numbers = get_option('last_receipt_number', false);
+		if (!$last_receipt_numbers) {
+			$last_receipt_numbers = 0;
+		}
+		if ($last_receipt_numbers < $receipt_number) {
+			$last_receipt_numbers = $receipt_number;
+		}
+		update_option('last_receipt_number', $last_receipt_numbers);
+		
+	}
 	public static function before_delete($post_id) {  // just permanent delete (when uses stock)
 		$post_type = get_post_type($post_id);
 		
@@ -676,7 +747,9 @@ class fktrPostTypeReceipts {
 			}
 			
 		}
-		
+		if ($post->post_status == 'publish') {
+		   self::updateSuggestReceiptNumber($fields['receipt_number']);
+		}
 		do_action( 'fktr_save_receipt', $post_id, $post );
 		
 	}

@@ -81,3 +81,6 @@
 	border: 1px solid #f4b9b9;
     background: #c7a2a2;
 }
+#edit-slug-box, #misc-publishing-actions, #minor-publishing-actions, #visibility, .num-revisions, .curtime {
+	display: none;
+}

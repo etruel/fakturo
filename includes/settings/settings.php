@@ -107,6 +107,7 @@ class fktrSettings {
 			$value_system['list_invoice_number_separator'] = ' ';
 			$value_system['individual_numeration_by_invoice_type'] = 1;
 			$value_system['individual_numeration_by_sale_point'] = 1;
+			$value_system['digits_receipt_number'] = 8;
 			$value_system['search_code'] = array('reference');
 			$value_system['default_code'] = 'reference';
 			$value_system['default_description'] = 'short_description';
@@ -272,6 +273,10 @@ class fktrSettings {
 		if (empty($options['digits_invoice_number'])) {
 			$options['digits_invoice_number'] = 8;
 		}
+		if (empty($options['digits_receipt_number'])) {
+			$options['digits_receipt_number'] = 8;
+		}
+
 		if (empty($options['list_invoice_number'])) {
 			$options['list_invoice_number'] = array('sale_point', 'invoice_number');
 		}
@@ -575,6 +580,17 @@ class fktrSettings {
 								  '. __( 'Choose your sale point.', FAKTURO_TEXT_DOMAIN ) .' 
 							        </label>
 						</td>
+					  </tr>
+					  <tr>
+							<th>'. __( 'Number of digits of the receipt number', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td class="italic-label">
+								<input id="fakturo_system_options_group_digits_receipt_number" name="fakturo_system_options_group[digits_receipt_number]" type="number" maxlength="2" min=2 max=20 value="'.$options['digits_receipt_number'].'">
+								<label for="fakturo_system_digits_receipt_number">
+									'. __( 'Choose the default number of digits of the receipt number.', FAKTURO_TEXT_DOMAIN ) .'           
+								</label>
+					
+							</td>
+						
 					  </tr>
 					   <tr>
 							<th>'. __( 'Number of digits of the invoice number', FAKTURO_TEXT_DOMAIN ) .'</th>
