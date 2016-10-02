@@ -84,3 +84,11 @@
 #edit-slug-box, #misc-publishing-actions, #minor-publishing-actions, #visibility, .num-revisions, .curtime {
 	display: none;
 }
+.submit_cancel_receipt {
+	text-decoration: none;
+    padding: 1px 2px;
+	color: #a00;
+}
+.submit_cancel_receipt:hover {
+	color: red;
+}

@@ -1084,6 +1084,14 @@ class fktrPostTypeSales {
 		 }
 
 	}
+	public static function updateReceiptsAffected($sale_id, $receipt_id, $affected, $currency_receipt) {
+		$sale_data = self::get_sale_data($sale_id);
+		$affected_standar = fakturo_mask_to_float($affected);
+		$affected_in_sale = fakturo_transform_money($currency_receipt, $sale_data['invoice_currency'], $affected_standar);
+		$sale_data['receipts'][$receipt_id] = $affected_in_sale;
+		$new = apply_filters( 'fktr_sale_metabox_save_receipts', $sale_data['receipts']); 
+		update_post_meta($sale_id, 'receipts', $new );
+	}
 	public static function getProductStock($productId, $sale_id, $reserved = false) {
 		$stocks = array();
 		$stocks = fktrPostTypeProducts::getStocks($productId);
@@ -1372,6 +1380,7 @@ class fktrPostTypeSales {
 			}
 		}
 	}
+	
 	public static function updateStock($fields, $post) {
 		$setting_system = get_option('fakturo_system_options_group', false);
 		if (!$setting_system['use_stock_product']) {
