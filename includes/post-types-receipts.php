@@ -74,15 +74,15 @@ class fktrPostTypeReceipts {
 	}  
 	public static function menu_correction($parent_file) {
 		global $current_screen;
-		if ($current_screen->id == 'edit-fktr_receipt') {
+		if ($current_screen->id == 'edit-fktr_receipt' || $current_screen->id == 'fktr_receipt') {
 			$parent_file = 'edit.php?post_type=fktr_sale';
 		}
 		return $parent_file;
 	}
 	public static function submenu_correction($submenu_file) {
 		global $current_screen;
-		if ($current_screen->id == 'edit-fktr_receipt') {
-			$submenu_file = 'edit.php?post_type=fktr_sale';
+		if ($current_screen->id == 'edit-fktr_receipt' || $current_screen->id == 'fktr_receipt') {
+			$submenu_file = 'edit.php?post_type=fktr_receipt';
 		}
 		return $submenu_file;
 	}
