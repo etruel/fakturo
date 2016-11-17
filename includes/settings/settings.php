@@ -707,7 +707,7 @@ class fktrSettings {
 	
 			),
 			'tables' => array( 
-				'print-template' =>  array('text' => __( 'Print Template', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => ''), 
+				'print-template' =>  array('text' => __( 'Print Template', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit.php?post_type=fktr_print_template'), 'screen' => 'fktr_print_template'), 
 				'currencies' =>  array('text' => __( 'Currencies', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_currencies'), 'screen' => 'edit-fktr_currencies'),
 				'bank_entities' =>  array('text' => __( 'Bank Entities', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_bank_entities'), 'screen' => 'edit-fktr_bank_entities'),
 				'countries' => array('text' => __( 'Countries and States', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_countries'), 'screen' => 'edit-fktr_countries') ,
@@ -738,7 +738,7 @@ class fktrSettings {
 		$print_tabs = false;
 		foreach ($sections_tabs as $tabs_mains) {
 			foreach ($tabs_mains as $sections) {
-				if($current_screen->id == $sections['screen']) {
+				if($current_screen->id == $sections['screen'] || (isset($current_screen->post_type) && $current_screen->post_type == $sections['screen'])) {
 					$print_tabs = true;
 					break;
 				}
@@ -755,7 +755,7 @@ class fktrSettings {
 				$tab_url = $tabs_mains['default']['url'];
 				$tab_name = $tabs_mains['default']['text']; 
 				foreach ($tabs_mains as $sections) {
-					if ($current_screen->id == $sections['screen']){
+					if ($current_screen->id == $sections['screen'] || (isset($current_screen->post_type) && $current_screen->post_type == $sections['screen']) ){
 						$current_tab = $tab_id;
 						$active = ' nav-tab-active';
 						break;
@@ -771,7 +771,7 @@ class fktrSettings {
 			$delimiter = '';
 			foreach ($sections_tabs[$current_tab] as $sec_id => $sections) {
 				if ($sec_id != 'default') {
-					$active = $current_screen->id == $sections['screen'] ?  ' current' : '';
+					$active = ($current_screen->id == $sections['screen'] || (isset($current_screen->post_type) && $current_screen->post_type == $sections['screen']) ) ?  ' current' : '';
 					echo '<li>'.$delimiter.'<a href="' . esc_url( $sections['url'] ) . '" title="' . esc_attr( $sections['text'] ) . '" class="' . $active . '">' . esc_html( $sections['text'] ) . '</a></li>';
 					$delimiter = ' | ';
 				}
