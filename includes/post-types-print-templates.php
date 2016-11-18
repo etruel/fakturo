@@ -30,10 +30,15 @@ class fktrPostTypePrintTemplates {
 
 
 		add_filter( 'post_updated_messages', array(__CLASS__, 'updated_messages') );
-	
+		add_filter('fktr_assigned_print_template', array(__CLASS__, 'default_assigned'), 10, 1);
 		
 	}
-	
+	public static function default_assigned($data) {
+		if (empty($data['invoice'])) {
+			$data['invoice'] =  __( 'Invoice', FAKTURO_TEXT_DOMAIN );
+		}
+		return $data;
+	}
 	
 	public static function setup() {
 		
@@ -175,13 +180,23 @@ class fktrPostTypePrintTemplates {
 		$print_template = self::get_print_template_data($post->ID);
 		
 		$setting_system = get_option('fakturo_system_options_group', false);
-
+		$array_assigned = apply_filters('fktr_assigned_print_template', array());
+		$selectHtml = '<select name="assigned" id="assigned">
+							<option value="-1" '.checked(-1, $print_template['assigned'], false).'> '.__('Select please', FAKTURO_TEXT_DOMAIN ) .' </option>';
+		foreach ($array_assigned as $key => $value) {
+			$selectHtml .= '<option value="'.$key.'" '.checked($key, $print_template['assigned'], false).'> '.$value .' </option>';
+		}
+		$selectHtml .= '</select>';
 		$echoHtml = '<table>
 					<tbody>
 						<tr class="tr_fktr">
-						<th><label for="pdescription">'.__('Description', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
-						<td><input id="pdescription" type="text" name="pdescription" value="'.$print_template['pdescription'].'" class="regular-text"></td>
-					</tr>
+							<th><label for="description">'.__('Description', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+							<td><input id="description" type="text" name="description" value="'.$print_template['description'].'" class="regular-text"></td>
+						</tr>
+						<tr class="tr_fktr">
+							<th><label for="assigned">'.__('Assigned to', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+							<td>'.$selectHtml.'</td>
+						</tr>
 					
 				
 			</tbody>
@@ -206,8 +221,8 @@ class fktrPostTypePrintTemplates {
 	
 	public static function clean_fields($fields) {
 		$setting_system = get_option('fakturo_system_options_group', false);
-		if (!isset($fields['pdescription'])) {
-			$fields['pdescription'] = '';
+		if (!isset($fields['description'])) {
+			$fields['description'] = '';
 		}
 		if (!isset($fields['content'])) {
 			$fields['content'] = '';
@@ -229,7 +244,7 @@ class fktrPostTypePrintTemplates {
 		if( $post->post_type == 'fktr_print_template' && $old_status == 'new'){		
 			$setting_system = get_option('fakturo_system_options_group', false);
 			$fields = array();
-			$fields['pdescription'] = '';
+			$fields['description'] = '';
 			$fields['content'] = '';
 			$fields['assigned'] = -1;
 			

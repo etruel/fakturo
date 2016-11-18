@@ -738,7 +738,7 @@ class fktrSettings {
 		$print_tabs = false;
 		foreach ($sections_tabs as $tabs_mains) {
 			foreach ($tabs_mains as $sections) {
-				if($current_screen->id == $sections['screen'] || (isset($current_screen->post_type) && $current_screen->post_type == $sections['screen'])) {
+				if($current_screen->id == $sections['screen'] || (!empty($current_screen->post_type) && $current_screen->post_type == $sections['screen'])) {
 					$print_tabs = true;
 					break;
 				}
@@ -755,7 +755,7 @@ class fktrSettings {
 				$tab_url = $tabs_mains['default']['url'];
 				$tab_name = $tabs_mains['default']['text']; 
 				foreach ($tabs_mains as $sections) {
-					if ($current_screen->id == $sections['screen'] || (isset($current_screen->post_type) && $current_screen->post_type == $sections['screen']) ){
+					if ($current_screen->id == $sections['screen'] || (!empty($current_screen->post_type) && $current_screen->post_type == $sections['screen']) ){
 						$current_tab = $tab_id;
 						$active = ' nav-tab-active';
 						break;
@@ -771,7 +771,7 @@ class fktrSettings {
 			$delimiter = '';
 			foreach ($sections_tabs[$current_tab] as $sec_id => $sections) {
 				if ($sec_id != 'default') {
-					$active = ($current_screen->id == $sections['screen'] || (isset($current_screen->post_type) && $current_screen->post_type == $sections['screen']) ) ?  ' current' : '';
+					$active = ($current_screen->id == $sections['screen'] || (!empty($current_screen->post_type) && $current_screen->post_type == $sections['screen']) ) ?  ' current' : '';
 					echo '<li>'.$delimiter.'<a href="' . esc_url( $sections['url'] ) . '" title="' . esc_attr( $sections['text'] ) . '" class="' . $active . '">' . esc_html( $sections['text'] ) . '</a></li>';
 					$delimiter = ' | ';
 				}
