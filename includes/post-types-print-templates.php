@@ -31,7 +31,27 @@ class fktrPostTypePrintTemplates {
 
 		add_filter( 'post_updated_messages', array(__CLASS__, 'updated_messages') );
 		add_filter('fktr_assigned_print_template', array(__CLASS__, 'default_assigned'), 10, 1);
-		
+		add_action( 'admin_post_show_print_template', array(__CLASS__, 'show_print_template'));
+		add_filter('post_row_actions', array(__CLASS__, 'actions'), 10, 2);
+	}
+	public static function actions($actions, $post){
+	    //check for your post type
+	    if ($post->post_type =="fktr_print_template"){
+	       
+	        $actions['show_print_template'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=show_print_template').'" target="_blank">'.__( 'Preview', FAKTURO_TEXT_DOMAIN ).'</a>';
+	       
+	    }
+	    return $actions;
+	}
+	public static function show_print_template() {
+		$template_id = $_REQUEST['id'];
+		if (empty($template_id)) {
+			echo 'Invalid print template id.';
+			wp_die();
+		}
+		$print_template = self::get_print_template_data($template_id);
+		echo $print_template['content'];
+		exit();
 	}
 	public static function default_assigned($data) {
 		if (empty($data['invoice'])) {
@@ -102,6 +122,7 @@ class fktrPostTypePrintTemplates {
 		
 		
 	}
+	
 	
 
 	public static function updated_messages( $messages ) {
