@@ -30,7 +30,11 @@ class fktrPostTypePrintTemplates {
 
 
 		add_filter( 'post_updated_messages', array(__CLASS__, 'updated_messages') );
+
 		add_filter('fktr_assigned_print_template', array(__CLASS__, 'default_assigned'), 10, 1);
+		add_filter('fktr_print_template_assignment', array(__CLASS__, 'assignment'), 10, 2);
+		
+
 		add_action( 'admin_post_show_print_template', array(__CLASS__, 'show_print_template'));
 		add_filter('post_row_actions', array(__CLASS__, 'actions'), 10, 2);
 	}
@@ -43,19 +47,124 @@ class fktrPostTypePrintTemplates {
 	    }
 	    return $actions;
 	}
+	public static function assignment($tpl, $object) {
+		$company = get_option('fakturo_info_options_group', array());
+		$company['img_url'] = $company['url'];
+		$tpl->assign( "company", $company);
+		
+		
+		return $tpl;
+	}
 	public static function show_print_template() {
 		$template_id = $_REQUEST['id'];
 		if (empty($template_id)) {
 			echo 'Invalid print template id.';
 			wp_die();
 		}
+		
 		$print_template = self::get_print_template_data($template_id);
-		echo $print_template['content'];
-		exit();
+		if (!isset($print_template['assigned'])) {
+			wp_redirect(admin_url('post.php?post='.$template_id.'&action=edit'));
+			exit;
+		}
+		if ($print_template['assigned'] == -1) {
+			wp_redirect(admin_url('post.php?post='.$template_id.'&action=edit'));
+			exit;
+		}
+		
+		$object = new stdClass();
+		$object->type = self::get_object_type($print_template);
+		$object->id = self::get_rand_object_id($object->type, $print_template);
+		if ($object->id) {
+			$tpl = new fktr_tpl;
+			$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object);
+			$html = $tpl->fromString($print_template['content']);
+			echo $html;
+			exit();
+		}
+		wp_die('<h3>'.__('Could not find any object related to this print template').'</h3>') ;
+		
 	}
+	public static function get_rand_object_id($object_type, $print_template) {
+		$ret = false;
+		if ($object_type == 'taxonomy') {
+			$terms = get_terms( array(
+			    'taxonomy' => $print_template['assigned'],
+			    'hide_empty' => false,
+			    'number' => 1,
+			) );
+			if(!is_wp_error($terms)) {
+				if ($terms) {
+					foreach ($terms as $t) {
+						$ret = $t->term_id;
+						break;
+					}
+				}
+			}
+		}
+		if ($object_type == 'post') {
+			$args = array(
+			    'post_type' => $print_template['assigned'],
+			    'post_status' => 'publish',
+			    'posts_per_page' => 1,
+			    'orderby' => 'rand'
+			);
+			$my_random_post = new WP_Query ( $args );
+			while ( $my_random_post->have_posts () ) {
+			  $my_random_post->the_post ();
+
+			  $ret = get_the_ID();
+		
+			}
+
+		}
+
+		return $ret;
+
+	}
+	public static function get_object_type($print_template) {
+		$object_type = 'post';
+		$is_taxonomy = taxonomy_exists($print_template['assigned']);
+		if ($is_taxonomy) {
+			$object_type = 'taxonomy';
+		}
+		$object_type = apply_filters('fktr_get_object_type_by_slug', $object_type);
+		return $object_type;
+	}
+
 	public static function default_assigned($data) {
-		if (empty($data['invoice'])) {
-			$data['invoice'] =  __( 'Invoice', FAKTURO_TEXT_DOMAIN );
+		$args = array(
+			'public'   => true
+		); 
+		$output = 'objects'; // names or objects, note names is the default
+		$operator = 'and'; // 'and' or 'or'
+		$post_types = get_post_types($args, $output, $operator); 
+		foreach ($post_types  as $post_type  ) {
+			
+			if (strpos($post_type->name, 'fktr') === false ) {
+				continue;
+			}
+			if (empty($data[$post_type->name])) {
+				$data[$post_type->name] =  $post_type->label;
+			}
+			
+		}
+
+		$args = array(
+		  	'public'   => true,
+		); 
+		$output = 'objects'; // names or objects, note names is the default
+		$operator = 'and'; // 'and' or 'or'
+		$taxonomies = get_taxonomies( $args, $output, $operator ); 
+		if ( $taxonomies ) {
+		  	foreach ( $taxonomies  as $taxonomy ) {
+		    	if (strpos($taxonomy->name, 'fktr') === false ) {
+					continue;
+				}
+				if (empty($data[$taxonomy->name])) {
+					$data[$taxonomy->name] =  $taxonomy->label;
+				}
+		  	}
 		}
 		return $data;
 	}
@@ -200,12 +309,14 @@ class fktrPostTypePrintTemplates {
 		
 		$print_template = self::get_print_template_data($post->ID);
 		
+
+
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$array_assigned = apply_filters('fktr_assigned_print_template', array());
 		$selectHtml = '<select name="assigned" id="assigned">
-							<option value="-1" '.checked(-1, $print_template['assigned'], false).'> '.__('Select please', FAKTURO_TEXT_DOMAIN ) .' </option>';
+							<option value="-1" '.selected(-1, $print_template['assigned'], false).'> '.__('Select please', FAKTURO_TEXT_DOMAIN ) .' </option>';
 		foreach ($array_assigned as $key => $value) {
-			$selectHtml .= '<option value="'.$key.'" '.checked($key, $print_template['assigned'], false).'> '.$value .' </option>';
+			$selectHtml .= '<option value="'.$key.'" '.selected($key, $print_template['assigned'], false).'> '.$value .' </option>';
 		}
 		$selectHtml .= '</select>';
 		$echoHtml = '<table>

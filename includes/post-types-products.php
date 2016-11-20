@@ -33,7 +33,7 @@ class fktrPostTypeProducts {
 	public static function setup() {
 		$slug     = defined( 'FAKTURO_PRODUCT_SLUG' ) ? FAKTURO_PRODUCT_SLUG : 'fktr_products';
 		$labels = array( 
-			'name' => __( 'All Products', FAKTURO_TEXT_DOMAIN ),
+			'name' => __( 'Products', FAKTURO_TEXT_DOMAIN ),
 			'singular_name' => __( 'Product', FAKTURO_TEXT_DOMAIN ),
 			'add_new' => __( 'Add New', FAKTURO_TEXT_DOMAIN ),
 			'add_new_item' => __( 'Add New Product', FAKTURO_TEXT_DOMAIN ),
@@ -123,7 +123,7 @@ class fktrPostTypeProducts {
 
 		register_taxonomy(
 			'fktr_category',
-			'fktr_product',
+			'',
 			$args_model
 		);
 		
@@ -164,7 +164,7 @@ class fktrPostTypeProducts {
 
 		register_taxonomy(
 			'fktr_model',
-			'fktr_product',
+			'',
 			$args_model
 		);
 		
