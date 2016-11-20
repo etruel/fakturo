@@ -68,8 +68,7 @@ class fktrPostTypePrintTemplates {
 			exit;
 		}
 		if ($print_template['assigned'] == -1) {
-			wp_redirect(admin_url('post.php?post='.$template_id.'&action=edit'));
-			exit;
+			wp_die('<h3>'.__('This print template has no assigned object.').'</h3>');
 		}
 		
 		$object = new stdClass();
@@ -82,7 +81,7 @@ class fktrPostTypePrintTemplates {
 			echo $html;
 			exit();
 		}
-		wp_die('<h3>'.__('Could not find any object related to this print template').'</h3>') ;
+		wp_die('<h3>'.__('Could not find any object related to this print template').'</h3>');
 		
 	}
 	public static function get_rand_object_id($object_type, $print_template) {
