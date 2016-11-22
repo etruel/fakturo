@@ -34,7 +34,7 @@
 								);
 
 			$tag_regexp = "/" . join( "|", $tag_regexp ) . "/";
-
+			$tag_regexp = apply_filters('fktr_tpl_tag_regexp', $tag_regexp);
 			//path replace (src of img, background and href of link)
 			//$template_code = $this->path_replace( $template_code, $tpl_basedir );
 

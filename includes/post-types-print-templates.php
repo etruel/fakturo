@@ -32,27 +32,116 @@ class fktrPostTypePrintTemplates {
 		add_filter( 'post_updated_messages', array(__CLASS__, 'updated_messages') );
 
 		add_filter('fktr_assigned_print_template', array(__CLASS__, 'default_assigned'), 10, 1);
-		add_filter('fktr_print_template_assignment', array(__CLASS__, 'assignment'), 10, 2);
+		add_filter('fktr_print_template_assignment', array(__CLASS__, 'assignment'), 10, 3);
 		
 
 		add_action( 'admin_post_show_print_template', array(__CLASS__, 'show_print_template'));
+		add_action('admin_action_copy_print_template', array(__CLASS__, 'copy_print_template'));
 		add_filter('post_row_actions', array(__CLASS__, 'actions'), 10, 2);
 	}
 	public static function actions($actions, $post){
 	    //check for your post type
 	    if ($post->post_type =="fktr_print_template"){
 	       
-	        $actions['show_print_template'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=show_print_template').'" target="_blank">'.__( 'Preview', FAKTURO_TEXT_DOMAIN ).'</a>';
+	        $actions['show_print_template'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=show_print_template').'" target="_new">'.__( 'Preview', FAKTURO_TEXT_DOMAIN ).'</a>';
+	        $actions['copy'] = '<a href="'.admin_url('admin.php?action=copy_print_template&post='.$post->ID.'').'" title="' . esc_attr(__("Clone this item", FAKTURO_TEXT_DOMAIN)) . '">' .  __('Copy', FAKTURO_TEXT_DOMAIN) . '</a>';
 	       
 	    }
 	    return $actions;
 	}
-	public static function assignment($tpl, $object) {
+	public static function copy_print_template() {
+		if (! ( isset( $_GET['post']) || isset( $_POST['post'])  || ( isset($_REQUEST['action']) && 'copy_print_template' == $_REQUEST['action'] ) ) ) {
+			wp_die(__('No print template ID has been supplied!',  FAKTURO_TEXT_DOMAIN));
+		}
+
+		// Get the original post
+		$id = (isset($_GET['post']) ? $_GET['post'] : $_POST['post']);
+		$post = get_post($id);
+
+		// Copy the post and insert it
+		if (isset($post) && $post!=null) {
+			if ($post->post_type != 'fktr_print_template') {
+				return;
+			}
+			$prefix = "";
+			$suffix = __("(Copy)",  FAKTURO_TEXT_DOMAIN) ;
+			if (!empty($prefix)) $prefix.= " ";
+			if (!empty($suffix)) $suffix = " ".$suffix;
+			$status = 'publish';
+
+			$new_post = array(
+				'menu_order' => $post->menu_order,
+				'guid' => $post->guid,
+				'comment_status' => $post->comment_status,
+				'ping_status' => $post->ping_status,
+				'pinged' => $post->pinged,
+				'post_author' => @$post->author,
+				'post_content' => $post->post_content,
+				'post_excerpt' => $post->post_excerpt,
+				'post_mime_type' => $post->post_mime_type,
+				'post_parent' => $post->post_parent,
+				'post_password' => $post->post_password,
+				'post_status' => $status,
+				'post_title' => $prefix.$post->post_title.$suffix,
+				'post_type' => $post->post_type,
+				'to_ping' => $post->to_ping, 
+				'post_date' => $post->post_date,
+				'post_date_gmt' => get_gmt_from_date($post->post_date)
+			);	
+
+			$new_post_id = wp_insert_post($new_post);
+
+			$post_meta_keys = get_post_custom_keys($post->ID);
+			if (!empty($post_meta_keys)) {
+				foreach ($post_meta_keys as $meta_key) {
+					$meta_values = get_post_custom_values($meta_key, $post->ID);
+					foreach ($meta_values as $meta_value) {
+
+						$meta_value = maybe_unserialize($meta_value);
+						update_post_meta($new_post_id, $meta_key, $meta_value);
+					}
+				}
+			}
+			
+
+			if ($status == ''){
+				// Redirect to the post list screen
+				wp_redirect( admin_url( 'edit.php?post_type='.$post->post_type) );
+			} else {
+				// Redirect to the edit screen for the new draft post
+				wp_redirect( admin_url( 'post.php?action=edit&post=' . $new_post_id ) );
+			}
+			exit;
+
+		} else {
+			$post_type_obj = get_post_type_object( $post->post_type );
+			wp_die(esc_attr(__('Copy print template failed, could not find original:',  FAKTURO_TEXT_DOMAIN)) . ' ' . $id);
+		}
+	}
+	public static function assignment($tpl, $object, $default_template) {
 		$company = get_option('fakturo_info_options_group', array());
 		$company['img_url'] = $company['url'];
 		$tpl->assign( "company", $company);
+		if (!$default_template) {
+			$id_print_template = self::get_id_by_assigned($object->assgined);
+			if ($id_print_template) {
+				$default_template = self::get_print_template_data($id_print_template);
+			}
+		}
+		if (!$default_template) {
+			return $tpl;
+		}
 		
-		
+		if ($object->assgined == 'fktr_sale') {
+			// assign vars to print template assgined to fktr_sale.
+			$tpl->assign( "fktr_invoice_background_image", FAKTURO_PLUGIN_URL . 'assets/images/invoice_background.jpg');
+
+			$sale_invoice = fktrPostTypeSales::get_sale_data($object->id);
+			$sale_invoice['invoice_type'] = (array)get_fakturo_term($sale_invoice['invoice_type'], 'fktr_invoice_types');
+			$tpl->assign( "invoice", $sale_invoice);
+			
+		}
+
 		return $tpl;
 	}
 	public static function show_print_template() {
@@ -74,15 +163,38 @@ class fktrPostTypePrintTemplates {
 		$object = new stdClass();
 		$object->type = self::get_object_type($print_template);
 		$object->id = self::get_rand_object_id($object->type, $print_template);
+		$object->assgined = $print_template['assigned'];
 		if ($object->id) {
 			$tpl = new fktr_tpl;
-			$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object);
+			$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, $print_template);
 			$html = $tpl->fromString($print_template['content']);
 			echo $html;
 			exit();
 		}
 		wp_die('<h3>'.__('Could not find any object related to this print template').'</h3>');
 		
+	}
+	public static function get_id_by_assigned($assigned) {
+		global $wpdb;
+		$return = false;
+		$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as assigned FROM {$wpdb->posts} as p
+				 LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
+                 WHERE 
+                 pm.meta_key = 'assigned'
+				 AND p.post_status = 'publish'
+				 AND p.post_type = 'fktr_print_template'
+				 AND pm.meta_value = '%s'
+                 GROUP BY p.ID 
+				 LIMIT 1
+			 ", $assigned);
+		$r = $wpdb->get_results($sql, ARRAY_A);
+		if (!empty($r)) {
+			foreach ($r as $key => $value) {
+				$return = $value['ID'];
+			}
+
+		}
+		return $return;
 	}
 	public static function get_rand_object_id($object_type, $print_template) {
 		$ret = false;
@@ -283,10 +395,11 @@ class fktrPostTypePrintTemplates {
 			wp_enqueue_script( 'wpecf7vb-htmlmixed', FAKTURO_PLUGIN_URL . 'assets/codemirror/js/htmlmixed.js', array( 'wpecf7vb-mirrorcode','wpecf7vb-xml' ), WPE_FAKTURO_VERSION, true  );
 
 			
-			
-			wp_localize_script('ppost-type-print-template', 'print_template_object',
+			$preview_button = '<a  id="preview_button" class="button button-large" href="'.admin_url('admin-post.php?id='.$post->ID.'&action=show_print_template').'" target="_new">'. __('Preview', FAKTURO_TEXT_DOMAIN) . '</a>';
+			wp_localize_script('post-type-print-template', 'print_template_object',
 				array(
-						'ajax_url' => admin_url( 'admin-ajax.php' )
+						'ajax_url' => admin_url( 'admin-ajax.php' ),
+						'preview_button' => $preview_button
 					
 				));
 		
@@ -308,7 +421,6 @@ class fktrPostTypePrintTemplates {
 		
 		$print_template = self::get_print_template_data($post->ID);
 		
-
 
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$array_assigned = apply_filters('fktr_assigned_print_template', array());

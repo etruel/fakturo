@@ -8,6 +8,12 @@ class fktr_helps {
 		$helptexts = array();
 		$screen = get_current_screen();
 		$doc_path = FAKTURO_PLUGIN_DIR.'docs/'.$screen->id .'-help.php';
+		if ($screen->post_type != '' && !file_exists($doc_path)) {
+			if (file_exists(FAKTURO_PLUGIN_DIR.'docs/'.$screen->post_type .'-help.php')) {
+				$doc_path = FAKTURO_PLUGIN_DIR.'docs/'.$screen->post_type .'-help.php';
+			}
+		}
+		error_log($screen->id." - ".$doc_path);
 		if (file_exists($doc_path)) {
 			include $doc_path;
 			/**

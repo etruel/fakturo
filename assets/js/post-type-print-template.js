@@ -14,5 +14,5 @@ jQuery(document).ready(function() {
     editor.refresh();
 
 
-    
+    jQuery('#publishing-action').prepend(print_template_object.preview_button);
 });
