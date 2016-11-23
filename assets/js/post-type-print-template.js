@@ -15,4 +15,11 @@ jQuery(document).ready(function() {
 
 
     jQuery('#publishing-action').prepend(print_template_object.preview_button);
+    jQuery(document).on("change", '#post', function(event) {
+        jQuery('#preview_button').attr('disabled','disabled');
+        jQuery('#preview_button').click(function(e) {
+            alert(print_template_object.msg_save_before);
+            e.preventDefault();
+        });
+    });
 });

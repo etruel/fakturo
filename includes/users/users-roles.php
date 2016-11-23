@@ -195,8 +195,10 @@ class fktrUserRoles {
 	public static function activate() {
 		global $wp_roles;
 		add_role( 'fakturo_manager', __( 'Manager', FAKTURO_TEXT_DOMAIN ), self::get_fakturo_manager_caps());
-		add_role( 'fakturo_seller', __( 'Salesman', FAKTURO_TEXT_DOMAIN ), self::get_fakturo_seller_caps() );
+		add_role( 'fakturo_seller', __( 'Salesman', FAKTURO_TEXT_DOMAIN ), self::get_fakturo_seller_caps());
 		
+		update_option('fktr_last_mananger_caps', self::$fakturo_manager_caps);
+		update_option('fktr_last_seller_caps', self::$fakturo_seller_caps);
 		//Add capabilities to admin (if don't want to allow admins to edits Seller events can be disabled from Settings ;-)
 		foreach(self::$fakturo_manager_caps as $key => $value) {
 			$wp_roles->add_cap( 'administrator', $key, $value );
@@ -212,9 +214,32 @@ class fktrUserRoles {
 			$adm_cap = array('read','upload_files','edit_files','manage_options',
 				'promote_users','remove_users','add_users','edit_users',
 				'list_users','create_users','delete_users',);
-			if(!in_array($key, $adm_cap ))
+			if(!in_array($key, $adm_cap )){
 				$wp_roles->remove_cap( 'administrator', $key, $value );
+			}
 		}
+	}
+
+	public static function regenerate($update = false) {
+		global $wp_roles;
+		remove_role( 'fakturo_manager'); 
+		remove_role( 'fakturo_seller'); 
+
+		$fktr_last_mananger_caps = get_option('fktr_last_mananger_caps', false);
+		if (!$fktr_last_mananger_caps || !$update) {
+			$fktr_last_mananger_caps = self::get_fakturo_manager_caps();
+		}
+		foreach($fktr_last_mananger_caps as $key => $value) {
+			$adm_cap = array('read','upload_files','edit_files','manage_options',
+				'promote_users','remove_users','add_users','edit_users',
+				'list_users','create_users','delete_users',);
+			if(!in_array($key, $adm_cap )) {
+				$wp_roles->remove_cap( 'administrator', $key, $value );
+			}
+		}
+
+		self::activate();
+		
 	}
 	
 }

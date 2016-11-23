@@ -399,7 +399,8 @@ class fktrPostTypePrintTemplates {
 			wp_localize_script('post-type-print-template', 'print_template_object',
 				array(
 						'ajax_url' => admin_url( 'admin-ajax.php' ),
-						'preview_button' => $preview_button
+						'preview_button' => $preview_button,
+						'msg_save_before' => __('Save before to preview print template', FAKTURO_TEXT_DOMAIN),
 					
 				));
 		

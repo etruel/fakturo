@@ -60,6 +60,8 @@ class fakturo {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/settings/settings.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/users/users-list.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/users/users-roles.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/version.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/welcome.php'; 
 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/fktr_tpl.php'; 
 		
