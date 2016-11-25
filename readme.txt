@@ -72,6 +72,12 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 == Changelog ==
 
+= 0.3 Beta =
+* Added Print templates with highlighter code textarea and Previews.
+* Added version control and re-assign permissions on updates.
+* Added Welcome Pages.
+* Lot of fixes.
+
 = 0.2 Beta =
 * Added lot of Settings Screens.
 * Added Providers and Clients.
