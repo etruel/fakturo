@@ -119,8 +119,11 @@ class fktrPostTypePrintTemplates {
 		}
 	}
 	public static function assignment($tpl, $object, $default_template) {
+		$setting_system = get_option('fakturo_system_options_group', array());
+		$tpl->assign("setting_system", $setting_system);
 		$company = get_option('fakturo_info_options_group', array());
 		$company['img_url'] = $company['url'];
+		$company['tax_condition'] = (array)get_fakturo_term($company['tax_condition'] , 'fktr_tax_conditions');
 		$tpl->assign( "company", $company);
 		if (!$default_template) {
 			$id_print_template = self::get_id_by_assigned($object->assgined);
@@ -137,7 +140,27 @@ class fktrPostTypePrintTemplates {
 			$tpl->assign( "fktr_invoice_background_image", FAKTURO_PLUGIN_URL . 'assets/images/invoice_background.jpg');
 
 			$sale_invoice = fktrPostTypeSales::get_sale_data($object->id);
+			
+			$sale_invoice['client_data']['tax_condition'] = (array)get_fakturo_term($sale_invoice['client_data']['tax_condition'], 'fktr_tax_conditions');
+			$sale_invoice['client_data']['payment_type'] = (array)get_fakturo_term($sale_invoice['client_data']['payment_type'], 'fktr_payment_types');
 			$sale_invoice['invoice_type'] = (array)get_fakturo_term($sale_invoice['invoice_type'], 'fktr_invoice_types');
+			$sale_invoice['currency'] = (array)get_fakturo_term($sale_invoice['invoice_currency'], 'fktr_currencies');
+			$sale_invoice['products'] = array();
+			if (!empty($sale_invoice['uc_id'])) {
+				foreach ($sale_invoice['uc_id'] as $key => $product_id) {
+					$newProduct = array();
+					$newProduct['code'] = $sale_invoice['uc_code'][$key]; 
+					$newProduct['description'] = $sale_invoice['uc_description'][$key];
+					$newProduct['quantity'] = $sale_invoice['uc_quality'][$key];
+					$newProduct['unit_price'] = $sale_invoice['uc_unit_price'][$key];
+					$newProduct['tax'] = $sale_invoice['uc_tax'][$key];
+					$newProduct['tax_porcent'] = $sale_invoice['uc_tax_porcent'][$key];
+					$newProduct['amount'] = $sale_invoice['uc_amount'][$key];
+					$sale_invoice['products'][] = $newProduct;
+				}
+			}
+			$sale_invoice['subtotal'] = $sale_invoice['in_sub_total'];
+			$sale_invoice['total'] = $sale_invoice['in_total'];
 			$tpl->assign( "invoice", $sale_invoice);
 			
 		}
@@ -168,7 +191,12 @@ class fktrPostTypePrintTemplates {
 			$tpl = new fktr_tpl;
 			$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, $print_template);
 			$html = $tpl->fromString($print_template['content']);
-			echo $html;
+			$pdf = fktr_pdf::getInstance();
+			$pdf ->set_paper("A4", "portrait");
+			$pdf ->load_html(utf8_decode($html));
+			$pdf ->render();
+			$pdf ->stream('pdf.pdf', array('Attachment'=>0));
+			//echo $html;
 			exit();
 		}
 		wp_die('<h3>'.__('Could not find any object related to this print template').'</h3>');

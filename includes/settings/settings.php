@@ -76,8 +76,8 @@ class fktrSettings {
 			$values['city'] = '';
 			$values['state'] = '';
 			$values['country'] = '';
-			$values['website'] = '';
 			$values['tax_condition'] = '';
+			$values['website'] = '';
 			$values['url'] = FAKTURO_PLUGIN_URL . 'assets/images/etruel-logo.png';
 			$values = apply_filters('fktr_info_options_init', $values);
 			update_option('fakturo_info_options_group' , $values);

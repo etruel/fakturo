@@ -192,5 +192,13 @@ function fakturo_transform_money($from_c, $to_c, $value_money) {
 	return $retorno;
 }
 
-
+function get_money_format($value, $currency) {
+	if (is_array($currency)) {
+		$currency = (object)$currency;
+	}
+	$setting_system = get_option('fakturo_system_options_group', false);
+	$ret = '';
+	$ret = ''.(($setting_system['currency_position'] == 'before')?$currency->symbol.' ':'').''.number_format($value, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currency->symbol:'').'';
+	return $ret;
+}
 ?>
