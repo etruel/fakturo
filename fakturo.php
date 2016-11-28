@@ -34,6 +34,7 @@ class fakturo {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/helps.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/functions.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/admin-menu.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/addons_page.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-products.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-providers.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-clients.php'; 
@@ -65,6 +66,7 @@ class fakturo {
 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/fktr_pdf.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/fktr_tpl.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/licenses_handlers.php'; 
 
 		
 		do_action('fakturo_include_files');

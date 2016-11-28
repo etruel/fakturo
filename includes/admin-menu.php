@@ -71,6 +71,15 @@ class fktrAdminMenu {
 			'fakturo-settings-system',
 			array('fktrSettings','fakturo_settings_system'), 
 			'dashicons-tickets', 27  );	
+
+		$page = add_submenu_page(
+			null,
+			__( 'Settings', FAKTURO_TEXT_DOMAIN ), 
+			__( 'Settings', FAKTURO_TEXT_DOMAIN ), 
+			'edit_fakturo_settings', 
+			'fakturo-license-page',
+			array('fktr_licenses_handlers','license_page'), 
+			'dashicons-tickets', 27  );	
 		
 	
 		add_menu_page( 

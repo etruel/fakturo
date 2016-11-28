@@ -730,7 +730,14 @@ class fktrSettings {
 				'repairs_status' =>  array('text' => __( 'Repairs Status', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') ,
 				'emails' =>  array('text' => __( 'Emails', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '') , 
 				'default' => array('text' => __( '​​Extensions', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '')
+			) ,
+			'licenses' => array( 
+				'licenses_page' =>  array('text' => __( 'Licenses', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-license-page'), 'screen' => 'admin_page_fakturo-license-page'),
+				'default' => array('text' => __( '​​Licenses', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-license-page'), 'screen' => 'admin_page_fakturo-license-page')
 			)
+			
+
+			
 		);
 		
 		$sections_tabs = apply_filters('ftkr_tabs_sections', $sections_tabs);
