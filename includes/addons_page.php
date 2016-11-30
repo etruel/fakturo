@@ -15,6 +15,7 @@ class fktr_admin_page {
 
 		add_action('admin_init', array(__CLASS__, 'redirect_to_addon_page'),0  );
 		add_action('admin_menu', array(__CLASS__, 'admin_menu'),99 );
+		add_action('admin_print_styles', array(__CLASS__,'styles'));
 		add_filter('all_plugins', array(__CLASS__, 'showhide_addons'));
 		add_filter('manage_plugins_page_fakturo_columns', array(__CLASS__, 'addons_get_columns'));
 		add_action('manage_plugins_custom_column', array(__CLASS__, 'addons_custom_columns') ,10,3);
@@ -24,7 +25,7 @@ class fktr_admin_page {
 	public static function redirect_to_addon_page() {
 		global $pagenow;
 		$getpage = (isset($_REQUEST['page']) && !empty($_REQUEST['page']) ) ? $_REQUEST['page'] : '';
-		if ($pagenow != 'admin-ajax.php' || $getpage == 'wpemaddons')
+		if ($pagenow != 'admin-ajax.php' || $getpage == 'fakturo')
 		if ($pagenow == 'plugins.php' && ($getpage=='')  ){
 			$plugin = isset($_REQUEST['plugin']) ? $_REQUEST['plugin'] : '';
 	
@@ -33,8 +34,8 @@ class fktr_admin_page {
 			$location = '';
 
 			$actioned = array_multi_key_exists( array('error', 'deleted', 'activate', 'activate-multi', 'deactivate', 'deactivate-multi', '_error_nonce' ), $_REQUEST, false );
-			if( ( isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'page=wpemaddons') ) && $actioned ) {
-				$location = add_query_arg('page','wpemaddons', $location);
+			if( ( isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'page=fakturo') ) && $actioned ) {
+				$location = add_query_arg('page','fakturo', $location);
 				wp_redirect($location);
 			}
 		}
@@ -58,7 +59,11 @@ class fktr_admin_page {
 		);
 	
 	}
+	public static function styles() {
+		wp_dequeue_style('icons');
+	}
 	public static function addons_scripts() {
+		
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('plupload-all');
 		wp_enqueue_style('plugin-install');

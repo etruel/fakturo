@@ -31,6 +31,7 @@ class fakturo {
 		$this->loadTextDomain();
 	}
 	private function includes() {
+		require_once FAKTURO_PLUGIN_DIR . 'includes/notices.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/helps.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/functions.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/admin-menu.php'; 
