@@ -1,0 +1,5 @@
+.CodeMirror-scroll  {
+  width: 100% !important;
+  overflow-y: hidden;
+  overflow-x: auto;
+}

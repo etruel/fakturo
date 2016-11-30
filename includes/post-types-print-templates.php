@@ -191,12 +191,18 @@ class fktrPostTypePrintTemplates {
 			$tpl = new fktr_tpl;
 			$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, $print_template);
 			$html = $tpl->fromString($print_template['content']);
-			$pdf = fktr_pdf::getInstance();
-			$pdf ->set_paper("A4", "portrait");
-			$pdf ->load_html(utf8_decode($html));
-			$pdf ->render();
-			$pdf ->stream('pdf.pdf', array('Attachment'=>0));
-			//echo $html;
+			if (isset($_REQUEST['pdf'])) {
+				$pdf = fktr_pdf::getInstance();
+				$pdf ->set_paper("A4", "portrait");
+				$pdf ->load_html(utf8_decode($html));
+				$pdf ->render();
+				$pdf ->stream('pdf.pdf', array('Attachment'=>0));
+
+			} else {
+				echo $html;
+			}
+			
+			
 			exit();
 		}
 		wp_die('<h3>'.__('Could not find any object related to this print template').'</h3>');
@@ -423,11 +429,13 @@ class fktrPostTypePrintTemplates {
 			wp_enqueue_script( 'wpecf7vb-htmlmixed', FAKTURO_PLUGIN_URL . 'assets/codemirror/js/htmlmixed.js', array( 'wpecf7vb-mirrorcode','wpecf7vb-xml' ), WPE_FAKTURO_VERSION, true  );
 
 			
-			$preview_button = '<a  id="preview_button" class="button button-large" href="'.admin_url('admin-post.php?id='.$post->ID.'&action=show_print_template').'" target="_new">'. __('Preview', FAKTURO_TEXT_DOMAIN) . '</a>';
+			$preview_button = '<a  id="preview_button" class="button button-large" href="'.admin_url('admin-post.php?id='.$post->ID.'&action=show_print_template').'" target="_new" style="margin:5px;">'. __('Preview', FAKTURO_TEXT_DOMAIN) . '</a>';
+			$pdf_button = '<a  id="pdf_button" class="button button-large" href="'.admin_url('admin-post.php?id='.$post->ID.'&action=show_print_template&pdf=true').'" target="_new" style="margin:5px;">'. __('See PDF', FAKTURO_TEXT_DOMAIN) . '</a>';
 			wp_localize_script('post-type-print-template', 'print_template_object',
 				array(
 						'ajax_url' => admin_url( 'admin-ajax.php' ),
 						'preview_button' => $preview_button,
+						'pdf_button' => $pdf_button,
 						'msg_save_before' => __('Save before to preview print template', FAKTURO_TEXT_DOMAIN),
 					
 				));
