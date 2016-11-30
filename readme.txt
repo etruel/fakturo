@@ -74,7 +74,12 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 = 0.3 Beta =
 * Added Print templates with highlighter code textarea and Previews.
+* Added emails templates with highlighter code textarea and Previews.
+* Added New settings tab for System Settings.
+* Added support to print documents as PDF.
 * Added version control and re-assign permissions on updates.
+* Added Notices class.
+* Added Addons Page.
 * Added Welcome Pages.
 * Lot of fixes.
 
