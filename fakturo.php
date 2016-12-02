@@ -11,7 +11,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Plugin version
-if ( ! defined('WPE_FAKTURO_VERSION' ) ) define('WPE_FAKTURO_VERSION', '0.3' ); 
+if ( ! defined('WPE_FAKTURO_VERSION' ) ) define('WPE_FAKTURO_VERSION', '0.4' ); 
 
 if ( ! class_exists( 'fakturo' ) ) :
 
@@ -42,6 +42,7 @@ class fakturo {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-sales.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-receipts.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-print-templates.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-email-templates.php'; 
 		
 		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/sale-points.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/currencies.php'; 

@@ -711,6 +711,7 @@ class fktrSettings {
 			'system' => apply_filters('ftkr_system_sections', array( 
 				'system_settings' =>  array('text' => __( 'General', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-settings-system'), 'screen' => 'admin_page_fakturo-settings-system'), 
 				'print-template' =>  array('text' => __( 'Print Templates', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit.php?post_type=fktr_print_template'), 'screen' => 'fktr_print_template'), 
+				'email-template' =>  array('text' => __( 'E-mail Templates', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit.php?post_type=fktr_email_template'), 'screen' => 'fktr_email_template'), 
 				'default' =>  array('text' => __( 'System Settings', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-settings-system'), 'screen' => 'admin_page_fakturo-settings-system')				
 				)
 			),

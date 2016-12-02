@@ -180,7 +180,7 @@ class fktrPostTypePrintTemplates {
 			exit;
 		}
 		if ($print_template['assigned'] == -1) {
-			wp_die('<h3>'.__('This print template has no assigned object.').'</h3>');
+			wp_die('<h3>'.__('This print template has no assigned object.', FAKTURO_TEXT_DOMAIN ).'</h3>');
 		}
 		
 		$object = new stdClass();
@@ -205,7 +205,7 @@ class fktrPostTypePrintTemplates {
 			
 			exit();
 		}
-		wp_die('<h3>'.__('Could not find any object related to this print template').'</h3>');
+		wp_die('<h3>'.__('Could not find any object related to this print template', FAKTURO_TEXT_DOMAIN ).'</h3>');
 		
 	}
 	public static function get_id_by_assigned($assigned) {
@@ -407,7 +407,7 @@ class fktrPostTypePrintTemplates {
 	public static function styles() {
 		global $post_type;
 		if($post_type == 'fktr_print_template') {
-			wp_enqueue_style('post-type-sales',FAKTURO_PLUGIN_URL .'assets/css/post-type-print-template.css');	
+			wp_enqueue_style('post-type-print-template',FAKTURO_PLUGIN_URL .'assets/css/post-type-print-template.css');	
 			wp_enqueue_style( 'wpecf7vb-codemirror', FAKTURO_PLUGIN_URL . 'assets/codemirror/css/codemirror.css');
 
 			wp_enqueue_style( 'wpecf7vb-monokai', FAKTURO_PLUGIN_URL . 'assets/codemirror/css/monokai.css');
@@ -449,7 +449,7 @@ class fktrPostTypePrintTemplates {
 
 		add_meta_box('fakturo-invoice-data-box', __('Print Template Data', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'print_template_data_box'),'fktr_print_template','normal', 'high' );
 		
-		do_action('add_ftkr_sale_meta_boxes');
+		do_action('add_ftkr_print_template_meta_boxes');
 	}
 	
 	public static function print_template_data_box() {
@@ -539,8 +539,8 @@ class fktrPostTypePrintTemplates {
 			}
 		}
 	}
-	public static function get_print_template_data($sale_id) {
-		$custom_field_keys = get_post_custom($sale_id);
+	public static function get_print_template_data($template_id) {
+		$custom_field_keys = get_post_custom($template_id);
 		foreach ( $custom_field_keys as $key => $value ) {
 			$custom_field_keys[$key] = maybe_unserialize($value[0]);
 		}

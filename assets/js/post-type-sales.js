@@ -94,7 +94,6 @@ jQuery(document).ready(function() {
 	
 			jQuery.post(sales_object.ajax_url, data, function( data ) {
 				var data_client = jQuery.parseJSON(data);
-				console.log(data_client);
 				jQuery("#client_data_id").html(data_client.ID);
 				jQuery("#client_name").html(data_client.post_title+'<input type="hidden" name="client_data[name]" value="'+data_client.post_title+'" id="client_data_name"/>');
 				jQuery("#client_address").html(data_client.address+'<input type="hidden" name="client_data[address]" value="'+data_client.address+'" id="client_data_address"/>');
