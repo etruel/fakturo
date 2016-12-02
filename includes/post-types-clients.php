@@ -125,7 +125,7 @@ class fktrPostTypeClients {
 		
 		add_meta_box('fakturo-active-box', __('Active client', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'active'), 'fktr_client', 'side', 'high');
 		remove_meta_box('postimagediv', 'fktr_client', 'side' );
-		add_meta_box('postimagediv', __('Provider Image', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'thumbnail_box'), 'fktr_client', 'side', 'high');
+		add_meta_box('postimagediv', __('Client Image', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'thumbnail_box'), 'fktr_client', 'side', 'high');
 		add_meta_box('fakturo-trade-box', __('Trader data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'trade_box'),'fktr_client','normal', 'default' );
 		add_meta_box('fakturo-data-box', __('Client data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'data_box'),'fktr_client','normal', 'default' );
 		add_meta_box('fakturo-options-box', __('Client Contacts', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'options_box'),'fktr_client','normal', 'default' );

@@ -60,7 +60,15 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 == Screenshots ==
 
+1. Settings Screens.
+
 1. Adding a Client.
+
+1. Adding an Invoice.
+
+1. Adding a Receipt.
+
+1. Adding a Product.
 
 
 == Frequently Asked Questions ==
@@ -73,14 +81,16 @@ You can either install it automatically from the WordPress admin, or do it manua
 == Changelog ==
 
 = 0.3 Beta =
-* Added Print templates with highlighter code textarea and Previews.
-* Added emails templates with highlighter code textarea and Previews.
+* Added Print templates with highlighter code textarea and previews.
+* Added emails templates with WP Editor and Previews.
 * Added New settings tab for System Settings.
 * Added support to print documents as PDF.
 * Added version control and re-assign permissions on updates.
+* Added Help Screens in all Pages. (We are making the tutorials :)
+* Added Welcome & changelog Pages.
+* Added some screenshots.
 * Added Notices class.
 * Added Addons Page.
-* Added Welcome Pages.
 * Lot of fixes.
 
 = 0.2 Beta =
