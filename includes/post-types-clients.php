@@ -101,10 +101,10 @@ class fktrPostTypeClients {
 			wp_enqueue_script( 'jquery-vsort', FAKTURO_PLUGIN_URL . 'assets/js/jquery.vSort.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			
 			wp_enqueue_script( 'post-type-clients', FAKTURO_PLUGIN_URL . 'assets/js/post-type-clients.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			wp_localize_script('post-type-clients', 'providers_object',
+			wp_localize_script('post-type-clients', 'client_object',
 				array('ajax_url' => admin_url( 'admin-ajax.php' ),
 					'loading_states_text' => __('Loading states...', FAKTURO_TEXT_DOMAIN ),
-					'update_provider_contacts' => __('Update Client to save changes.', FAKTURO_TEXT_DOMAIN ),
+					'update_client_contacts' => __('Update Client to save changes.', FAKTURO_TEXT_DOMAIN ),
 					'privider_delete_this_item' => __('Delete this item',  FAKTURO_TEXT_DOMAIN  )
 				) );
 			
@@ -170,9 +170,9 @@ class fktrPostTypeClients {
 					</tr>
 					</tbody>
 				</table>';
-		$echoHtml = apply_filters('fktr_provider_active_box', $echoHtml);
+		$echoHtml = apply_filters('fktr_client_active_box', $echoHtml);
 		echo $echoHtml;
-		do_action('add_fktr_provider_active_box', $echoHtml);
+		do_action('add_fktr_client_active_box', $echoHtml);
 		
 	}
 	
@@ -526,9 +526,9 @@ class fktrPostTypeClients {
 						</tr>
 					</tbody>
 					</table>';
-		$echoHtml = apply_filters('fktr_provider_options_box', $echoHtml);
+		$echoHtml = apply_filters('fktr_client_options_box', $echoHtml);
 		echo $echoHtml;
-		do_action('add_fktr_provider_options_box', $echoHtml);
+		do_action('add_fktr_client_options_box', $echoHtml);
 		
 	}
 	

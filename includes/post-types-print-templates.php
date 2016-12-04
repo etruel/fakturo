@@ -38,6 +38,9 @@ class fktrPostTypePrintTemplates {
 		add_action( 'admin_post_show_print_template', array(__CLASS__, 'show_print_template'));
 		add_action('admin_action_copy_print_template', array(__CLASS__, 'copy_print_template'));
 		add_filter('post_row_actions', array(__CLASS__, 'actions'), 10, 2);
+
+		add_action('wp_ajax_get_vars_assigned_print', array(__CLASS__, 'get_vars_assigned'));
+
 	}
 	public static function actions($actions, $post){
 	    //check for your post type
@@ -294,12 +297,12 @@ class fktrPostTypePrintTemplates {
 			}
 			
 		}
-
+		/*
 		$args = array(
 		  	'public'   => true,
 		); 
-		$output = 'objects'; // names or objects, note names is the default
-		$operator = 'and'; // 'and' or 'or'
+		$output = 'objects'; 
+		$operator = 'and'; 
 		$taxonomies = get_taxonomies( $args, $output, $operator ); 
 		if ( $taxonomies ) {
 		  	foreach ( $taxonomies  as $taxonomy ) {
@@ -311,6 +314,7 @@ class fktrPostTypePrintTemplates {
 				}
 		  	}
 		}
+		*/
 		return $data;
 	}
 	
@@ -437,6 +441,7 @@ class fktrPostTypePrintTemplates {
 						'preview_button' => $preview_button,
 						'pdf_button' => $pdf_button,
 						'msg_save_before' => __('Save before to preview print template', FAKTURO_TEXT_DOMAIN),
+						'msg_loading_var' => __('Loading vars...', FAKTURO_TEXT_DOMAIN),
 					
 				));
 		
@@ -448,7 +453,9 @@ class fktrPostTypePrintTemplates {
 		
 
 		add_meta_box('fakturo-invoice-data-box', __('Print Template Data', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'print_template_data_box'),'fktr_print_template','normal', 'high' );
+		add_meta_box('fakturo-template-vars-box', __('Print Template Vars', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'print_template_vars_box'),'fktr_print_template','normal', 'high' );
 		
+
 		do_action('add_ftkr_print_template_meta_boxes');
 	}
 	
@@ -491,11 +498,87 @@ class fktrPostTypePrintTemplates {
 
 		';
 	
-		$echoHtml = apply_filters('fktr_print_template_client_box', $echoHtml);
+		$echoHtml = apply_filters('fktr_print_template_data_box', $echoHtml);
 		echo $echoHtml;
-		do_action('add_fktr_print_template_client_box', $echoHtml);
+		do_action('add_fktr_print_template_data_box', $echoHtml);
 		
 	}
+	public static $array_sended = array();
+	public static function print_vars_array($array, $index, $current_var) {
+		foreach ($array as $key => $val) {
+			if (is_array($val)) {
+					$key_send = $key;
+					if (is_numeric($key)) {
+						$key_send = '<strong>ArrayToLoop</strong>';
+					}
+					self::print_vars_array($val, $index, $current_var.'.'.$key_send.'');
+			} else {
+				$key_var = array_search('{'.$current_var.'.'.$key.'}', self::$array_sended);
+				if ($key_var === false) {
+					self::$array_sended[] = '{'.$current_var.'.'.$key.'}';
+				}
+			}
+		}
+	}
+	public static function get_vars_assigned() {
+		$email_template = self::get_print_template_data($_POST['template_id']);
+		$email_template['assigned'] = $_POST['assigned'];
+		$object = new stdClass();
+		$object->type = self::get_object_type($email_template);
+		$object->id = self::get_rand_object_id($object->type, $email_template);
+		$object->assgined = $email_template['assigned'];
+		if ($object->id) {
+			$tpl = new fktr_tpl;
+			$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, $email_template);
+			
+			$index = 0;
+			foreach ($tpl->var as $key => $val) {
+				if (is_array($val)) {
+					self::print_vars_array($val, $index, '$'.$key.'');
+				} else {
+					self::$array_sended[] = '{$'.$key.'}';
+				}
+			}
+		}
+		foreach (self::$array_sended as $v)  {
+			echo $v.'</br>';
+		}
+		exit;
+	}
+
+	public static function print_template_vars_box() {
+		global $post;
+		$email_template = self::get_print_template_data($post->ID);
+		$object = new stdClass();
+		$object->type = self::get_object_type($email_template);
+		$object->id = self::get_rand_object_id($object->type, $email_template);
+		$object->assgined = $email_template['assigned'];
+		$echoHtml = '';
+		$echoHtml .= '<div>'.__('Vars with members <strong>ArrayToLoop</strong> means that they are list arrays and should be used in a <strong>Loop</strong>.', FAKTURO_TEXT_DOMAIN ) .'</div>';
+		$echoHtml .= '<div id="vars_template_content">';
+		if ($object->id) {
+			$tpl = new fktr_tpl;
+			$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, $email_template);
+			
+			$index = 0;
+			foreach ($tpl->var as $key => $val) {
+				if (is_array($val)) {
+					self::print_vars_array($val, $index, '$'.$key.'');
+				} else {
+					self::$array_sended[] = '{$'.$key.'}';
+				}
+			}
+		}
+
+		foreach (self::$array_sended as $v)  {
+			$echoHtml .= $v.'</br>';
+		}
+		$echoHtml .= '</div>';
+		$echoHtml = apply_filters('fktr_print_template_vars_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_print_template_vars_box', $echoHtml);
+	}
+	
 	
 	
 	

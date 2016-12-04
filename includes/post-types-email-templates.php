@@ -210,12 +210,12 @@ class fktrPostTypeEmailTemplates {
 			}
 			
 		}
-
+		/*  DISABLE TAXONOMYS ON ASSIGNED TO
 		$args = array(
 		  	'public'   => true,
 		); 
-		$output = 'objects'; // names or objects, note names is the default
-		$operator = 'and'; // 'and' or 'or'
+		$output = 'objects'; 
+		$operator = 'and'; 
 		$taxonomies = get_taxonomies( $args, $output, $operator ); 
 		if ( $taxonomies ) {
 		  	foreach ( $taxonomies  as $taxonomy ) {
@@ -227,6 +227,7 @@ class fktrPostTypeEmailTemplates {
 				}
 		  	}
 		}
+		*/
 		return $data;
 	}
 	public static function setup() {
@@ -455,7 +456,7 @@ class fktrPostTypeEmailTemplates {
 				$key_var = array_search('{'.$current_var.'.'.$key.'}', self::$array_sended);
 				if ($key_var === false) {
 					self::$array_sended[] = '{'.$current_var.'.'.$key.'}';
-					echo '{'.$current_var.'.'.$key.'} <br/>';
+					//echo '{'.$current_var.'.'.$key.'} <br/>';
 				}
 				
 			}
@@ -477,9 +478,13 @@ class fktrPostTypeEmailTemplates {
 				if (is_array($val)) {
 					self::print_vars_array($val, $index, '$'.$key.'');
 				} else {
-					echo '{$'.$key.'} <br/>';
+					self::$array_sended[] = '{$'.$key.'}';
+					
 				}
 			}
+		}
+		foreach (self::$array_sended as $v)  {
+			echo $v.'</br>';
 		}
 		exit;
 	}
@@ -491,8 +496,9 @@ class fktrPostTypeEmailTemplates {
 		$object->type = self::get_object_type($email_template);
 		$object->id = self::get_rand_object_id($object->type, $email_template);
 		$object->assgined = $email_template['assigned'];
-		echo '<div>'.__('Vars with members <strong>ArrayToLoop</strong> means that they are list arrays and should be used in a <strong>Loop</strong>.', FAKTURO_TEXT_DOMAIN ) .'</div>';
-		echo '<div id="vars_template_content">';
+		$echoHtml = '';
+		$echoHtml .= '<div>'.__('Vars with members <strong>ArrayToLoop</strong> means that they are list arrays and should be used in a <strong>Loop</strong>.', FAKTURO_TEXT_DOMAIN ) .'</div>';
+		$echoHtml .= '<div id="vars_template_content">';
 		if ($object->id) {
 			$tpl = new fktr_tpl;
 			$tpl = apply_filters('fktr_email_template_assignment', $tpl, $object, $email_template);
@@ -502,11 +508,17 @@ class fktrPostTypeEmailTemplates {
 				if (is_array($val)) {
 					self::print_vars_array($val, $index, '$'.$key.'');
 				} else {
-					echo '{$'.$key.'} <br/>';
+					self::$array_sended[] = '{$'.$key.'}';
 				}
 			}
 		}
-		echo '</div>';
+		foreach (self::$array_sended as $v)  {
+			$echoHtml .= $v.'</br>';
+		}
+		$echoHtml .= '</div>';
+		$echoHtml = apply_filters('fktr_email_template_vars_box', $echoHtml);
+		echo $echoHtml;
+		do_action('add_fktr_email_template_vars_box', $echoHtml);
 	}
 	
 	public static function email_template_data_box() {
@@ -545,7 +557,7 @@ class fktrPostTypeEmailTemplates {
 	
 		$echoHtml = apply_filters('fktr_email_template_data_box', $echoHtml);
 		echo $echoHtml;
-		do_action('add_fktr_print_template_data_box', $echoHtml);
+		do_action('add_fktr_email_template_data_box', $echoHtml);
 	}
 	
 	public static function clean_fields($fields) {

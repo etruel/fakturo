@@ -21,4 +21,21 @@ jQuery(document).ready(function() {
             e.preventDefault();
         });
     });
+
+
+    jQuery("#assigned").change(function() {
+        var data_sended = {
+            action: 'get_vars_assigned_print',
+            template_id: jQuery('#post_ID').val(),
+            assigned: this.value,
+        }
+        jQuery('#vars_template_content').html(print_template_object.msg_loading_var);
+        jQuery.post(print_template_object.ajax_url, data_sended, function(data) {
+            jQuery('#vars_template_content').html(data);
+
+        })
+    });
+
+
+
 });
