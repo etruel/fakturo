@@ -22,7 +22,7 @@ class fktrPostTypeSales {
 		
 		add_action('admin_print_styles-post-new.php', array('fktrPostTypeSales','styles'));
 		add_action('admin_print_styles-post.php', array('fktrPostTypeSales','styles'));
-		
+		add_action('admin_print_scripts', array('fktrPostTypeSales','scripts_list'));
 		add_action('get_delete_post_link', array('fktrPostTypeSales', 'set_delete_post_link'), 10, 3);
 		
 		add_filter('fktr_clean_sale_fields', array('fktrPostTypeSales', 'clean_fields'), 10, 1);
@@ -59,9 +59,38 @@ class fktrPostTypeSales {
 
 		add_filter('attribute_escape', array('fktrPostTypeSales', 'change_button_texts'), 10, 2);
 		add_action('before_delete_post', array('fktrPostTypeSales', 'before_delete'), 10, 1);
+		add_action('admin_post_print_invoice', array(__CLASS__, 'print_invoice'));
 		
 	}
-	
+	public static function print_invoice() {
+		$object = new stdClass();
+		$object->type = 'post';
+		$object->id = $_REQUEST['id'];
+		$object->assgined = 'fktr_sale';
+		if ($object->id) {
+			$id_print_template = fktrPostTypePrintTemplates::get_id_by_assigned($object->assgined);
+			if ($id_print_template) {
+				$print_template = fktrPostTypePrintTemplates::get_print_template_data($id_print_template);
+			} else {
+				wp_die(__('No print template assigned to sales invoices', FAKTURO_TEXT_DOMAIN ));
+			}
+			$tpl = new fktr_tpl;
+			$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, false);
+			$html = $tpl->fromString($print_template['content']);
+			if (isset($_REQUEST['pdf'])) {
+				$pdf = fktr_pdf::getInstance();
+				$pdf ->set_paper("A4", "portrait");
+				$pdf ->load_html(utf8_decode($html));
+				$pdf ->render();
+				$pdf ->stream('pdf.pdf', array('Attachment'=>0));
+
+			} else {
+				echo $html;
+			}
+			
+			exit();
+		}
+	}
 	public static function change_button_texts($safe_text, $text ){
 		global $post, $current_screen, $screen;
 		
@@ -112,6 +141,7 @@ class fktrPostTypeSales {
 				unset($actions['trash']);
 				$actions['delete'] = '<a class="submitdelete" title="'.esc_attr( __( 'Delete this item permanently', FAKTURO_TEXT_DOMAIN )).'" href="'.get_delete_post_link( $post->ID, '', true).'">'. __( 'Delete Permanently' ).'</a>';
 			}
+			$actions['print_invoice'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_invoice').'" class="btn_print_invoice" target="_new">'.__( 'Print Invoice', FAKTURO_TEXT_DOMAIN ).'</a>';
 			unset( $actions['inline hide-if-no-js'] );
 			$actions = apply_filters('fktr_sales_quick_actions',$actions, $post);
 		}
@@ -340,6 +370,9 @@ class fktrPostTypeSales {
 			wp_enqueue_style('style-datetimepicker',FAKTURO_PLUGIN_URL .'assets/css/jquery.datetimepicker.css');	
 		}
 	}
+	public static function scripts_list() {
+		wp_enqueue_script( 'post-type-sales-list', FAKTURO_PLUGIN_URL . 'assets/js/post-type-sales-list.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+	}
 	public static function scripts() {
 		global $post_type, $post, $wp_locale, $locale;
 		if($post_type == 'fktr_sale') {
@@ -510,10 +543,13 @@ class fktrPostTypeSales {
 				$codeProduct = $sale_data['uc_code'][$key]; 
 				$descriptionProduct = $sale_data['uc_description'][$key];
 				$quantityProduct = $sale_data['uc_quality'][$key];
-				$unitPriceProduct = $sale_data['uc_unit_price'][$key];
+				$unitPriceProduct = number_format($sale_data['uc_unit_price'][$key], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']);
 				$taxProduct = $sale_data['uc_tax'][$key];
 				$taxPorcentProduct = $sale_data['uc_tax_porcent'][$key];
-				$amountProduct = $sale_data['uc_amount'][$key];
+				$amountProduct = number_format($sale_data['uc_amount'][$key], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']);
+
+
+
 				$echoInvoiceProducts .= '
 				<div id="uc_ID'.$key.'" class="sortitem" data-identifier="'.$key.'">
 					<div class="sorthandle"></div> 
@@ -1507,8 +1543,13 @@ class fktrPostTypeSales {
 	}
 	public static function before_save($fields) {
 		$setting_system = get_option('fakturo_system_options_group', false);
-		
-		
+		//
+		if (!empty($fields['uc_id'])) {
+			foreach ($fields['uc_id'] as $key => $product_id) {
+				$fields['uc_unit_price'][$key] = fakturo_mask_to_float($fields['uc_unit_price'][$key]);
+				$fields['uc_amount'][$key] = fakturo_mask_to_float($fields['uc_amount'][$key]);
+			}
+		}
 		return $fields;
 	}
 	public static function default_fields($new_status, $old_status, $post ) {

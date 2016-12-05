@@ -297,7 +297,7 @@ class fktrPostTypePrintTemplates {
 			}
 			
 		}
-		/*
+		/* DISABLE TAXONOMYS ON ASSIGNED TO
 		$args = array(
 		  	'public'   => true,
 		); 

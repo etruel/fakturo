@@ -5,6 +5,8 @@ var product_data = new Array();
 var DefaultMaskNumbers = '';
 jQuery(document).ready(function() {
 	
+	
+
 	jQuery('#title-prompt-text').remove();
 	jQuery("#title").attr("readonly","readonly");
 
