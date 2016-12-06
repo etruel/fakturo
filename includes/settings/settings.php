@@ -21,6 +21,7 @@ class fktrSettings {
 		
 		add_action('admin_print_scripts', array('fktrSettings', 'scripts'));
 		add_action('admin_print_styles', array('fktrSettings', 'styles'));
+		add_action('wp_ajax_get_states', array('fktrSettings', 'get_states'));
 	}
 	// highlight the proper top level menu
 	static function tax_menu_correction($parent_file) {
@@ -41,13 +42,33 @@ class fktrSettings {
 		return $submenu_file;
 	}
 	public static function scripts() {
-		global $current_screen;  //este lo toma pero el menu superior no
-		if ($current_screen->id == "admin_page_fakturo-settings-system") {
+		global $current_screen, $wp_locale, $locale;  
+		if ($current_screen->id == "admin_page_fakturo-settings-system" || $current_screen->id == "fakturo_page_fakturo-settings" ) {
 			wp_enqueue_script('media-upload');
 			wp_enqueue_script('thickbox');
 			wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'jquery-datetimepicker', FAKTURO_PLUGIN_URL . 'assets/js/jquery.datetimepicker.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'jquery-settings', FAKTURO_PLUGIN_URL . 'assets/js/settings.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			
+			$setting_system = get_option('fakturo_system_options_group', false);
+			
+			$objectL10n = (object)array(
+				'lang'			=> substr($locale, 0, 2),
+				'UTC'			=> get_option( 'gmt_offset' ),
+				'timeFormat'    => get_option( 'time_format' ),
+				'dateFormat'    => self::date_format_php_to_js( $setting_system['dateformat'] ),
+				'printFormat'   => self::date_format_php_to_js( $setting_system['dateformat'] ),
+				'firstDay'      => get_option( 'start_of_week' ),
+			);	
+
+			wp_localize_script('jquery-settings', 'setting_object',
+				array('ajax_url' => admin_url( 'admin-ajax.php' ),
+					'loading_states_text' => __('Loading states...', FAKTURO_TEXT_DOMAIN ),
+					'datetimepicker' => $objectL10n,
+
+			) );
+			
 		}
 	}
 	public static function styles() {
@@ -55,8 +76,9 @@ class fktrSettings {
 
 		wp_enqueue_style('thickbox');
 		wp_enqueue_style('style-select2',FAKTURO_PLUGIN_URL .'assets/css/select2.min.css');	
-		if ($current_screen->id == 'admin_page_fakturo-settings-system') {
-			wp_enqueue_style('style-settings',FAKTURO_PLUGIN_URL .'assets/css/settings-system.css');	
+		if ($current_screen->id == 'admin_page_fakturo-settings-system' || $current_screen->id == "fakturo_page_fakturo-settings" ) {
+			wp_enqueue_style('style-settings',FAKTURO_PLUGIN_URL .'assets/css/settings-system.css');
+			wp_enqueue_style('style-datetimepicker',FAKTURO_PLUGIN_URL .'assets/css/jquery.datetimepicker.css');		
 		}
 		
 	}
@@ -124,6 +146,7 @@ class fktrSettings {
 
 	public static function fakturo_settings() {  
 		global $current_screen;
+		
 		$options = get_option('fakturo_info_options_group');
 		if (empty($options['url'])) {
 			$options['url'] = FAKTURO_PLUGIN_URL . 'assets/images/etruel-logo.png';
@@ -149,7 +172,74 @@ class fktrSettings {
 			'taxonomy'           => 'fktr_tax_conditions',
 			'hide_if_empty'      => false
 		));
+		$selectCountry = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a country', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $options['country'],
+			'hierarchical'       => 1, 
+			'name'               => 'fakturo_info_options_group[country]',
+			'id' 				 => 'fakturo_info_options_group_country',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_countries',
+			'hide_if_empty'      => false
+		));
 		
+		$selectState = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a state', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => $options['country'],
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $options['state'],
+			'hierarchical'       => 1, 
+			'name'               => 'fakturo_info_options_group[state]',
+			'id' 				 => 'fakturo_info_options_group_state',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_countries',
+			'hide_if_empty'      => false
+		));
+		$selectEmptyState = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a state', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => -99,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $options['state'],
+			'hierarchical'       => 1, 
+			'name'               => 'fakturo_info_options_group[state]',
+			'id' 				 => 'fakturo_info_options_group_state',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_countries',
+			'hide_if_empty'      => false
+		));
+		
+		if ($options['country'] == 0 || strlen($selectState) < strlen($selectEmptyState)+1) {
+			
+			$selectState = '<select name="fakturo_info_options_group[state]" id="fakturo_info_options_group_state">
+								<option value="0">'. __('Choose a country before', FAKTURO_TEXT_DOMAIN ) .'</option>
+							</select>';
+		}
 		echo '<div id="tab_container">
 			<br/><h1>Company Info</h1>
 			<form method="post" action="options.php">';
@@ -177,7 +267,7 @@ class fktrSettings {
 					<tr valign="top">
 						<th scope="row">'. __( 'Start of activities', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
-							<input type="text" size="36" name="fakturo_info_options_group[start]" value="'.$options['start'].'"/>
+							<input type="text" size="36" name="fakturo_info_options_group[start]" id="start" value="'.$options['start'].'"/>
                         </td>
                     </tr>
 					<tr valign="top">
@@ -192,28 +282,31 @@ class fktrSettings {
 							<input type="text" size="36" name="fakturo_info_options_group[telephone]" value="'.$options['telephone'].'"/>
 						</td>
                     </tr>
+					
+					
+					
 					<tr valign="top">
-						<th scope="row">'. __( 'Postcode', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th scope="row">'. __( 'Country', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
-							<input type="text" size="36" name="fakturo_info_options_group[postcode]" value="'.$options['postcode'].'"/>
+							'.$selectCountry.'
 						</td>
                     </tr>
-					<tr valign="top">
+                    <tr valign="top">
+						<th scope="row">'. __( 'State', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<td id="td_select_state">
+							'.$selectState.'
+						</td>
+                    </tr>
+                    <tr valign="top">
 						<th scope="row">'. __( 'City', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[city]" value="'.$options['city'].'"/>
 						</td>
                     </tr>
-					<tr valign="top">
-						<th scope="row">'. __( 'State', FAKTURO_TEXT_DOMAIN ) .'</th>
+                    <tr valign="top">
+						<th scope="row">'. __( 'Postcode', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
-							<input type="text" size="36" name="fakturo_info_options_group[state]" value="'.$options['state'].'"/>
-						</td>
-                    </tr>
-					<tr valign="top">
-						<th scope="row">'. __( 'Country', FAKTURO_TEXT_DOMAIN ) .'</th>
-						<td>
-							<input type="text" size="36" name="fakturo_info_options_group[country]" value="'.$options['country'].'"/>
+							<input type="text" size="36" name="fakturo_info_options_group[postcode]" value="'.$options['postcode'].'"/>
 						</td>
                     </tr>
 					<tr valign="top">
@@ -804,7 +897,68 @@ class fktrSettings {
 
 		
 	}
-	
+	public static function get_states() {
+		if (!is_numeric($_POST['country_id'])) {
+			$_POST['country_id']= 0;
+		}
+		
+		$selectState = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a state', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => $_POST['country_id'],
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => -1,
+			'hierarchical'       => 1, 
+			'name'               => 'fakturo_info_options_group[state]',
+			'class'              => 'form-no-clear',
+			'id'				 =>  'fakturo_info_options_group_state',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_countries',
+			'hide_if_empty'      => false
+		));
+		if ($_POST['country_id'] < 1 ) {
+			
+			$selectState = '<select name="fakturo_info_options_group[state]" id="fakturo_info_options_group_state">
+								<option value="0">'. __('Choose a country before', FAKTURO_TEXT_DOMAIN ) .'</option>
+							</select>';
+		}
+		wp_die($selectState);
+		
+		
+	}
+	public static function date_format_php_to_js( $sFormat ) {
+
+		switch( $sFormat ) {
+
+			//Predefined WP date formats
+
+			case 'F j, Y':
+
+			case 'Y/m/d':
+
+			case 'm/d/Y':
+
+			case 'd/m/Y':
+
+				return $sFormat;
+
+				break;
+
+			default :
+
+				return( 'm/d/Y' );
+
+				break;
+
+		 }
+
+	}
 	
 	
 } 
