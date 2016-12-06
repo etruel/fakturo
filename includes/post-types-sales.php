@@ -142,6 +142,15 @@ class fktrPostTypeSales {
 				$actions['delete'] = '<a class="submitdelete" title="'.esc_attr( __( 'Delete this item permanently', FAKTURO_TEXT_DOMAIN )).'" href="'.get_delete_post_link( $post->ID, '', true).'">'. __( 'Delete Permanently' ).'</a>';
 			}
 			$actions['print_invoice'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_invoice').'" class="btn_print_invoice" target="_new">'.__( 'Print Invoice', FAKTURO_TEXT_DOMAIN ).'</a>';
+
+			if (empty($actions['send_pdf'])) {
+				$sale_data = self::get_sale_data($post->ID);
+				$client_data = fktrPostTypeClients::get_client_data($sale_data['client_id']);
+				if (!empty($client_data['email'])) {
+					$actions['send_pdf'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=send_pdf').'">'.__( 'Send PDF to Client', FAKTURO_TEXT_DOMAIN ).'</a>';
+				}
+			}
+			
 			unset( $actions['inline hide-if-no-js'] );
 			$actions = apply_filters('fktr_sales_quick_actions',$actions, $post);
 		}
