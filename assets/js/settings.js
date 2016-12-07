@@ -36,17 +36,7 @@ jQuery(document).ready(function() {
 	});
 	jQuery("#fakturo_info_options_group_state").select2();
 
-	jQuery.datetimepicker.setLocale(setting_object.datetimepicker.lang);
 	
-	jQuery('#start').datetimepicker({
-		lang: setting_object.datetimepicker.lang,
-		dayOfWeekStart:  setting_object.datetimepicker.firstDay,
-		formatTime: setting_object.datetimepicker.timeFormat,
-		format: setting_object.datetimepicker.printFormat,
-		formatDate: setting_object.datetimepicker.dateFormat,
-		maxDate: setting_object.datetimepicker.dateFormat, 
-		timepicker:false,
-	});
 	jQuery('#upload_logo_button').click(function() {
 		formfield = jQuery('#url').attr('name');
 		tb_show('', 'media-upload.php?type=image&TB_iframe=true');
