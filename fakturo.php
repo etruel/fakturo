@@ -68,7 +68,9 @@ class fakturo {
 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/fktr_pdf.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/fktr_tpl.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/fktr_mail.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/licenses_handlers.php'; 
+
 
 		
 		do_action('fakturo_include_files');

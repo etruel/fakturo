@@ -143,11 +143,13 @@ class fktrPostTypeSales {
 			}
 			$actions['print_invoice'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_invoice').'" class="btn_print_invoice" target="_new">'.__( 'Print Invoice', FAKTURO_TEXT_DOMAIN ).'</a>';
 
-			if (empty($actions['send_pdf'])) {
+			if (empty($actions['send_invoice_to_client'])) {
 				$sale_data = self::get_sale_data($post->ID);
 				$client_data = fktrPostTypeClients::get_client_data($sale_data['client_id']);
 				if (!empty($client_data['email'])) {
-					$actions['send_pdf'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=send_pdf').'">'.__( 'Send PDF to Client', FAKTURO_TEXT_DOMAIN ).'</a>';
+					$url = admin_url('admin-post.php?id='.$post->ID.'&action=send_invoice_to_client');
+					$url = wp_nonce_url($url, 'send_invoice_to_client', '_wpnonce');
+					$actions['send_invoice_to_client'] = '<a href="'.$url.'">'.__( 'Send PDF to Client', FAKTURO_TEXT_DOMAIN ).'</a>';
 				}
 			}
 			
