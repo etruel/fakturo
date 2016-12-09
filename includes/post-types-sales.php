@@ -60,7 +60,8 @@ class fktrPostTypeSales {
 		add_filter('attribute_escape', array('fktrPostTypeSales', 'change_button_texts'), 10, 2);
 		add_action('before_delete_post', array('fktrPostTypeSales', 'before_delete'), 10, 1);
 		add_action('admin_post_print_invoice', array(__CLASS__, 'print_invoice'));
-		
+		add_filter( 'bulk_actions-edit-fktr_sale', array(__CLASS__, 'bulk_actions') );
+		add_filter( 'handle_bulk_actions-edit-fktr_sale', array(__CLASS__, 'bulk_action_handler'), 10, 3 );
 	}
 	public static function print_invoice() {
 		$object = new stdClass();
@@ -130,7 +131,24 @@ class fktrPostTypeSales {
 		}
 		return $delink;
 	}
-	
+	   
+    public static function bulk_actions($actions){
+
+        $actions['send_pdf_client'] = __( 'Send pdf to clients', FAKTURO_TEXT_DOMAIN);
+
+        return $actions;
+    }
+    public static function bulk_action_handler( $redirect_to, $doaction, $post_ids ) {
+		if ($doaction !== 'send_pdf_client' ) {
+		    return $redirect_to;
+		}
+		foreach ($post_ids as $post_id) {
+			fktr_mail::send_sale_invoice_pdf_to_client($post_id, false);
+		    // Perform action for each post.
+		}
+		$redirect_to = add_query_arg( 'bulk_emailed_posts', count( $post_ids ), $redirect_to );
+		return $redirect_to;
+	}
 	public static function action_row($actions, $post){	
 		if ($post->post_type == 'fktr_sale') {
 			$setting_system = get_option('fakturo_system_options_group', false);
@@ -149,7 +167,7 @@ class fktrPostTypeSales {
 				if (!empty($client_data['email'])) {
 					$url = admin_url('admin-post.php?id='.$post->ID.'&action=send_invoice_to_client');
 					$url = wp_nonce_url($url, 'send_invoice_to_client', '_wpnonce');
-					$actions['send_invoice_to_client'] = '<a href="'.$url.'">'.__( 'Send PDF to Client', FAKTURO_TEXT_DOMAIN ).'</a>';
+					$actions['send_invoice_to_client'] = '<a href="'.$url.'" class="btn_send_invoice">'.__( 'Send PDF to Client', FAKTURO_TEXT_DOMAIN ).'</a>';
 				}
 			}
 			
@@ -382,6 +400,8 @@ class fktrPostTypeSales {
 		}
 	}
 	public static function scripts_list() {
+		global $current_screen;
+
 		wp_enqueue_script( 'post-type-sales-list', FAKTURO_PLUGIN_URL . 'assets/js/post-type-sales-list.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 	}
 	public static function scripts() {

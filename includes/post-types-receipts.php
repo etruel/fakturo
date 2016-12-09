@@ -46,7 +46,10 @@ class fktrPostTypeReceipts {
 		add_action( 'admin_print_scripts', array(__CLASS__, 'admin_inline_scripts'));
 	}
 	public static function admin_inline_scripts() {
-		wp_enqueue_style('post-type-receipts',FAKTURO_PLUGIN_URL .'assets/css/post-type-receipts.css');	
+		global $current_screen;
+		if ($current_screen->post_type == 'fktr_receipt') {
+			wp_enqueue_style('post-type-receipts',FAKTURO_PLUGIN_URL .'assets/css/post-type-receipts.css');	
+		}
 	}
 	public static function row_actions($actions, $post) {
 		if ($post->post_type == 'fktr_receipt' && $post->post_status != 'cancelled') {

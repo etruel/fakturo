@@ -10,5 +10,10 @@ jQuery(document).ready(function() {
 
 		e.preventDefault();
 	});
-
+	jQuery('.btn_send_invoice').click(function(e) {
+		if (!confirm('Are sure send pdf to client?')) {
+			e.preventDefault();
+		}
+	});
+	
 });
