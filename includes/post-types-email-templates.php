@@ -121,6 +121,9 @@ class fktrPostTypeEmailTemplates {
 			$sale_invoice['total'] = $sale_invoice['in_total'];
 			$tpl->assign( "invoice", $sale_invoice);
 			
+		} else if ($object->assgined == 'fktr_receipt') {
+			$receipt = fktrPostTypeReceipts::get_receipt_data($object->id);
+			$tpl->assign( "receipt", $receipt);
 		}
 
 		return $tpl;
