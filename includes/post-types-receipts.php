@@ -44,6 +44,40 @@ class fktrPostTypeReceipts {
 		add_action( 'admin_post_cancel_receipt', array(__CLASS__, 'cancel_receipt'));
 		add_filter('post_row_actions', array(__CLASS__, 'row_actions'), 10, 2);
 		add_action( 'admin_print_scripts', array(__CLASS__, 'admin_inline_scripts'));
+
+		add_action('admin_post_print_receipt', array(__CLASS__, 'print_receipt'));
+		add_filter( 'bulk_actions-edit-fktr_receipt', array(__CLASS__, 'bulk_actions') );
+		add_filter( 'handle_bulk_actions-edit-fktr_receipt', array(__CLASS__, 'bulk_action_handler'), 10, 3 );
+		add_action('admin_print_scripts', array(__CLASS__,'scripts_list'));
+	}
+	public static function print_receipt() {
+		$object = new stdClass();
+		$object->type = 'post';
+		$object->id = $_REQUEST['id'];
+		$object->assgined = 'fktr_receipt';
+		if ($object->id) {
+			$id_print_template = fktrPostTypePrintTemplates::get_id_by_assigned($object->assgined);
+			if ($id_print_template) {
+				$print_template = fktrPostTypePrintTemplates::get_print_template_data($id_print_template);
+			} else {
+				wp_die(__('No print template assigned to receipts', FAKTURO_TEXT_DOMAIN ));
+			}
+			$tpl = new fktr_tpl;
+			$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, false);
+			$html = $tpl->fromString($print_template['content']);
+			if (isset($_REQUEST['pdf'])) {
+				$pdf = fktr_pdf::getInstance();
+				$pdf ->set_paper("A4", "portrait");
+				$pdf ->load_html(utf8_decode($html));
+				$pdf ->render();
+				$pdf ->stream('pdf.pdf', array('Attachment'=>0));
+
+			} else {
+				echo $html;
+			}
+			
+			exit();
+		}
 	}
 	public static function admin_inline_scripts() {
 		global $current_screen;
@@ -51,9 +85,39 @@ class fktrPostTypeReceipts {
 			wp_enqueue_style('post-type-receipts',FAKTURO_PLUGIN_URL .'assets/css/post-type-receipts.css');	
 		}
 	}
+	 public static function bulk_actions($actions){
+
+        $actions['send_receipt_pdf_client'] = __( 'Send pdf to clients', FAKTURO_TEXT_DOMAIN);
+
+        return $actions;
+    }
+    public static function bulk_action_handler( $redirect_to, $doaction, $post_ids ) {
+		if ($doaction !== 'send_receipt_pdf_client' ) {
+		    return $redirect_to;
+		}
+		foreach ($post_ids as $post_id) {
+			fktr_mail::send_receipt_pdf_to_client($post_id, false);
+		    // Perform action for each post.
+		}
+		$redirect_to = add_query_arg( 'bulk_emailed_posts', count( $post_ids ), $redirect_to );
+		return $redirect_to;
+	}
 	public static function row_actions($actions, $post) {
 		if ($post->post_type == 'fktr_receipt' && $post->post_status != 'cancelled') {
 			$actions['cancelled'] = '<a class="submit_cancel_receipt" href="'.admin_url('admin-post.php?post='.$post->ID.'&action=cancel_receipt').'" onclick="return confirm(\''.__('Do you want cancel this receipt?', FAKTURO_TEXT_DOMAIN ).'\');">Cancel this receipt</a>';
+			$actions['print_receipt'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_receipt').'" class="btn_print_receipt" target="_new">'.__( 'Print Receipt', FAKTURO_TEXT_DOMAIN ).'</a>';
+
+
+			if (empty($actions['send_invoice_to_client'])) {
+				$sale_data = self::get_receipt_data($post->ID);
+				$client_data = fktrPostTypeClients::get_client_data($sale_data['client_id']);
+				if (!empty($client_data['email'])) {
+					$url = admin_url('admin-post.php?id='.$post->ID.'&action=send_receipt_to_client');
+					$url = wp_nonce_url($url, 'send_receipt_to_client', '_wpnonce');
+					$actions['send_receipt_to_client'] = '<a href="'.$url.'" class="btn_send_receipt">'.__( 'Send PDF to Client', FAKTURO_TEXT_DOMAIN ).'</a>';
+				}
+			}
+			
 		}
 		return $actions;
 	}
@@ -259,6 +323,13 @@ class fktrPostTypeReceipts {
 			wp_enqueue_style('post-type-receipts',FAKTURO_PLUGIN_URL .'assets/css/post-type-receipts.css');	
 			wp_enqueue_style('style-datetimepicker',FAKTURO_PLUGIN_URL .'assets/css/jquery.datetimepicker.css');	
 		}
+	}
+	public static function scripts_list() {
+		global $current_screen;
+		if ($current_screen->post_type == 'fktr_receipt') {
+			wp_enqueue_script( 'post-type-sales-list', FAKTURO_PLUGIN_URL . 'assets/js/post-type-receipts-list.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+		}
+		
 	}
 	public static function scripts() {
 		global $post_type, $post, $wp_locale, $locale;

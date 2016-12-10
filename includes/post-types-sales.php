@@ -401,8 +401,10 @@ class fktrPostTypeSales {
 	}
 	public static function scripts_list() {
 		global $current_screen;
-
-		wp_enqueue_script( 'post-type-sales-list', FAKTURO_PLUGIN_URL . 'assets/js/post-type-sales-list.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+		if ($current_screen->post_type == 'fktr_sale') {
+			wp_enqueue_script( 'post-type-sales-list', FAKTURO_PLUGIN_URL . 'assets/js/post-type-sales-list.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+		}
+		
 	}
 	public static function scripts() {
 		global $post_type, $post, $wp_locale, $locale;
