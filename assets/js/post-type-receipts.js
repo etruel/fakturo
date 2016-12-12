@@ -119,6 +119,11 @@ jQuery(document).ready(function() {
 			
 		}
 	});
+
+	jQuery("#title").val(jQuery('#receipt_number').val());
+	jQuery('#receipt_number').change(function(e) {
+		jQuery("#title").val(jQuery(this).val());
+	});
 	jQuery('#add_more_check').click(function(e){
 		openAddCheckPopPup();
 		e.preventDefault();
