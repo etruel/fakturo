@@ -172,7 +172,7 @@ class fktrAdminMenu {
 		global $post_type, $current_screen;
 		if( strpos($current_screen->id, "fktr")!==FALSE || strpos($current_screen->id, "fakturo")!==FALSE ) {
 			wp_enqueue_style('main',FAKTURO_PLUGIN_URL .'assets/css/main.css');	
-			wp_enqueue_style('icons',FAKTURO_PLUGIN_URL .'assets/css/icons.css');	
+			wp_enqueue_style('fktr_icons',FAKTURO_PLUGIN_URL .'assets/css/icons.css');	
 		}
 		// hide some items that we don't want to show in WP menu
 		echo '<style>.wp-submenu li a[href="post-new.php?post_type=fktr_provider"] {display: none !important;}</style>';
