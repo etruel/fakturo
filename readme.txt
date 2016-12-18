@@ -3,7 +3,7 @@ Contributors: etruel, sniuk
 Donate link: 
 Tags: invoice, sales, purchases, billing, receipt, Tax Code, VAT, PDF invoices, bill, bill clients, merchantplus, SME, pyme, checkout, online payment, pay, recurring billing, send invoice, web invoice, wp-invoice, wp-sales, e-commerce, e-store, eshop, wp ecommerce
 Requires at least: 4.1
-Tested up to: 4.6.1
+Tested up to: 4.7
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -79,6 +79,14 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 
 == Changelog ==
+
+= 0.4 Beta =
+* Added print invoices.
+* Added send invoices as PDF attached in emails to the clients.
+* Fixes some filters on clients CPT.
+* Fixes a PHP Fatal error on Addons page.
+* Cleaned the Print and email templates Select fields to allow only Documents.
+* New Addon created to bill subscriptions.
 
 = 0.3 Beta =
 * Added Print templates with highlighter code textarea and previews.
