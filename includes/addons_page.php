@@ -33,7 +33,7 @@ class fktr_admin_page {
 
 			$location = '';
 
-			$actioned = array_multi_key_exists( array('error', 'deleted', 'activate', 'activate-multi', 'deactivate', 'deactivate-multi', '_error_nonce' ), $_REQUEST, false );
+			$actioned = fktr_array_multi_key_exists( array('error', 'deleted', 'activate', 'activate-multi', 'deactivate', 'deactivate-multi', '_error_nonce' ), $_REQUEST, false );
 			if( ( isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'page=fakturo') ) && $actioned ) {
 				$location = add_query_arg('page','fakturo', $location);
 				wp_redirect($location);

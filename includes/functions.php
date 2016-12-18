@@ -201,4 +201,17 @@ function get_money_format($value, $currency) {
 	$ret = ''.(($setting_system['currency_position'] == 'before')?$currency->symbol.' ':'').''.number_format($value, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currency->symbol:'').'';
 	return $ret;
 }
+
+function fktr_array_multi_key_exists(array $arrNeedles, array $arrHaystack, $blnMatchAll=true){
+    $blnFound = array_key_exists(array_shift($arrNeedles), $arrHaystack);
+   
+    if($blnFound && (count($arrNeedles) == 0 || !$blnMatchAll))
+        return true;
+   
+    if(!$blnFound && count($arrNeedles) == 0 || $blnMatchAll)
+        return false;
+   
+    return array_multi_key_exists($arrNeedles, $arrHaystack, $blnMatchAll);
+}
+
 ?>
