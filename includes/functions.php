@@ -211,7 +211,7 @@ function fktr_array_multi_key_exists(array $arrNeedles, array $arrHaystack, $bln
     if(!$blnFound && count($arrNeedles) == 0 || $blnMatchAll)
         return false;
    
-    return array_multi_key_exists($arrNeedles, $arrHaystack, $blnMatchAll);
+    return fktr_array_multi_key_exists($arrNeedles, $arrHaystack, $blnMatchAll);
 }
 
 ?>
