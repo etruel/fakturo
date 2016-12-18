@@ -1091,6 +1091,9 @@ class fktrPostTypeReceipts {
 		if ( ! current_user_can( 'manage_options', $post_id ) ) {
 			return false;
 		}
+		if ( ( defined( 'FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION ) ) {
+			return false;
+		}
 		if ($post->post_status == 'auto-draft') {
 			return false;
 		}

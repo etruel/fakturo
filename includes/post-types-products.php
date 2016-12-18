@@ -790,7 +790,9 @@ class fktrPostTypeProducts {
 		if ( ! current_user_can( 'manage_options', $post_id ) ) {
 			return false;
 		}
-		
+		if ( ( defined( 'FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION ) ) {
+			return false;
+		}
 		$fields = apply_filters('fktr_clean_product_fields',$_POST);
 		$fields = apply_filters('fktr_product_before_save',$fields);
 		

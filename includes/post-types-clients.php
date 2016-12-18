@@ -736,7 +736,9 @@ class fktrPostTypeClients {
 		if ( ! current_user_can( 'manage_options', $post_id ) ) {
 			return false;
 		}
-		
+		if ( ( defined( 'FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION ) ) {
+			return false;
+		}
 		$fields = apply_filters('fktr_clean_client_fields',$_POST);
 		$fields = apply_filters('fktr_client_before_save',$fields);
 		

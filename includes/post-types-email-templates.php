@@ -628,7 +628,9 @@ class fktrPostTypeEmailTemplates {
 		if ( ! current_user_can( 'manage_options', $post_id ) ) {
 			return false;
 		}
-			
+		if ( ( defined( 'FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION ) ) {
+			return false;
+		}	
 	
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$fields = apply_filters('fktr_clean_email_template_fields',$_POST);
