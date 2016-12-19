@@ -13,8 +13,8 @@
 $helptexts = array( 
 	'INVOICE TYPE' => array( 
 		'item1' => array( 
-			'title' => __('Concept'),
-			'tip' => __('Register the invoice types to be taken into account when billing a customer.  For example, it can be INVOICE A, B, C or credit note. To add a new type of invoice, you must click on the <b>"Add New Invoice Type"</b> button, keeping in mind the other fields must already be filled. These will automatically be shown in the table to the right.'),
+			'title' => __('Concept','fakturo'),
+			'tip' => __('Register the invoice types to be taken into account when billing a customer.  For example, it can be INVOICE A, B, C or credit note. To add a new type of invoice, you must click on the <b>"Add New Invoice Type"</b> button, keeping in mind the other fields must already be filled. These will automatically be shown in the table to the right.','fakturo'),
 		),
 
 	),

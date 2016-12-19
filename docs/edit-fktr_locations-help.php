@@ -13,8 +13,8 @@
 $helptexts = array( 
 	'LOCATIONS' => array( 
 		'feeds' => array( 
-			'title' => __('Concept', '' ),
-			'tip' => __('Main form where you added all the locations used in the system at the time of registering people, products etc. Once filled the fields you must click on <b>"Add new location"</b> to save your changes. These will be added to the list that is located on the right side of the form. '))
+			'title' => __('Concept', 'fakturo'),
+			'tip' => __('Main form where you added all the locations used in the system at the time of registering people, products etc. Once filled the fields you must click on <b>"Add new location"</b> to save your changes. These will be added to the list that is located on the right side of the form. ','fakturo'))
 	),
 	
 	

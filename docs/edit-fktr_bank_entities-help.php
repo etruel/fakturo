@@ -13,8 +13,8 @@
 $helptexts = array( 
 	'BANKING ENTITIES' => array( 
 		'item1' => array( 
-			'title' => __('Concept'),
-			'tip' => __('Main form to add banks to your system. To add new banking entities, just click on the <b>"Add New Banking Entity"</b> button after the form is filled in.'),
+			'title' => __('Concept','fakturo'),
+			'tip' => __('Main form to add banks to your system. To add new banking entities, just click on the <b>"Add New Banking Entity"</b> button after the form is filled in.','fakturo'),
 		),
 	),
 

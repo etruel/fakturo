@@ -14,8 +14,8 @@
 $helptexts = array( 
 	'CURRENCIES' => array( 
 		'item1' => array( 
-			'title' => __('Concept'),
-			'tip' => __('Main form to add currencies to your system. To do this, simply click <b>"Add New Currency"</b> after the fields are already filled in. You need to enter the name of the currency, its symbol, for example $ or Euros, and a reference website to find the conversion rate. '),
+			'title' => __('Concept','fakturo'),
+			'tip' => __('Main form to add currencies to your system. To do this, simply click <b>"Add New Currency"</b> after the fields are already filled in. You need to enter the name of the currency, its symbol, for example $ or Euros, and a reference website to find the conversion rate. ','fakturo'),
 		),
 	),
 

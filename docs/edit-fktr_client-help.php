@@ -13,8 +13,8 @@
 $helptexts = array( 
 	'CUSTOMER' => array( 
 		'Item1' => array( 
-			'title' => __('Provider.', '' ),
-			'tip' => __('People who access products and services by paying. To register a new customer, you can click on the <b>"Add New"</b> button, which will take you to the corresponding form.'))
+			'title' => __('Provider.','fakturo'),
+			'tip' => __('People who access products and services by paying. To register a new customer, you can click on the <b>"Add New"</b> button, which will take you to the corresponding form.','fakturo'))
 	),
 
 );

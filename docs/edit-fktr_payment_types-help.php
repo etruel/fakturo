@@ -13,8 +13,8 @@
 $helptexts = array( 
 	'PAYMENT METHODS' => array( 
 		'item1' => array( 
-			'title' => __('Concept'),
-			'tip' => __('Register the payment methods which will be visible on the invoice of a purchase. This can be done by clicking on the <b>"Add New Payment Type"</b> button, which will be saved and will appear in the list on the right side of the form. The payment method can be: cash, check, etc.'),
+			'title' => __('Concept','fakturo'),
+			'tip' => __('Register the payment methods which will be visible on the invoice of a purchase. This can be done by clicking on the <b>"Add New Payment Type"</b> button, which will be saved and will appear in the list on the right side of the form. The payment method can be: cash, check, etc.','fakturo'),
 		),
 
 	),

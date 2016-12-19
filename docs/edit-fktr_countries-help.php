@@ -13,9 +13,9 @@
 $helptexts = array( 
 	'COUNTRIES AND STATES' => array( 
 		'item1' => array( 
-			'title' => __('Concept'),
+			'title' => __('Concept','fakturo'),
 			'tip' => __('Main form to add countries and states that will be used in the main forms of the system. To add a new country, just click on the <b>"Add New Country"</b> button and fill in the fields. Upon saving it, the list will be found on the right side of the form.
-'),
+','fakturo'),
 		),
 	),
 
