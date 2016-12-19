@@ -1425,6 +1425,51 @@ class fktrPostTypeSales {
 		update_option('last_invoice_number', $last_invoice_numbers);
 		
 	}
+	public static function getTitleInvoiceNumber($id) {
+		$setting_system = get_option('fakturo_system_options_group', false);
+		$sale_data = self::get_sale_data($id);
+
+		$invoice_type = get_fakturo_term($sale_data['invoice_type'], 'fktr_invoice_types');
+		$sale_point = get_fakturo_term($sale_data['sale_point'], 'fktr_sale_points');
+
+		$newVal = '';
+		$setting_system['list_invoice_number_separator'] = apply_filters('fktr_invoice_number_separator', $setting_system['list_invoice_number_separator']);
+		$add_separator = true;
+		foreach($setting_system['list_invoice_number'] as $k => $invn) {
+
+			if (($k+1) == count($setting_system['list_invoice_number'])) {
+				$add_separator = false;
+			}
+
+			if ($invn == 'sale_point') {
+				if(!is_wp_error($sale_point)) {
+					$newVal .= str_pad($sale_point->code, 4, '0', STR_PAD_LEFT).($add_separator?$setting_system['list_invoice_number_separator']:'');
+					
+				}
+			}
+			if ($invn == 'invoice_type_name') {
+				if(!is_wp_error($invoice_type)) {
+					$newVal .= $invoice_type->name.($add_separator?$setting_system['list_invoice_number_separator']:'');
+				}
+			}
+			if ($invn == 'invoice_type_short_name') {
+				if(!is_wp_error($invoice_type)) {
+					$newVal .= $invoice_type->short_name.($add_separator?$setting_system['list_invoice_number_separator']:'');
+				}
+			}
+			if ($invn == 'invoice_type_symbol') {
+				if(!is_wp_error($invoice_type)) {
+					$newVal .= $invoice_type->symbol.($add_separator?$setting_system['list_invoice_number_separator']:'');
+				}
+			}
+			if ($invn == 'invoice_number') {
+				$newVal .= str_pad($sale_data['invoice_number'], $setting_system['digits_invoice_number'], '0', STR_PAD_LEFT).($add_separator?$setting_system['list_invoice_number_separator']:'');
+			}
+
+		}
+		
+		return $newVal;
+	}
 	public static function before_delete($post_id) {  // just permanent delete (when uses stock)
 		$post_type = get_post_type($post_id);
 		if ($post_type == 'fktr_sale') {
