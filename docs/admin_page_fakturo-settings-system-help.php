@@ -11,46 +11,67 @@
  */
 
 $helptexts = array( 
-	'Campaign Options' => array( 
-		'feeds' => array( 
-			'title' => __('Feeds URLs.', 'wpematico' ),
-			'tip' => __('You must type at least one feed url.', 'wpematico' ).'  '.
-				__('(Less feeds equal less used resources when fetching).', 'wpematico' ).' '.
-				__('Type the domain name to try to autodetect the feed url.', 'wpematico' ),
+	'SYSTEM SETTINGS ' => array( 
+		'item1' => array( 
+			'title' => __('CONFIGURATION OF THE COMPANY'),
+			'tip' => __(''),
 		),
-		'itemfetch' => array( 
-			'title' => __('Max items per Fetch.', 'wpematico' ),
-			'tip' => __('Items to fetch PER every feed above.', 'wpematico' ).'  '.
-				__('Recommended values are between 3 and 5 fetching more times to not lose items.', 'wpematico' ).'  '.
-				__('Set it to 0 for unlimited.', 'wpematico' ),
+
+	),
+	'FIELDS ' => array( 
+		'item1' => array( 
+			'title' => __('Currency Symbol Position'),
+			'tip' => __('Select the location of the currency symbol to either before or after the number value.'),
 		),
-		'itemdate' => array( 
-			'title' => __('Use feed item date.', 'wpematico' ),
-			'tip' => __('Use the original date from the post instead of the time the post is created by WPeMatico.', 'wpematico' ).'  '.
-				__('To avoid incoherent dates due to lousy setup feeds, WPeMatico will use the feed date only if these conditions are met:', 'wpematico' ).'  '.
-				'<ul style=\'list-style-type: square;margin:0 0 5px 20px;font:0.92em "Lucida Grande","Verdana";\'>
-				<li>'. __('The feed item date is not too far in the past (specifically, as much time as the campaign frequency).', 'wpematico' ).' </li>
-				<li>'. __('The fetched feed item date is not in the future.', 'wpematico' ).' </li></ul>',
+		'item2' => array( 
+			'title' => __('Thousands Separator'),
+			'tip' => __('Enter the symbol with which you want to separate the thousands place; it is usually either a comma (,) or a period (.).'),
+		),
+		'item3' => array( 
+			'title' => __('Decimal Separator'),
+			'tip' => __(' Symbol used to separate decimals; it is usually either a comma (,) or a period (.).'),
+		),
+		'item4' => array( 
+			'title' => __('Decimal Places'),
+			'tip' => __('Maximum number of decimal places that the money value to be managed will have.'),
+		),
+		'item5' => array( 
+			'title' => __('Default Invoice Type'),
+			'tip' => __('When selecting the invoice, choose the option used in your billing system.'),
+		),
+		'item6' => array( 
+			'title' => __('Default Scale Price'),
+			'tip' => __('Default scale for prices used in the system.'),
+		),
+		'item7' => array( 
+			'title' => __('Point of Sale'),
+			'tip' => __('Select one of the registered points of sale, which will be used in your billing system.'),
+		),
+		'item8' => array( 
+			'title' => __('Receipt Number Digits: '),
+			'tip' => __('Number of digits that the receipt code will have in the system.'),
+		),
+		'item9' => array( 
+			'title' => __('Invoice Number Digits'),
+			'tip' => __('Number of digits that the invoice code will have in the system.'),
+		),
+		'item10' => array( 
+			'title' => __('Default Invoice Code'),
+			'tip' => __('Select a default code that the invoice will carry when issued. It may be the reference code, internal code or manufacturer’s code.'),
+		),
+		'item11' => array( 
+			'title' => __('Default Date Format'),
+			'tip' => __('Select the format for the date on the invoice. For example: Day-Month-Year or Day/Month/Year.').'<br>'.__('Click on <b>"SAVE CHANGES"</b> to save your settings.')
 		),
 	),
-	'Youtube Feeds' => array( 
-		'feed_url' => array( 
-			'title' => __('Youtube feeds URLs.', 'wpematico' ),
-			'tip' => __('Channel Videos feed and User Videos feed.', 'wpematico' ).
-				'<br>'.__('Fill in the feed URL field in the standard way.', 'wpematico' ).
-				'<br><br>'.__('For Youtube Channel as: https://www.youtube.com/feeds/videos.xml?channel_id=%channelid%', 'wpematico' ).
-				'<br>'.__('For Youtube User as: https://www.youtube.com/feeds/videos.xml?user=%username%', 'wpematico' ).
-				'<br><br>'.__('The campaign fetches the title, the image, the embebed video and the description.', 'wpematico' ),
+	'PRINT FORMATS' => array( 
+		'item1' => array( 
+			'title' => __('Concept'),
+			'tip' => __('In this field, you can generate the system report or reports assigned to a specific module by entering the template name, description and assigment module. '),
 		),
-	),
-	'Schedule Options' => array( 
-		'schedule' => array( 
-			'title' => __('Activate Scheduling.', 'wpematico' ),
-			'tip' => __('Activate Automatic Mode.', 'wpematico' ).
-				'<br>'.__('You can define here on what times you wants to fetch this feeds.  This has 5 min. of margin on WP-cron schedules.  If you set up an external cron en WPeMatico Settings, you\'ll get better preciseness.', 'wpematico' ),
-			'plustip' => __('You can see some examples here:', 'wpematico' ) . ' <a href="https://etruel.com/question/use-cron-scheduling/" target="_blank">'.__('How to use the CRON scheduling ?', 'wpematico' ) .'</a>',
-		),
-	),
+
+	),	
+
 );
 
 ?>

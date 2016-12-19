@@ -11,47 +11,76 @@
  */
 
 $helptexts = array( 
-	'Campaign Options' => array( 
-		'feeds' => array( 
-			'title' => __('Feeds URLs.', 'wpematico' ),
-			'tip' => __('You must type at least one feed url.', 'wpematico' ).'  '.
-				__('(Less feeds equal less used resources when fetching).', 'wpematico' ).' '.
-				__('Type the domain name to try to autodetect the feed url.', 'wpematico' ),
+	'MERCHANT INFORMATION' => array( 
+		'item1' => array( 
+			'title' => __('Taxpayer Identification Number'),
+			'tip' => __('Identification required of people or companies to perform any relevant transaction; may be an ID or passport.'),
 		),
-		'itemfetch' => array( 
-			'title' => __('Max items per Fetch.', 'wpematico' ),
-			'tip' => __('Items to fetch PER every feed above.', 'wpematico' ).'  '.
-				__('Recommended values are between 3 and 5 fetching more times to not lose items.', 'wpematico' ).'  '.
-				__('Set it to 0 for unlimited.', 'wpematico' ),
+		'item2' => array( 
+			'title' => __('Payment Method'),
+			'tip' => __('Choose type of payment to be used, whether cash, check or bank transfer (this option is used by default but can be changed when managing an invoice).'),
 		),
-		'itemdate' => array( 
-			'title' => __('Use feed item date.', 'wpematico' ),
-			'tip' => __('Use the original date from the post instead of the time the post is created by WPeMatico.', 'wpematico' ).'  '.
-				__('To avoid incoherent dates due to lousy setup feeds, WPeMatico will use the feed date only if these conditions are met:', 'wpematico' ).'  '.
-				'<ul style=\'list-style-type: square;margin:0 0 5px 20px;font:0.92em "Lucida Grande","Verdana";\'>
-				<li>'. __('The feed item date is not too far in the past (specifically, as much time as the campaign frequency).', 'wpematico' ).' </li>
-				<li>'. __('The fetched feed item date is not in the future.', 'wpematico' ).' </li></ul>',
+		'item3' => array( 
+			'title' => __('Banking Entity' ),
+			'tip' => __('Bank of the merchant.'),
 		),
-	),
-	'Youtube Feeds' => array( 
-		'feed_url' => array( 
-			'title' => __('Youtube feeds URLs.', 'wpematico' ),
-			'tip' => __('Channel Videos feed and User Videos feed.', 'wpematico' ).
-				'<br>'.__('Fill in the feed URL field in the standard way.', 'wpematico' ).
-				'<br><br>'.__('For Youtube Channel as: https://www.youtube.com/feeds/videos.xml?channel_id=%channelid%', 'wpematico' ).
-				'<br>'.__('For Youtube User as: https://www.youtube.com/feeds/videos.xml?user=%username%', 'wpematico' ).
-				'<br><br>'.__('The campaign fetches the title, the image, the embebed video and the description.', 'wpematico' ),
+		'item4' => array( 
+			'title' => __('Currency' ),
+			'tip' => __('Type of currency used by the merchant.'),
+		),
+		'item5' => array( 
+			'title' => __('Price Control'),
+			'tip' => __('Specific amounts for prices of goods and services within the given market.'),
+		),
+		'item6' => array( 
+			'title' => __('Credit Limit' ),
+			'tip' => __('Enter the merchant’s credit limit according to their bank entity.'),
 		),
 	),
-	'Schedule Options' => array( 
-		'schedule' => array( 
-			'title' => __('Activate Scheduling.', 'wpematico' ),
-			'tip' => __('Activate Automatic Mode.', 'wpematico' ).
-				'<br>'.__('You can define here on what times you wants to fetch this feeds.  This has 5 min. of margin on WP-cron schedules.  If you set up an external cron en WPeMatico Settings, you\'ll get better preciseness.', 'wpematico' ),
-			'plustip' => __('You can see some examples here:', 'wpematico' ) . ' <a href="https://etruel.com/question/use-cron-scheduling/" target="_blank">'.__('How to use the CRON scheduling ?', 'wpematico' ) .'</a>',
+	'CUSTOMER INFORMATION' => array( 
+		'item1' => array( 
+			'title' => __('Address'),
+			'tip' => __('Place or address of the customer.'),
+		),
+		'item2' => array( 
+			'title' => __('Country'),
+			'tip' => __('Country of origin of the customer together with state and city.'),
+		),
+		'item3' => array( 
+			'title' => __('Postal Code'),
+			'tip' => __('Series of numbers associated with the place of origin. Enter the local postal code of their address.'),
+		),
+		'item4' => array( 
+			'title' => __('Landline / Cell Phone'),
+			'tip' => __('Telephone number of business or personal contact.'),
+		),
+		'item5' => array( 
+			'title' => __('Emai'),
+			'tip' => __('Contact email address. '),
+		),
+		'item6' => array( 
+			'title' => __('Website'),
+			'tip' => __('Website with information, portfolio and services.'),
+		),
+		'item7' => array( 
+			'title' => __('Facebook Profile URL'),
+			'tip' => __('Enter the customer’s personal Facebook address.'),
+		),
+	),
+	'CUSTOMER CONTACT DETAILS' => array( 
+		'item1' => array( 
+			'title' => __(''),
+			'tip' => __('Register one or several contacts for the customer with their corresponding personal contact information.'),
+		),
+	),
+	'ACTIVE CUSTOMERS' => array( 
+		'item1' => array( 
+			'title' => __(''),
+			'tip' => __('Mark the customer as active for them to appear in reports and if they are available for selection.'),
 		),
 	),
 );
+
 
 
 ?>
