@@ -1725,7 +1725,7 @@ class fktrPostTypeSales {
 	
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$fields = apply_filters('fktr_clean_sale_fields',$_POST);
-		$fields = apply_filters('fktr_sale_before_save',$fields);
+		$fields = apply_filters('fktr_sale_before_save',$fields, $post);
 		
 		self::updateStock($fields, $post);
 		
