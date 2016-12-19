@@ -11,47 +11,32 @@
  */
 
 $helptexts = array( 
-	'Campaign Options' => array( 
+	'TYPE OF PRODUCT' => array( 
 		'feeds' => array( 
-			'title' => __('Feeds URLs.', 'wpematico' ),
-			'tip' => __('You must type at least one feed url.', 'wpematico' ).'  '.
-				__('(Less feeds equal less used resources when fetching).', 'wpematico' ).' '.
-				__('Type the domain name to try to autodetect the feed url.', 'wpematico' ),
-		),
-		'itemfetch' => array( 
-			'title' => __('Max items per Fetch.', 'wpematico' ),
-			'tip' => __('Items to fetch PER every feed above.', 'wpematico' ).'  '.
-				__('Recommended values are between 3 and 5 fetching more times to not lose items.', 'wpematico' ).'  '.
-				__('Set it to 0 for unlimited.', 'wpematico' ),
-		),
-		'itemdate' => array( 
-			'title' => __('Use feed item date.', 'wpematico' ),
-			'tip' => __('Use the original date from the post instead of the time the post is created by WPeMatico.', 'wpematico' ).'  '.
-				__('To avoid incoherent dates due to lousy setup feeds, WPeMatico will use the feed date only if these conditions are met:', 'wpematico' ).'  '.
-				'<ul style=\'list-style-type: square;margin:0 0 5px 20px;font:0.92em "Lucida Grande","Verdana";\'>
-				<li>'. __('The feed item date is not too far in the past (specifically, as much time as the campaign frequency).', 'wpematico' ).' </li>
-				<li>'. __('The fetched feed item date is not in the future.', 'wpematico' ).' </li></ul>',
-		),
+			'title' => __('Concept', '' ),
+			'tip' => __('Main form where you added the types of products used in the system at the time of registering products to sell. Adds a new type of product by clicking on the button <b>"Add New Product type"</b> once filled all the fields. Will appear in the list that is located on the right side of the form.'))
 	),
-	'Youtube Feeds' => array( 
-		'feed_url' => array( 
-			'title' => __('Youtube feeds URLs.', 'wpematico' ),
-			'tip' => __('Channel Videos feed and User Videos feed.', 'wpematico' ).
-				'<br>'.__('Fill in the feed URL field in the standard way.', 'wpematico' ).
-				'<br><br>'.__('For Youtube Channel as: https://www.youtube.com/feeds/videos.xml?channel_id=%channelid%', 'wpematico' ).
-				'<br>'.__('For Youtube User as: https://www.youtube.com/feeds/videos.xml?user=%username%', 'wpematico' ).
-				'<br><br>'.__('The campaign fetches the title, the image, the embebed video and the description.', 'wpematico' ),
-		),
+	'LOCATIONS' => array( 
+		'feeds' => array( 
+			'title' => __('Concept', '' ),
+			'tip' => __('Main form where you added all the locations used in the system at the time of registering people, products etc. Once filled the fields you must click on <b>"Add new location"</b> to save your changes. These will be added to the list that is located on the right side of the form. '))
 	),
-	'Schedule Options' => array( 
-		'schedule' => array( 
-			'title' => __('Activate Scheduling.', 'wpematico' ),
-			'tip' => __('Activate Automatic Mode.', 'wpematico' ).
-				'<br>'.__('You can define here on what times you wants to fetch this feeds.  This has 5 min. of margin on WP-cron schedules.  If you set up an external cron en WPeMatico Settings, you\'ll get better preciseness.', 'wpematico' ),
-			'plustip' => __('You can see some examples here:', 'wpematico' ) . ' <a href="https://etruel.com/question/use-cron-scheduling/" target="_blank">'.__('How to use the CRON scheduling ?', 'wpematico' ) .'</a>',
-		),
+	'PACKING' => array( 
+		'feeds' => array( 
+			'title' => __('Concept', '' ),
+			'tip' => __('Box or wrappers which allow you to provide products that will put on sale. To register the enbalajes it is necessary to place the same description and click on the button <b>"Add new packing"</b> which to save your changes will appear in the right list of the registration form. '))
 	),
+	'SCALE OF PRICES' => array( 
+		'feeds' => array( 
+			'title' => __('Concept', '' ),
+			'tip' => __('the amount of commodity prices to take control when it comes to register products with its current price. To add price range must fill description along with your percentage after field click on the button <b>"Add new scale of prices"</b> which will be recorded and shown in the right list on the form.'))
+	),
+	'ORIGINS' => array( 
+		'feeds' => array( 
+			'title' => __('Concept', '' ),
+			'tip' => __('Define the origin of the products to register, know where come from taking into account as important for evaluating the same reference. To register sources important to insert the name of the source for then click on the button "Add new source" where is recorded by showing up in the right list on the form. Note that in this list you can make a search the origins reported through their filters fast.'))
+	),
+	
 );
-
 
 ?>
