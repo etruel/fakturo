@@ -1,0 +1,326 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
+<title></title>
+<style type='text/css'>
+	body {
+		position:absolute;
+		left:0px;
+		top:0px;
+		margin:0;
+		padding:0;
+	}
+	
+	#logo {
+		position:absolute;
+		left:35px;
+		top:20px;
+		width:290px;
+		text-align:center;
+	}
+	
+	#razon_social {
+		position:absolute;
+		left:35px;
+		top:120px;
+		font-size:14pt;
+		width:290px;
+		text-align:center;
+	}
+	
+	#cuit, #iibb, #inact {
+		position:absolute;
+		left:450px;
+		top:155px;
+		font-size:12pt;
+		width:170px;
+		text-align:left;
+	}
+	#cuitval, #iibbval, #inactval {
+		position:absolute;
+		left:560px;
+		top:155px;
+		font-size:12pt;
+		width:120px;
+		text-align: right;
+	}
+	div#cuitval,div#iibb {
+		top: 180px;
+	}
+	div#inact,div#inactval {
+		top: 205px;
+	}
+
+	#direccion {
+		position:absolute;
+		left:35px;
+		top:150px;
+		font-size:12pt;
+		width:290px;
+		text-align:center;
+	}
+	
+	#localidad {
+		position:absolute;
+		left:35px;
+		top:170px;
+		font-size:12pt;
+		width:290px;
+		text-align:center;
+	}
+	
+	#url {
+		position:absolute;
+		left:35px;
+		top:190px;
+		font-size:12pt;
+		width:290px;
+		text-align:center;
+	}
+	
+	#condicion_iva {
+		position:absolute;
+		left:35px;
+		top:210px;
+		font-size:12pt;
+		width:290px;
+		text-align:center;
+	}
+	
+	#tipo_factura {
+		position:absolute;
+		left:350px;
+		top:12px;
+		font-size:36pt;
+	}
+	
+	#nro_factura {
+		position:absolute;
+		left:480px;
+		top:32px;
+		font-size:25pt;
+	}
+	
+	#cae {
+		position:absolute;
+		left:515px;
+		top:90px;
+		font-size:12pt;
+	}
+	#cae_vto {
+		position:absolute;
+		left:540px;
+		top:110px;
+		font-size:10pt;
+	}
+
+        #doc_rel {
+		position:absolute;
+		left:515px;
+		top:70px;
+		font-size:10pt;
+	}
+	
+	#dia_fecha {
+		position:absolute;
+		left:386px;
+		top:247px;
+		font-size:12pt;
+	}
+	
+	#mes_fecha {
+		position:absolute;
+		left:441px;
+		top:247px;
+		font-size:12pt;
+	}
+	
+	#anio_fecha {
+		position:absolute;
+		left:633px;
+		top:247px;
+		font-size:12pt;
+	}
+	
+	#nombre_cliente {
+		position:absolute;
+		left:95px;
+		top:276px;
+		font-size:12pt;
+	}
+	
+	#cuit_cliente {
+		position:absolute;
+		left:510px;
+		top:276px;
+		font-size:12pt;
+	}
+	
+	#dir_cliente {
+		position:absolute;
+		left:95px;
+		top:299px;
+		font-size:12pt;
+	}
+	
+	#loc_cliente {
+		position:absolute;
+		left:533px;
+		top:299px;
+		font-size:12pt;
+	}
+	
+	#iva_cliente {
+		position:absolute;
+		left:65px;
+		top:322px;
+		font-size:12pt;
+	}
+	
+	#tel_cliente {
+		position:absolute;
+		left:527px;
+		top:322px;
+		font-size:12pt;
+	}
+	
+	#cond_cliente {
+		position:absolute;
+		left:124px;
+		top:348px;
+		font-size:12pt;
+	}
+	
+	#remito_cliente {
+		position:absolute;
+		left:530px;
+		top:348px;
+		font-size:12pt;
+	}
+	
+	#area_detalle {
+		position:absolute;
+		left:40px;
+		top:430px;
+		font-size:10pt;
+	}
+	
+	#notas {
+		position:absolute;
+		left:120px;
+		width:360px;
+		top:815px;
+		font-size:10pt;
+	}
+	
+	.row {
+		float:left;
+		width:660px;
+	}
+	
+	.row_cantidad {
+		float:left;
+		top:0;
+		width:60px;
+		text-align:center;
+	}
+	
+	.row_codigo {
+		float:left;
+		width:110px;
+		text-align:center;
+	}
+	
+	.row_articulo {
+		float:left;
+		width:280px;
+		text-align:left;
+	}
+	
+	.row_unitario {
+		float:left;
+		width:60px;
+		text-align:center;
+	}
+	
+	.row_importe {
+		float:left;
+		width:145px;
+		text-align:center;
+	}
+	
+	#fact_neto {
+		position:absolute;
+		left:518px;
+		top:943px;
+		width:190px;
+		font-size:12pt;
+		text-align:center;
+	}
+	
+	#fact_total {
+		position:absolute;
+		left:518px;
+		top:1005px;
+		width:190px;
+		font-size:12pt;
+		text-align:center;
+	}
+
+        #total_letra {
+		position:absolute;
+		left:145px;
+		top:872px;
+		width:300px;
+		font-size:12pt;
+		text-align:justify;
+	}
+	
+	#fact_iva {
+		position:absolute;
+		left:518px;
+		top:974px;
+		width:190px;
+		font-size:12pt;
+		text-align:center;
+	}
+</style>
+</head>
+<body>
+	
+	<div><img src='{$fktr_invoice_background_image}' width='700' height='1100'></div>
+	<div id='logo'><img src='{$company.img_url}' width="280" height='90'></div>
+    <div id='razon_social'>{$company.name}</div>
+	<div id='direccion'>{$company.address} </div>
+	<div id='localidad'>{$company.city} - {$company.state}</div>
+	<div id='url'>{$company.website}</div>
+	<div id='condicion_iva'>{$company.tax_condition.name}</div>
+
+	<div id='cuit'>Taxpayer</div><div id='cuitval'>{$company.taxpayer}</div>
+	<div id='iibb'>Ing.Brutos</div><div id='iibbval'>NADA</div>
+	<div id='inact'>Inicio de Act.</div><div id='inactval'>{$company.start}</div>
+	
+	<div id='tipo_factura'>{$invoice.invoice_type.short_name}</div>
+	<div id='nro_factura'>{$invoice.post_title}</div>
+
+	<div id='area_detalle'>
+		{loop="$invoice.products"}
+		<div class='row'>
+			<table border='0' cellpadding='0' cellspacing='0'>
+				<tr>
+					<td class='row_cantidad'>{$value.quantity}</td>
+					<td class='row_codigo'>{$value.code}</td>
+					<td class='row_articulo'>{$value.description}</td>
+					<td class='row_unitario'>{$value.unit_price}</td>
+					<td class='row_importe'>{$value.amount} </td>
+				</tr>
+			</table>
+		</div>
+		{/loop}
+	</div>
+	<div id='fact_neto'>{function="get_money_format($invoice.subtotal, $invoice.currency)"}  {$invoice.currency.plural}  </div>
+  <div id='fact_total'>{function="get_money_format($invoice.total, $invoice.currency)"} {$invoice.currency.plural}</div>
+	
+</body>
+</html>

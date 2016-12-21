@@ -36,11 +36,48 @@ class fktrPostTypePrintTemplates {
 		
 
 		add_action( 'admin_post_show_print_template', array(__CLASS__, 'show_print_template'));
+		add_action( 'admin_post_reset_print_template', array(__CLASS__, 'reset_print_template'));
 		add_action('admin_action_copy_print_template', array(__CLASS__, 'copy_print_template'));
 		add_filter('post_row_actions', array(__CLASS__, 'actions'), 10, 2);
 
 		add_action('wp_ajax_get_vars_assigned_print', array(__CLASS__, 'get_vars_assigned'));
 
+		add_action( 'post_submitbox_misc_actions', array(__CLASS__, 'submitbox') );
+
+	}
+	public static function reset_print_template() {
+
+		if (!isset($_GET['_nonce']) || !wp_verify_nonce($_GET['_nonce'], 'reset_print_to_default')) {
+			fktrNotices::add(array('below-h2' => false, 'text' => __('A problem, please try again.', FAKTURO_TEXT_DOMAIN )));
+			wp_redirect(admin_url('edit.php?post_type=fktr_print_template'));
+			exit;
+		}
+
+		$template_id = $_REQUEST['id'];
+		if (empty($template_id)) {
+			fktrNotices::add(array('below-h2' => false, 'text' => __('Invalid print template id.', FAKTURO_TEXT_DOMAIN )));
+			wp_redirect(admin_url('edit.php?post_type=fktr_print_template'));
+			exit;
+		}
+		
+		$print_template = self::get_print_template_data($template_id);
+		if (!isset($print_template['assigned'])) {
+			fktrNotices::add(array('below-h2' => false, 'text' => __('This print template has no assigned object.', FAKTURO_TEXT_DOMAIN )));
+			wp_redirect(admin_url('post.php?post='.$template_id.'&action=edit'));
+			exit;
+		}
+		if ($print_template['assigned'] == -1) {
+			fktrNotices::add(array('below-h2' => false, 'text' => __('This print template has no assigned object.', FAKTURO_TEXT_DOMAIN )));
+			wp_redirect(admin_url('post.php?post='.$template_id.'&action=edit'));
+			exit;
+		}
+		
+		$new_content = self::get_default_template_by_assigned($print_template['assigned']);
+		$new = apply_filters('fktr_print_template_metabox_save_content', $new_content );  //filtra cada campo antes de grabar
+		update_post_meta($template_id, 'content',  $new);
+		fktrNotices::add(array('below-h2' => false, 'text' => __('This print template has been reset to default.', FAKTURO_TEXT_DOMAIN )));
+		wp_redirect(admin_url('post.php?post='.$template_id.'&action=edit'));
+		exit;
 	}
 	public static function actions($actions, $post){
 	    //check for your post type
@@ -445,6 +482,8 @@ class fktrPostTypePrintTemplates {
 						'pdf_button' => $pdf_button,
 						'msg_save_before' => __('Save before to preview print template', FAKTURO_TEXT_DOMAIN),
 						'msg_loading_var' => __('Loading vars...', FAKTURO_TEXT_DOMAIN),
+						'msg_reset' => __('This will remove all your modified data. Are you sure?', FAKTURO_TEXT_DOMAIN),
+						'msg_before_reset' => __('Save before to reset to default.', FAKTURO_TEXT_DOMAIN),
 					
 				));
 		
@@ -468,7 +507,7 @@ class fktrPostTypePrintTemplates {
 		
 		$print_template = self::get_print_template_data($post->ID);
 		
-
+		self::get_default_template();
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$array_assigned = apply_filters('fktr_assigned_print_template', array());
 		$selectHtml = '<select name="assigned" id="assigned">
@@ -583,8 +622,67 @@ class fktrPostTypePrintTemplates {
 	}
 	
 	
-	
-	
+	public static function get_default_template() {
+		$default_print_templates = array();
+		$args = array(
+			'public'   => true
+		); 
+		$output = 'objects'; 
+		$operator = 'and'; 
+		$post_types = get_post_types($args, $output, $operator); 
+		foreach ($post_types  as $post_type  ) {
+			if (strpos($post_type->name, 'fktr') === false ) {
+				continue;
+			}
+			if (empty($default_print_templates[$post_type->name])) {
+				$default_print_templates[$post_type->name] = FAKTURO_PLUGIN_DIR.'templates/'.$post_type->name.'-default.html';
+			}
+			
+		}
+
+		$default_print_templates = apply_filters('fktr_default_print_template_paths', $default_print_templates);
+		return $default_print_templates;
+	}
+	public static function get_default_template_by_assigned($assigned) {
+		$ret = '';
+		$default_templates = self::get_default_template();
+		if (!empty($default_templates[$assigned])) {
+			if (file_exists($default_templates[$assigned])) {
+				$ret = file_get_contents($default_templates[$assigned]);
+			}
+		}
+		return $ret;
+	}
+	public static function submitbox() {
+		global $post;
+		if ($post->post_type != 'fktr_print_template') {
+			return true;
+		}
+			
+		$preview_button = '<a  id="preview_button" class="button button-large" href="'.admin_url('admin-post.php?id='.$post->ID.'&action=show_print_template').'" target="_new" style="margin:5px;">'. __('Preview', FAKTURO_TEXT_DOMAIN) . '</a>';
+		$pdf_button = '<a  id="pdf_button" class="button button-large" href="'.admin_url('admin-post.php?id='.$post->ID.'&action=show_print_template&pdf=true').'" target="_new" style="margin:5px;">'. __('See PDF', FAKTURO_TEXT_DOMAIN) . '</a>';
+
+		$reset_url = wp_nonce_url(admin_url('admin-post.php?id='.$post->ID.'&action=reset_print_template'), 'reset_print_to_default', '_nonce');
+		$reset_button = '<a  id="reset_button" class="button button-large" href="'.$reset_url.'" style="margin:5px;">'. __('Reset to default', FAKTURO_TEXT_DOMAIN) . '</a>';
+
+
+		$echoHtml = '
+		
+		<div class="misc-pub-section fktr_subscriptions_preview_button">
+			'.$preview_button.'
+		</div>
+		<div class="misc-pub-section fktr_subscriptions_pdf_button">
+			'.$pdf_button.'
+		</div>
+		<div class="misc-pub-section fktr_subscriptions_reset_button">
+			'.$reset_button.'
+		</div>
+
+		';
+		echo $echoHtml;
+
+	}
+
 	public static function clean_fields($fields) {
 		$setting_system = get_option('fakturo_system_options_group', false);
 		if (!isset($fields['description'])) {
