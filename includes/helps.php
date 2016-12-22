@@ -13,7 +13,7 @@ class fktr_helps {
 				$doc_path = FAKTURO_PLUGIN_DIR.'docs/'.$screen->post_type .'-help.php';
 			}
 		}
-		
+		$doc_path = apply_filters('fktr_help_doc_path', $doc_path);
 		if (file_exists($doc_path)) {
 			include $doc_path;
 			/**
