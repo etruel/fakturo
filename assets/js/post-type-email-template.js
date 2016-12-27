@@ -1,7 +1,7 @@
 jQuery(document).ready(function() {
 	 
 
-    jQuery('#publishing-action').prepend(email_template_object.preview_button);
+   // jQuery('#publishing-action').prepend(email_template_object.preview_button);
      
     jQuery(document).on("change", '#post', function(event) {
         jQuery('#preview_button').attr('disabled','disabled');
@@ -9,8 +9,19 @@ jQuery(document).ready(function() {
             alert(email_template_object.msg_save_before);
             e.preventDefault();
         });
+
+        jQuery('#reset_button').attr('disabled','disabled');
+        jQuery('#reset_button').click(function(e) {
+            alert(email_template_object.msg_before_reset);
+            e.preventDefault();
+        });
     });
 
+    jQuery('#reset_button').click(function(e) {
+        if (!confirm(email_template_object.msg_reset)) {
+             e.preventDefault();
+        }
+    });
     jQuery("#assigned").change(function() {
         var data_sended = {
             action: 'get_vars_assigned',

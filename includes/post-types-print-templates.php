@@ -635,7 +635,7 @@ class fktrPostTypePrintTemplates {
 				continue;
 			}
 			if (empty($default_print_templates[$post_type->name])) {
-				$default_print_templates[$post_type->name] = FAKTURO_PLUGIN_DIR.'templates/'.$post_type->name.'-default.html';
+				$default_print_templates[$post_type->name] = FAKTURO_PLUGIN_DIR.'templates/'.$post_type->name.'-print-default.html';
 			}
 			
 		}
