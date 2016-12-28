@@ -182,7 +182,7 @@ class fktrAdminMenu {
 	}
 	public static function fakturo_dashboard() {
 		global $post_type, $current_screen;
-		echo "Fakturo Dashboard";
+		include_once FAKTURO_PLUGIN_DIR.'templates/fktr_dashboard.php';
 	}
 	
 }
