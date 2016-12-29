@@ -2,6 +2,7 @@
 	<h1 class="_title_dash">Dashboard</h1>
 	<!--html5 desing-->
 	<div>
+		
 	<section class="_menu_items_metro">
 		<ul>
 			<li class="color1">
@@ -44,9 +45,9 @@
 					<p>Items3</p>
 				</div>
 			</li>
-
 		</ul>
 	</section>
+
 
 	<!--section widgets front-end-->
 	<section class="element_widget_dashboard">
@@ -75,18 +76,88 @@
 						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 						tempor incididunt ut labore et dolore magna aliqua.</p>
 						<div style="clear: both;"></div>
+
 					</li>
-
+					<li>
+						<span class="dashicons dashicons-admin-settings"></span>
+						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua.</p>
+						<div style="clear: both;"></div>
+						
+					</li>
+					<li>
+						<span class="dashicons dashicons-admin-settings"></span>
+						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua.</p>
+						<div style="clear: both;"></div>
+						
+					</li>
+					<li>
+						<span class="dashicons dashicons-admin-settings"></span>
+						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua.</p>
+						<div style="clear: both;"></div>
+						
+					</li>
+					<li>
+						<span class="dashicons dashicons-admin-settings"></span>
+						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua.</p>
+						<div style="clear: both;"></div>
+						
+					</li>
 				</ul>
+				<div style="clear: both;"></div>
 			</div>
-
+			<div style="clear: both;"></div>
 		</div>
 
+
+
+
 		<!--right-->
-		<div class="right_dash"></div>
+		<div class="right_dash">
+			<div class="seccion1" class="white">
+				<h3>Easy Digital - Sales Summary</h3>
+				<table  width="100%" cellspacing="0" style="border:1px solid #CBD4DB; padding:10px;">
+					<tr>
+						<td>
+							<p>Current Mothn</p>
+							<ol>
+								<li><span class="sp_left">Earning</span>  <span class="sp_right">$1500</span><br style="clear: both;"></li>
+								<li><span class="sp_left">Sales</span> <span class="sp_right">$1500</span></li>
+							</ol>
+						</td>
+						<td>
+							<p>Today</p>
+							<ol>
+								<li><span class="sp_left">Earning</span> <span class="sp_right">$1500</span><br style="clear: both;"></li>
+								<li><span class="sp_left">Sales</span> <span class="sp_right">$1500</span></li>
+							</ol>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>Last Mothn</p>
+							<ol>
+								<li><span class="sp_left">Earning</span> <span class="sp_right">$1500</span><br style="clear: both;"></li>
+								<li><span class="sp_left">Sales</span> <span class="sp_right">$1500</span></li>
+							</ol>
+						</td>
+						<td>
+							<p>Total</p>
+							<ol>
+								<li><span class="sp_left">Earning</span> <span class="sp_right">$1500</span><br style="clear: both;"></li>
+								<li><span class="sp_left">Sales</span> <span class="sp_right">$1500</span></li>
+							</ol>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div style="clear: both !important;"></div>
 	</section>
 	</div>
-	<div style="clear: both;"></div>
 
 
 
@@ -136,9 +207,10 @@
 		/*section widgets Frontend*/
 		.element_widget_dashboard:after{clear: both;}
 		.left_dash{
-			float: left;
+			display: inline-block;
 			width: 50%;
-			height: 200px;
+			min-height: 200px;
+			height: auto;
 			margin-left: 10px;
 		}
 		.seccion1 h3{
@@ -181,6 +253,57 @@
 			margin-top: 5px;
 		}
 		.seccion1 ul li p:after{
+			clear: both !important;
+		}
+
+
+		/*right dash estile*/
+		.right_dash{
+			display: inline-block;
+			width: 40%;
+			min-height: 200px;
+			height: auto;
+			margin-left: 10px;
+		}
+		.right_dash .seccion1{
+			background-color: white !important;
+			border:none;
+		}
+		.right_dash .seccion1 h3{
+			margin-top: -20px;
+		}
+		.right_dash .seccion1  table{
+			background-color: white;
+			margin-top: -20px;
+		}
+		.right_dash .seccion1  table tr td{
+			padding:10px 0px;
+		}
+		.right_dash .seccion1  table tr td p{
+			margin-left: 10px;
+			font-weight: bold;
+			border-bottom: 1px solid #D7D7D7;
+		}
+		.right_dash .seccion1  table tr td ol{
+			list-style: none;
+			margin-left: 10px;
+		}
+		.right_dash .seccion1  table tr td ol li{
+			list-style: none;
+		}
+		.right_dash .seccion1  table tr td ol li span{
+			display: inline-block;
+
+		}
+		.right_dash .seccion1  table tr td ol li span.sp_left{
+			display: block;
+			float: left;
+		}
+		.right_dash .seccion1  table tr td ol li span.sp_right{
+			display: block;
+			float: right;
+		}
+		.right_dash .seccion1  table tr td ol li span.sp_right:after{
 			clear: both !important;
 		}
 	</style>
