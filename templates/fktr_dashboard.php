@@ -45,6 +45,22 @@
 					<p>Items3</p>
 				</div>
 			</li>
+			<li class="colordefault">
+				<div class="_menu_dashicon">
+					<span class="dashicons dashicons-admin-settings"></span>
+				</div>
+				<div class="_descripcion_items_metro">
+					<p>Items3</p>
+				</div>
+			</li>
+			<li>
+				<div class="_menu_dashicon">
+					<span class="dashicons dashicons-admin-settings"></span>
+				</div>
+				<div class="_descripcion_items_metro">
+					<p>Items6</p>
+				</div>
+			</li>
 		</ul>
 	</section>
 
@@ -165,6 +181,7 @@
 	<!--desing que colocaremos en un ECHO desps-->
 	<!--design dashboard fakturo-->
 	<style type="text/css">
+		.colordefault{background-color: #F74D4D !important;}
 		.color1{background-color: #27A9E3 !important;}
 		.color2{background-color: #28B779 !important;}
 		.color3{background-color:#FFB848 !important; }
