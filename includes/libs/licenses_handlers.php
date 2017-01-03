@@ -33,8 +33,8 @@ class fktr_licenses_handlers {
 		$plugins_args = apply_filters('fktr_plugins_updater_args', $plugins_args);
 		
 		if(!class_exists( 'EDD_SL_Plugin_Updater') && !empty($plugins_args)) {
-			if(file_exists(FAKTURO_PLUGIN_DIR . 'includes/lib/Plugin_Updater.php')) {
-				require_once(FAKTURO_PLUGIN_DIR . 'includes/lib/Plugin_Updater.php');
+			if(file_exists(FAKTURO_PLUGIN_DIR . 'includes/libs/Plugin_Updater.php')) {
+				require_once(FAKTURO_PLUGIN_DIR . 'includes/libs/Plugin_Updater.php');
 			} 
 		}
 		

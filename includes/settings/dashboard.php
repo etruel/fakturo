@@ -134,21 +134,21 @@
 		<!--right-->
 		<div class="right_dash">
 			<div class="seccion1" class="white">
-				<h3>Easy Digital - Sales Summary</h3>
+				<h3>Fakturo - Sales Summary</h3>
 				<table  width="100%" cellspacing="0" style="border:1px solid #CBD4DB; padding:10px;">
 					<tr>
 						<td>
 							<p>Current Mothn</p>
 							<ol>
-								<li><span class="sp_left">Earning</span>  <span class="sp_right">$1500</span><br style="clear: both;"></li>
-								<li><span class="sp_left">Sales</span> <span class="sp_right">$1500</span></li>
+								<li><span class="sp_left">Earning</span>  <span class="sp_right"><?php echo $money_format_current_month; ?></span><br style="clear: both;"></li>
+								<li><span class="sp_left">Sales</span> <span class="sp_right"><?php echo $count_sales_current_month; ?></span></li>
 							</ol>
 						</td>
 						<td>
 							<p>Today</p>
 							<ol>
-								<li><span class="sp_left">Earning</span> <span class="sp_right">$1500</span><br style="clear: both;"></li>
-								<li><span class="sp_left">Sales</span> <span class="sp_right">$1500</span></li>
+								<li><span class="sp_left">Earning</span> <span class="sp_right"><?php echo $money_format_today; ?></span><br style="clear: both;"></li>
+								<li><span class="sp_left">Sales</span> <span class="sp_right"><?php echo $count_sales_today; ?></span></li>
 							</ol>
 						</td>
 					</tr>
@@ -156,15 +156,15 @@
 						<td>
 							<p>Last Mothn</p>
 							<ol>
-								<li><span class="sp_left">Earning</span> <span class="sp_right">$1500</span><br style="clear: both;"></li>
-								<li><span class="sp_left">Sales</span> <span class="sp_right">$1500</span></li>
+								<li><span class="sp_left">Earning</span> <span class="sp_right"><?php echo $money_format_last_month; ?></span><br style="clear: both;"></li>
+								<li><span class="sp_left">Sales</span> <span class="sp_right"><?php echo $count_sales_last_month; ?></span></li>
 							</ol>
 						</td>
 						<td>
 							<p>Total</p>
 							<ol>
-								<li><span class="sp_left">Earning</span> <span class="sp_right">$1500</span><br style="clear: both;"></li>
-								<li><span class="sp_left">Sales</span> <span class="sp_right">$1500</span></li>
+								<li><span class="sp_left">Earning</span> <span class="sp_right"><?php echo $money_format_total; ?></span><br style="clear: both;"></li>
+								<li><span class="sp_left">Sales</span> <span class="sp_right"><?php echo $count_sales_total; ?></span></li>
 							</ol>
 						</td>
 					</tr>

@@ -214,4 +214,39 @@ function fktr_array_multi_key_exists(array $arrNeedles, array $arrHaystack, $bln
     return fktr_array_multi_key_exists($arrNeedles, $arrHaystack, $blnMatchAll);
 }
 
+function get_sales_on_range($from, $to) {
+	global $wpdb;
+	$sales_ids = array();
+	if ($from != 0 && $to != 0) {
+		$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as timestamp_value FROM {$wpdb->posts} as p
+		LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
+        WHERE 
+        pm.meta_key = 'date'
+		AND p.post_status = 'publish'
+		AND p.post_type = 'fktr_sale'
+		AND pm.meta_value >= '%s'
+		AND pm.meta_value <= '%s'
+        GROUP BY p.ID 
+		", $from, $to);
+
+
+	} else {
+		$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as timestamp_value FROM {$wpdb->posts} as p
+		LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
+        WHERE 
+        pm.meta_key = 'date'
+		AND p.post_status = 'publish'
+		AND p.post_type = 'fktr_sale'
+        GROUP BY p.ID 
+		");
+	}
+	
+	error_log($sql);
+	$results = $wpdb->get_results($sql, OBJECT);
+	foreach ($results as $rs) {
+		$sales_ids[] = $rs->ID;
+	}
+	return $sales_ids;
+}
+
 ?>
