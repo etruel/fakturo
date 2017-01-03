@@ -174,6 +174,10 @@ class fktrAdminMenu {
 			wp_enqueue_style('main',FAKTURO_PLUGIN_URL .'assets/css/main.css');	
 			wp_enqueue_style('fktr_icons',FAKTURO_PLUGIN_URL .'assets/css/icons.css');	
 		}
+		if($current_screen->id == "toplevel_page_fakturo_dashboard" ) {
+			wp_enqueue_style('fktr_dashboard', FAKTURO_PLUGIN_URL .'assets/css/dashboard.css');	
+		}
+		 
 		// hide some items that we don't want to show in WP menu
 		echo '<style>.wp-submenu li a[href="post-new.php?post_type=fktr_provider"] {display: none !important;}</style>';
 		echo '<style>.wp-submenu li a[href="post-new.php?post_type=fktr_client"] {display: none !important;}</style>';
