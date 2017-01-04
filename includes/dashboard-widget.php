@@ -41,7 +41,7 @@ function fktr_widget_dashboard_sale_summary() {
 		$currencyDefault = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
 
 		$sales_today = get_sales_on_range(strtotime('-1 day', time()), strtotime('+1 day', time()));
-		error_log(var_export($sales_today, true));
+	
 		$earning_today = 0;
 		$count_sales_today = 0;
 		foreach ($sales_today as $id_sale_today) {
@@ -76,14 +76,14 @@ function fktr_widget_dashboard_sale_summary() {
 		$money_format_last_month = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($earning_last_month, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
 		
 		$sales_total = get_sales_on_range(0, 0);
-		error_log(var_export($sales_total, true));
+		
 		$earning_total = 0;
 		$count_sales_total = 0;
 		
 		foreach ($sales_total as $id_sale_total) {
 			$count_sales_total++;
 			$sales_data = fktrPostTypeSales::get_sale_data($id_sale_total);
-			$earning_total = $earning_last_month+fakturo_transform_money($sales_data['invoice_currency'], $setting_system['currency'], $sales_data['in_total']);
+			$earning_total = $earning_total+fakturo_transform_money($sales_data['invoice_currency'], $setting_system['currency'], $sales_data['in_total']);
 		}
 
 		$money_format_total = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($earning_total, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');

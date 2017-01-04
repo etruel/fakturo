@@ -5,6 +5,7 @@
 		
 	<section class="_menu_items_metro">
 		<ul>
+			<a href="#">
 			<li class="color1">
 				<div class="_menu_dashicon">
 					<span class="dashicons dashicons-format-aside"></span>
@@ -13,6 +14,7 @@
 					<p>Items1</p>
 				</div>
 			</li>
+			</a>
 			<li class="color2">
 				<div class="_menu_dashicon">
 					<span class="dashicons dashicons-format-image"></span>

@@ -225,7 +225,7 @@ function get_sales_on_range($from, $to) {
 		AND p.post_status = 'publish'
 		AND p.post_type = 'fktr_sale'
 		AND pm.meta_value >= '%s'
-		AND pm.meta_value <= '%s'
+		AND pm.meta_value < '%s'
         GROUP BY p.ID 
 		", $from, $to);
 
@@ -241,7 +241,7 @@ function get_sales_on_range($from, $to) {
 		");
 	}
 	
-	error_log($sql);
+	//error_log($sql);
 	$results = $wpdb->get_results($sql, OBJECT);
 	foreach ($results as $rs) {
 		$sales_ids[] = $rs->ID;
