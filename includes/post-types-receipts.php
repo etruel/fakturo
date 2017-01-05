@@ -49,6 +49,33 @@ class fktrPostTypeReceipts {
 		add_filter( 'bulk_actions-edit-fktr_receipt', array(__CLASS__, 'bulk_actions') );
 		add_filter( 'handle_bulk_actions-edit-fktr_receipt', array(__CLASS__, 'bulk_action_handler'), 10, 3 );
 		add_action('admin_print_scripts', array(__CLASS__,'scripts_list'));
+
+		add_filter('manage_fktr_receipt_posts_columns' , array(__CLASS__, 'columns' ));
+		add_filter('manage_fktr_receipt_posts_custom_column' , array(__CLASS__, 'manage_columns' ), 10, 2 );
+	}
+
+	public static function columns($columns) {
+	    
+		return array(
+	        'cb' => '<input type="checkbox" />',
+	        'title' => __('Title'),
+	        'invoices_affected' =>__( 'Invoices affected', FAKTURO_TEXT_DOMAIN),
+	        'date' => __('Date'),
+			
+	    );
+	}
+	public static function manage_columns( $column, $post_id) {
+		$receipt_data = self::get_receipt_data($post_id);
+		$setting_system = get_option('fakturo_system_options_group', false);
+		
+		switch ( $column ) {
+			case 'invoices_affected':
+				foreach ($receipt_data['check_invs'] as $kc => $invoice_id) {
+					$data_inv = fktrPostTypeSales::get_sale_data($invoice_id);
+					echo '<a href="'.get_edit_post_link($invoice_id).'">'.$data_inv['post_title'].'</a><br/>';
+				}
+			break;
+		}
 	}
 	public static function print_receipt() {
 		$object = new stdClass();

@@ -62,7 +62,47 @@ class fktrPostTypeSales {
 		add_action('admin_post_print_invoice', array(__CLASS__, 'print_invoice'));
 		add_filter( 'bulk_actions-edit-fktr_sale', array(__CLASS__, 'bulk_actions') );
 		add_filter( 'handle_bulk_actions-edit-fktr_sale', array(__CLASS__, 'bulk_action_handler'), 10, 3 );
+		add_filter('manage_fktr_sale_posts_columns' , array(__CLASS__, 'columns' ));
+		add_filter('manage_fktr_sale_posts_custom_column' , array(__CLASS__, 'manage_columns' ), 10, 2 );
+		
 	}
+	public static function columns($columns) {
+	    
+		return array(
+	        'cb' => '<input type="checkbox" />',
+	        'title' => __('Title'),
+	        'payment_status' =>__( 'Payment Status', FAKTURO_TEXT_DOMAIN),
+	        'date' => __('Date'),
+			
+	    );
+	}
+	public static function manage_columns( $column, $post_id) {
+		$sale_data = self::get_sale_data($post_id);
+		$setting_system = get_option('fakturo_system_options_group', false);
+		if (empty($sale_data['invoice_currency'])) {
+			$currencyDefault = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
+		} else {
+			$currencyDefault = get_fakturo_term($sale_data['invoice_currency'], 'fktr_currencies');		
+		}
+		switch ( $column ) {
+			case 'payment_status':
+				if (empty($sale_data['receipts'])) {
+					_e('Unpaid', FAKTURO_TEXT_DOMAIN);
+				} else {
+					_e('Receipts Numbers: Amount', FAKTURO_TEXT_DOMAIN);
+					echo '<br/>';
+					foreach ($sale_data['receipts'] as $receipt_id => $affected) {
+						$receipt_data = fktrPostTypeReceipts::get_receipt_data($receipt_id);
+						echo $receipt_data['post_title'].': '.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($affected, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'';
+					}
+					
+
+				}
+				
+			break;
+		}
+	}
+
 	public static function print_invoice() {
 		$object = new stdClass();
 		$object->type = 'post';
@@ -1157,6 +1197,9 @@ class fktrPostTypeSales {
 		$sale_data = self::get_sale_data($sale_id);
 		$affected_standar = fakturo_mask_to_float($affected);
 		$affected_in_sale = fakturo_transform_money($currency_receipt, $sale_data['invoice_currency'], $affected_standar);
+		if (!is_array($sale_data['receipts'])) {
+			$sale_data['receipts'] = array();
+		}
 		$sale_data['receipts'][$receipt_id] = $affected_in_sale;
 		$new = apply_filters( 'fktr_sale_metabox_save_receipts', $sale_data['receipts']); 
 		update_post_meta($sale_id, 'receipts', $new );
