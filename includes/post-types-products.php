@@ -23,12 +23,19 @@ class fktrPostTypeProducts {
 		add_action('admin_print_styles-post.php', array('fktrPostTypeProducts','styles'));
 		
 		add_filter('parent_file',  array( __CLASS__, 'tax_menu_correction'));
+		add_filter('redirect_term_location', array(__CLASS__, 'redirect_term_location'), 0, 2);
 		
 		add_filter('fktr_clean_product_fields', array('fktrPostTypeProducts', 'clean_fields'), 10, 1);
 		add_filter('fktr_product_before_save', array('fktrPostTypeProducts', 'before_save'), 10, 1);
 		
 	}
 	
+	static function redirect_term_location($location, $tax ){
+		if($tax->name == 'fktr_category' || $tax->name == 'fktr_model'){
+			$location = admin_url('edit-tags.php?taxonomy='.$tax->name);
+		}
+		return $location;
+	}
 
 	public static function setup() {
 		$slug     = defined( 'FAKTURO_PRODUCT_SLUG' ) ? FAKTURO_PRODUCT_SLUG : 'fktr_products';

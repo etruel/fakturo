@@ -35,6 +35,7 @@
 .snow:before               { content: "\2042"; }
 
 .delete:before { content: "\2718";}
+.delete .delete:before { content: "";}
 .add:before { content: "\271A";}
 .isok:before { content: "\2714";}
 .cross:before { content: "\2716"; }

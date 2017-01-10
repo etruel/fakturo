@@ -15,7 +15,7 @@ An easy and fully-configurable SME Management system for Wordpress.
 Fakturo is a complete system SME management, released as a Wordpress plugin with multiple functions for small and medium-sized companies.
 It's FREE, fully-configurable, customizable and upgradable through Wordpress filters and also by AddOns or customized support.
 
-NOTE: This plugin is in very early Beta stage. Check it and test it if you want, but we are working on it every day!!
+NOTE: This plugin is in Beta stage. You can check it and test it. The release date are closest, we are working on it every day!!
 
 = Introduction =
 There are many systems that management invoices on the web. Some freeware, some modular, some online, some with addons, some with e-invoicing, some with stock, some easy, some are updated periodically, some of them with technical support, etc... always "some"..., so that's why was born Fakturo, because it is not "some" more, but that have all the above and much more.
@@ -79,6 +79,15 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 
 == Changelog ==
+
+= 0.5 Beta =
+* Added Custom Dashboard with widgets with the most used links and some summaries.
+* Added Default templates for print templates to avoid creation from scratch.
+* Added Default templates for email templates to avoid creation from scratch.
+* Added tips and texts to the Help Tabs in all the system screens.
+* Added redirection to the list when saves a custom term of Products. (WP>=4.6)
+* Fixes on quick actions for invoices.
+* Some Fixes on invoice editing.
 
 = 0.4 Beta =
 * Added print invoices.
