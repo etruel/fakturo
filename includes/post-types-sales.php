@@ -1802,7 +1802,7 @@ class fktrPostTypeSales {
 		   self::updateSuggestInvoiceNumber($fields['sale_point'], $fields['invoice_type'], $fields['invoice_number']);
 		}
 		
-		do_action( 'fktr_save_sale', $post_id, $post );
+		do_action( 'fktr_save_sale', $post_id, $post, $fields );
 		
 	}
 	
