@@ -114,6 +114,7 @@ function get_fakturo_term($term_id, $taxonomy, $field = null) {
 	if (isset($field) && isset($return->$field)) {
 		return $return->$field;
 	}
+	$return = apply_filters('get_fakturo_term_'.$return->taxonomy, $return);
 	return $return;
 }
 
