@@ -136,9 +136,8 @@ class fktrSettings {
 			'fakturo_dashboard_options_group' // setting name
 		);
 		$value_dashboard = get_option('fakturo_dashboard_options_group', array());
-		
 		if (empty($value_dashboard)) {
-			$value_dashboard['dialer'] = array(0, 0, 0, 0, 0, 0, 0);
+			$value_dashboard['dialer'] = array('fktr_sale', 'fktr_receipt', 'fktr_client', 'fktr_price_scales', 'fktr_product', 'fktr_check', 'fktr_settings');
 			update_option('fakturo_dashboard_options_group' , $value_dashboard);
 		}
 

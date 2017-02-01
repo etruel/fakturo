@@ -265,7 +265,7 @@ class fktrPostTypeReceipts {
 			'show_ui' => true,
 			'show_in_menu' => false, 
 			'menu_position' => 26,
-			'menu_icon' => 'dashicons-media-text', 
+			'menu_icon' => 'dashicons-format-aside', 
 			'show_in_nav_menus' => false,
 			'publicly_queryable' => false,
 			'exclude_from_search' => false,

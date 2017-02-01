@@ -64,6 +64,9 @@ function fktr_print_widget($slug, $widget) {
 							$menu_link = admin_url('edit.php?post_type='.$dashboard_options['dialer'][$d]);
 						} else if ($item->type == 'taxonomy') {
 							$menu_link = admin_url('edit-tags.php?taxonomy='.$dashboard_options['dialer'][$d]);
+						} else if ($item->type == 'setting') {
+							$menu_link = admin_url('admin.php?page=fakturo-settings');
+								
 						}
 						
 						echo '<a href="'.$menu_link.'">

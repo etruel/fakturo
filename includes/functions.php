@@ -256,6 +256,12 @@ function fktr_get_dialer_options() {
 	$new_option->icon = 'dashicons-category';
 	$new_option->type = null;
 	$select_options[0] = $new_option;
+
+	$new_option = new stdClass();
+	$new_option->text = __( 'Settings', FAKTURO_TEXT_DOMAIN);
+	$new_option->icon = 'dashicons-admin-settings';
+	$new_option->type = 'setting';
+	$select_options['fktr_settings'] = $new_option;
 	$args = array(
 		'public'   => false
 	); 
@@ -292,7 +298,7 @@ function fktr_get_dialer_options() {
 			if (empty($select_options[$taxonomy->name])) {
 				$new_option = new stdClass();
 				$new_option->text = $taxonomy->label;
-				$new_option->icon = apply_filters('fktr_get_dialer_icon_'.$taxonomy->name,'dashicons-tag');
+				$new_option->icon = apply_filters('fktr_get_dialer_icon_'.$taxonomy->name,'dashicons-tickets');
 				$new_option->type = 'taxonomy';
 				$select_options[$taxonomy->name] = $new_option;
 			}

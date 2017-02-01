@@ -136,6 +136,9 @@
 		clear:both;
 	}
 }
+.seccion1 {
+	border: 1px solid #BEBEBE;
+}
 .seccion {
 	background-color: white !important;
 }

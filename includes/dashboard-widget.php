@@ -34,16 +34,18 @@ function fktr_add_dashboard_widgets() {
 add_action( 'wp_dashboard_setup', 'fktr_add_dashboard_widgets' );
 
 function fktr_default_dashboard_widgets() {
-	fktr_add_dashboard_widget(
-        'fktr_dashboard_widget_news',         // Widget slug.
-        'Fakturo News',         // Title.
-        'fktr_widget_dashboard_news' // Display function.
-    );
+	
 	fktr_add_dashboard_widget(
         'fktr_dashboard_widget_sale_summary',         // Widget slug.
         'Fakturo - Sales Summary',         // Title.
         'fktr_widget_dashboard_sale_summary' // Display function.
     );
+	/* fktr_add_dashboard_widget(
+        'fktr_dashboard_widget_news',         // Widget slug.
+        'Fakturo News',         // Title.
+        'fktr_widget_dashboard_news' // Display function.
+    );
+	
     fktr_add_dashboard_widget(
         'fktr_dashboard_widget_test',         // Widget slug.
         'Fakturo - Test 1',         // Title.
@@ -58,7 +60,7 @@ function fktr_default_dashboard_widgets() {
         'fktr_dashboard_widget_testtheree',         // Widget slug.
         'Fakturo - Test 3',         // Title.
         'fktr_widget_dashboard_testtow' // Display function.
-    );
+    );*/
 }
 function fktr_widget_dashboard_test() {
 	echo 'content';
