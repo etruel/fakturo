@@ -59,6 +59,7 @@ class fktr_tax_packaging {
 		);
 
 		$args = array(
+			'public'				=> false,
 			'hierarchical'          => false,
 			'labels'                => $labels,
 			'show_ui'               => true,

@@ -261,7 +261,7 @@ class fktrPostTypeReceipts {
 			'description' => 'Fakturo Receipts',
 			'supports' => array( 'title',/* 'custom-fields' */),
 			'register_meta_box_cb' => array(__CLASS__,'meta_boxes'),
-			'public' => true,
+			'public' => false,
 			'show_ui' => true,
 			'show_in_menu' => false, 
 			'menu_position' => 26,

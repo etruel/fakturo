@@ -58,6 +58,7 @@ class fktr_tax_bank_entities {
 		);
 
 		$args = array(
+			'public'				=> false,
 			'hierarchical'          => false,
 			'labels'                => $labels,
 			'show_ui'               => true,

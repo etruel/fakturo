@@ -76,6 +76,7 @@ class fktr_tax_nvoice_types {
 		);
 
 		$args = array(
+			'public'				=> false,
 			'hierarchical'          => false,
 			'labels'                => $labels,
 			'show_ui'               => true,

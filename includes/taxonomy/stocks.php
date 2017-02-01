@@ -60,6 +60,7 @@ class fktr_tax_stock {
 		);
 
 		$args = array(
+			'public'				=> false,
 			'hierarchical'          => false,
 			'labels'                => $labels,
 			'show_ui'               => true,

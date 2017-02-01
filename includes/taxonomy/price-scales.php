@@ -60,6 +60,7 @@ class fktr_tax_price_scales {
 		);
 
 		$args = array(
+			'public'				=> false,
 			'hierarchical'          => false,
 			'labels'                => $labels,
 			'show_ui'               => true,

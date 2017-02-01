@@ -195,21 +195,26 @@ class fktrPostTypeSales {
 			if ($post->post_status == 'publish') {
 				unset($actions['trash']);
 			}
-			if ($setting_system['use_stock_product'] && $post->post_status == 'draft') {
-				unset($actions['trash']);
-				$actions['delete'] = '<a class="submitdelete" title="'.esc_attr( __( 'Delete this item permanently', FAKTURO_TEXT_DOMAIN )).'" href="'.get_delete_post_link( $post->ID, '', true).'">'. __( 'Delete Permanently' ).'</a>';
-			}
-			$actions['print_invoice'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_invoice').'" class="btn_print_invoice" target="_new">'.__( 'Print Invoice', FAKTURO_TEXT_DOMAIN ).'</a>';
-
-			if (empty($actions['send_invoice_to_client'])) {
-				$sale_data = self::get_sale_data($post->ID);
-				$client_data = fktrPostTypeClients::get_client_data($sale_data['client_id']);
-				if (!empty($client_data['email'])) {
-					$url = admin_url('admin-post.php?id='.$post->ID.'&action=send_invoice_to_client');
-					$url = wp_nonce_url($url, 'send_invoice_to_client', '_wpnonce');
-					$actions['send_invoice_to_client'] = '<a href="'.$url.'" class="btn_send_invoice">'.__( 'Send PDF to Client', FAKTURO_TEXT_DOMAIN ).'</a>';
+			if ($post->post_status != 'trash') {
+				if ($setting_system['use_stock_product'] && $post->post_status == 'draft') {
+					unset($actions['trash']);
+					$actions['delete'] = '<a class="submitdelete" title="'.esc_attr( __( 'Delete this item permanently', FAKTURO_TEXT_DOMAIN )).'" href="'.get_delete_post_link( $post->ID, '', true).'">'. __( 'Delete Permanently' ).'</a>';
 				}
+				$actions['print_invoice'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_invoice').'" class="btn_print_invoice" target="_new">'.__( 'Print Invoice', FAKTURO_TEXT_DOMAIN ).'</a>';
+
+				if (empty($actions['send_invoice_to_client'])) {
+					$sale_data = self::get_sale_data($post->ID);
+					$client_data = fktrPostTypeClients::get_client_data($sale_data['client_id']);
+					if (!empty($client_data['email'])) {
+						$url = admin_url('admin-post.php?id='.$post->ID.'&action=send_invoice_to_client');
+						$url = wp_nonce_url($url, 'send_invoice_to_client', '_wpnonce');
+						$actions['send_invoice_to_client'] = '<a href="'.$url.'" class="btn_send_invoice">'.__( 'Send PDF to Client', FAKTURO_TEXT_DOMAIN ).'</a>';
+					}
+				}
+
+				
 			}
+			
 			
 			unset( $actions['inline hide-if-no-js'] );
 			$actions = apply_filters('fktr_sales_quick_actions',$actions, $post);
@@ -350,7 +355,7 @@ class fktrPostTypeSales {
 			'description' => 'Fakturo Sales',
 			'supports' => array( 'title',/* 'custom-fields' */),
 			'register_meta_box_cb' => array('fktrPostTypeSales','meta_boxes'),
-			'public' => true,
+			'public' => false,
 			'show_ui' => true,
 			'show_in_menu' => false, 
 			'menu_position' => 26,

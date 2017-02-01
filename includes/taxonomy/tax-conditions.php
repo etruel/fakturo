@@ -56,6 +56,7 @@ class fktr_tax_tax_conditions {
 		);
 
 		$args = array(
+			'public'				=> false,
 			'hierarchical'          => false,
 			'labels'                => $labels,
 			'show_ui'               => true,

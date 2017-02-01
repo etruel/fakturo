@@ -68,7 +68,7 @@ class fktrPostTypeProviders {
 			'description' => 'Fakturo Providers',
 			'supports' => array( 'title', 'thumbnail',/* 'custom-fields' */),
 			'register_meta_box_cb' => array('fktrPostTypeProviders', 'meta_boxes'),
-			'public' => true,
+			'public' => false,
 			'show_ui' => true,
 			'show_in_menu' => false, //'fakturo_dashboard',
 			'menu_position' => 27,

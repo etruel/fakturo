@@ -76,7 +76,7 @@ class fktrPostTypeProducts {
 			'description' => 'Fakturo Products',
 			'supports' => array( 'title', 'thumbnail',/* 'custom-fields' */),
 			'register_meta_box_cb' => array('fktrPostTypeProducts','meta_boxes'),
-			'public' => true,
+			'public' => false,
 			'show_ui' => true,
 			'show_in_menu' => false,
 			'menu_position' => 27,
@@ -114,6 +114,7 @@ class fktrPostTypeProducts {
 		);
 
 		$args_model = array(
+			'public'				=> false,
 			'hierarchical'          => true,
 			'labels'                => $labels_model,
 			'show_ui'               => true,
@@ -155,6 +156,7 @@ class fktrPostTypeProducts {
 		);
 
 		$args_model = array(
+			'public'				=> false,
 			'hierarchical'          => false,
 			'labels'                => $labels_model,
 			'show_ui'               => true,

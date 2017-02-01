@@ -67,7 +67,7 @@ class fktrPostTypeClients {
 			'description' => 'Fakturo Clients',
 			'supports' => array( 'title', 'thumbnail',/* 'custom-fields' */),
 			'register_meta_box_cb' => array('fktrPostTypeClients','meta_boxes'),
-			'public' => true,
+			'public' => false,
 			'show_ui' => true,
 			'show_in_menu' => false,
 			'menu_position' => 27,

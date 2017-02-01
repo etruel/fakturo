@@ -59,6 +59,7 @@ class fktr_tax_payment_types {
 		);
 
 		$args_model = array(
+			'public'				=> false,
 			'hierarchical'          => false,
 			'labels'                => $labels_model,
 			'show_ui'               => true,

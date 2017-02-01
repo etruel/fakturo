@@ -57,6 +57,7 @@ class fktr_tax_countries {
 		);
 
 		$args_model = array(
+			'public'				=> false,
 			'hierarchical'          => true,
 			'labels'                => $labels_model,
 			'show_ui'               => true,
