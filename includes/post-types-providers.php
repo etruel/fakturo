@@ -72,7 +72,7 @@ class fktrPostTypeProviders {
 			'show_ui' => true,
 			'show_in_menu' => false, //'fakturo_dashboard',
 			'menu_position' => 27,
-//			'menu_icon' => 'dashicons-tickets',
+			'menu_icon' => 'dashicons-businessman',
 			'show_in_nav_menus' => true,
 			'publicly_queryable' => false,
 			'exclude_from_search' => false,

@@ -131,10 +131,51 @@ class fktrSettings {
 			$value_system = apply_filters('fktr_system_options_init', $value_system);
 			update_option('fakturo_system_options_group' , $value_system);
 		}
+		register_setting(
+			'fakturo-settings-dashboard',  // settings section
+			'fakturo_dashboard_options_group' // setting name
+		);
+		$value_dashboard = get_option('fakturo_dashboard_options_group', array());
+		
+		if (empty($value_dashboard)) {
+			$value_dashboard['dialer'] = array(0, 0, 0, 0, 0, 0, 0);
+			update_option('fakturo_dashboard_options_group' , $value_dashboard);
+		}
 
 	}
 	
+	public static function fakturo_settings_dashboard() {  
+		global $current_screen;
+		$options = get_option('fakturo_dashboard_options_group');
+		$select_options = fktr_get_dialer_options();
+		
 
+		echo '<div id="tab_container">
+			<br/><h1>Dashboard Setup</h1>
+			<form method="post" action="options.php">';
+			settings_fields('fakturo-settings-dashboard');
+			do_settings_sections('fakturo-settings-dashboard');
+			echo '<table class="form-table">';
+				for ($d = 0; $d < 7; $d++) {
+					$selectHtml = '<select name="fakturo_dashboard_options_group[dialer][]" id="dialer_'.$d.'">';
+					foreach ($select_options as $key => $value) {
+						$selectHtml .= '<option value="'.$key.'" '.selected($key, $options['dialer'][$d], false).'> '.$value->text .' </option>';
+					}
+					$selectHtml .= '</select>';
+					echo '<tr valign="top">
+						<th scope="row">'.sprintf( __( 'Dialer %s', FAKTURO_TEXT_DOMAIN ), $d+1) .'</th>
+						<td>
+							'.$selectHtml.'
+                        </td>
+                    </tr>';
+				}
+				
+			echo '</table>';
+			submit_button();
+			echo '</form>
+		</div><!-- #tab_container-->';
+
+	}
 	public static function fakturo_settings() {  
 		global $current_screen;
 		
@@ -796,6 +837,7 @@ class fktrSettings {
 				'system_settings' =>  array('text' => __( 'General', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-settings-system'), 'screen' => 'admin_page_fakturo-settings-system'), 
 				'print-template' =>  array('text' => __( 'Print Templates', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit.php?post_type=fktr_print_template'), 'screen' => 'fktr_print_template'), 
 				'email-template' =>  array('text' => __( 'E-mail Templates', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit.php?post_type=fktr_email_template'), 'screen' => 'fktr_email_template'), 
+				'dashboard-settings' =>  array('text' => __( 'Dashboard Setup', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-settings-dashboard'), 'screen' => 'admin_page_fakturo-settings-dashboard'), 
 				'default' =>  array('text' => __( 'System Settings', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-settings-system'), 'screen' => 'admin_page_fakturo-settings-system')				
 				)
 			),

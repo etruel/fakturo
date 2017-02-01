@@ -263,7 +263,7 @@ class fktrPostTypeEmailTemplates {
 	}
 	public static function default_assigned($data) {
 		$args = array(
-			'public'   => true
+			'public'   => false
 		); 
 		$output = 'objects'; // names or objects, note names is the default
 		$operator = 'and'; // 'and' or 'or'

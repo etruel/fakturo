@@ -49,64 +49,45 @@ function fktr_print_widget($slug, $widget) {
 		
 	<section class="_menu_items_metro">
 		<ul>
-			<a href="#">
-			<li class="color1">
-				<div class="_menu_dashicon">
-					<span class="dashicons dashicons-format-aside"></span>
-				</div>
-				<div class="_descripcion_items_metro">
-					<p>Items1</p>
-				</div>
-			</li>
-			</a>
-			<li class="color2">
-				<div class="_menu_dashicon">
-					<span class="dashicons dashicons-format-image"></span>
-				</div>
-				<div class="_descripcion_items_metro">
-					<p>Items2</p>
-				</div>
-			</li>
-			<li class="color3">
-				<div class="_menu_dashicon">
-					<span class="dashicons dashicons-admin-appearance"></span>
-				</div>
-				<div class="_descripcion_items_metro">
-					<p>Items3</p>
-				</div>
-			</li>
-			<li class="color4">
-				<div class="_menu_dashicon">
-					<span class="dashicons dashicons-admin-settings"></span>
-				</div>
-				<div class="_descripcion_items_metro">
-					<p>Items3</p>
-				</div>
-			</li>
-			<li class="color5">
-				<div class="_menu_dashicon">
-					<span class="dashicons dashicons-image-filter"></span>
-				</div>
-				<div class="_descripcion_items_metro">
-					<p>Items3</p>
-				</div>
-			</li>
-			<li class="colordefault">
-				<div class="_menu_dashicon">
-					<span class="dashicons dashicons-admin-settings"></span>
-				</div>
-				<div class="_descripcion_items_metro">
-					<p>Items3</p>
-				</div>
-			</li>
-			<li>
-				<div class="_menu_dashicon">
-					<span class="dashicons dashicons-admin-settings"></span>
-				</div>
-				<div class="_descripcion_items_metro">
-					<p>Items6</p>
-				</div>
-			</li>
+			<?php 
+				$dashboard_options = get_option('fakturo_dashboard_options_group');
+				$dialer_options = fktr_get_dialer_options();
+				for($d=0; $d < 7; $d++) {
+					if (!empty($dashboard_options['dialer'][$d]) && !empty($dialer_options[$dashboard_options['dialer'][$d]])) {
+						$item = $dialer_options[$dashboard_options['dialer'][$d]];
+						$class_color = 'color'.($d+1);
+						if ($d == 5) {
+							$class_color = 'colordefault';
+						}
+						$menu_link = '';
+						if ($item->type == 'post') {
+							$menu_link = admin_url('edit.php?post_type='.$dashboard_options['dialer'][$d]);
+						} else if ($item->type == 'taxonomy') {
+							$menu_link = admin_url('edit-tags.php?taxonomy='.$dashboard_options['dialer'][$d]);
+						}
+						
+						echo '<a href="'.$menu_link.'">
+						<li class="'.$class_color.'">
+							<div class="_menu_dashicon">
+								<span class="dashicons '.$item->icon.'"></span>
+							</div>
+							<div class="_descripcion_items_metro">
+								<p>'.$item->text.'</p>
+							</div>
+						</li>
+						</a>'; 
+
+					}
+
+
+					
+
+				
+				}
+
+
+			?>
+			
 		</ul>
 	</section>
 

@@ -28,7 +28,11 @@ class fktr_tax_bank_entities {
 		
 		add_action('admin_enqueue_scripts', array(__CLASS__, 'scripts'), 10, 1);
 		add_filter('redirect_term_location', array(__CLASS__, 'redirect_term_location'), 0, 2);
-		
+		add_filter('fktr_get_dialer_icon_'.self::$tax_name, array(__CLASS__, 'dashboard_icon'), 10, 1);
+	}
+	public static function dashboard_icon($icon) {
+		$icon = 'dashicons-building';
+		return $icon;
 	}
 	static function redirect_term_location($location, $tax ){
 		if($tax->name == self::$tax_name){

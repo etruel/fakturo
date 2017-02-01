@@ -80,7 +80,7 @@ class fktrPostTypeProducts {
 			'show_ui' => true,
 			'show_in_menu' => false,
 			'menu_position' => 27,
-			'menu_icon' => 'dashicons-tickets', 
+			'menu_icon' => 'dashicons-tag', 
 			'show_in_nav_menus' => false,
 			'publicly_queryable' => false,
 			'exclude_from_search' => false,

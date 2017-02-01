@@ -249,5 +249,56 @@ function get_sales_on_range($from, $to) {
 	}
 	return $sales_ids;
 }
+function fktr_get_dialer_options() {
+	$select_options = array();
+	$new_option = new stdClass();
+	$new_option->text = __( 'Select a option', FAKTURO_TEXT_DOMAIN);
+	$new_option->icon = 'dashicons-category';
+	$new_option->type = null;
+	$select_options[0] = $new_option;
+	$args = array(
+		'public'   => false
+	); 
+	$output = 'objects'; // names or objects, note names is the default
+	$operator = 'and'; // 'and' or 'or'
+	$post_types = get_post_types($args, $output, $operator); 
+	foreach ($post_types  as $post_type  ) {
+			
+		if (strpos($post_type->name, 'fktr') === false ) {
+			continue;
+		}
 
+		if (empty($select_options[$post_type->name])) {
+			$new_option = new stdClass();
+			$new_option->text = $post_type->label;
+			$new_option->icon = apply_filters('fktr_get_dialer_icon_'.$post_type->name, $post_type->menu_icon);
+			$new_option->type = 'post';
+			$select_options[$post_type->name] = $new_option;
+		}
+			
+	}
+	$args = array(
+		  	'public'   => false,
+	); 
+	$output = 'objects'; 
+	$operator = 'and'; 
+	$taxonomies = get_taxonomies( $args, $output, $operator ); 
+	if ( $taxonomies ) {
+		  foreach ( $taxonomies  as $taxonomy ) {
+		    if (strpos($taxonomy->name, 'fktr') === false ) {
+				continue;
+			}
+			
+			if (empty($select_options[$taxonomy->name])) {
+				$new_option = new stdClass();
+				$new_option->text = $taxonomy->label;
+				$new_option->icon = apply_filters('fktr_get_dialer_icon_'.$taxonomy->name,'dashicons-tag');
+				$new_option->type = 'taxonomy';
+				$select_options[$taxonomy->name] = $new_option;
+			}
+		}
+	}
+	$select_options = apply_filters('fktr_get_dialer_options', $select_options);
+	return $select_options;
+}
 ?>
