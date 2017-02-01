@@ -130,7 +130,7 @@ class fktrPostTypeReceipts {
 		return $redirect_to;
 	}
 	public static function row_actions($actions, $post) {
-		if ($post->post_type == 'fktr_receipt' && $post->post_status != 'cancelled') {
+		if ($post->post_type == 'fktr_receipt' && ($post->post_status != 'cancelled' && $post->post_status != 'trash')) {
 			$actions['cancelled'] = '<a class="submit_cancel_receipt" href="'.admin_url('admin-post.php?post='.$post->ID.'&action=cancel_receipt').'" onclick="return confirm(\''.__('Do you want cancel this receipt?', FAKTURO_TEXT_DOMAIN ).'\');">Cancel this receipt</a>';
 			$actions['print_receipt'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_receipt').'" class="btn_print_receipt" target="_new">'.__( 'Print Receipt', FAKTURO_TEXT_DOMAIN ).'</a>';
 
