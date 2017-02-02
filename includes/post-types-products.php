@@ -131,7 +131,7 @@ class fktrPostTypeProducts {
 
 		register_taxonomy(
 			'fktr_category',
-			'',
+			'fktr_product',
 			$args_model
 		);
 		
@@ -173,7 +173,7 @@ class fktrPostTypeProducts {
 
 		register_taxonomy(
 			'fktr_model',
-			'',
+			'fktr_product',
 			$args_model
 		);
 		

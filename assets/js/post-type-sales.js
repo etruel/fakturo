@@ -201,7 +201,7 @@ jQuery(document).ready(function() {
 		updateTitle();
 	});
 	activate_search_products();
-	updateProductsDatails();
+	updateProductsDatailsOnLoad();
 	
 	jQuery('#post').submit(function(e) {  
    			
@@ -934,6 +934,101 @@ function updateProductFromIdentifier(identifier) {
 	});
 	
 }
+function updateProductFromIdentifierOnLoad(identifier) {
+	var productId = parseInt(jQuery('#id_'+identifier).val());
+	
+	var current_product = product_data[productId];
+	
+	var price_standar = parseFloat(converMaskToStandar(jQuery('#unit_price_'+identifier).val(), sales_object));
+
+	var price = price_standar.formatMoney(sales_object.decimal_numbers, sales_object.decimal,  sales_object.thousand);
+
+	var quality = parseInt(jQuery('#quality_'+identifier).val());
+	var amount_standar = quality*price_standar;
+
+	var amount = amount_standar.formatMoney(sales_object.decimal_numbers, sales_object.decimal,  sales_object.thousand);
+	
+	var code = getCodeProduct(current_product);
+	var description = getDescriptionProduct(current_product);
+		
+	var percentage_tax = getPorcentTaxProduct(current_product);
+	var tax_with_mask = percentage_tax.formatMoney(2, sales_object.decimal,  sales_object.thousand);
+	var discriminates_taxes = getDescriminateTaxes();
+	
+	jQuery('#label_code_'+identifier).html(code);
+	jQuery('#code_'+identifier).val(code);
+	jQuery('#id_'+identifier).val(current_product.id);
+	
+	//jQuery('#description_'+identifier).val(description);
+	jQuery('#quality_'+identifier).val(quality);
+	jQuery('#unit_price_'+identifier).val(price);
+	jQuery('#label_tax_product_'+identifier).html(''+tax_with_mask+'%');
+	jQuery('#tax_porcent_product_'+identifier).val(percentage_tax);
+	jQuery('#tax_product_'+identifier).val(current_product.datacomplete.tax);
+	jQuery('#amount_'+identifier).val(amount);
+
+
+
+	jQuery(".product_quality").change(function(){
+		if (jQuery(this).val() == '') {
+			jQuery(this).val(1); 
+		}
+		var identifier = this.id.replace('quality_', '');
+		var price_standar = converMaskToStandar(jQuery('#unit_price_'+identifier).val(), sales_object);
+		var quality = parseInt(jQuery('#quality_'+identifier).val());
+		var amount_standar = quality*price_standar;
+		var amount = amount_standar.formatMoney(sales_object.decimal_numbers, sales_object.decimal,  sales_object.thousand);
+		jQuery('#amount_'+identifier).val(amount);
+		updateSubTotals();
+	});
+	
+	jQuery(".unit_price_products").keyup(function(){
+		if (jQuery(this).val() == '') {
+			jQuery(this).val(0);
+		}
+		
+		var identifier = this.id.replace('unit_price_', '');
+		var price_standar = converMaskToStandar(jQuery(this).val(), sales_object);
+		var quality = parseInt(jQuery('#quality_'+identifier).val());
+		var amount_standar = quality*price_standar;
+		var amount = amount_standar.formatMoney(sales_object.decimal_numbers, sales_object.decimal,  sales_object.thousand);
+		jQuery('#amount_'+identifier).val(amount);
+		updateSubTotals();
+		
+	});
+	jQuery(".products_amounts").change(function(){
+		if (jQuery(this).val() == '') {
+			jQuery(this).val(0);
+		}
+		updateSubTotals();
+		
+	});
+
+	
+}
+function updateProductsDatailsOnLoad() {
+	jQuery('.sortitem').map(function () {
+		var identifier = jQuery(this).data('identifier');
+		updateProductFromIdentifierOnLoad(identifier);
+		
+	})
+	jQuery('#uc_actions label').click(function() {
+		delete_product('#uc_ID'+jQuery(this).attr('data-id'));
+		jQuery('#invoice_products').vSort();
+		updateSubTotals();
+	});
+	
+	jQuery('#invoice_products').vSort();
+	jQuery('.unit_price_products').mask(DefaultMaskNumbers, {reverse: true});
+	jQuery('.products_amounts').mask(DefaultMaskNumbers, {reverse: true});
+	jQuery('#product_select').val(null);
+	
+	updateDiscriminatesTaxes();
+	activate_search_products();
+	updateSubTotals();
+}
+
+
 function updateProductsDatails() {
 	jQuery('.sortitem').map(function () {
 		var identifier = jQuery(this).data('identifier');
