@@ -606,6 +606,7 @@ function updateSuggestInvoiceNumber() {
 	
 	jQuery.post(sales_object.ajax_url, data, function(data) {
 		jQuery('#invoice_number').val(padLeft(data, sales_object.digits_invoice_number));
+		updateTitle();
 	});
 	
 }

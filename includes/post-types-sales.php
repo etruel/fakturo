@@ -194,12 +194,6 @@ class fktrPostTypeSales {
 			$setting_system = get_option('fakturo_system_options_group', false);
 			if ($post->post_status == 'publish') {
 				unset($actions['trash']);
-			}
-			if ($post->post_status != 'trash') {
-				if ($setting_system['use_stock_product'] && $post->post_status == 'draft') {
-					unset($actions['trash']);
-					$actions['delete'] = '<a class="submitdelete" title="'.esc_attr( __( 'Delete this item permanently', FAKTURO_TEXT_DOMAIN )).'" href="'.get_delete_post_link( $post->ID, '', true).'">'. __( 'Delete Permanently' ).'</a>';
-				}
 				$actions['print_invoice'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_invoice').'" class="btn_print_invoice" target="_new">'.__( 'Print Invoice', FAKTURO_TEXT_DOMAIN ).'</a>';
 
 				if (empty($actions['send_invoice_to_client'])) {
@@ -211,6 +205,14 @@ class fktrPostTypeSales {
 						$actions['send_invoice_to_client'] = '<a href="'.$url.'" class="btn_send_invoice">'.__( 'Send PDF to Client', FAKTURO_TEXT_DOMAIN ).'</a>';
 					}
 				}
+			}
+			if ($post->post_status != 'trash') {
+				if ($setting_system['use_stock_product'] && $post->post_status == 'draft') {
+					unset($actions['trash']);
+					$actions['delete'] = '<a class="submitdelete" title="'.esc_attr( __( 'Delete this item permanently', FAKTURO_TEXT_DOMAIN )).'" href="'.get_delete_post_link( $post->ID, '', true).'">'. __( 'Delete Permanently' ).'</a>';
+				}
+				
+
 
 				
 			}
