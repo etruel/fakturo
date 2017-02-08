@@ -123,10 +123,11 @@ class fktr_admin_page {
 	}
 
 	public static function read_addons($plugins){
-	
+		
 		$cached = get_transient( 'fakturo_addons_data' );
 		if ( !is_array( $cached ) ) { // If no cache read source feed
-			$addonitems = WPeMatico::fetchFeed('https://etruel.com/downloads/category/fakturo/feed/', true, 10);
+			include_once(ABSPATH . WPINC . '/feed.php');
+			$addonitems = fetch_feed( 'https://etruel.com/downloads/category/fakturo/feed/' );
 			$addon = array();
 			foreach($addonitems->get_items() as $item) {
 				$itemtitle = $item->get_title();
