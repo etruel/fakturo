@@ -21,12 +21,11 @@ class fktrUserRoles {
 		self::$fakturo_manager_caps = array (
 		// more capabilities here
 			'edit_fakturo_settings' => true,
-		// more standard capabilities here
+
 			'read' => true,
 			'upload_files' => true,
 			'edit_files' => true,
-//			'manage_options' => true,
-//			'promote_users' => true,
+
 			'remove_users' => true,
 			'add_users' => true,
 			'edit_users' => true,
@@ -147,7 +146,7 @@ class fktrUserRoles {
 
 	
 	public function __construct() {
-		add_action('activated_plugin', array( __CLASS__,'activate' ), 10 );
+		add_action('activated_plugin', array( __CLASS__,'activate' ), 10, 2);
 		add_action('deactivated_plugin', array( __CLASS__,'deactivate' ), 10, 2 );
 
 		add_filter('login_redirect', array( __CLASS__ ,'fakturo_login_redirect'), 10, 3);
@@ -192,8 +191,11 @@ class fktrUserRoles {
 		return $redirect_url;
 	}
 	
-	public static function activate() {
+	public static function activate($plugin, $network_activation) {
 		global $wp_roles;
+		if ($plugin != 'fakturo/fakturo.php') {
+			return true;
+		}
 		add_role( 'fakturo_manager', __( 'Manager', FAKTURO_TEXT_DOMAIN ), self::get_fakturo_manager_caps());
 		add_role( 'fakturo_seller', __( 'Salesman', FAKTURO_TEXT_DOMAIN ), self::get_fakturo_seller_caps());
 		
@@ -206,10 +208,13 @@ class fktrUserRoles {
 	}
 
 	
-	public static function deactivate() {
+	public static function deactivate($plugin, $network_activation) {
 		global $wp_roles;
-		 remove_role( 'fakturo_manager'); 
-		 remove_role( 'fakturo_seller'); 
+		if ($plugin != 'fakturo/fakturo.php') {
+			return true;
+		}
+		remove_role( 'fakturo_manager'); 
+		remove_role( 'fakturo_seller'); 
 		foreach(self::$fakturo_manager_caps as $key => $value) {
 			$adm_cap = array('read','upload_files','edit_files','manage_options',
 				'promote_users','remove_users','add_users','edit_users',
