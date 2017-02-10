@@ -39,7 +39,7 @@ class fktrUserRoles {
 		);
 		$taxonomies_caps = array();
 		$args = array(
-		  'public'   => true,
+		  'public'   => false,
 		  '_builtin' => false
 		  
 		); 
@@ -60,7 +60,7 @@ class fktrUserRoles {
 		
 		
 		
-		$args = array( 'public' => true );
+		$args = array( 'public' => false );
 		$output = 'names'; // names or objects
 		$post_types = get_post_types($args,$output);
 		
