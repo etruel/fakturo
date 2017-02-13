@@ -12,7 +12,7 @@ class fktr_tax_origin {
 	public static $tax_name = 'fktr_origins';
 	function __construct() {
 		add_action( 'init', array(__CLASS__, 'init'), 1, 99 );
-		add_action( 'activated_plugin', array(__CLASS__, 'init'), 1 );
+		add_action( 'fakturo_activation', array(__CLASS__, 'init'), 1 );
 		add_action(self::$tax_name.'_edit_form_fields', array(__CLASS__, 'edit_form_fields'));
 		add_action(self::$tax_name.'_add_form_fields',  array(__CLASS__, 'add_form_fields'));
 		

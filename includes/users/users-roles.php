@@ -146,13 +146,19 @@ class fktrUserRoles {
 	
 	public function __construct() {
 		add_action('activated_plugin', array( __CLASS__,'activate' ), 10, 2);
+		add_action('activated_plugin', array( __CLASS__,'activation_fakturo' ), 2, 2);
 		add_action('deactivated_plugin', array( __CLASS__,'deactivate' ), 10, 2 );
 
 		add_filter('login_redirect', array( __CLASS__ ,'fakturo_login_redirect'), 10, 3);
 
 		add_action('admin_init', array( __CLASS__,'admin_init' ), 10 );
 	}
-
+	public static function activation_fakturo($plugin, $network_activation) {
+		if ($plugin != 'fakturo/fakturo.php') {
+			return true;
+		}
+		do_action('fakturo_activation');
+	}
 	public static function admin_init() {
 		//global $current_user;
 		if (get_current_user_id() && ( current_user_can('fakturo_manager') ||  current_user_can('fakturo_seller') ) ) {
@@ -233,7 +239,7 @@ class fktrUserRoles {
 		if (!$fktr_last_mananger_caps || !$update) {
 			$fktr_last_mananger_caps = self::get_fakturo_manager_caps();
 		}
-	
+
 		foreach($fktr_last_mananger_caps as $key => $value) {
 			$adm_cap = array('read','upload_files','edit_files','manage_options',
 				'promote_users','remove_users','add_users','edit_users',

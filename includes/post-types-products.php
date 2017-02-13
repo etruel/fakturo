@@ -12,7 +12,7 @@ class fktrPostTypeProducts {
 	function __construct() {
 		
 		add_action( 'init', array('fktrPostTypeProducts', 'setup'), 1 );
-		add_action( 'activated_plugin', array('fktrPostTypeProducts', 'setup'), 1 );
+		add_action( 'fakturo_activation', array('fktrPostTypeProducts', 'setup'), 1 );
 		add_action('transition_post_status', array('fktrPostTypeProducts', 'default_fields'), 10, 3);
 		add_action('save_post', array('fktrPostTypeProducts', 'save'), 999, 2 );
 		

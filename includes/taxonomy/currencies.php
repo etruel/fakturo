@@ -11,7 +11,7 @@ class fktr_tax_currency {
 	
 	function __construct() {
 		add_action( 'init', array('fktr_tax_currency', 'init'), 1, 99 );
-		add_action( 'activated_plugin', array(__CLASS__, 'init'), 1 );
+		add_action( 'fakturo_activation', array(__CLASS__, 'init'), 1 );
 		add_action('fktr_currencies_edit_form_fields', array('fktr_tax_currency', 'edit_form_fields'));
 		add_action('fktr_currencies_add_form_fields',  array('fktr_tax_currency', 'add_form_fields'));
 		add_action('edited_fktr_currencies', array('fktr_tax_currency', 'save_fields'), 10, 2);

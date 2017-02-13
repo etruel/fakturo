@@ -14,7 +14,7 @@ class fktr_tax_stock {
 		$use_tax_stock = apply_filters('fktr_use_tax_stock', true);
 		if ($use_tax_stock) {
 			add_action( 'init', array(__CLASS__, 'init'), 1, 99 );
-			add_action( 'activated_plugin', array(__CLASS__, 'init'), 1 );
+			add_action( 'fakturo_activation', array(__CLASS__, 'init'), 1 );
 			add_action(self::$tax_name.'_edit_form_fields', array(__CLASS__, 'edit_form_fields'));
 			add_action(self::$tax_name.'_add_form_fields',  array(__CLASS__, 'add_form_fields'));
 			

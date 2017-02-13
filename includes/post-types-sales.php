@@ -12,7 +12,7 @@ class fktrPostTypeSales {
 	function __construct() {
 		
 		add_action( 'init', array('fktrPostTypeSales', 'setup'), 1 );
-		add_action( 'activated_plugin', array('fktrPostTypeSales', 'setup'), 1 );
+		add_action( 'fakturo_activation', array('fktrPostTypeSales', 'setup'), 1 );
 		
 		add_action('transition_post_status', array('fktrPostTypeSales', 'default_fields'), 10, 3);
 		add_action('save_post', array('fktrPostTypeSales', 'save'), 99, 2 );

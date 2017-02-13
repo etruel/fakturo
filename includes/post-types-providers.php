@@ -12,7 +12,7 @@ class fktrPostTypeProviders {
 	function __construct() {
 		
 		add_action( 'init', array('fktrPostTypeProviders', 'setup'), 1 );
-		add_action( 'activated_plugin', array('fktrPostTypeProviders', 'setup'), 1 );
+		add_action( 'fakturo_activation', array('fktrPostTypeProviders', 'setup'), 1 );
 		add_action('transition_post_status', array('fktrPostTypeProviders', 'default_fields'), 10, 3);
 		add_action('save_post', array('fktrPostTypeProviders', 'save'), 10, 2 );
 		

@@ -12,7 +12,7 @@ class fktrPostTypeReceipts {
 	function __construct() {
 		
 		add_action( 'init', array(__CLASS__, 'setup'), 1 );
-		add_action( 'activated_plugin', array(__CLASS__, 'setup'), 1 );
+		add_action( 'fakturo_activation', array(__CLASS__, 'setup'), 1 );
 		
 		add_action('transition_post_status', array(__CLASS__, 'default_fields'), 10, 3);
 		add_action('save_post', array(__CLASS__, 'save'), 99, 2 );
