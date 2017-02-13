@@ -55,6 +55,10 @@ function fktr_print_widget($slug, $widget) {
 				for($d=0; $d < 7; $d++) {
 					if (!empty($dashboard_options['dialer'][$d]) && !empty($dialer_options[$dashboard_options['dialer'][$d]])) {
 						$item = $dialer_options[$dashboard_options['dialer'][$d]];
+						
+						if (!current_user_can($item->caps)) {
+							continue;
+						}
 						$class_color = 'color'.($d+1);
 						if ($d == 5) {
 							$class_color = 'colordefault';

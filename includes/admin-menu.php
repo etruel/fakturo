@@ -21,7 +21,7 @@ class fktrAdminMenu {
 		add_menu_page( 
 			__( 'Fakturo', FAKTURO_TEXT_DOMAIN ), 
 			__( 'Fakturo', FAKTURO_TEXT_DOMAIN ), 
-			'edit_fakturo_settings', 
+			'edit_fakturo_dashboard', 
 			'fakturo_dashboard', 
 			array( __CLASS__, 'fakturo_dashboard'),
 			'dashicons-tickets', 26  );
@@ -51,7 +51,7 @@ class fktrAdminMenu {
 			'fakturo_dashboard',
 			__( 'Add New', FAKTURO_TEXT_DOMAIN ),
 			__( 'Add Client', FAKTURO_TEXT_DOMAIN ),
-			'edit_fktr_provider',
+			'edit_fktr_client',
 			'post-new.php?post_type=fktr_client'
 		);
 
@@ -170,7 +170,7 @@ class fktrAdminMenu {
 			'edit.php?post_type=fktr_sale',
 			__( 'Checks', FAKTURO_TEXT_DOMAIN ),
 			__( 'Checks', FAKTURO_TEXT_DOMAIN ),
-			'edit_fktr_receipt',
+			'manage_fktr_check',
 			'edit-tags.php?taxonomy=fktr_check'
 		);
 		
@@ -199,62 +199,6 @@ class fktrAdminMenu {
 	}
 	public static function fakturo_dashboard() {
 		global $post_type, $current_screen;
-		$setting_system = get_option('fakturo_system_options_group', false);
-		$currencyDefault = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
-
-		$sales_today = get_sales_on_range(strtotime('-1 day', time()), strtotime('+1 day', time()));
-		
-		$earning_today = 0;
-		$count_sales_today = 0;
-		foreach ($sales_today as $id_sale_today) {
-			
-			$count_sales_today++;
-			$sales_data = fktrPostTypeSales::get_sale_data($id_sale_today);
-			
-			$earning_today = $earning_today+fakturo_transform_money($sales_data['invoice_currency'], $setting_system['currency'], $sales_data['in_total']);
-		}
-		$money_format_today = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($earning_today, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
-		$sales_current_month = get_sales_on_range(strtotime('first day of this month', time()), time());
-		$earning_current_month = 0;
-		$count_sales_current_month = 0;
-		foreach ($sales_current_month as $id_sale_current_month) {
-			$count_sales_current_month++;
-			$sales_data = fktrPostTypeSales::get_sale_data($id_sale_current_month);
-			$earning_current_month = $earning_current_month+fakturo_transform_money($sales_data['invoice_currency'], $setting_system['currency'], $sales_data['in_total']);
-		}
-
-		$money_format_current_month = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($earning_current_month, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
-		
-		
-		$sales_last_month = get_sales_on_range(strtotime('first day of last month', time()), strtotime('last day of last month', time()));
-
-		$earning_last_month = 0;
-		$count_sales_last_month = 0;
-		
-		foreach ($sales_last_month as $id_sale_last_month) {
-			$count_sales_last_month++;
-			$sales_data = fktrPostTypeSales::get_sale_data($id_sale_last_month);
-			$earning_last_month = $earning_last_month+fakturo_transform_money($sales_data['invoice_currency'], $setting_system['currency'], $sales_data['in_total']);
-		}
-
-		$money_format_last_month = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($earning_last_month, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
-		
-		$sales_total = get_sales_on_range(0, 0);
-		
-		$earning_total = 0;
-		$count_sales_total = 0;
-		
-		foreach ($sales_total as $id_sale_total) {
-			
-			$count_sales_total++;
-			$sales_data = fktrPostTypeSales::get_sale_data($id_sale_total);
-			$earning_total = $earning_total+fakturo_transform_money($sales_data['invoice_currency'], $setting_system['currency'], $sales_data['in_total']);
-		}
-
-		$money_format_total = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($earning_total, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
-		
-		
-		
 		
 		include_once FAKTURO_PLUGIN_DIR.'includes/settings/dashboard.php';
 	}

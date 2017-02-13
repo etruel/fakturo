@@ -21,7 +21,7 @@ class fktrUserRoles {
 		self::$fakturo_manager_caps = array (
 		// more capabilities here
 			'edit_fakturo_settings' => true,
-
+			'edit_fakturo_dashboard' => true,
 			'read' => true,
 			'upload_files' => true,
 			'edit_files' => true,
@@ -73,6 +73,7 @@ class fktrUserRoles {
 				self::$fakturo_manager_caps = array_merge(self::$fakturo_manager_caps, $newArrayCaps);
 			}
 		}
+
 		self::$fakturo_manager_caps = apply_filters('fakturo_manager_caps', self::$fakturo_manager_caps);
 		return self::$fakturo_manager_caps;
 	}
@@ -82,19 +83,36 @@ class fktrUserRoles {
 	public static function get_fakturo_seller_caps(){ 
 		self::$fakturo_seller_caps = array (
 		// clients capabilities here
-			'publish_fakturo_clients' => true,
-			'read_fakturo_clients' => true,
-			'edit_fakturo_client' => true,
-			'edit_fakturo_clients' => true,
-			'edit_published_fakturo_clients' => true,
-			'delete_fakturo_client' => true,
-			'delete_fakturo_clients' => true,
+			'edit_fakturo_settings' => true,
+			'edit_fakturo_dashboard' => true,
+
 			'read' => true,
 			'upload_files' => true,
 			'edit_files' => true,
 			'list_users' => true,
-			'MailPress_manage_subscriptions' => false,
+
+
 		);
+		$cpt_clients = array();
+		$cpt_clients[] = 'fktr_client';
+		$cpt_clients[] = 'fktr_sale';
+		$cpt_clients[] = 'fktr_receipt';
+
+		$args = array( 'public' => false );
+		$output = 'names'; // names or objects
+		$post_types = get_post_types($args,$output);
+		
+		foreach ($post_types  as $post_type_name ) {
+			if (in_array($post_type_name, $cpt_clients)!== false)  {
+				$newArrayCaps = array();
+				$cap_cpt = get_post_type_object($post_type_name)->cap;
+				foreach ($cap_cpt as $c) {
+					$newArrayCaps[$c] = true;
+				}
+				self::$fakturo_seller_caps = array_merge(self::$fakturo_seller_caps, $newArrayCaps);
+			}
+		}
+		
 		self::$fakturo_seller_caps = apply_filters('fakturo_seller_caps', self::$fakturo_seller_caps);
 		return self::$fakturo_seller_caps;
 	}

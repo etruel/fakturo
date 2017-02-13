@@ -37,7 +37,7 @@ function fktr_default_dashboard_widgets() {
 	
 	fktr_add_dashboard_widget(
         'fktr_dashboard_widget_sale_summary',         // Widget slug.
-        'Fakturo - Sales Summary',         // Title.
+        __( 'Fakturo - Sales Summary', FAKTURO_TEXT_DOMAIN ),         // Title.
         'fktr_widget_dashboard_sale_summary' // Display function.
     );
 	/* fktr_add_dashboard_widget(
@@ -96,7 +96,11 @@ function fktr_widget_dashboard_sale_summary() {
 
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$currencyDefault = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
-
+		if (is_wp_error($currencyDefault)) {
+			echo '<p>'.__( 'Sales Summary needs the default currency on system settings.', FAKTURO_TEXT_DOMAIN ).'</p>';
+			return true;
+		}
+		
 		$sales_today = get_sales_on_range(strtotime('-1 day', time()), strtotime('+1 day', time()));
 	
 		$earning_today = 0;

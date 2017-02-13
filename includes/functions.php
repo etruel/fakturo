@@ -260,6 +260,7 @@ function fktr_get_dialer_options() {
 	$new_option->text = __( 'Settings', FAKTURO_TEXT_DOMAIN);
 	$new_option->icon = 'dashicons-admin-settings';
 	$new_option->type = 'setting';
+	$new_option->caps = 'edit_fakturo_settings';
 	$select_options['fktr_settings'] = $new_option;
 	$args = array(
 		'public'   => false
@@ -278,6 +279,8 @@ function fktr_get_dialer_options() {
 			$new_option->text = $post_type->label;
 			$new_option->icon = apply_filters('fktr_get_dialer_icon_'.$post_type->name, $post_type->menu_icon);
 			$new_option->type = 'post';
+			$new_option->caps = 'edit_'.$post_type->name;
+			
 			$select_options[$post_type->name] = $new_option;
 		}
 			
@@ -299,6 +302,7 @@ function fktr_get_dialer_options() {
 				$new_option->text = $taxonomy->label;
 				$new_option->icon = apply_filters('fktr_get_dialer_icon_'.$taxonomy->name,'dashicons-tickets');
 				$new_option->type = 'taxonomy';
+				$new_option->caps = 'edit_'.$taxonomy->name;
 				$select_options[$taxonomy->name] = $new_option;
 			}
 		}
