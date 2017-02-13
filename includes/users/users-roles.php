@@ -70,7 +70,6 @@ class fktrUserRoles {
 				foreach ($cap_cpt as $c) {
 					$newArrayCaps[$c] = true;
 				}
-				//error_log(print_r($newArrayCaps, true));
 				self::$fakturo_manager_caps = array_merge(self::$fakturo_manager_caps, $newArrayCaps);
 			}
 		}
@@ -234,6 +233,7 @@ class fktrUserRoles {
 		if (!$fktr_last_mananger_caps || !$update) {
 			$fktr_last_mananger_caps = self::get_fakturo_manager_caps();
 		}
+	
 		foreach($fktr_last_mananger_caps as $key => $value) {
 			$adm_cap = array('read','upload_files','edit_files','manage_options',
 				'promote_users','remove_users','add_users','edit_users',
@@ -243,7 +243,7 @@ class fktrUserRoles {
 			}
 		}
 
-		self::activate();
+		self::activate('fakturo/fakturo.php', false);
 		
 	}
 	

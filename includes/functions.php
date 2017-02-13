@@ -242,7 +242,6 @@ function get_sales_on_range($from, $to) {
 		");
 	}
 	
-	//error_log($sql);
 	$results = $wpdb->get_results($sql, OBJECT);
 	foreach ($results as $rs) {
 		$sales_ids[] = $rs->ID;
