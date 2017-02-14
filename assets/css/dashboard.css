@@ -19,6 +19,9 @@
 ._title_dash{
 	margin-left: 20px;
 }
+._menu_items_metro  a:hover {
+	opacity: 0.8;
+}
 ._menu_items_metro:after{
 	clear: both;
 }
@@ -41,6 +44,7 @@
   	width: 50px;
   	height: 50px;
 }
+
 ._menu_dashicon span{
 	font-size: 50px;
 	color: white;

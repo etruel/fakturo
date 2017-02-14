@@ -33,6 +33,10 @@ class fktrNotices {
 	public static function show() {
 		$screen = get_current_screen();
 		$notice = get_option(self::$option_notices, array());
+
+		self::settings_notices();
+
+
 		$admin_message = '';
 		if (!empty($notice)) {
 			foreach($notice as $key => $mess) {
@@ -50,6 +54,15 @@ class fktrNotices {
 		}
 		
 		echo $admin_message;
+	}
+	public static function settings_notices() {
+		$setting_system = get_option('fakturo_system_options_group', false);
+		
+		if ($setting_system['currency'] <= 0) {
+			echo '<div id="message" class="notice notice-warning is-dismissible"><p>'.__('Fakturo needs you to complete all system settings information for proper operation.', FAKTURO_TEXT_DOMAIN ).'</p></div>';
+		} else if ($setting_system['invoice_type'] <= 0) {
+			echo '<div id="message" class="notice notice-warning is-dismissible"><p>'.__('Fakturo needs you to complete all system settings information for proper operation.', FAKTURO_TEXT_DOMAIN ).'</p></div>';
+		}
 	}
 }
 

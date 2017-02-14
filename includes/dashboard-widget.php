@@ -17,7 +17,7 @@ function fktr_add_dashboard_widgets() {
 
 	wp_add_dashboard_widget(
                  'fktr_dashboard_widget_sale_summary',         // Widget slug.
-                 'Fakturo - Sales Summary',         // Title.
+                 __('Fakturo - Sales Summary', FAKTURO_TEXT_DOMAIN ),         // Title.
                  'fktr_widget_dashboard_sale_summary' // Display function.
         );
 	global $wp_meta_boxes;
