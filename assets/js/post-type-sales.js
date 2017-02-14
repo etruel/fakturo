@@ -26,6 +26,8 @@ jQuery(document).ready(function() {
 	jQuery('#invoice_number').keyup(function(e){
 		jQuery(this).val(padLeft(jQuery('#invoice_number').val(), sales_object.digits_invoice_number))
 	});
+	jQuery('.product_quality').mask('#0', {reverse: true});
+
 	jQuery.datetimepicker.setLocale(sales_object.datetimepicker.lang);
 	
 	jQuery('#date').datetimepicker({
@@ -823,7 +825,8 @@ function add_selected_product() {
 		updateSubTotals();
 	});
 	jQuery('#invoice_products').vSort();
-			
+	
+	jQuery('.product_quality').mask('#0', {reverse: true});		
 	jQuery('.unit_price_products').mask(DefaultMaskNumbers, {reverse: true});
 	jQuery('.products_amounts').mask(DefaultMaskNumbers, {reverse: true});
 	jQuery('#product_select').val(null);
