@@ -199,6 +199,14 @@ class fktr_licenses_handlers {
 
 		$plugins_args = array();
 		$plugins_args = apply_filters('fktr_plugins_updater_args', $plugins_args);
+		if (empty($plugins_args)) {
+
+			 
+		   	echo '<div class="msg"><p>', __('This is where you would enter the license keys for one of our premium plugins, should you activate one.', FAKTURO_TEXT_DOMAIN), '</p>';
+		   	echo '<p>', __('See some of the Fakturo Add-ons in the', FAKTURO_TEXT_DOMAIN), ' <a href="', admin_url( 'plugins.php?page=fakturo').'">Extensions list</a>.</p></div>';
+ 			return true;
+		}
+
 		echo '<form method="post" action="'.admin_url('admin-post.php' ).'">
 				<input type="hidden" name="action" value="fktr_save_licenses">
 				'.wp_nonce_field('fktr_save_licenses', 'fktr_save_licenses_nonce').'
@@ -250,10 +258,10 @@ class fktr_licenses_handlers {
 					$license_data = self::check_license($api_url, $args_check);
 					if (is_object($license_data)) {
 						
-						$currentActivations = $license_data->site_count;
-						$activationsLeft = $license_data->activations_left;
-						$activationsLimit = $license_data->license_limit;
-						$expires = $license_data->expires;
+						$currentActivations = (!empty($license_data->site_count)?$license_data->site_count: '');
+						$activationsLeft = (!empty($license_data->activations_left)?$license_data->activations_left: '');
+						$activationsLimit = (!empty($license_data->license_limit)?$license_data->license_limit: '');
+						$expires = (!empty($license_data->expires)?$license_data->expires: '');
 						$expires = substr( $expires, 0, strpos( $expires, " "));
 						
 						if (!empty($license_data->payment_id) && !empty($license_data->license_limit)) {
