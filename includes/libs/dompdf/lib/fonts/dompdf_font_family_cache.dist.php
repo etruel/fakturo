@@ -68,7 +68,7 @@
     'bold' => DOMPDF_DIR . '/lib/fonts/Courier-Bold',
     'italic' => DOMPDF_DIR . '/lib/fonts/Courier-Oblique',
     'bold_italic' => DOMPDF_DIR . '/lib/fonts/Courier-BoldOblique',
-  ),
+  ), /*
   'dejavu sans' => 
   array (
     'bold' => DOMPDF_DIR . '/lib/fonts/DejaVuSans-Bold',
@@ -107,5 +107,5 @@
     'bold_italic' => DOMPDF_DIR . '/lib/fonts/DejaVuSerifCondensed-BoldItalic',
     'italic' => DOMPDF_DIR . '/lib/fonts/DejaVuSerifCondensed-Italic',
     'normal' => DOMPDF_DIR . '/lib/fonts/DejaVuSerifCondensed',
-  ),
+  ), */
 ) ?>
