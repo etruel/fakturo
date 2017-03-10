@@ -80,6 +80,17 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 == Changelog ==
 
+= 0.6 Beta =
+* Added icons on dashboard by role.
+* Fixed issue on Addons Page.
+* Added Redirects with Conditions.
+* Some changes on activate & deactivate for better performance.
+* Fakturo changes the public value to false of Taxonomies and CPT.
+* Added default email and print templates.
+* Added get_fakturo_term_{taxonomy} filter.
+* Added warning notices about missing settings.
+* Deleted DejaVu font and disable fonts logs.
+
 = 0.5 Beta =
 * Added Custom Dashboard with widgets with the most used links and some summaries.
 * Added Default templates for print templates to avoid creation from scratch.
