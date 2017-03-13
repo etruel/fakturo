@@ -81,15 +81,16 @@ You can either install it automatically from the WordPress admin, or do it manua
 == Changelog ==
 
 = 0.6 Beta =
-* Added icons on dashboard by role.
-* Fixed issue on Addons Page.
+* Added default contents to emails and print templates instead to begin from scratch.
+* Added warning notices about missing and required settings.
+* Minify plugin size in 70% deleting unuseful fonts from PDF.
+* Added get_fakturo_term_{taxonomy} filter.
+* Added icons on dashboard by user.
+* Fixed issues on Addons Page.
 * Added Redirects with Conditions.
 * Some changes on activate & deactivate for better performance.
-* Fakturo changes the public value to false of Taxonomies and CPT.
-* Added default email and print templates.
-* Added get_fakturo_term_{taxonomy} filter.
-* Added warning notices about missing settings.
-* Deleted DejaVu font and disable fonts logs.
+* Hide Taxonomies and Custom Post types as invoices from front-en changing its public value to false.
+* Fixes some issues, warnings and errors.
 
 = 0.5 Beta =
 * Added Custom Dashboard with widgets with the most used links and some summaries.
@@ -134,5 +135,5 @@ First Release
 
 == Upgrade Notice ==
 
-= 0.2 Beta =
-Added new features.
+= 0.6 Beta =
+Many tweaks. This would be the RC1.
