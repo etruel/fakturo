@@ -3,29 +3,32 @@ Contributors: etruel, sniuk
 Donate link: 
 Tags: invoice, sales, purchases, billing, receipt, Tax Code, VAT, PDF invoices, bill, bill clients, merchantplus, SME, pyme, checkout, online payment, pay, recurring billing, send invoice, web invoice, wp-invoice, wp-sales, e-commerce, e-store, eshop, wp ecommerce
 Requires at least: 4.1
-Tested up to: 4.7
+Tested up to: 4.8
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-An easy and fully-configurable SME Management system for Wordpress.  
+The better open source Invoice System.  An easy and fully-configurable SME Management system for Wordpress.
 
 == Description ==
 
 Fakturo is a complete system SME management, released as a Wordpress plugin with multiple functions for small and medium-sized companies.
 It's FREE, fully-configurable, customizable and upgradable through Wordpress filters and also by AddOns or customized support.
 
-NOTE: This plugin is in Beta stage. You can check it and test it. The release date are closest, we are working on it every day!!
+NOTE: This plugin is in Beta stage. The 1.0 version will be the official release but you can start to use it now ;-)
+The release date is close, we are working on it every day!!
+We really enjoy and thank if you can check and test the Fakturo.
+We are receiving feedbacks in english and spanish at the Wordpress support forums and in the [development repository](https://bitbucket.org/etruel/fakturo/issues).
 
 = Introduction =
-There are many systems that management invoices on the web. Some freeware, some modular, some online, some with addons, some with e-invoicing, some with stock, some easy, some are updated periodically, some of them with technical support, etc... always "some"..., so that's why was born Fakturo, because it is not "some" more, but that have all the above and much more.
+There are many systems to manage invoices on the web. Some freeware, some modular, some online, some with addons, some with e-invoicing, some with stock, some easy, some are updated periodically, some of them with technical support, etc... always "some"..., so that's why was born Fakturo, because it is not "some" more, but that it has all the above and much more.
 
 = Features =
-* Control of customers, suppliers, contacts and branches.
-* Control and load of stock for individual product and deposit.
-* Invoicing of suppliers and customers with input and automatic output of stock.
-* Sending automatic or manual of invoices or accounts of customers by email.
-* Control of payments, partial or total bills for customers and suppliers.
+* Manage customers, suppliers, contacts and branches.
+* Manage and load stock for individual products per deposits.
+* Invoicing of suppliers and customers with automatic input and output of stock.
+* Send invoices or accounts of customers by email in automatic or manual way.
+* Manage payments, partial or total bills for customers and suppliers.
 * Input and output of money box.
 * Daily box and Balance.
 * Reports.
@@ -90,7 +93,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Added Redirects with Conditions.
 * Some changes on activate & deactivate for better performance.
 * Hide Taxonomies and Custom Post types as invoices from front-en changing its public value to false.
-* Fixes some issues, warnings and errors.
+* Fixes lot of issues, warnings and errors.
 
 = 0.5 Beta =
 * Added Custom Dashboard with widgets with the most used links and some summaries.
