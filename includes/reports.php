@@ -15,7 +15,11 @@ class reports {
 		$ranges['from'] = 0;
 		$ranges['to'] = 0;
 		$ranges = apply_filters('fktr_reports_ranges_timestamp', $ranges, $request);
-		print_r($ranges);
+		$access = self::access_tab($request);
+		if (!$access) {
+			echo '<div class="postbox" style="margin-top:10px; padding:30px;"><h2>'.__( "Sorry, you don't have access to this page.", FAKTURO_TEXT_DOMAIN ).'</h2></div>';
+			return true;
+		}
 		echo '<div class="postbox" style="margin-top:10px;">';
 			self::get_form_filters($request);
 		echo '</div>';
@@ -51,6 +55,22 @@ class reports {
 		</div>';
 
 		echo $return_html;
+	}
+	public static function access_tab($request) {
+		$current_tab = self::get_tabs($request['sec']);
+		$user_access = true;
+		if (!$current_tab) {
+			$user_access = false;
+		} else {
+			if (isset($current_tab['default']['cap'])) {
+				if (!current_user_can($current_tab['default']['cap'])) {
+					$user_access = false;
+				}
+			} else {
+				$user_access = false;
+			}
+		}
+		return $user_access;
 	}
 	public static function default_timestand_ranges($ranges, $request) {
 		$start_of_week = get_option('start_of_week', 0);
@@ -103,21 +123,38 @@ class reports {
 		);
 		return $array;
 	}
-	public static function tabs() {
-		$request = wp_parse_args($_REQUEST, self::default_request());
-
+	public static function get_tabs($tab = false) {
 		$sections_tabs = array(
 			'sales' => apply_filters('ftkr_report_sales_sections', array( 
-				'default' => array('text' => __( '​​Sales', FAKTURO_TEXT_DOMAIN ), 'sec' => 'sales')
+				'default' => array('text' => __( '​​Sales', FAKTURO_TEXT_DOMAIN ), 'sec' => 'sales', 'cap' => 'fktr_report_sales')
 				)
 			),
 			'receipts' => apply_filters('ftkr_report_receipts_sections', array( 
-				'default' =>  array('text' => __( 'Receipts', FAKTURO_TEXT_DOMAIN ), 'sec' => 'receipts')				
+				'default' =>  array('text' => __( 'Receipts', FAKTURO_TEXT_DOMAIN ), 'sec' => 'receipts', 'cap' => 'fktr_report_receipts')				
 				)
 			),
 		);
 		$sections_tabs = apply_filters('ftkr_report_tabs_sections', $sections_tabs);
+		if (!$tab) {
+			return $sections_tabs;
+		} else {
+			if (isset($sections_tabs[$tab])) {
+				return $sections_tabs[$tab];
+			} else {
+				return false;
+			}
+		}
+	}
+	public static function tabs() {
+		$request = wp_parse_args($_REQUEST, self::default_request());
 		
+		$all_tabs = self::get_tabs();
+		$sections_tabs = array();
+		foreach ($sections_tabs as $key => $value) {
+			if (current_user_can($value['default']['cap'])) {
+				$sections_tabs[$key] = $value;
+			}
+		}
 		$print_tabs = false;
 		foreach ($sections_tabs as $tabs_mains) {
 			foreach ($tabs_mains as $sections) {
@@ -125,13 +162,9 @@ class reports {
 					$print_tabs = true;
 					break;
 				}
-				
 			}
 		}
-		
-		
 		if($print_tabs) {
-			
 			echo '<h2 class="nav-tab-wrapper fktr-settings-tabs">';
 			$current_tab = 'general';
 			foreach ($sections_tabs as $tab_id => $tabs_mains) {
@@ -147,7 +180,6 @@ class reports {
 					} 
 				}
 				echo '<a href="' . esc_url( $tab_url ) . '" title="' . esc_attr( $tab_name ) . '" class="nav-tab' . $active . '">' . esc_html( $tab_name ) . '</a>';
-
 			}
 			echo '</h2>';
 			/*
