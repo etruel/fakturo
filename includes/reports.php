@@ -6,23 +6,47 @@ class reports {
 	public static function hooks() {
 		add_action( 'all_admin_notices', array(__CLASS__, 'tabs'), 1, 0 );
 		add_filter('fktr_reports_ranges_timestamp', array(__CLASS__, 'default_timestand_ranges'), 1, 2);
-		
+		add_action('admin_print_scripts', array(__CLASS__, 'scripts'));
+		add_action('admin_print_styles', array(__CLASS__, 'styles'));
 	}
 	
 	public static function page() {
+		global $current_screen; 
+		//print_r($current_screen);
 		$request = wp_parse_args($_REQUEST, self::default_request());
 		$ranges = array();
 		$ranges['from'] = 0;
 		$ranges['to'] = 0;
 		$ranges = apply_filters('fktr_reports_ranges_timestamp', $ranges, $request);
 		$access = self::access_tab($request);
+		$access = true;
 		if (!$access) {
 			echo '<div class="postbox" style="margin-top:10px; padding:30px;"><h2>'.__( "Sorry, you don't have access to this page.", FAKTURO_TEXT_DOMAIN ).'</h2></div>';
 			return true;
 		}
+		wp_enqueue_script('fakturo_reports', FAKTURO_PLUGIN_URL . 'assets/js/reports.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+		
 		echo '<div class="postbox" style="margin-top:10px;">';
 			self::get_form_filters($request);
+			echo '<div style="width: 100%;">
+        			<canvas id="canvas"></canvas>
+    			</div>';
 		echo '</div>';
+	}
+	public static function scripts() {
+		global $current_screen;  
+		if ($current_screen->id == "fakturo_page_fakturo_reports") {
+			wp_enqueue_script('fakturo_chartjs', FAKTURO_PLUGIN_URL . 'assets/js/chartjs/Chart.bundle.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+		}
+	}
+	public static function styles() {
+		
+	}
+	public static function get_objects($request, $ranges) {
+		if ($request['sec'] == 'sales') {
+			return get_sales_on_range($ranges['from'], $ranges['to']);
+		}
+
 	}
 	public static function get_form_filters($request) {
 		$array_range = array();
