@@ -58,7 +58,7 @@ class fktrAdminMenu {
 			'fakturo_dashboard',
 			__( 'Reports', FAKTURO_TEXT_DOMAIN),
 			__( 'Reports', FAKTURO_TEXT_DOMAIN),
-			'manage_options',
+			'fakturo_reports',
 			'fakturo_reports',
 			array('reports','page')
 			

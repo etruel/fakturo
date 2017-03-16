@@ -1,31 +1,54 @@
 <?php
+/**
+ * Fakturo Reports Class.
+ *
+ * @package Fakturo
+ * @subpackage Reports
+ *
+ */
+
+
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/**
+ * Reports class.
+ *
+ * @since 0.6
+ */
 class reports {
+	/**
+	 * Add hooks for reports.
+	 */
 	public static function hooks() {
-		add_action( 'all_admin_notices', array(__CLASS__, 'tabs'), 1, 0 );
+		add_action('all_admin_notices', array(__CLASS__, 'tabs'), 1, 0 );
 		add_filter('fktr_reports_ranges_timestamp', array(__CLASS__, 'default_timestand_ranges'), 1, 2);
 		add_action('admin_print_scripts', array(__CLASS__, 'scripts'));
 		add_action('admin_print_styles', array(__CLASS__, 'styles'));
 	}
-	
+	/**
+	 * Print the page the reports.
+	 */
 	public static function page() {
 		global $current_screen; 
-		//print_r($current_screen);
 		$request = wp_parse_args($_REQUEST, self::default_request());
 		$ranges = array();
 		$ranges['from'] = 0;
 		$ranges['to'] = 0;
 		$ranges = apply_filters('fktr_reports_ranges_timestamp', $ranges, $request);
 		$access = self::access_tab($request);
-		$access = true;
 		if (!$access) {
 			echo '<div class="postbox" style="margin-top:10px; padding:30px;"><h2>'.__( "Sorry, you don't have access to this page.", FAKTURO_TEXT_DOMAIN ).'</h2></div>';
 			return true;
 		}
 		wp_enqueue_script('fakturo_reports', FAKTURO_PLUGIN_URL . 'assets/js/reports.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-		
+		wp_localize_script('fakturo_reports', 'chartjs_object',
+							array(
+								'data' => self::get_object_chart($request, $ranges),
+								 ) 
+							);
+
+
 		echo '<div class="postbox" style="margin-top:10px;">';
 			self::get_form_filters($request);
 			echo '<div style="width: 100%;">
@@ -33,21 +56,101 @@ class reports {
     			</div>';
 		echo '</div>';
 	}
+	/**
+	* Get the object to print on Javascript.
+	* @param $request Array of values the $_REQUEST filtered.
+	* @param $ranges Array of ranges on timestamp to get objects.
+	*/
+	public static function get_object_chart($request, $ranges) {
+		$setting_system = get_option('fakturo_system_options_group', false);
+		$current_tab = self::get_tabs($request['sec']);
+		$labels_by = 'days';
+		$labels_interval = DAY_IN_SECONDS;
+		if (($ranges['to']-$ranges['from']) > MONTH_IN_SECONDS) {
+			$labels_by = 'month';
+			$labels_interval = MONTH_IN_SECONDS;
+		}
+		$datasets = array();
+		$datasets[0] = new stdClass();
+		$datasets[0]->label = $current_tab['default']['text'];
+	    $datasets[0]->fill = false;
+	    $datasets[0]->lineTension = 0.1;
+	    $datasets[0]->backgroundColor = "rgba(75,192,192,0.4)";
+	    $datasets[0]->borderColor = "rgba(75,192,192,1)";
+	    $datasets[0]->borderCapStyle = 'butt';
+	    $datasets[0]->borderDash = array();
+	    $datasets[0]->borderDashOffset = 0.0;
+	    $datasets[0]->borderJoinStyle = 'miter';
+	    $datasets[0]->pointBorderColor = "rgba(75,192,192,1)";
+	    $datasets[0]->pointBackgroundColor = "#fff";
+	    $datasets[0]->pointBorderWidth = 1;
+	    $datasets[0]->pointHoverRadius = 5;
+	    $datasets[0]->pointHoverBackgroundColor = "rgba(75,192,192,1)";
+	    $datasets[0]->pointHoverBorderColor = "rgba(220,220,220,1)";
+	    $datasets[0]->pointHoverBorderWidth = 2;
+	    $datasets[0]->pointRadius = 1;
+	    $datasets[0]->pointHitRadius = 10;
+	    $datasets[0]->spanGaps = false;
+	    $datasets[0]->data = array();
+	    
+		$labels = array();
+		for($t=$ranges['from']; $t<=$ranges['to']; $t=$t+$labels_interval) {
+
+			$from = strtotime('midnight', $t);
+			$to   = $from + ($labels_interval - 1);
+			if ($labels_by == 'month') {
+				$from = strtotime('first day of this month', $t);
+				$to = strtotime('last day of this month', $from);
+			}
+			$labels[] = date($setting_system['dateformat'], $from);
+			$sec_objects = self::get_objects($request, array('from' => $from, 'to' => $to));
+			$new_data = 0;
+			
+			foreach ($sec_objects as $id_sale) {
+
+				$sales_data = fktrPostTypeSales::get_sale_data($id_sale);
+				$new_data = $new_data+fakturo_transform_money($sales_data['invoice_currency'], $setting_system['currency'], $sales_data['in_total']);
+			}
+			$datasets[0]->data[] = $new_data;
+		}
+		$data_chart = new stdClass();
+		$data_chart->labels = $labels;
+		$data_chart->datasets = $datasets;
+		return $data_chart;
+	}
+	/**
+	* Enqueue all scripts elements on reports page.
+	*/
 	public static function scripts() {
 		global $current_screen;  
 		if ($current_screen->id == "fakturo_page_fakturo_reports") {
 			wp_enqueue_script('fakturo_chartjs', FAKTURO_PLUGIN_URL . 'assets/js/chartjs/Chart.bundle.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 		}
 	}
+	/**
+	* Enqueue all styles elements on reports page.
+	*/
 	public static function styles() {
 		
 	}
+	/**
+	* Get the object ids by sec request.
+	* @param $request Array of values the $_REQUEST filtered.
+	* @param $ranges Array of ranges on timestamp to get objects.
+	* @return Array of ids or a empty array on failed.
+	*/
 	public static function get_objects($request, $ranges) {
+		$return = array();
 		if ($request['sec'] == 'sales') {
 			return get_sales_on_range($ranges['from'], $ranges['to']);
 		}
-
+		return $return;
 	}
+	/**
+	* Get the HTML of filters form.
+	* @param $request Array of values the $_REQUEST filtered.
+	* @return String with HTML of form.
+	*/
 	public static function get_form_filters($request) {
 		$array_range = array();
 		$array_range['today'] = __( 'Today', FAKTURO_TEXT_DOMAIN );
@@ -80,6 +183,12 @@ class reports {
 
 		echo $return_html;
 	}
+	/**
+	* Get user access to current section.
+	* @param $request Array of values the $_REQUEST filtered.
+	* @return TRUE if the user has access and returns, 
+	* FALSE if user does not have access.
+	*/
 	public static function access_tab($request) {
 		$current_tab = self::get_tabs($request['sec']);
 		$user_access = true;
@@ -96,6 +205,12 @@ class reports {
 		}
 		return $user_access;
 	}
+	/**
+	* Function used by fktr_reports_ranges_timestamp filter to get the default timestamp ranges.
+	* @param $request Array of values the $_REQUEST filtered.
+	* @param $ranges Array of ranges on timestamp to get objects.
+	* @return Array $ranges with "from, to" keys and its timestamp.
+	*/
 	public static function default_timestand_ranges($ranges, $request) {
 		$start_of_week = get_option('start_of_week', 0);
 		$start_of_week_str = 'Sunday';
@@ -117,12 +232,12 @@ class reports {
 		$current_time = current_time('timestamp');
 
 		if ($request['range'] == 'today') {
-			$ranges['from'] = strtotime('-1 day', $current_time);
-			$ranges['to'] =  strtotime('+1 day', $current_time);
+			$ranges['from'] = strtotime('midnight', $current_time);
+			$ranges['to'] =  $ranges['from']+(DAY_IN_SECONDS-1);
 		}
 		if ($request['range'] == 'yesterday') {
-			$ranges['from'] = strtotime('-2 day', $current_time);
-			$ranges['to'] =  strtotime('-1 day', $current_time);
+			$ranges['from'] = strtotime('midnight', strtotime('yesterday', $current_time));
+			$ranges['to'] =  $ranges['from']+(DAY_IN_SECONDS-1);
 		}
 		if ($request['range'] == 'this_week') {
 			$ranges['from'] = strtotime($start_of_week_str.' this week', $current_time);
@@ -130,14 +245,22 @@ class reports {
 		}
 		if ($request['range'] == 'last_week') {
 			$ranges['from'] = strtotime($start_of_week_str.' last week', $current_time);
-			$ranges['to'] =  strtotime($start_of_week_str.' this week', $current_time);
+			$ranges['to'] =  $ranges['from']+(WEEK_IN_SECONDS-1);
 		}
 		if ($request['range'] == 'this_month') {
 			$ranges['from'] = strtotime('first day of this month', $current_time);
 			$ranges['to'] = $current_time;
 		}
+		if ($request['range'] == 'last_month') {
+			$ranges['from'] = strtotime('first day of last month', $current_time);
+			$ranges['to'] = strtotime('last day of last month', $current_time);
+		}
 		return $ranges;
 	}
+	/**
+	* Get the defaults values of a request.
+	* @return Array $array with default values.
+	*/
 	public static function default_request() {
 		$array = array(
 			'sec' => 'sales',
@@ -147,6 +270,11 @@ class reports {
 		);
 		return $array;
 	}
+	/**
+	* get tabs used on reports.
+	* @param $tab if it is a key tab only that tab is returned, Otherwise all tabs will be returned.
+	* @return Array $sections_tabs with tabs values.
+	*/
 	public static function get_tabs($tab = false) {
 		$sections_tabs = array(
 			'sales' => apply_filters('ftkr_report_sales_sections', array( 
@@ -169,12 +297,15 @@ class reports {
 			}
 		}
 	}
+	/**
+	* Print the HTML of tabs, fired by all_admin_notices hook.
+	*/
 	public static function tabs() {
 		$request = wp_parse_args($_REQUEST, self::default_request());
 		
 		$all_tabs = self::get_tabs();
 		$sections_tabs = array();
-		foreach ($sections_tabs as $key => $value) {
+		foreach ($all_tabs as $key => $value) {
 			if (current_user_can($value['default']['cap'])) {
 				$sections_tabs[$key] = $value;
 			}

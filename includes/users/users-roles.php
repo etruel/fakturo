@@ -33,9 +33,21 @@ class fktrUserRoles {
 			'create_users' => true,
 			'delete_users' => true,
 			
-			
+			'fakturo_reports' => true,
 			
 		);
+		/*
+		*
+		* Add all caps to access to reports.
+		*/
+		$report_tabs = reports::get_tabs();
+		$reports_new_cap = array();
+		foreach ($report_tabs as $key => $value) {
+			$reports_new_cap[$value['default']['cap']] = true;
+		}
+		error_log(var_export($reports_new_cap, true));
+		self::$fakturo_manager_caps = array_merge(self::$fakturo_manager_caps, $reports_new_cap);
+
 		$taxonomies_caps = array();
 		$args = array(
 		  'public'   => false,
