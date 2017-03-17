@@ -35,6 +35,10 @@ class reports {
 		$ranges = array();
 		$ranges['from'] = 0;
 		$ranges['to'] = 0;
+		/*
+		* This filter can be used to create or update timestamp ranges.
+		* $ranges will be used by get_object_chart()
+		*/
 		$ranges = apply_filters('fktr_reports_ranges_timestamp', $ranges, $request);
 		$access = self::access_tab($request);
 		if (!$access) {
@@ -60,6 +64,7 @@ class reports {
 	* Get the object to print on Javascript.
 	* @param $request Array of values the $_REQUEST filtered.
 	* @param $ranges Array of ranges on timestamp to get objects.
+	* @return $data_chart array of objects stdClass with data that will be used on Front-end.
 	*/
 	public static function get_object_chart($request, $ranges) {
 		$setting_system = get_option('fakturo_system_options_group', false);
@@ -92,7 +97,9 @@ class reports {
 	    $datasets[0]->pointHitRadius = 10;
 	    $datasets[0]->spanGaps = false;
 	    $datasets[0]->data = array();
-	    
+	    /*
+		* This stdClass object is a format required by ChartJs.
+		*/
 		$labels = array();
 		for($t=$ranges['from']; $t<=$ranges['to']; $t=$t+$labels_interval) {
 
@@ -101,8 +108,13 @@ class reports {
 			if ($labels_by == 'month') {
 				$from = strtotime('first day of this month', $t);
 				$to = strtotime('last day of this month', $from);
+				$labels_interval = (strtotime('first day of next month', $t)-$from);
 			}
-			$labels[] = date($setting_system['dateformat'], $from);
+			$new_label = date($setting_system['dateformat'], $from);
+			if ($labels_by == 'month') {
+				$new_label = __(date('F', $from));
+			}
+			$labels[] = $new_label;
 			$sec_objects = self::get_objects($request, array('from' => $from, 'to' => $to));
 			$new_data = 0;
 			
@@ -120,6 +132,7 @@ class reports {
 	}
 	/**
 	* Enqueue all scripts elements on reports page.
+	* @global $current_screen to get the screen obect.
 	*/
 	public static function scripts() {
 		global $current_screen;  
@@ -164,6 +177,9 @@ class reports {
 		$array_range['this_year'] = __( 'This Year', FAKTURO_TEXT_DOMAIN );
 		$array_range['last_year'] = __( 'Last Year', FAKTURO_TEXT_DOMAIN );
 		$array_range['other'] = __( 'Custom', FAKTURO_TEXT_DOMAIN );
+		/*
+		* These filters can be used to add or update range values on select html.
+		*/
 		$array_range = apply_filters('report_filters_range', $array_range, $request);
 
 		$select_range_html = '<select name="range" id="range">';
@@ -255,6 +271,48 @@ class reports {
 			$ranges['from'] = strtotime('first day of last month', $current_time);
 			$ranges['to'] = strtotime('last day of last month', $current_time);
 		}
+		if ($request['range'] == 'this_quarter') {
+			$current_quarter = ceil(date('n', time())/3);
+			$current_year = date('Y');
+			if ($current_quarter == 0) {
+				$current_quarter = 3;
+				$current_year = $current_year-1;
+			}
+			$current_quarter_start = 1;
+			if ($current_quarter > 1) {
+				$current_quarter_start = $current_quarter*3+1;
+			}
+   		 	$start_date = date("Y-m-d H:i:s", mktime(0, 0, 0, $current_quarter_start, 1, $current_year ));
+   			$end_date = date("Y-m-d H:i:s", mktime(0, 0, 0, $current_quarter_start+2, 1, $current_year ));
+			$ranges['from'] =  strtotime($start_date, $current_time);
+			$ranges['to'] =   strtotime($end_date, $current_time);
+		}
+		if ($request['range'] == 'last_quarter') {
+			$current_quarter = ceil(date('n', time())/3);
+			$current_year = date('Y');
+			$current_quarter = $current_quarter-1;
+			if ($current_quarter == 0) {
+				$current_quarter = 3;
+				$current_year = $current_year-1;
+			}
+			$current_quarter_start = 1;
+			if ($current_quarter > 1) {
+				$current_quarter_start = $current_quarter*3+1;
+			}
+   		 	$start_date = date("Y-m-d H:i:s", mktime(0, 0, 0, $current_quarter_start, 1, $current_year ));
+   			$end_date = date("Y-m-d H:i:s", mktime(0, 0, 0, $current_quarter_start+2, 1, $current_year ));
+			$ranges['from'] =  strtotime($start_date, $current_time);
+			$ranges['to'] =   strtotime($end_date, $current_time);
+		}
+		if ($request['range'] == 'this_year') {
+			$ranges['from'] =  strtotime('first day of January '.date('Y'), $current_time);
+			$ranges['to'] =   strtotime('last day of December '.date('Y'), $current_time);
+		}
+		if ($request['range'] == 'last_year') {
+			$ranges['from'] =  strtotime('first day of January '.(date('Y')-1), $current_time);
+			$ranges['to'] =   strtotime('last day of December '.(date('Y')-1), $current_time);
+		}
+		
 		return $ranges;
 	}
 	/**
@@ -286,6 +344,9 @@ class reports {
 				)
 			),
 		);
+		/*
+		* These filters can be used to add or update tab values.
+		*/
 		$sections_tabs = apply_filters('ftkr_report_tabs_sections', $sections_tabs);
 		if (!$tab) {
 			return $sections_tabs;
@@ -355,7 +416,9 @@ class reports {
 			
 		}
 	}
-
 }
+/*
+* Execute hooks.
+*/
 reports::hooks();
 ?>
