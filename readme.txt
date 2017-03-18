@@ -82,6 +82,9 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 
 == Changelog ==
+= 0.7 Beta =
+* Added reports page.
+* Added the capabilities of the report pages and sections.
 
 = 0.6 Beta =
 * Added default contents to emails and print templates instead to begin from scratch.
