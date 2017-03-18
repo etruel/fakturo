@@ -25,6 +25,9 @@ class reports {
 		add_filter('fktr_reports_ranges_timestamp', array(__CLASS__, 'default_timestand_ranges'), 1, 2);
 		add_action('admin_print_scripts', array(__CLASS__, 'scripts'));
 		add_action('admin_print_styles', array(__CLASS__, 'styles'));
+
+		add_action('report_page_before_content_sales', array(__CLASS__, 'before_content_sales'), 10, 2);
+		add_action('report_page_content_sales', array(__CLASS__, 'content_sales'), 10, 2);
 	}
 	/**
 	 * Print the page the reports.
@@ -45,20 +48,41 @@ class reports {
 			echo '<div class="postbox" style="margin-top:10px; padding:30px;"><h2>'.__( "Sorry, you don't have access to this page.", FAKTURO_TEXT_DOMAIN ).'</h2></div>';
 			return true;
 		}
-		wp_enqueue_script('fakturo_reports', FAKTURO_PLUGIN_URL . 'assets/js/reports.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-		wp_localize_script('fakturo_reports', 'chartjs_object',
+		/*
+		* Executing hook to add content before report page. 
+		*/
+		do_action('report_page_before_content_'.$request['sec'], $request, $ranges);
+		
+		echo '<div class="postbox" style="margin-top:10px;">';
+			/*
+			* Executing hook to add content on report page. 
+			*/
+			do_action('report_page_content_'.$request['sec'], $request, $ranges);
+		echo '</div>';
+	}
+	/**
+	* Print HTML before content on report page.
+	* @param $request Array of values the $_REQUEST filtered.
+	* @param $ranges Array of ranges on timestamp to get objects.
+	*/
+	public static function before_content_sales($request, $ranges) {
+		wp_enqueue_script('fakturo_reports_sales', FAKTURO_PLUGIN_URL . 'assets/js/reports-sales.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+		wp_localize_script('fakturo_reports_sales', 'chartjs_object',
 							array(
 								'data' => self::get_object_chart($request, $ranges),
 								 ) 
 							);
-
-
-		echo '<div class="postbox" style="margin-top:10px;">';
-			self::get_form_filters($request);
-			echo '<div style="width: 100%;">
+	}
+	/**
+	* Print HTML on report page content.
+	* @param $request Array of values the $_REQUEST filtered.
+	* @param $ranges Array of ranges on timestamp to get objects.
+	*/
+	public static function content_sales($request, $ranges) {
+		self::get_form_filters($request);
+		echo '<div style="width: 100%;">
         			<canvas id="canvas"></canvas>
     			</div>';
-		echo '</div>';
 	}
 	/**
 	* Get the object to print on Javascript.
@@ -211,7 +235,11 @@ class reports {
 		if (!$current_tab) {
 			$user_access = false;
 		} else {
-			if (isset($current_tab['default']['cap'])) {
+			if (isset($current_tab[$request['sec']]['cap'])) {
+				if (!current_user_can($current_tab[$request['sec']]['cap'])) {
+					$user_access = false;
+				}
+			} else if (isset($current_tab['default']['cap'])) {
 				if (!current_user_can($current_tab['default']['cap'])) {
 					$user_access = false;
 				}
@@ -343,8 +371,15 @@ class reports {
 				'default' =>  array('text' => __( 'Receipts', FAKTURO_TEXT_DOMAIN ), 'sec' => 'receipts', 'cap' => 'fktr_report_receipts')				
 				)
 			),
+			'clients' => apply_filters('ftkr_report_clients_sections', array( 
+				'client_summary' =>  array('text' => __( 'Summary', FAKTURO_TEXT_DOMAIN ), 'sec' => 'client_summary', 'cap' => 'fktr_report_client_summary'),
+				'client_incomes' =>  array('text' => __( 'Incomes', FAKTURO_TEXT_DOMAIN ), 'sec' => 'client_incomes', 'cap' => 'fktr_report_client_incomes'),
+				'client_account_movements' =>  array('text' => __( 'Account Movements', FAKTURO_TEXT_DOMAIN ), 'sec' => 'client_account_movements', 'cap' => 'fktr_report_client_account_movements'),
+				'default' =>  array('text' => __( 'Clients', FAKTURO_TEXT_DOMAIN ), 'sec' => 'client_summary', 'cap' => 'fktr_report_client_summary')				
+				)
+			),
 		);
-		/*
+		/* 
 		* These filters can be used to add or update tab values.
 		*/
 		$sections_tabs = apply_filters('ftkr_report_tabs_sections', $sections_tabs);
@@ -354,6 +389,13 @@ class reports {
 			if (isset($sections_tabs[$tab])) {
 				return $sections_tabs[$tab];
 			} else {
+				foreach ($sections_tabs as $k => $v) {
+					foreach ($v as $ks => $vs) {
+						if ($tab == $ks) {
+							return $sections_tabs[$k];
+						}
+					}
+				}
 				return false;
 			}
 		}
@@ -367,8 +409,11 @@ class reports {
 		$all_tabs = self::get_tabs();
 		$sections_tabs = array();
 		foreach ($all_tabs as $key => $value) {
-			if (current_user_can($value['default']['cap'])) {
-				$sections_tabs[$key] = $value;
+			$sections_tabs[$key] = array();
+			foreach ($value as $keys => $values) {
+				if (current_user_can($all_tabs[$key][$keys]['cap'])) {
+					$sections_tabs[$key][$keys] = $values;
+				}
 			}
 		}
 		$print_tabs = false;
@@ -398,21 +443,20 @@ class reports {
 				echo '<a href="' . esc_url( $tab_url ) . '" title="' . esc_attr( $tab_name ) . '" class="nav-tab' . $active . '">' . esc_html( $tab_name ) . '</a>';
 			}
 			echo '</h2>';
-			/*
-			It is not using sub-tabs.
-
+			
 			echo '<div class="fktr-sections"><ul class="subsubsub">';
 			$delimiter = '';
 			foreach ($sections_tabs[$current_tab] as $sec_id => $sections) {
 				if ($sec_id != 'default') {
-					$active = ($current_screen->id == $sections['screen'] || (!empty($current_screen->post_type) && $current_screen->post_type == $sections['screen']) ) ?  ' current' : '';
-					echo '<li>'.$delimiter.'<a href="' . esc_url( $sections['url'] ) . '" title="' . esc_attr( $sections['text'] ) . '" class="' . $active . '">' . esc_html( $sections['text'] ) . '</a></li>';
+					$sec_url = admin_url('admin.php?page=fakturo_reports&sec='.$sections['sec']);
+					$active = ($request['sec'] == $sections['sec'] ) ?  ' current' : '';
+					echo '<li>'.$delimiter.'<a href="' . esc_url( $sec_url ) . '" title="' . esc_attr( $sections['text'] ) . '" class="' . $active . '">' . esc_html( $sections['text'] ) . '</a></li>';
 					$delimiter = ' | ';
 				}
 			}
 			
 			echo '</ul></div>';
-			*/
+			
 			
 		}
 	}
