@@ -1134,7 +1134,7 @@ class fktrPostTypeReceipts {
 		$fields = apply_filters('fktr_clean_receipt_fields',$_POST);
 		$fields = apply_filters('fktr_receipt_before_save',$fields);
 		
-		
+		$fields['date'] = current_time('timestamp');
 		/*
 		if(isset($fields['date']) && is_string($fields['date'])) {
 
