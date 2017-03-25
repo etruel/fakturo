@@ -102,29 +102,109 @@ class client_summmary {
 				</tr>
 				</thead>
 				<tbody id="the-list">';
+
+			$documents_values = array();
+			$total_documents = array('subtotal' => 0, 'total' => 0);
+			$default_document = array('subtotal' => 0, 'total' => 0);
+			$documents_values['Receipts'] = $default_document;
+			$array_taxes = array();
 			foreach ($objects as $obj) {
 
 				$obj_type = '';
 				$obj_link = admin_url('post.php?post='.$obj->ID.'&action=edit');
 				$subtotal_print = 0;
 				$total_print = 0;
+				$tax = 0;
 				if ($obj->post_type=='fktr_sale') {
 					$object_data = fktrPostTypeSales::get_sale_data($obj->ID);
+
+					$discriminates_taxes = false;
+					if ($object_data['invoice_type'] > 0) {
+						$term_invoice_type = get_fakturo_term($object_data['invoice_type'], 'fktr_invoice_types');		
+						if (!is_wp_error($term_invoice_type)) {
+							if ($term_invoice_type->discriminates_taxes) {
+								$discriminates_taxes = true;
+							}
+						} else {
+							continue;
+						}
+					}
+					if (!isset($documents_values[$term_invoice_type->name])) {
+						$documents_values[$term_invoice_type->name] = $default_document;
+					}
+
+					if ($discriminates_taxes) {
+						if (!empty($object_data['taxes_in_products'])) {
+							foreach ($object_data['taxes_in_products'] as $key => $value) {
+								$taxPorcent = 0;
+								$taxName = 'Tax';
+								if ($key > 0) {
+									$term_tax = get_fakturo_term($key, 'fktr_tax');
+									if(!is_wp_error($term_tax)) {
+										$taxPorcent = $term_tax->percentage;
+										$taxName = $term_tax->name;
+									} 
+								} else {
+									if ($object_data['client_data']['tax_condition'] > 0) {
+										$term_tax_condition = get_fakturo_term($object_data['client_data']['tax_condition'], 'fktr_tax_conditions');
+										if(!is_wp_error($term_tax_condition)) {
+											if ($term_tax_condition->overwrite_taxes) {
+												//$taxPorcent = $term_tax_condition->tax_percentage;
+											}
+										} 
+									}
+								}
+								if (!isset($array_taxes[$key])) {
+									$array_taxes[$key] = array('name' =>$taxName, 'total' => 0, 'porcent' => $taxPorcent, 'id' => $key);
+								}
+								if (!isset($default_document[$key.'tax'])) { 
+									$default_document[$key.'tax'] = 0;
+									
+									foreach ($documents_values as $kd => $doc) {
+										$documents_values[$kd] = array_merge($default_document, $documents_values[$kd]);	
+									}
+								}
+
+								
+
+								$new_value = fakturo_transform_money($object_data['invoice_currency'], $setting_system['currency'], $value);
+								$array_taxes[$key]['total']  = $array_taxes[$key]['total']+$new_value;
+								$documents_values[$term_invoice_type->name][$key.'tax'] = $new_value;
+								$tax = $tax+$new_value;
+								//$htmltaxes .= '<label id="label_tax_in_'.$key.'">'.$taxName.' '.fakturo_porcent_to_mask($taxPorcent).'%:'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($value, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'</label> <input type="hidden" name="taxes_in_products['.$key.']" value="'.$value.'"/>';
+							}
+						}
+
+
+					}
+
+
+
+
+
+
+
 					$obj_type = __('Invoice', FAKTURO_TEXT_DOMAIN);
 					$subtotal = fakturo_transform_money($object_data['invoice_currency'], $setting_system['currency'], $object_data['in_sub_total']);
-					$tax = 0;
-					$tax_print = '-';
-					$total = fakturo_transform_money($object_data['invoice_currency'], $setting_system['currency'], $object_data['in_total']);;
+					$documents_values[$term_invoice_type->name]['subtotal'] = $documents_values[$term_invoice_type->name]['subtotal']+$subtotal;
+					$total = fakturo_transform_money($object_data['invoice_currency'], $setting_system['currency'], $object_data['in_total']);
+					$documents_values[$term_invoice_type->name]['total'] = $documents_values[$term_invoice_type->name]['total']+$total;
 				
+					$total_documents['subtotal'] = $total_documents['subtotal']+$subtotal;
+					$total_documents['total'] = $total_documents['total']+$total;
+
 				} else {
 					$object_data = fktrPostTypeReceipts::get_receipt_data($obj->ID);
 					$obj_type = __('Receipt', FAKTURO_TEXT_DOMAIN);
 					$subtotal = 0;
 					$tax = 0;
-					$tax_print = '-';
+					
 					$total = 0;
 					
+					$total_documents['subtotal'] = $total_documents['subtotal']+$subtotal;
+					$total_documents['total'] = $total_documents['total']+$total;
 				}
+				
 				if (is_numeric($request['client_id']) && $request['client_id'] > 0) {
 					if ($object_data['client_id'] != $request['client_id']) {
 						continue;
@@ -132,7 +212,12 @@ class client_summmary {
 				}
 				$subtotal_print = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($subtotal, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
 				
-				$total_print = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($total, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');;
+				$total_print = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($total, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
+				
+				$tax_print = '-';
+				if ($tax != 0) {
+					$tax_print = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($tax, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
+				}
 				
 				$html_objects .= '<tr>
 					<td>
@@ -158,8 +243,76 @@ class client_summmary {
 			$html_objects .= '</tbody>
 			</table>';
 		}
+		
+		$html_totals_data = '<table class="wp-list-table widefat fixed striped posts" style="width:40%;">
+				<thead>
+				<tr>
+					<td>
+						'.__('Documents', FAKTURO_TEXT_DOMAIN).'
+					</td>';
+		$html_totals_data .= '<td>
+						'.__('Subtotal', FAKTURO_TEXT_DOMAIN).'
+					</td>';
+		foreach ($array_taxes as $tk => $tx) {
+			$html_totals_data .= '<td>
+						'.$tx['name'].' ('.$tx['porcent'].'%)
+					</td>';
+		}
+		$html_totals_data .= '<td>
+						'.__('Total', FAKTURO_TEXT_DOMAIN).'
+					</td>';
+
+ 
+		$html_totals_data .= '</tr>
+				</thead>
+				<tbody id="the-list">
+					';
+		foreach ($documents_values as $nd => $valdoc) {
+			$html_totals_data .= '<tr>
+					<td>
+						'.$nd.'
+					</td>
+					<td>
+						'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($valdoc['subtotal'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
+					</td>';
+					foreach ($array_taxes as $tkd => $txd) {
+						$html_totals_data .= '<td>
+									'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($valdoc[$tkd.'tax'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
+								</td>';
+					}
+
+					$html_totals_data .= '<td>
+						'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($valdoc['total'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
+					</td>
+					</tr>';
+		}
+		
+		$html_totals_data .= '<tr>
+					<td>
+						
+					</td>
+					<td>
+						'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($total_documents['subtotal'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
+					</td>';
+					foreach ($array_taxes as $tk => $tx) {
+						$html_totals_data .= '<td>
+									'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($tx['total'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
+								</td>';
+					}
+					
+
+					$html_totals_data .= '<td>
+						'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($total_documents['total'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
+					</td>
+					</tr>';
+
+
+		$html_totals_data .= '
+				</tbody>
+			</table>';
 		echo '<div style="width: 100%;">
 		'.$html_objects.'
+		'.$html_totals_data.'
 		</div>';
 	}
 	public static function get_form_filters($request) {
