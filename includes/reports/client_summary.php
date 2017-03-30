@@ -129,6 +129,11 @@ class client_summmary {
 							continue;
 						}
 					}
+
+					$sum = false;
+					if (!empty($term_invoice_type->sum)) {
+						$sum = true;
+					}
 					if (!isset($documents_values[$term_invoice_type->name])) {
 						$documents_values[$term_invoice_type->name] = $default_document;
 					}
@@ -168,9 +173,18 @@ class client_summmary {
 								
 
 								$new_value = fakturo_transform_money($object_data['invoice_currency'], $setting_system['currency'], $value);
-								$array_taxes[$key]['total']  = $array_taxes[$key]['total']+$new_value;
-								$documents_values[$term_invoice_type->name][$key.'tax'] = $new_value;
-								$tax = $tax+$new_value;
+								if ($sum) {
+									$array_taxes[$key]['total']  = $array_taxes[$key]['total']+$new_value;
+									$tax = $tax+$new_value;
+									$documents_values[$term_invoice_type->name][$key.'tax'] = $new_value;
+								} else {
+									$array_taxes[$key]['total']  = $array_taxes[$key]['total']-$new_value;
+									$tax = $tax-$new_value;
+									$documents_values[$term_invoice_type->name][$key.'tax'] = -$new_value;
+								}
+
+								
+								//$tax = $tax+$new_value;
 								//$htmltaxes .= '<label id="label_tax_in_'.$key.'">'.$taxName.' '.fakturo_porcent_to_mask($taxPorcent).'%:'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($value, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'</label> <input type="hidden" name="taxes_in_products['.$key.']" value="'.$value.'"/>';
 							}
 						}
@@ -179,27 +193,38 @@ class client_summmary {
 					}
 
 
-
-
-
-
+					
 
 					$obj_type = __('Invoice', FAKTURO_TEXT_DOMAIN);
-					$subtotal = fakturo_transform_money($object_data['invoice_currency'], $setting_system['currency'], $object_data['in_sub_total']);
+					//$subtotal = fakturo_transform_money($object_data['invoice_currency'], $setting_system['currency'], $object_data['in_sub_total']);
+					//$total = fakturo_transform_money($object_data['invoice_currency'], $setting_system['currency'], $object_data['in_total']);
+					if ($sum) {
+						$subtotal = fakturo_transform_money($object_data['invoice_currency'], $setting_system['currency'], $object_data['in_sub_total']);
+						$total = fakturo_transform_money($object_data['invoice_currency'], $setting_system['currency'], $object_data['in_total']);
+						
+					} else {
+						$subtotal = -fakturo_transform_money($object_data['invoice_currency'], $setting_system['currency'], $object_data['in_sub_total']);
+						$total = -fakturo_transform_money($object_data['invoice_currency'], $setting_system['currency'], $object_data['in_total']);
+						
+					}
 					$documents_values[$term_invoice_type->name]['subtotal'] = $documents_values[$term_invoice_type->name]['subtotal']+$subtotal;
-					$total = fakturo_transform_money($object_data['invoice_currency'], $setting_system['currency'], $object_data['in_total']);
 					$documents_values[$term_invoice_type->name]['total'] = $documents_values[$term_invoice_type->name]['total']+$total;
-				
 					$total_documents['subtotal'] = $total_documents['subtotal']+$subtotal;
 					$total_documents['total'] = $total_documents['total']+$total;
+					
+					
+					
+				
+					
+					
 
 				} else {
 					$object_data = fktrPostTypeReceipts::get_receipt_data($obj->ID);
 					$obj_type = __('Receipt', FAKTURO_TEXT_DOMAIN);
-					$subtotal = 0;
+					$subtotal = $object_data['total_to_impute'];
 					$tax = 0;
 					
-					$total = 0;
+					$total =  $object_data['total_to_impute'];
 					
 					$total_documents['subtotal'] = $total_documents['subtotal']+$subtotal;
 					$total_documents['total'] = $total_documents['total']+$total;

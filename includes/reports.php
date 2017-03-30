@@ -280,8 +280,13 @@ class reports {
 	}
 	/**
 	* Print the HTML of tabs, fired by all_admin_notices hook.
+	* @global $current_screen to get the screen obect.
 	*/
 	public static function tabs() {
+		global $current_screen;  
+		if ($current_screen->id != "fakturo_page_fakturo_reports") {
+			return true;
+		}
 		$request = wp_parse_args($_REQUEST, self::default_request());
 		
 		$all_tabs = self::get_tabs();
