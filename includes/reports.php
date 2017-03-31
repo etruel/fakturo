@@ -230,6 +230,7 @@ class reports {
 			'range_f' => '',
 			'range_t' => '',
 			'client_id' => '0',
+			'show_details' => '0',
 		);
 		$array = apply_filters('report_default_requests_values', $array);
 		return $array;
