@@ -65,7 +65,7 @@ class client_account_movements {
 		$objects_client = client_summmary::get_objects_client($request, $ranges, false);
 		$documents_values = $objects_client['documents_values'];
 
-		echo '<div style="float:right; margin-right:15px;"><h3>'.sprintf(__('Date: since %s til %s', FAKTURO_TEXT_DOMAIN ), date_i18n($setting_system['dateformat'].' '.get_option( 'time_format' ), $ranges['from']), date_i18n($setting_system['dateformat'].' '.get_option( 'time_format' ), $ranges['to'])).'</h3></div>';
+		echo '<div style="float:right; margin-right:15px;"><h3>'.sprintf(__('Date: since %s til %s', FAKTURO_TEXT_DOMAIN ), date_i18n($setting_system['dateformat'], $ranges['from']), date_i18n($setting_system['dateformat'], $ranges['to'])).'</h3></div>';
 		$html_objects = '<div style="clear: both;"><h2>No results with this filters</h2></div>';
 		if (!empty($objects_client['objects'])) {
 			$html_objects = '<table class="wp-list-table widefat fixed striped posts">
@@ -148,7 +148,9 @@ class client_account_movements {
 				</tr>';
 			}
 			$html_objects .= '</tbody>
-			</table>';
+			</table>
+			<div style="float:right; margin-right:15px;"><h3>'.$balance_print.'</h3></div>
+			<div class="clear"></div>';
 		}
 		
 		echo '<div style="width: 100%;">
@@ -200,6 +202,10 @@ class client_account_movements {
 				'.$selectClients.'
 				
 				<input type="submit" class="button-secondary" value="'.__( 'Filter', FAKTURO_TEXT_DOMAIN ).'"/>
+				
+				<input type="submit" class="button-secondary right" value="'.__( 'CSV', FAKTURO_TEXT_DOMAIN ).'"/>
+				<input type="submit" class="button-secondary right" style="margin-right:10px;" value="'.__( 'PDF', FAKTURO_TEXT_DOMAIN ).'"/>
+				
 			</form>
 		</div>';
 

@@ -188,12 +188,12 @@ class client_summmary {
 						}
 					}
 					if ($new_sum) {
-						$subtotal = fakturo_transform_money($object_data['currency_id'], $setting_system['currency'], $object_data['total_to_impute']);
-						$total = fakturo_transform_money($object_data['currency_id'], $setting_system['currency'], $object_data['total_to_impute']);
+						$subtotal = fakturo_transform_money($object_data['currency_id'], $setting_system['currency'], $object_data['total_to_pay']);
+						$total = fakturo_transform_money($object_data['currency_id'], $setting_system['currency'], $object_data['total_to_pay']);
 						
 					} else {
-						$subtotal = -fakturo_transform_money($object_data['currency_id'], $setting_system['currency'], $object_data['total_to_impute']);
-						$total = -fakturo_transform_money($object_data['currency_id'], $setting_system['currency'], $object_data['total_to_impute']);
+						$subtotal = -fakturo_transform_money($object_data['currency_id'], $setting_system['currency'], $object_data['total_to_pay']);
+						$total = -fakturo_transform_money($object_data['currency_id'], $setting_system['currency'], $object_data['total_to_pay']);
 						
 					}
 					$obj_type = __('Receipt', FAKTURO_TEXT_DOMAIN);
