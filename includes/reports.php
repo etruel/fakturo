@@ -31,6 +31,8 @@ class reports {
 	public static function includes() {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/sales.php';
 		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/client_summary.php';
+		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/client_account_movements.php';
+		
 	}
 	/**
 	 * Print the page the reports.
@@ -253,7 +255,7 @@ class reports {
 			'clients' => apply_filters('ftkr_report_clients_sections', array( 
 				'client_summary' =>  array('text' => __( 'Summary', FAKTURO_TEXT_DOMAIN ), 'sec' => 'client_summary', 'cap' => 'fktr_report_client_summary'),
 				'client_incomes' =>  array('text' => __( 'Incomes', FAKTURO_TEXT_DOMAIN ), 'sec' => 'client_incomes', 'cap' => 'fktr_report_client_incomes'),
-				'client_account_movements' =>  array('text' => __( 'Account Movements', FAKTURO_TEXT_DOMAIN ), 'sec' => 'client_account_movements', 'cap' => 'fktr_report_client_account_movements'),
+				'client_account_movements' =>  array('text' => __( 'Client&#x27;s account', FAKTURO_TEXT_DOMAIN ), 'sec' => 'client_account_movements', 'cap' => 'fktr_report_client_account_movements'),
 				'default' =>  array('text' => __( 'Clients', FAKTURO_TEXT_DOMAIN ), 'sec' => 'client_summary', 'cap' => 'fktr_report_client_summary')				
 				)
 			),
