@@ -26,7 +26,7 @@ class reports {
 		add_filter('fktr_reports_ranges_timestamp', array(__CLASS__, 'default_timestand_ranges'), 1, 2);
 		add_action('admin_print_scripts', array(__CLASS__, 'scripts'));
 		add_action('admin_print_styles', array(__CLASS__, 'styles'));
-	
+		self::includes();
 	}
 	public static function includes() {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/sales.php';
@@ -39,7 +39,6 @@ class reports {
 	 */
 	public static function page() {
 		global $current_screen; 
-		self::includes();
 		$request = wp_parse_args($_REQUEST, self::default_request());
 		$ranges = array();
 		$ranges['from'] = 0;
