@@ -28,6 +28,131 @@ class client_account_movements {
 		add_action('report_page_content_client_account_movements', array(__CLASS__, 'content'), 10, 2);
 		add_filter('get_objects_reports_client_account_movements', array(__CLASS__, 'get_objects'), 10, 3);
 		add_action('admin_post_client_account_movements_print_pdf', array(__CLASS__, 'print_pdf'));
+		add_action('admin_post_client_account_movements_download_csv', array(__CLASS__, 'download_csv'));
+	}
+	/**
+	* Static function download_csv
+	* @access public
+	* @return void
+	* @since 0.6
+	*/
+	public static function download_csv() {
+		$request = wp_parse_args($_REQUEST, reports::default_request());
+		$ranges = array();
+		$ranges['from'] = 0;
+		$ranges['to'] = 0;
+		/*
+		* This filter can be used to create or update timestamp ranges.
+		* $ranges will be used by get_object_chart()
+		*/
+		$total_html_print = '';
+		$ranges = apply_filters('fktr_reports_ranges_timestamp', $ranges, $request);
+		$access = reports::access_tab($request);
+		if (!$access) {
+			$total_html_print .= '<div class="postbox" style="margin-top:10px; padding:30px;"><h2>'.__( "Sorry, you don't have access to this page.", FAKTURO_TEXT_DOMAIN ).'</h2></div>';
+			echo $total_html_print;
+			return true;
+		}
+		$setting_system = get_option('fakturo_system_options_group', false);
+		$currencyDefault = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
+		if (is_wp_error($currencyDefault)) {
+			$total_html_print .= '<p>'.__( 'Account Movements needs the default currency on system settings.', FAKTURO_TEXT_DOMAIN ).'</p>';
+			echo $total_html_print;
+			return true;
+		}
+		$default_array_data = array('', '', '', '', '', '');
+		$array_data = array();
+		
+		$new_array = $default_array_data;
+		$html_client_data = '';
+		if (is_numeric($request['client_id']) && $request['client_id'] > 0) {
+			$client_data = fktrPostTypeClients::get_client_data($request['client_id']);
+			
+			$new_array[0] = __('Client', FAKTURO_TEXT_DOMAIN ).': '.$client_data['post_title'];
+			
+		} else {
+			$total_html_print = '<div style="margin-left:15px;"><h3>'.__('Select a client please.', FAKTURO_TEXT_DOMAIN ).'</h3></div>';
+			echo $total_html_print;
+			return false;
+		}
+		
+
+		$objects_client = client_summmary::get_objects_client($request, $ranges, false);
+		$documents_values = $objects_client['documents_values'];
+
+		$new_array[5] = sprintf(__('Date: since %s til %s', FAKTURO_TEXT_DOMAIN ), date_i18n($setting_system['dateformat'], $ranges['from']), date_i18n($setting_system['dateformat'], $ranges['to']));
+		$array_data[] = $new_array;
+		$new_array = $default_array_data;
+		if (!empty($objects_client['objects'])) {
+
+			$new_array[0] = __('Date', FAKTURO_TEXT_DOMAIN);
+			$new_array[1] = __('Type', FAKTURO_TEXT_DOMAIN);
+			$new_array[2] = __('Reference', FAKTURO_TEXT_DOMAIN);
+			$new_array[3] = __('Debit', FAKTURO_TEXT_DOMAIN);
+			$new_array[4] = __('Credit', FAKTURO_TEXT_DOMAIN);
+			$new_array[5] = __('Balance', FAKTURO_TEXT_DOMAIN);
+			$array_data[] = $new_array;
+			$new_array = $default_array_data;
+
+			$balance = 0;
+			foreach ($objects_client['objects'] as $obj) {
+
+				$obj_type = '';
+				$obj_link = admin_url('post.php?post='.$obj['ID'].'&action=edit');
+				
+				if ($obj['post_type']=='fktr_sale') {
+					$obj_type = __('Invoice', FAKTURO_TEXT_DOMAIN);
+					
+				} else {
+					$obj_type = __('Receipt', FAKTURO_TEXT_DOMAIN);
+					
+				}
+				$debit = 0;
+				$credit = 0;
+				$total = $obj['report_total'];
+				if ($total < 0) {
+					$debit = -$total;
+					$balance -= $debit;
+				} else {
+					
+					$credit = $total;
+					$balance += $credit;
+				}
+
+				
+
+				$debit_print = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($debit, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
+				
+				$credit_print = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($credit, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
+
+				$balance_print = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($balance, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
+
+				
+
+				$new_array[0] = date_i18n($setting_system['dateformat'].' '.get_option( 'time_format' ), $obj['report_timestamp']);
+				$new_array[1] = $obj_type;
+				$new_array[2] = $obj['post_title'];
+				$new_array[3] = $debit_print;
+				$new_array[4] = $credit_print;
+				$new_array[5] = $balance_print;
+				$array_data[] = $new_array;
+				$new_array = $default_array_data;
+		
+			}
+
+			$new_array[5] = $balance_print;
+			$array_data[] = $new_array;
+			$new_array = $default_array_data;
+			
+		}
+		header('Content-Type: application/excel');
+		header('Content-Disposition: attachment; filename="client_account_movements.csv"');
+		$out = fopen('php://output', 'w');
+		foreach ($array_data as $k => $arr) {
+			fputcsv($out, $arr, ';');
+		}
+		fclose($out);
+		//print_r($array_data);
 	}
 	/**
 	* Static function print_pdf used to print the report on PDF.
@@ -372,7 +497,7 @@ class client_account_movements {
 				
 				<input type="submit" class="button-secondary" value="'.__( 'Filter', FAKTURO_TEXT_DOMAIN ).'"/>
 				
-				<a class="button-secondary right" href="'.admin_url('admin-post.php?action=print_invoice').'">'.__( 'CSV', FAKTURO_TEXT_DOMAIN ).'</a>
+				<a class="button-secondary right" href="'.admin_url('admin-post.php?action=client_account_movements_download_csv&'.http_build_query($request)).'">'.__( 'CSV', FAKTURO_TEXT_DOMAIN ).'</a>
 				<a class="button-secondary right" style="margin-right:10px;" href="'.admin_url('admin-post.php?action=client_account_movements_print_pdf&'.http_build_query($request)).'">'.__( 'PDF', FAKTURO_TEXT_DOMAIN ).'</a>
 				
 			</form>
