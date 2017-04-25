@@ -86,6 +86,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Added reports page.
 * Added the capabilities of the report pages and sections.
 * Added Client's account report.
+* Wizard install
 
 = 0.6 Beta =
 * Added default contents to emails and print templates instead to begin from scratch.

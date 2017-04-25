@@ -74,6 +74,7 @@ class fakturo {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/fktr_mail.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/licenses_handlers.php'; 
 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/wizzard_install.php'; 
 
 		
 		do_action('fakturo_include_files');
