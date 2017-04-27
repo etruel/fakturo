@@ -35,7 +35,12 @@ class fktr_wizzard {
 	*/
 	public static function page() {
 		$print_html = '<h1>'.__('Fakturo - Setup', FAKTURO_TEXT_DOMAIN).'</h1>
-					<p>Install content</p>';
+					<p>Install content</p>
+					<div id="buttons_container">
+						<input type="submit" class="button button-large" value="Previus"/>
+						<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="Next"/>
+					</div>
+					';
 		self::ouput($print_html, __('Fakturo - Setup', FAKTURO_TEXT_DOMAIN));
 	}
 
@@ -122,13 +127,14 @@ class fktr_wizzard {
 				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 				margin: 2em auto;
 				padding: 1em 2em;
-				max-width: 700px;
+				min-width: 700px;
 				-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.13);
 				box-shadow: 0 1px 3px rgba(0,0,0,0.13);
-			}
-			#error-page {
 				margin-top: 20px;
+				margin-left: 60px;
+				margin-right: 60px;
 			}
+			
 			#error-page p {
 				font-size: 14px;
 				line-height: 1.5;
@@ -148,29 +154,87 @@ class fktr_wizzard {
 				height: 4px;
 				margin: 0px auto;
 				margin-top: 20px;
-				max-width: 700px;
+				min-width: 700px;
 				-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.13);
    				box-shadow: 0 1px 3px rgba(0,0,0,0.13);
    				background-image: -webkit-linear-gradient(top,#626161 0,#b9b8b7 100%);
 				background-image: linear-gradient(to bottom,#626161 0,#b9b8b7 100%);
+				margin-left: 60px;
+				margin-right: 60px;
 			}
 			.stepwizard-row-bar {
 				background-color: #f7b63e;
-				width: 10%;
+				width: 40%;
 				height: 100%;
 				background-image: -webkit-linear-gradient(top,#f7b63e 0,#816414 100%);
 				background-image: linear-gradient(to bottom,#f7b63e 0,#816414 100%);
 			}
+			.wizard-steps-circles {
+				height: auto;
+				margin: 0px auto;
+				min-width: 700px;
+				margin-left: 60px;
+				margin-right: 60px;
+			}
+			.wizard-steps-circles div {
+				width: 20px;
+    			height: 20px;
+                border-radius: 10px;
+                float: left;
+                text-align: center;
+                color: #333;
+    			background-color: #fff;
+    			border-color: #ccc;
+    			line-height: 1.428571429;
+    			margin-top: -12px;
+    			opacity: 0.7;
+    			margin-right: 19%;
+    			margin-left: -12px;
+    			border: 1px solid #4d5154;
+			}
+			.wizard-steps-circles div.active {
+				width: 20px;
+    			height: 20px;
+                border-radius: 10px;
+                float: left;
+                text-align: center;
+                color: #fff;
+    			background-color: #f7b63e;
+    		    background-image: -webkit-linear-gradient(top,#f7b63e 0,#816414 100%);
+    			background-image: linear-gradient(to bottom,#f7b63e 0,#816414 100%);
+    			line-height: 1.428571429;
+    			margin-top: -12px;
+    			margin-right: 19%;
+    			opacity: 1;
+    			border: 1px solid #4d5154;
+			}
+			.wizard-steps-circles div:last-child {
+				margin-right: 0px;
+			}
+			.wizard-steps-circles div:first-child {
+				margin-left: 0px;
+			}
+
 			.wizard-steps {
 				height: auto;
 				margin: 0px auto;
-				max-width: 700px;
+				min-width: 700px;
+				margin-left: 60px;
+				margin-right: 60px;
 			}
 			.wizard-steps p {
 				display: inline-block;
-				text-align: center;
+				text-align: left;
 				width: 19%;
+				visibility: hidden;
 			}
+			.wizard-steps p.active {
+				display: inline-block;
+				text-align: left;
+				width: 19%;
+				visibility:visible;
+			}
+			
 			h1 {
 				border-bottom: 1px solid #dadada;
 				clear: both;
@@ -202,6 +266,14 @@ class fktr_wizzard {
 					0 0 2px 1px rgba(30, 140, 190, .8);
 				outline: none;
 			}
+			#buttons_container {
+				text-align: right;
+			}
+			.button-large {
+				line-height: 30px;
+    			height: 32px;
+    			padding: 0 20px 1px;
+			}
 			.button {
 				background: #f7f7f7;
 				border: 1px solid #ccc;
@@ -227,10 +299,22 @@ class fktr_wizzard {
 			 	vertical-align: top;
 			}
 
-			.button.button-large {
-				height: 30px;
-				line-height: 28px;
-				padding: 0 12px 2px;
+			.button-orange {
+				background: #f2b340;
+    			border: 1px solid #bd8827;
+    			color: #fffcfc;
+			}
+			.button-orange:hover,
+			.button-orange:focus {
+				background: #bd8827 !important;
+				color: #fffcfc !important;
+			}
+			
+
+			.button-large {
+				height: 32px;
+    			line-height: 30px;
+    			padding: 0 20px 2px;
 			}
 
 			.button:hover,
@@ -272,16 +356,23 @@ class fktr_wizzard {
 			<div class="stepwizard-row-bar">
 			</div>
 		</div>
+		<div class="wizard-steps-circles">
+	        <div class="active">1</div>
+	        <div class="active">2</div>
+	        <div class="active">3</div>
+	        <div>4</div>
+	        <div>5</div>
+      	</div>
 		<div class="wizard-steps">
         	<p>Step 1</p>
         	<p>Step 2</p>
-        	<p>Step 3</p>
+        	<p class="active">Step 3</p>
         	<p>Step 4</p>
         	<p>Step 5</p>
       	</div>
 		<div id="error-page">
 			
-			<?php print_r($porcent_per_steep); ?>
+			
 			<?php echo $message; ?>
 		</div>
 		
