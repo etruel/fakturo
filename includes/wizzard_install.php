@@ -5,6 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class fktr_wizzard {
 
 	public static $steps = array();
+	public static $current_request = array();
 	/**
 	* Static function hooks
 	* @access public
@@ -13,6 +14,10 @@ class fktr_wizzard {
 	*/
 	public static function hooks() {
 		add_action('admin_post_fktr_wizzard', array(__CLASS__, 'page'));
+		add_action('fktr_wizzard_install_step_1', array(__CLASS__, 'page_step_one'));
+		add_action('fktr_wizzard_install_step_2', array(__CLASS__, 'page_step_two'));
+		add_action('fktr_wizzard_install_step_3', array(__CLASS__, 'page_step_three'));
+		
 	}
 	/**
 	* Static function get_steps
@@ -22,10 +27,23 @@ class fktr_wizzard {
 	*/
 	public static function get_steps() {
 		if (empty($steps)) {
-			$steps = array('Minium Settings', 'Invoicing', 'Receipts');
+			$steps = array('Load Countries', 'Company Info', 'Receipts', 'Other 4', 'Other 5');
 			$steps = apply_filters('fktr_steps_setup_array', $steps);
 		}
 		return $steps;
+	}
+	/**
+	* Static function default_request_values
+	* @access public
+	* @return Array of default values on GET requests.
+	* @since 0.7
+	*/
+	public static function default_request_values() {
+		$default_values = array(
+							'action' => 'fktr_wizzard',
+							'step' => 1
+						);
+		return $default_values;
 	}
 	/**
 	* Static function page
@@ -34,16 +52,179 @@ class fktr_wizzard {
 	* @since 0.7
 	*/
 	public static function page() {
-		$print_html = '<h1>'.__('Fakturo - Setup', FAKTURO_TEXT_DOMAIN).'</h1>
+		self::$current_request = wp_parse_args($_GET, self::default_request_values());
+		do_action('fktr_wizzard_install_step_'.self::$current_request['step']);
+	}
+	/**
+	* Static function page_step_one
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function page_step_one() {
+		$print_html = '<h1>'.__('Load Countries and States', FAKTURO_TEXT_DOMAIN).'</h1>
+					<p>'.__('Do you want load all countries and states by default?', FAKTURO_TEXT_DOMAIN).'</p>
+					
+					<table class="form-table">
+						<tr valign="top">
+							<th scope="row"><input type="radio" name="load_contries_states" value="yes" checked/></th>
+							<td>
+								'. __( 'Yes', FAKTURO_TEXT_DOMAIN ) .'
+	                        </td>
+	                    </tr>
+	                    <tr valign="top">
+	                        <th scope="row"><input type="radio" name="load_contries_states" value="no"/></th>
+							<td>
+								'. __( 'No', FAKTURO_TEXT_DOMAIN ) .'
+	                        </td>
+	                    </tr>
+	                </table>
+
+					<div id="buttons_container">
+						<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="Next"/>
+					</div>
+					';
+		self::ouput($print_html, __('Load Countries and States', FAKTURO_TEXT_DOMAIN));
+		
+	}
+	/**
+	* Static function page_step_two
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function page_step_two() {
+		
+		$options = get_option('fakturo_info_options_group');
+		if (empty($options['url'])) {
+			$options['url'] = FAKTURO_PLUGIN_URL . 'assets/images/etruel-logo.png';
+		}
+		update_option('fakturo_info_options_group' , $options);
+		$selectCountry = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a country', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => 0,
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $options['country'],
+			'hierarchical'       => 1, 
+			'name'               => 'fakturo_info_options_group[country]',
+			'id' 				 => 'fakturo_info_options_group_country',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_countries',
+			'hide_if_empty'      => false
+		));
+		
+		$selectState = wp_dropdown_categories( array(
+			'show_option_all'    => '',
+			'show_option_none'   => __('Choose a state', FAKTURO_TEXT_DOMAIN ),
+			'orderby'            => 'name', 
+			'order'              => 'ASC',
+			'show_count'         => 0,
+			'hide_empty'         => 0, 
+			'child_of'           => $options['country'],
+			'exclude'            => '',
+			'echo'               => 0,
+			'selected'           => $options['state'],
+			'hierarchical'       => 1, 
+			'name'               => 'fakturo_info_options_group[state]',
+			'id' 				 => 'fakturo_info_options_group_state',
+			'class'              => 'form-no-clear',
+			'depth'              => 1,
+			'tab_index'          => 0,
+			'taxonomy'           => 'fktr_countries',
+			'hide_if_empty'      => false
+		));
+		$print_html = '<h1>'.__('Company Info', FAKTURO_TEXT_DOMAIN).'</h1>
+					<table class="form-table">
+						<tr valign="top">
+							<th scope="row">'. __( 'Name', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td>
+								<input type="text" size="36" name="fakturo_info_options_group[name]" value="'.$options['name'].'"/>
+	                        </td>
+	                    </tr>
+						<tr valign="top">
+							<th scope="row">'. __( 'Taxpayer ID', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td>
+								<input type="text" size="36" id="fakturo_info_options_group_taxpayer" name="fakturo_info_options_group[taxpayer]" value="'.$options['taxpayer'].'"/>
+	                        </td>
+	                    </tr>
+						<tr valign="top">
+							<th scope="row">'. __( 'Gross income tax ID', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td>
+								<input type="text" size="36" name="fakturo_info_options_group[tax]" value="'.$options['tax'].'"/>
+	                        </td>
+	                    </tr>
+						<tr valign="top">
+							<th scope="row">'. __( 'Start of activities', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td>
+								<input type="text" size="36" name="fakturo_info_options_group[start]" id="start" value="'.$options['start'].'"/>
+	                        </td>
+	                    </tr>
+						<tr valign="top">
+							<th scope="row">'. __( 'Address', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td>
+								<textarea name="fakturo_info_options_group[address]" cols="36" rows="4">'.$options['address'].'</textarea>
+							</td>
+	                    </tr>
+						<tr valign="top">
+							<th scope="row">'. __( 'Telephone', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td>
+								<input type="text" size="36" name="fakturo_info_options_group[telephone]" value="'.$options['telephone'].'"/>
+							</td>
+	                    </tr>
+						
+						
+	                    <tr valign="top">
+							<th scope="row">'. __( 'City', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td>
+								<input type="text" size="36" name="fakturo_info_options_group[city]" value="'.$options['city'].'"/>
+							</td>
+	                    </tr>
+	                    <tr valign="top">
+							<th scope="row">'. __( 'Postcode', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td>
+								<input type="text" size="36" name="fakturo_info_options_group[postcode]" value="'.$options['postcode'].'"/>
+							</td>
+	                    </tr>
+						<tr valign="top">
+							<th scope="row">'. __( 'Website', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<td>
+								<input type="text" size="36" name="fakturo_info_options_group[website]" value="'.$options['website'].'"/>
+							</td>
+	                    </tr>
+					</table>
+					<div id="buttons_container">
+						<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="Next"/>
+					</div>
+					';
+		self::ouput($print_html, __('Company Info', FAKTURO_TEXT_DOMAIN));
+		
+	}
+	/**
+	* Static function page_step_three
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function page_step_three() {
+		
+		$print_html = '<h1>'.__('Company Info', FAKTURO_TEXT_DOMAIN).'</h1>
 					<p>Install content</p>
 					<div id="buttons_container">
 						<input type="submit" class="button button-large" value="Previus"/>
 						<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="Next"/>
 					</div>
 					';
-		self::ouput($print_html, __('Fakturo - Setup', FAKTURO_TEXT_DOMAIN));
+		self::ouput($print_html, __('Company Info', FAKTURO_TEXT_DOMAIN));
+	
 	}
-
 	/**
 	* Static function ouput
 	* @access public
@@ -121,6 +302,28 @@ class fktr_wizzard {
 			html {
 				background: #f1f1f1;
 			}
+			input[type=text], input[type=search], input[type=radio], input[type=tel], input[type=time], input[type=url], input[type=week], input[type=password], input[type=checkbox], input[type=color], input[type=date], input[type=datetime], input[type=datetime-local], input[type=email], input[type=month], input[type=number], select, textarea {
+			    border: 1px solid #ddd;
+			    -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
+			    box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
+			    background-color: #fff;
+			    color: #32373c;
+			    outline: 0;
+			    -webkit-transition: 50ms border-color ease-in-out;
+			    transition: 50ms border-color ease-in-out;
+			}
+			input, select {
+			    margin: 1px;
+			    padding: 3px 5px;
+			}
+			input, select, textarea {
+			    font-size: 14px;
+			    -webkit-border-radius: 0;
+			    border-radius: 0;
+			}
+			input, textarea {
+			    box-sizing: border-box;
+			}
 			#error-page {
 				background: #fff;
 				color: #444;
@@ -188,7 +391,7 @@ class fktr_wizzard {
     			line-height: 1.428571429;
     			margin-top: -12px;
     			opacity: 0.7;
-    			margin-right: 19%;
+    			margin-right: <?php echo $porcent_per_steep; ?>%;;
     			margin-left: -12px;
     			border: 1px solid #4d5154;
 			}
@@ -204,7 +407,7 @@ class fktr_wizzard {
     			background-image: linear-gradient(to bottom,#f7b63e 0,#816414 100%);
     			line-height: 1.428571429;
     			margin-top: -12px;
-    			margin-right: 19%;
+    			margin-right: <?php echo $porcent_per_steep; ?>%;
     			opacity: 1;
     			border: 1px solid #4d5154;
 			}
@@ -221,14 +424,15 @@ class fktr_wizzard {
 				min-width: 700px;
 				margin-left: 60px;
 				margin-right: 60px;
+				clear: both;
 			}
-			.wizard-steps p {
+			.wizard-steps div {
 				display: inline-block;
 				text-align: left;
 				width: 19%;
 				visibility: hidden;
 			}
-			.wizard-steps p.active {
+			.wizard-steps div.active {
 				display: inline-block;
 				text-align: left;
 				width: 19%;
@@ -304,7 +508,10 @@ class fktr_wizzard {
     			border: 1px solid #bd8827;
     			color: #fffcfc;
 			}
-			.button-orange:hover,
+			.button-orange:hover {
+				background: #f2db40 !important;
+				color: #fffcfc !important;
+			}
 			.button-orange:focus {
 				background: #bd8827 !important;
 				color: #fffcfc !important;
@@ -353,22 +560,33 @@ class fktr_wizzard {
 	<?php endif; // ! did_action( 'admin_head' ) ?>
 		<img id="icon-header" src="<?php echo FAKTURO_PLUGIN_URL.'assets/images/icon-256x256.png'; ?>"/>
 		<div class="stepwizard-row">
-			<div class="stepwizard-row-bar">
+			<div class="stepwizard-row-bar" style="width:<?php echo (self::$current_request['step']-1)*($porcent_per_steep+1); ?>%">
 			</div>
 		</div>
 		<div class="wizard-steps-circles">
-	        <div class="active">1</div>
-	        <div class="active">2</div>
-	        <div class="active">3</div>
-	        <div>4</div>
-	        <div>5</div>
+			<?php 
+				foreach (self::get_steps() as $k => $st) {
+					$key_step = $k+1;
+					$class = '';
+					if ($key_step <= self::$current_request['step']) {
+						$class = ' class="active"';
+					}
+					echo '<div'.$class.'>'.$key_step.'</div>';
+				}
+			?>
       	</div>
 		<div class="wizard-steps">
-        	<p>Step 1</p>
-        	<p>Step 2</p>
-        	<p class="active">Step 3</p>
-        	<p>Step 4</p>
-        	<p>Step 5</p>
+			<?php 
+				foreach (self::get_steps() as $k => $st) {
+					$key_step = $k+1;
+					$class = '';
+					if ($key_step == self::$current_request['step']) {
+						$class = ' class="active"';
+					}
+					echo '<div'.$class.' style="width:'.$porcent_per_steep.'%">'.$st.'</div>';
+				}
+			?>
+        	
       	</div>
 		<div id="error-page">
 			
