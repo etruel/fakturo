@@ -140,6 +140,7 @@ class fktr_wizzard {
 					'.wp_nonce_field('fktr_wizzard_nonce').'
 					<input type="hidden" name="action" value="fktr_wizzard_post"/>
 					<input type="hidden" name="step_action" value="1"/>
+					<div id="content_step">
 					<p>'.__('Do you want load all countries and states by default?', FAKTURO_TEXT_DOMAIN).'</p>
 					
 					<table class="form-table">
@@ -165,7 +166,7 @@ class fktr_wizzard {
 	                        </td>
 	                    </tr>
 	                </table>
-
+	                </div>
 					<div id="buttons_container">
 						<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="Next"/>
 					</div>

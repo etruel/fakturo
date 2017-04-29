@@ -8,10 +8,12 @@ jQuery(document).ready(function() {
 	}
 	jQuery('input[type="submit"]').click(function(e) {
 		if (jQuery('input[name="load_contries_states"]:checked').val() == 'yes') {
+			jQuery('#content_step').fadeOut();
 			jQuery('#buttons_container').html(backend_object.loading_states_text+'<img src="'+backend_object.loading_image+'"/>');
 			execute_load_countries();
 			e.preventDefault();
 		} else if (jQuery('input[name="load_contries_states"]:checked').val() == 'yes_only_a_country') {
+			jQuery('#content_step').fadeOut();
 			jQuery('#buttons_container').html(backend_object.loading_states_text+'<img src="'+backend_object.loading_image+'"/>');
 			current_request = parseInt(jQuery('#selected_country').val())-1;
 			jQuery.ajax({
