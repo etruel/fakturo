@@ -14,7 +14,13 @@ class fktr_wizzard {
 	*/
 	public static function hooks() {
 		add_action('admin_post_fktr_wizzard', array(__CLASS__, 'page'));
+		add_action('wizzard_output_print_scripts', array(__CLASS__, 'scripts'));
+		
+		add_action('admin_post_fktr_wizzard_post', array(__CLASS__, 'post_actions'));
 		add_action('fktr_wizzard_install_step_1', array(__CLASS__, 'page_step_one'));
+		add_action('fktr_wizzard_action_1', array(__CLASS__, 'action_one'));
+		add_action('wp_ajax_fktr_load_countries_states', array(__CLASS__, 'load_countries_ajax'));
+
 		add_action('fktr_wizzard_install_step_2', array(__CLASS__, 'page_step_two'));
 		add_action('fktr_wizzard_install_step_3', array(__CLASS__, 'page_step_three'));
 		
@@ -46,6 +52,54 @@ class fktr_wizzard {
 		return $default_values;
 	}
 	/**
+	* Static function post_actions
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function post_actions() {
+		if (!wp_verify_nonce($_POST['_wpnonce'], 'fktr_wizzard_nonce' ) ) {
+		    wp_die(__( 'Security check', FAKTURO_TEXT_DOMAIN )); 
+		}
+		
+		if (!empty($_POST['step_action']) && is_numeric($_POST['step_action'])) {
+			do_action('fktr_wizzard_action_'.$_POST['step_action']);
+		} else {
+			$output = ''.__('A problem please try again.').'<br/><br/> <a href="'.admin_url('admin-post.php?action=fktr_wizzard').'" class="button">'.__('Back.').'</a>';
+			wp_die($output); 
+		}
+		$all_steps = self::get_steps();
+		if (count($all_steps) > $_POST['step_action']) {
+			//redirect to next steep
+			wp_redirect(admin_url('admin-post.php?action=fktr_wizzard&step='.($_POST['step_action']+1)));
+		} else {
+			// redirect to welcome
+		}
+	}
+	/**
+	* Static function scripts
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function scripts() {
+		wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+		wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+		
+		if (self::$current_request['step'] == 1) {
+			wp_enqueue_script( 'jquery-wizzard-countries-states', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_countries_states.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			$steps = self::get_steps();
+			$porcent_per_steep = ((100-count($steps))/count($steps));
+			wp_localize_script('jquery-wizzard-countries-states', 'backend_object',
+				array('ajax_url' => admin_url( 'admin-ajax.php' ),
+					'loading_states_text' => __('Loading countries and states...', FAKTURO_TEXT_DOMAIN ),
+					'porcent_per_steep' => $porcent_per_steep,
+					'loading_image' => admin_url('images/spinner.gif'), 
+			) );
+		}
+		
+	}
+	/**
 	* Static function page
 	* @access public
 	* @return void
@@ -62,7 +116,14 @@ class fktr_wizzard {
 	* @since 0.7
 	*/
 	public static function page_step_one() {
+		
+		set_transient('fktr_loading_countries_states', true, HOUR_IN_SECONDS);
+
 		$print_html = '<h1>'.__('Load Countries and States', FAKTURO_TEXT_DOMAIN).'</h1>
+					<form method="post" action="'.admin_url('admin-post.php').'">
+					'.wp_nonce_field('fktr_wizzard_nonce').'
+					<input type="hidden" name="action" value="fktr_wizzard_post"/>
+					<input type="hidden" name="step_action" value="1"/>
 					<p>'.__('Do you want load all countries and states by default?', FAKTURO_TEXT_DOMAIN).'</p>
 					
 					<table class="form-table">
@@ -83,8 +144,127 @@ class fktr_wizzard {
 					<div id="buttons_container">
 						<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="Next"/>
 					</div>
+					</form>
 					';
 		self::ouput($print_html, __('Load Countries and States', FAKTURO_TEXT_DOMAIN));
+		
+	}
+	/**
+	* Static function load_countries_ajax
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function load_countries_ajax() {
+		$loading_countries_states = get_transient('fktr_loading_countries_states');
+		if ($loading_countries_states === false) {
+		    wp_die('error');
+		}
+		$country_id = 0;
+		if (!empty($_REQUEST['country_id']) && is_numeric($_REQUEST['country_id'])) {
+			$country_id = $_REQUEST['country_id'];
+		}
+		if (empty($country_id)) {
+			wp_die('error');
+		}
+		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/country-states.php';
+		$count_insert = 0;
+		foreach ($countries as $kc => $country) {
+			if ($country[0] != $country_id) {
+					continue; 
+			}
+			$count_insert++;
+			$termc = term_exists($country[2], 'fktr_countries');
+			if ($termc !== 0 && $termc !== null) {
+				// exist this term
+			} else {
+				// don't exist term
+				$termc = wp_insert_term($country[2], 'fktr_countries');
+				if (is_wp_error($termc)){
+										
+				}
+				
+				$country_term = $termc['term_id'];
+				foreach ($states as $ks => $state) {
+						
+					if ($state[2] == $country[0]) {
+						$count_insert++;
+						if ($count_insert >= 100 ) {
+							$count_insert = 0;
+							wp_cache_flush();
+						}
+						$term_s = term_exists($state[1], 'fktr_countries', $country_term);
+						if ($term_s !== 0 && $term_s !== null) {
+								// exist state
+						} else {
+							$term_s = wp_insert_term($state[1], 'fktr_countries', array('parent' => $country_term));
+							if (is_wp_error($term_s)){
+							}
+							$state_term = $term_s['term_id'];
+						}
+					}	
+				}
+			}
+		}
+	}
+	/**
+	* Static function action_one
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function action_one() {
+		$load_contries_states = 'no';
+		if (!empty($_POST['load_contries_states'])) {
+			$load_contries_states = $_POST['load_contries_states'];
+		}
+		/*
+		Activate only on ajax loading countries fail.
+		if ($load_contries_states == 'yes') {
+			require_once FAKTURO_PLUGIN_DIR . 'includes/libs/country-states.php';
+			$count_insert = 0;
+			foreach ($countries as $kc => $country) {
+				$count_insert++;
+				$termc = term_exists($country[2], 'fktr_countries');
+				if ($termc !== 0 && $termc !== null) {
+					// exist this term
+				} else {
+					// don't exist term
+					$termc = wp_insert_term($country[2], 'fktr_countries');
+					if (is_wp_error($termc)){
+										
+					}
+					error_log('insert country:'.$country[2]);
+					$country_term = $termc['term_id'];
+					foreach ($states as $ks => $state) {
+						
+						if ($state[2] == $country[0]) {
+							$count_insert++;
+							if ($count_insert >= 100 ) {
+								$count_insert = 0;
+							    wp_cache_flush();
+							    error_log('wp_cache_flush');
+							}
+							$term_s = term_exists($state[1], 'fktr_countries', $country_term);
+							if ($term_s !== 0 && $term_s !== null) {
+								// exist state
+							} else {
+								$term_s = wp_insert_term($state[1], 'fktr_countries', array('parent' => $country_term));
+								if (is_wp_error($term_s)){
+									error_log($term->get_error_message());
+								}
+								error_log('insert:'.$state[1]);
+								$state_term = $term_s['term_id'];
+							}
+						}
+
+						
+					}
+				}
+			}
+		}
+		*/
+		
 		
 	}
 	/**
@@ -99,7 +279,7 @@ class fktr_wizzard {
 		if (empty($options['url'])) {
 			$options['url'] = FAKTURO_PLUGIN_URL . 'assets/images/etruel-logo.png';
 		}
-		update_option('fakturo_info_options_group' , $options);
+		update_option('fakturo_info_options_group', $options);
 		$selectCountry = wp_dropdown_categories( array(
 			'show_option_all'    => '',
 			'show_option_none'   => __('Choose a country', FAKTURO_TEXT_DOMAIN ),
@@ -201,6 +381,7 @@ class fktr_wizzard {
 	                    </tr>
 					</table>
 					<div id="buttons_container">
+						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=1').'" class="button button-large">Previus</a>	
 						<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="Next"/>
 					</div>
 					';
@@ -554,6 +735,10 @@ class fktr_wizzard {
 			}
 			?>
 		</style>
+		<?php
+			do_action('wizzard_output_print_scripts');
+			wp_print_scripts();
+		?>
 	</head>
 	<body>
 
