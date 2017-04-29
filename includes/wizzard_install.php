@@ -14,7 +14,8 @@ class fktr_wizzard {
 	*/
 	public static function hooks() {
 		add_action('admin_post_fktr_wizzard', array(__CLASS__, 'page'));
-		add_action('wizzard_output_print_scripts', array(__CLASS__, 'scripts'));
+		add_action('fktr_wizzard_output_print_scripts', array(__CLASS__, 'scripts'));
+		add_action('fktr_wizzard_output_print_styles', array(__CLASS__, 'styles'));
 		
 		add_action('admin_post_fktr_wizzard_post', array(__CLASS__, 'post_actions'));
 		add_action('fktr_wizzard_install_step_1', array(__CLASS__, 'page_step_one'));
@@ -100,6 +101,15 @@ class fktr_wizzard {
 		
 	}
 	/**
+	* Static function styles
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function styles() {
+		wp_enqueue_style('style-select2',FAKTURO_PLUGIN_URL .'assets/css/select2.min.css');	
+	}
+	/**
 	* Static function page
 	* @access public
 	* @return void
@@ -118,6 +128,12 @@ class fktr_wizzard {
 	public static function page_step_one() {
 		
 		set_transient('fktr_loading_countries_states', true, HOUR_IN_SECONDS);
+		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/country-states.php';
+		$html_select_countries = '<select name="selected_country" id="selected_country" style="width:300px;">';
+		foreach ($countries as $kc => $country) {
+			$html_select_countries .= '<option value="' . $country[0] . '">' . esc_html($country[2]) . '</option>';
+		}
+		$html_select_countries .= '</select>';
 
 		$print_html = '<h1>'.__('Load Countries and States', FAKTURO_TEXT_DOMAIN).'</h1>
 					<form method="post" action="'.admin_url('admin-post.php').'">
@@ -131,6 +147,15 @@ class fktr_wizzard {
 							<th scope="row"><input type="radio" name="load_contries_states" value="yes" checked/></th>
 							<td>
 								'. __( 'Yes', FAKTURO_TEXT_DOMAIN ) .'
+	                        </td>
+	                    </tr>
+	                    <tr valign="top">
+							<th scope="row"><input type="radio" name="load_contries_states" value="yes_only_a_country"/></th>
+							<td>
+								'. __( 'Yes, but only a country.', FAKTURO_TEXT_DOMAIN ) .'
+								<div id="container_select_countries" style="display:none;"> 
+									'.$html_select_countries.'
+								</div>
 	                        </td>
 	                    </tr>
 	                    <tr valign="top">
@@ -736,7 +761,9 @@ class fktr_wizzard {
 			?>
 		</style>
 		<?php
-			do_action('wizzard_output_print_scripts');
+			do_action('fktr_wizzard_output_print_styles');
+			wp_print_styles();
+			do_action('fktr_wizzard_output_print_scripts');
 			wp_print_scripts();
 		?>
 	</head>

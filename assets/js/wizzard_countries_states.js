@@ -11,15 +11,40 @@ jQuery(document).ready(function() {
 			jQuery('#buttons_container').html(backend_object.loading_states_text+'<img src="'+backend_object.loading_image+'"/>');
 			execute_load_countries();
 			e.preventDefault();
+		} else if (jQuery('input[name="load_contries_states"]:checked').val() == 'yes_only_a_country') {
+			jQuery('#buttons_container').html(backend_object.loading_states_text+'<img src="'+backend_object.loading_image+'"/>');
+			current_request = parseInt(jQuery('#selected_country').val())-1;
+			jQuery.ajax({
+		        url: ajax_urls[current_request],
+		        type: 'get',
+		        contentType: false,
+		        processData: false,
+		                    
+		        success: function (response) {
+		            jQuery('form').submit();
+		        },  
+		        error: function (response) {
+		            console.log('error');
+		        }
+
+		    });
+		    e.preventDefault();
 		}
 	})
+	jQuery('#selected_country').select2();
+	jQuery('input[name="load_contries_states"]').change(function(e) {
+		if (jQuery('input[name="load_contries_states"]:checked').val() == 'yes_only_a_country') {
+			jQuery('#container_select_countries').fadeIn();
+		} else {
+			jQuery('#container_select_countries').fadeOut();
+		}
+	});
 });
 
 
 function execute_load_countries() {
 	if (current_request < ajax_urls.length) {
 		upload_bar();
-		console.log('executing:'+ajax_urls[current_request]);
 		jQuery.ajax({
 	        url: ajax_urls[current_request],
 	        type: 'get',
