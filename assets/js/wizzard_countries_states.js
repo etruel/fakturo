@@ -45,7 +45,6 @@ jQuery(document).ready(function() {
 
 
 function execute_load_countries() {
-	console.log(ajax_urls.length+' '+current_request);
 	if (current_request < ajax_urls.length) {
 		upload_bar();
 		jQuery.ajax({
@@ -55,7 +54,6 @@ function execute_load_countries() {
 	        processData: false,
 	                    
 	        success: function (response) {
-	        	console.log(response);
 	        	if (response == 'last_country') {
 	        		jQuery('form').submit();
 	        	} else {

@@ -469,7 +469,7 @@ class fktr_wizzard {
 							<td>
 								<label for="upload_image">
 									<input id="url" type="text" size="36" value="'.$options['url'].'" name="fakturo_info_options_group[url]" />
-									<input id="upload_logo_button" type="button" value="Upload Image" />
+									<input id="upload_logo_button" class="button button-large button-orange" type="button" value="Upload Image" />
 									<br />'.__( 'Enter an URL or upload an image for the company logo.', FAKTURO_TEXT_DOMAIN ).'
 								</label>
 								

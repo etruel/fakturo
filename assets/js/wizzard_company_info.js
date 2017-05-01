@@ -38,7 +38,6 @@ jQuery(document).ready(function() {
 
 	
 	jQuery('#upload_logo_button').click(function(e) {
-		alert('dasdsa');
 		formfield = jQuery('#url').attr('name');
 		tb_show('', 'media-upload.php?type=image&TB_iframe=true');
 		e.preventDefault();
