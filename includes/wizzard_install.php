@@ -320,7 +320,7 @@ class fktr_wizzard {
 	* @since 0.7
 	*/
 	public static function page_step_two() {
-		
+
 		$options = get_option('fakturo_info_options_group');
 		if (empty($options['url'])) {
 			$options['url'] = FAKTURO_PLUGIN_URL . 'assets/images/etruel-logo.png';
@@ -430,13 +430,36 @@ class fktr_wizzard {
 						<tr valign="top">
 							<th scope="row">'. __( 'Country', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td>
-								'.$selectCountry.'
+								'.$selectCountry.' '.fktr_button_new_term(
+																	array(
+																		'taxonomy' => 'fktr_countries',
+																		'echo' => 0,
+																		'class' => 'button',
+																	)
+																).'
 							</td>
 	                    </tr>
 	                    <tr valign="top">
 							<th scope="row">'. __( 'State', FAKTURO_TEXT_DOMAIN ) .'</th>
-							<td id="td_select_state">
-								'.$selectState.'
+							<td>
+								<table style="border-spacing: 0px;">
+									<tr>
+										<td id="td_select_state">
+											'.$selectState.'  
+										</td>
+										<td>
+											 '.fktr_button_new_term(
+																array(
+																	'taxonomy' => 'fktr_countries',
+																	'echo' => 0,
+																	'class' => 'button',
+																	'opcional_add_new_item'	=> __( 'Add New State', FAKTURO_TEXT_DOMAIN ),
+																	'selector_parent_select' => '#fakturo_info_options_group_country'
+																)
+															).'
+									    </td>
+									</tr>
+								</table>
 							</td>
 	                    </tr>
 
@@ -461,7 +484,13 @@ class fktr_wizzard {
 	                    <tr valign="top">
 							<th scope="row">'. __( 'Tax condition', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td>
-								'.$selectTaxCondition.'
+								'.$selectTaxCondition.' '.fktr_button_new_term(
+																	array(
+																		'taxonomy' => 'fktr_tax_conditions',
+																		'echo' => 0,
+																		'class' => 'button',
+																	)
+																).'
 							</td>
 	                    </tr>
 						<tr valign="top">
@@ -469,7 +498,7 @@ class fktr_wizzard {
 							<td>
 								<label for="upload_image">
 									<input id="url" type="text" size="36" value="'.$options['url'].'" name="fakturo_info_options_group[url]" />
-									<input id="upload_logo_button" class="button button-large button-orange" type="button" value="Upload Image" />
+									<input id="upload_logo_button" class="button button-orange" type="button" value="Upload Image" />
 									<br />'.__( 'Enter an URL or upload an image for the company logo.', FAKTURO_TEXT_DOMAIN ).'
 								</label>
 								
