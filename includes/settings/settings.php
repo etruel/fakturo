@@ -71,6 +71,11 @@ class fktrSettings {
 			wp_enqueue_style('style-settings',FAKTURO_PLUGIN_URL .'assets/css/settings-system.css');
 			
 		}
+		if ($current_screen->id == "fakturo_page_fakturo-settings" ) {
+			wp_enqueue_style('style-settings-company',FAKTURO_PLUGIN_URL .'assets/css/settings-company.css');
+			
+		}
+		
 		
 	}
 	public static function register_settings() {
@@ -349,7 +354,7 @@ class fktrSettings {
 					<tr valign="top">
 						<th scope="row">'. __( 'Tax condition', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
-							'.$selectTaxCondition.'
+							'.$selectTaxCondition.' 
 						</td>
                     </tr>
 					<tr valign="top">
@@ -357,7 +362,7 @@ class fktrSettings {
 						<td>
 							<label for="upload_image">
 								<input id="url" type="text" size="36" value="'.$options['url'].'" name="fakturo_info_options_group[url]" />
-								<input id="upload_logo_button" type="button" value="Upload Image" />
+								<input id="upload_logo_button" type="button" class="button" value="Upload Image" />
 								<br />'.__( 'Enter an URL or upload an image for the company logo.', FAKTURO_TEXT_DOMAIN ).'
 							</label>
 							

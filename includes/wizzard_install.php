@@ -23,7 +23,10 @@ class fktr_wizzard {
 		add_action('wp_ajax_fktr_load_countries_states', array(__CLASS__, 'load_countries_ajax'));
 
 		add_action('fktr_wizzard_install_step_2', array(__CLASS__, 'page_step_two'));
+		add_action('fktr_wizzard_action_2', array(__CLASS__, 'action_two'));
+
 		add_action('fktr_wizzard_install_step_3', array(__CLASS__, 'page_step_three'));
+		add_action('fktr_wizzard_install_step_4', array(__CLASS__, 'page_step_four'));
 		
 	}
 	/**
@@ -34,7 +37,7 @@ class fktr_wizzard {
 	*/
 	public static function get_steps() {
 		if (empty($steps)) {
-			$steps = array('Load Countries', 'Company Info', 'Receipts', 'Other 4', 'Other 5');
+			$steps = array('Load Countries', 'Company Info', 'Load Currencies', 'Other 4', 'Other 5');
 			$steps = apply_filters('fktr_steps_setup_array', $steps);
 		}
 		return $steps;
@@ -87,6 +90,7 @@ class fktr_wizzard {
 		wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 		wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 		wp_enqueue_script( 'jquery-wizzard-main', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_main.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+		wp_enqueue_script( 'jquery-fktr-new-terms-popup', FAKTURO_PLUGIN_URL . 'assets/js/new-terms-popup.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 		$steps = self::get_steps();
 		$porcent_per_steep = ((100-count($steps))/count($steps));
 		wp_localize_script('jquery-wizzard-main', 'backend_object',
@@ -95,6 +99,7 @@ class fktr_wizzard {
 				'porcent_per_steep' => $porcent_per_steep,
 				'loading_image' => admin_url('images/spinner.gif'), 
 				'loading_states_text' => __('Loading states...', FAKTURO_TEXT_DOMAIN ),
+				'ajax_nonce' => wp_create_nonce('fktr_wizzard_ajax_nonce'),
 			)
 		);
 
@@ -118,6 +123,7 @@ class fktr_wizzard {
 	*/
 	public static function styles() {
 		wp_enqueue_style('style-select2',FAKTURO_PLUGIN_URL .'assets/css/select2.min.css');	
+		wp_enqueue_style('fktr-new-terms-popup',FAKTURO_PLUGIN_URL .'assets/css/new-terms-popup.css');	
 		if (self::$current_request['step'] == 2) {
 			wp_enqueue_style('thickbox');
 		}
@@ -134,6 +140,19 @@ class fktr_wizzard {
 		do_action('fktr_wizzard_install_step_'.self::$current_request['step']);
 	}
 	/**
+	* Static function get_form
+	* @access public
+	* @return HTML of form and actions to work.
+	* @since 0.7
+	*/
+	public static function get_form() {
+		$ret = '<form method="post" action="'.admin_url('admin-post.php').'">
+					'.wp_nonce_field('fktr_wizzard_nonce').'
+					<input type="hidden" name="action" value="fktr_wizzard_post"/>
+					<input type="hidden" name="step_action" value="'.self::$current_request['step'].'"/>';
+		return $ret;
+	}
+	/**
 	* Static function page_step_one
 	* @access public
 	* @return void
@@ -141,7 +160,6 @@ class fktr_wizzard {
 	*/
 	public static function page_step_one() {
 		
-		set_transient('fktr_loading_countries_states', true, HOUR_IN_SECONDS);
 		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/country-states.php';
 		$html_select_countries = '<select name="selected_country" id="selected_country">';
 		foreach ($countries as $kc => $country) {
@@ -150,10 +168,7 @@ class fktr_wizzard {
 		$html_select_countries .= '</select>';
 
 		$print_html = '<h1>'.__('Load Countries and States', FAKTURO_TEXT_DOMAIN).'</h1>
-					<form method="post" action="'.admin_url('admin-post.php').'">
-					'.wp_nonce_field('fktr_wizzard_nonce').'
-					<input type="hidden" name="action" value="fktr_wizzard_post"/>
-					<input type="hidden" name="step_action" value="1"/>
+					'.self::get_form().'
 					<div id="content_step">
 					<p>'.__('Do you want load all countries and states by default?', FAKTURO_TEXT_DOMAIN).'</p>
 					
@@ -197,10 +212,7 @@ class fktr_wizzard {
 	* @since 0.7
 	*/
 	public static function load_countries_ajax() {
-		$loading_countries_states = get_transient('fktr_loading_countries_states');
-		if ($loading_countries_states === false) {
-		    wp_die('error');
-		}
+		check_ajax_referer('fktr_wizzard_ajax_nonce', 'nonce');
 		$country_id = 0;
 		if (!empty($_REQUEST['country_id']) && is_numeric($_REQUEST['country_id'])) {
 			$country_id = $_REQUEST['country_id'];
@@ -389,6 +401,7 @@ class fktr_wizzard {
 			'hide_if_empty'      => false
 		));
 		$print_html = '<h1>'.__('Company Info', FAKTURO_TEXT_DOMAIN).'</h1>
+					'.self::get_form().'
 					<table class="form-table">
 						<tr valign="top">
 							<th scope="row">'. __( 'Name', FAKTURO_TEXT_DOMAIN ) .'</th>
@@ -430,11 +443,12 @@ class fktr_wizzard {
 						<tr valign="top">
 							<th scope="row">'. __( 'Country', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td>
-								'.$selectCountry.' '.fktr_button_new_term(
+								'.$selectCountry.' '.fktr_popup_taxonomy::button(
 																	array(
 																		'taxonomy' => 'fktr_countries',
 																		'echo' => 0,
 																		'class' => 'button',
+																		'selector' => '#fakturo_info_options_group_country',
 																	)
 																).'
 							</td>
@@ -448,13 +462,14 @@ class fktr_wizzard {
 											'.$selectState.'  
 										</td>
 										<td>
-											 '.fktr_button_new_term(
+											 '.fktr_popup_taxonomy::button(
 																array(
 																	'taxonomy' => 'fktr_countries',
 																	'echo' => 0,
 																	'class' => 'button',
 																	'opcional_add_new_item'	=> __( 'Add New State', FAKTURO_TEXT_DOMAIN ),
-																	'selector_parent_select' => '#fakturo_info_options_group_country'
+																	'selector_parent_select' => '#fakturo_info_options_group_country',
+																	'selector' => '#fakturo_info_options_group_state',
 																)
 															).'
 									    </td>
@@ -484,11 +499,12 @@ class fktr_wizzard {
 	                    <tr valign="top">
 							<th scope="row">'. __( 'Tax condition', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td>
-								'.$selectTaxCondition.' '.fktr_button_new_term(
+								'.$selectTaxCondition.' '.fktr_popup_taxonomy::button(
 																	array(
 																		'taxonomy' => 'fktr_tax_conditions',
 																		'echo' => 0,
 																		'class' => 'button',
+																		'selector' => '#fakturo_info_options_group_tax_condition',
 																	)
 																).'
 							</td>
@@ -511,9 +527,19 @@ class fktr_wizzard {
 						<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="'. __( 'Next', FAKTURO_TEXT_DOMAIN ) .'"/>
 						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=3').'" class="button button-large">'. __( 'Skip', FAKTURO_TEXT_DOMAIN ) .'</a>
 					</div>
+					</form>
 					';
 		self::ouput($print_html, __('Company Info', FAKTURO_TEXT_DOMAIN));
 		
+	}
+	/**
+	* Static function action_two
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function action_two() {
+		update_option('fakturo_info_options_group', $_POST['fakturo_info_options_group']);
 	}
 	/**
 	* Static function page_step_three
@@ -523,14 +549,59 @@ class fktr_wizzard {
 	*/
 	public static function page_step_three() {
 		
-		$print_html = '<h1>'.__('Company Info', FAKTURO_TEXT_DOMAIN).'</h1>
-					<p>Install content</p>
+		$print_html = '<h1>'.__('Load Currencies', FAKTURO_TEXT_DOMAIN).'</h1>
+					'.self::get_form().'
+					<p>Do you want load all currencies by default?</p>
+					<table class="form-table">
+						<tr valign="top">
+							<th scope="row"><input type="radio" name="load_contries_states" value="yes" checked/></th>
+							<td>
+								'. __( 'Yes', FAKTURO_TEXT_DOMAIN ) .'
+	                        </td>
+	                    </tr>
+	                    <tr valign="top">
+							<th scope="row"><input type="radio" name="load_contries_states" value="yes_only_a_country"/></th>
+							<td>
+								'. __( 'Yes, but only a currency.', FAKTURO_TEXT_DOMAIN ) .'
+								<div id="container_select_countries" style="display:none;"> 
+									
+								</div>
+	                        </td>
+	                    </tr>
+	                    <tr valign="top">
+	                        <th scope="row"><input type="radio" name="load_contries_states" value="no"/></th>
+							<td>
+								'. __( 'No', FAKTURO_TEXT_DOMAIN ) .'
+	                        </td>
+	                    </tr>
+	                </table>
 					<div id="buttons_container">
-						<input type="submit" class="button button-large" value="'. __( 'Previous', FAKTURO_TEXT_DOMAIN ) .'"/>
+						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=2').'" class="button button-large">'. __( 'Previous', FAKTURO_TEXT_DOMAIN ) .'</a>	
 						<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="'. __( 'Next', FAKTURO_TEXT_DOMAIN ) .'"/>
 						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=4').'" class="button button-large">'. __( 'Skip', FAKTURO_TEXT_DOMAIN ) .'</a>
-
 					</div>
+					</form>
+					';
+		self::ouput($print_html, __('Load Currencies', FAKTURO_TEXT_DOMAIN));
+	
+	}
+	/**
+	* Static function page_step_four
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function page_step_four() {
+		
+		$print_html = '<h1>'.__('Step Four', FAKTURO_TEXT_DOMAIN).'</h1>
+					'.self::get_form().'
+					<p>Install content</p>
+					<div id="buttons_container">
+						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=3').'" class="button button-large">'. __( 'Previous', FAKTURO_TEXT_DOMAIN ) .'</a>	
+						<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="'. __( 'Next', FAKTURO_TEXT_DOMAIN ) .'"/>
+						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=5').'" class="button button-large">'. __( 'Skip', FAKTURO_TEXT_DOMAIN ) .'</a>
+					</div>
+					</form>
 					';
 		self::ouput($print_html, __('Company Info', FAKTURO_TEXT_DOMAIN));
 	

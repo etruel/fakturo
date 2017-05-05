@@ -310,41 +310,5 @@ function fktr_get_dialer_options() {
 	$select_options = apply_filters('fktr_get_dialer_options', $select_options);
 	return $select_options;
 }
-/**
- * Static function fktr_button_new_term
- * @return String with HTML with button add new term | Void with echo html.
- * @since 0.7
- */
-function fktr_button_new_term($args) {
- 	$defaults = array(
-	 	'taxonomy' => 'category', 
-	 	'echo' => 0,
-	 	'class' => 'button',
-	 	'opcional_add_new_item' => '',
-	 	'selector_parent_select' => '',
- 	);
-	if (!isset($args) || !is_array($args)) {
-		$args = array();
-	} 
-	$r = wp_parse_args( $args, $defaults );
-	$r['class'] .= ' fktr_btn_taxonomy';
-	$tax_name = esc_attr($r['taxonomy']);
-	$taxonomy = get_taxonomy($r['taxonomy']);
-
-	$add_new_item_text = $taxonomy->labels->add_new_item;
-	if (!empty($r['opcional_add_new_item'])) {
-		$add_new_item_text = $r['opcional_add_new_item'];
-	}
-	$parent_selector = '';
-	if (!empty($r['selector_parent_select'])) {
-		$parent_selector = ' data-selectorparent="'.$r['selector_parent_select'].'"';
-	}
-	//print_r($taxonomy);
-	$button_html = '<input type="button" class="'.$r['class'].'" value="'.$add_new_item_text.'" data-taxonomy="'.$r['taxonomy'].'"'.$parent_selector.'/>';
-	if ($r['echo']) {
-		echo $button_html;
-	} else {
-		return $button_html;
-	}
-} 
+ 
 ?>

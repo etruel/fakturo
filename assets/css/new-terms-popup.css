@@ -1,0 +1,64 @@
+#fktr_background_popup_taxonomy #popup_content {
+	margin: 10px;
+}
+#fktr_background_popup_taxonomy {
+	position:fixed;
+	left: 50%;
+	top:50%;
+	margin-left: -250px;
+	margin-top: -250px;
+	width:500px;
+	min-height:200px;
+	height:auto;
+	background-color:white;
+	z-index:5;
+	border:5px solid #d9d0d0;
+	border-radius:4px;
+	box-shadow: 0 0 15px rgba(0,0,0,.1);
+	display: none;
+}
+#fktr_background_popup_taxonomy_background {
+	position:fixed;
+	left: 0%;
+	top: 0%;
+	width:100%;
+	height:100%;
+	background-color:#000;
+	opacity:0.8;
+	z-index:4;
+	display: none;
+}
+#fktr_background_popup_taxonomy #popup_content h2 {
+    border-bottom: 1px solid #dadada;
+    clear: both;
+    color: #666;
+    font-size: 24px;
+    margin: 10px 0 0 0;
+    padding: 0;
+    padding-bottom: 7px;
+    margin-bottom: 5px;
+}
+#fktr_background_popup_taxonomy #popup_content .form-wrap p, 
+#fktr_background_popup_taxonomy #popup_content p.description, 
+#fktr_background_popup_taxonomy #popup_content p.help, 
+#fktr_background_popup_taxonomy #popup_content span.description {
+    font-size: 13px;
+    font-style: italic;
+}
+#fktr_background_popup_taxonomy #popup_content .form-wrap label {
+    display: block;
+    padding: 2px 0;
+}
+#fktr_background_popup_taxonomy #popup_content p.submit {
+    display: inline-block;
+}
+#fktr_background_popup_taxonomy #popup_content #fktr_popup_taxomy_loading {
+    display: inline-block;
+    float:right;
+    margin-top: 18px;
+}
+#fktr_background_popup_taxonomy #popup_content .form-invalid {
+    border-color: #dc3232!important;
+    -webkit-box-shadow: 0 0 2px rgba(204,0,0,.8);
+    box-shadow: 0 0 2px rgba(204,0,0,.8);
+}

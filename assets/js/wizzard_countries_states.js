@@ -4,7 +4,7 @@ var ajax_urls = new Array();
 jQuery(document).ready(function() {
 	
 	for (var c = 1; c <= 246; c++) {
-		ajax_urls.push(backend_object.ajax_url+'?action=fktr_load_countries_states&country_id='+c);
+		ajax_urls.push(backend_object.ajax_url+'?action=fktr_load_countries_states&country_id='+c+'&nonce='+backend_object.ajax_nonce);
 	}
 	jQuery('input[type="submit"]').click(function(e) {
 		if (jQuery('input[name="load_contries_states"]:checked').val() == 'yes') {
@@ -63,6 +63,8 @@ function execute_load_countries() {
 	        },  
 	        error: function (response) {
 	            console.log('error');
+	            current_request++;
+	           	execute_load_countries();
 	        }
 
 	    });
