@@ -89,6 +89,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Wizard install
 * Loading all countries and states on wizzard install.
 * Company info on wizzard install.
+* Loading all currencies on wizzard install.
 
 = 0.6 Beta =
 * Added default contents to emails and print templates instead to begin from scratch.

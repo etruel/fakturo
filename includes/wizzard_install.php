@@ -113,6 +113,9 @@ class fktr_wizzard {
 			wp_enqueue_script( 'jquery-settings', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_company_info.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			
 		} 
+		if (self::$current_request['step'] == 3) {
+			wp_enqueue_script( 'jquery-wizzard-currencies', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_currencies.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+		} 
 		
 	}
 	/**
@@ -548,28 +551,33 @@ class fktr_wizzard {
 	* @since 0.7
 	*/
 	public static function page_step_three() {
-		
+		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/currencies.php';
+		$html_select_currencies = '<select name="selected_currency" id="selected_currency">';
+		foreach ($currencies as $kc => $currency) {
+			$html_select_currencies .= '<option value="' . $kc . '">' . esc_html($currency['name']) . '</option>';
+		}
+		$html_select_currencies .= '</select>';
 		$print_html = '<h1>'.__('Load Currencies', FAKTURO_TEXT_DOMAIN).'</h1>
 					'.self::get_form().'
 					<p>Do you want load all currencies by default?</p>
 					<table class="form-table">
 						<tr valign="top">
-							<th scope="row"><input type="radio" name="load_contries_states" value="yes" checked/></th>
+							<th scope="row"><input type="radio" name="load_currencies" value="yes" checked/></th>
 							<td>
 								'. __( 'Yes', FAKTURO_TEXT_DOMAIN ) .'
 	                        </td>
 	                    </tr>
 	                    <tr valign="top">
-							<th scope="row"><input type="radio" name="load_contries_states" value="yes_only_a_country"/></th>
+							<th scope="row"><input type="radio" name="load_currencies" value="yes_only_a_currency"/></th>
 							<td>
 								'. __( 'Yes, but only a currency.', FAKTURO_TEXT_DOMAIN ) .'
-								<div id="container_select_countries" style="display:none;"> 
-									
+								<div id="container_select_currency" style="display:none;"> 
+									'.$html_select_currencies.'
 								</div>
 	                        </td>
 	                    </tr>
 	                    <tr valign="top">
-	                        <th scope="row"><input type="radio" name="load_contries_states" value="no"/></th>
+	                        <th scope="row"><input type="radio" name="load_currencies" value="no"/></th>
 							<td>
 								'. __( 'No', FAKTURO_TEXT_DOMAIN ) .'
 	                        </td>
