@@ -3,20 +3,20 @@ var ajax_urls = new Array();
 
 jQuery(document).ready(function() {
 	
-	for (var c = 1; c <= 246; c++) {
-		ajax_urls.push(backend_object.ajax_url+'?action=fktr_load_countries_states&country_id='+c+'&nonce='+backend_object.ajax_nonce);
+	for (var c = 0; c <= 246; c++) {
+		ajax_urls.push(backend_object.ajax_url+'?action=fktr_load_currencies&currency_id='+c+'&nonce='+backend_object.ajax_nonce);
 	}
-	/*
+	
 	jQuery('input[type="submit"]').click(function(e) {
-		if (jQuery('input[name="load_contries_states"]:checked').val() == 'yes') {
+		if (jQuery('input[name="load_currencies"]:checked').val() == 'yes') {
 			jQuery('#content_step').fadeOut();
-			jQuery('#buttons_container').html(backend_object.loading_states_text+'<img src="'+backend_object.loading_image+'"/> <div id="porcent_loading_fe" style="display: inline;"> 0%</div>');
-			execute_load_countries();
+			jQuery('#buttons_container').html(backend_object.loading_currencies_text+'<img src="'+backend_object.loading_image+'"/> <div id="porcent_loading_fe" style="display: inline;"> 0%</div>');
+			execute_load_currencies();
 			e.preventDefault();
-		} else if (jQuery('input[name="load_contries_states"]:checked').val() == 'yes_only_a_country') {
+		} else if (jQuery('input[name="load_currencies"]:checked').val() == 'yes_only_a_currency') {
 			jQuery('#content_step').fadeOut();
-			jQuery('#buttons_container').html(backend_object.loading_states_text+'<img src="'+backend_object.loading_image+'"/>');
-			current_request = parseInt(jQuery('#selected_country').val())-1;
+			jQuery('#buttons_container').html(backend_object.loading_currencies_text+'<img src="'+backend_object.loading_image+'"/>');
+			current_request = parseInt(jQuery('#selected_currency').val());
 			jQuery.ajax({
 		        url: ajax_urls[current_request],
 		        type: 'get',
@@ -34,7 +34,7 @@ jQuery(document).ready(function() {
 		    e.preventDefault();
 		}
 	})
-	*/
+
 	jQuery('#selected_currency').select2();
 	jQuery('input[name="load_currencies"]').change(function(e) {
 		if (jQuery('input[name="load_currencies"]:checked').val() == 'yes_only_a_currency') {
@@ -46,7 +46,7 @@ jQuery(document).ready(function() {
 });
 
 
-function execute_load_countries() {
+function execute_load_currencies() {
 	if (current_request < ajax_urls.length) {
 		upload_bar();
 		jQuery.ajax({
@@ -56,17 +56,17 @@ function execute_load_countries() {
 	        processData: false,
 	                    
 	        success: function (response) {
-	        	if (response == 'last_country') {
+	        	if (response == 'last_currency') {
 	        		jQuery('form').submit();
 	        	} else {
 	        		current_request++;
-	            	execute_load_countries();
+	            	execute_load_currencies();
 	        	}
 	        },  
 	        error: function (response) {
 	            console.log('error');
 	            current_request++;
-	           	execute_load_countries();
+	           	execute_load_currencies();
 	        }
 
 	    });
@@ -75,8 +75,12 @@ function execute_load_countries() {
 	}
 }
 function upload_bar() {
-	var new_width = (backend_object.porcent_per_steep/ajax_urls.length)*current_request;
-	jQuery('.stepwizard-row-bar').css("width", new_width+"%");
+	var current_width = jQuery('.stepwizard-row-bar').width() / jQuery('.stepwizard-row-bar').parent().width() * 100;
+	//var current_width = current_width.replace('%', '');
+	//current_width = parseFloat(current_width);
+	console.log(current_width);
+	
+	jQuery('.stepwizard-row-bar').css("width", (current_width+(backend_object.porcent_per_steep/ajax_urls.length))+'%');
 	jQuery('#porcent_loading_fe').html(' '+Math.round((100/ajax_urls.length)*current_request)+' %');
 	
 }

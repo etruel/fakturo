@@ -26,6 +26,9 @@ class fktr_wizzard {
 		add_action('fktr_wizzard_action_2', array(__CLASS__, 'action_two'));
 
 		add_action('fktr_wizzard_install_step_3', array(__CLASS__, 'page_step_three'));
+		add_action('wp_ajax_fktr_load_currencies', array(__CLASS__, 'load_currencies_ajax'));
+
+
 		add_action('fktr_wizzard_install_step_4', array(__CLASS__, 'page_step_four'));
 		
 	}
@@ -37,7 +40,7 @@ class fktr_wizzard {
 	*/
 	public static function get_steps() {
 		if (empty($steps)) {
-			$steps = array('Load Countries', 'Company Info', 'Load Currencies', 'Other 4', 'Other 5');
+			$steps = array('Load Countries', 'Company Info', 'Load Currencies', 'Money Format', 'Other 5', 'Other 6');
 			$steps = apply_filters('fktr_steps_setup_array', $steps);
 		}
 		return $steps;
@@ -99,6 +102,7 @@ class fktr_wizzard {
 				'porcent_per_steep' => $porcent_per_steep,
 				'loading_image' => admin_url('images/spinner.gif'), 
 				'loading_states_text' => __('Loading states...', FAKTURO_TEXT_DOMAIN ),
+				'loading_currencies_text' => __('Loading currencies...', FAKTURO_TEXT_DOMAIN ),
 				'ajax_nonce' => wp_create_nonce('fktr_wizzard_ajax_nonce'),
 			)
 		);
@@ -594,12 +598,90 @@ class fktr_wizzard {
 	
 	}
 	/**
+	* Static function load_countries_ajax
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function load_currencies_ajax() {
+		check_ajax_referer('fktr_wizzard_ajax_nonce', 'nonce');
+		$currency_id = 0;
+		if (isset($_REQUEST['currency_id']) && is_numeric($_REQUEST['currency_id'])) {
+			$currency_id = $_REQUEST['currency_id'];
+		}
+		
+		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/currencies.php';
+		$count_insert = 0;
+		
+
+		foreach ($currencies as $kc => $currency) {
+			if ($kc != $currency_id) {
+				continue; 
+			}
+			$count_insert++;
+			$termc = term_exists($currency['name'], 'fktr_currencies');
+			if ($termc !== 0 && $termc !== null) {
+				// exist this term
+			} else {
+				// don't exist term
+				$termc = wp_insert_term($currency['name'], 'fktr_currencies');
+				if (is_wp_error($termc)){
+										
+				}
+				$newcurrency = get_fakturo_term($termc['term_id'], 'fktr_currencies');
+				$term_taxonomy_id = $newcurrency->term_taxonomy_id;
+				$newcurrency->plural = $currency['plural'];
+				$newcurrency->symbol = $currency['symbol'];
+				$newcurrency->rate = 1;
+				$newcurrency->reference = '';
+				
+				unset($newcurrency->term_id);
+				unset($newcurrency->name);
+				unset($newcurrency->slug);
+				unset($newcurrency->term_group);
+				unset($newcurrency->term_taxonomy_id);
+				unset($newcurrency->taxonomy);
+				unset($newcurrency->parent);
+				unset($newcurrency->count);
+				set_fakturo_term($termc['term_id'], $term_taxonomy_id,  (array)$newcurrency);
+				
+			}
+			break;
+		}
+		if ($kc == (count($currencies)-1)) {
+			die('last_currency');
+		} else {
+			die('not_last_currency');
+		}
+	}
+	/**
 	* Static function page_step_four
 	* @access public
 	* @return void
 	* @since 0.7
 	*/
 	public static function page_step_four() {
+		
+		$print_html = '<h1>'.__('Money Format', FAKTURO_TEXT_DOMAIN).'</h1>
+					'.self::get_form().'
+					<p>Install content</p>
+					<div id="buttons_container">
+						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=3').'" class="button button-large">'. __( 'Previous', FAKTURO_TEXT_DOMAIN ) .'</a>	
+						<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="'. __( 'Next', FAKTURO_TEXT_DOMAIN ) .'"/>
+						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=5').'" class="button button-large">'. __( 'Skip', FAKTURO_TEXT_DOMAIN ) .'</a>
+					</div>
+					</form>
+					';
+		self::ouput($print_html, __('Company Info', FAKTURO_TEXT_DOMAIN));
+	
+	}
+	/**
+	* Static function page_step_five
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function page_step_five() {
 		
 		$print_html = '<h1>'.__('Step Four', FAKTURO_TEXT_DOMAIN).'</h1>
 					'.self::get_form().'
