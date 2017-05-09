@@ -37,9 +37,16 @@ jQuery(document).ready(function() {
 		return true;
 	}
 	
-	jQuery('form').submit(function(e){
-		
-		if (jQuery('#term_meta_symbol').val() == '') {
+	jQuery('#edittag').submit(function(e){
+		validate_form();
+	});
+	jQuery('#addtag').submit(function(e){
+		validate_form();
+	});
+	
+});
+function validate_form() {
+	if (jQuery('#term_meta_symbol').val() == '') {
 			alert('Symbol empty');
 			jQuery('#term_meta_symbol').focus();
 			e.preventDefault();
@@ -52,10 +59,7 @@ jQuery(document).ready(function() {
 			e.preventDefault();
 			return false;
 		}
-		
-	});
-	
-});
+}
 
 function validateReference(textval) {
 	if (textval == '') {

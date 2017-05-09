@@ -6,9 +6,10 @@
 	left: 50%;
 	top:50%;
 	margin-left: -250px;
-	margin-top: -250px;
+	margin-top: -20%;
 	width:500px;
 	min-height:200px;
+	max-height: 80%;
 	height:auto;
 	background-color:white;
 	z-index:5;
@@ -16,6 +17,7 @@
 	border-radius:4px;
 	box-shadow: 0 0 15px rgba(0,0,0,.1);
 	display: none;
+	overflow: overlay;
 }
 #fktr_background_popup_taxonomy_background {
 	position:fixed;

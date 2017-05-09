@@ -30,6 +30,11 @@ class fktr_wizzard {
 
 
 		add_action('fktr_wizzard_install_step_4', array(__CLASS__, 'page_step_four'));
+		add_action('fktr_wizzard_action_4', array(__CLASS__, 'action_four'));
+
+		add_action('fktr_wizzard_install_step_5', array(__CLASS__, 'page_step_five'));
+
+		
 		
 	}
 	/**
@@ -119,6 +124,20 @@ class fktr_wizzard {
 		} 
 		if (self::$current_request['step'] == 3) {
 			wp_enqueue_script( 'jquery-wizzard-currencies', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_currencies.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+		} 
+
+		if (self::$current_request['step'] == 4) {
+			wp_enqueue_script( 'jquery-wizzard-money', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_money.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			$currencies = get_fakturo_terms(array(
+							'taxonomy' => 'fktr_currencies',
+							'hide_empty' => false,
+				));
+			wp_localize_script('jquery-wizzard-money', 'money_object',
+				array(
+					'currencies' => $currencies ,
+				)
+			);
+			
 		} 
 		
 	}
@@ -630,7 +649,7 @@ class fktr_wizzard {
 				}
 				$newcurrency = get_fakturo_term($termc['term_id'], 'fktr_currencies');
 				$term_taxonomy_id = $newcurrency->term_taxonomy_id;
-				$newcurrency->plural = $currency['plural'];
+				$newcurrency->plural = $currency['name_plural'];
 				$newcurrency->symbol = $currency['symbol'];
 				$newcurrency->rate = 1;
 				$newcurrency->reference = '';
@@ -661,10 +680,104 @@ class fktr_wizzard {
 	* @since 0.7
 	*/
 	public static function page_step_four() {
-		
+		$options = get_option('fakturo_system_options_group');
+		if (empty($options['decimal_numbers'])) {
+			$options['decimal_numbers'] = 2;
+		}
+		if (empty($options['thousand'])) {
+			$options['thousand'] = ',';
+		}
+		if (empty($options['decimal'])) {
+			$options['decimal'] = '.';
+		}
+		$selectCurrency = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Choose a Currency', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => $options['currency'],
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[currency]',
+										'id'                 => 'fakturo_system_options_group_currency',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_currencies',
+										'hide_if_empty'      => false
+									));
 		$print_html = '<h1>'.__('Money Format', FAKTURO_TEXT_DOMAIN).'</h1>
 					'.self::get_form().'
-					<p>Install content</p>
+					<table class="form-table">
+						<tr>
+							<td>
+								<table class="form-table">
+									<tr>
+										<td>'. __( 'Default Currency', FAKTURO_TEXT_DOMAIN ) .'</td>
+										<td>
+											'.$selectCurrency.'	 '.fktr_popup_taxonomy::button(
+																	array(
+																		'taxonomy' => 'fktr_currencies',
+																		'echo' => 0,
+																		'class' => 'button',
+																		'selector' => '#fakturo_system_options_group_currency',
+																	)
+																).'
+										</td>
+								 	</tr>
+									<tr>
+										<td>'. __( 'Currency Position', FAKTURO_TEXT_DOMAIN ) .'</td>
+										<td>
+											<select id="fakturo_system_options_group_currency_position" name="fakturo_system_options_group[currency_position]">
+												<option value="before"'.selected('before', $options['currency_position'], false).'>Before - $10</option>
+												<option value="after"'.selected('after', $options['currency_position'], false).'>After - 10$</option>
+											</select>
+											
+										</td>
+										
+									  </tr>
+									  
+									  <tr>
+											<td>'. __( 'Thousands Separator', FAKTURO_TEXT_DOMAIN ) .'</td>
+											<td>
+												<input id="fakturo_system_options_group_thousand" name="fakturo_system_options_group[thousand]" type="text" size="5" value="'.$options['thousand'].'">
+												
+									
+											</td>
+										
+									  </tr>
+									  
+									  <tr>
+											<td>'. __( 'Decimal Separator', FAKTURO_TEXT_DOMAIN ) .'</td>
+											<td>
+												<input id="fakturo_system_options_group_decimal" name="fakturo_system_options_group[decimal]" type="text" size="5" value="'.$options['decimal'].'">
+												
+									
+											</td>
+										
+									  </tr>
+									  
+									  <tr>
+											<td>'. __( 'Decimal numbers', FAKTURO_TEXT_DOMAIN ) .'</td>
+											<td>
+												<input id="fakturo_system_options_group_decimal_numbers" type="number" min="0" max="9" maxlength="1" name="fakturo_system_options_group[decimal_numbers]" value="'.$options['decimal_numbers'].'">
+												
+											</td>
+										
+									  </tr>
+				                </table>
+							</td>
+							<td id="money_format_test" style="text-align: center; width: 40%; font-size: 34px;">
+								9,999,999.99 $
+							</td>
+					 	</tr>
+
+					</table>	
+					
 					<div id="buttons_container">
 						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=3').'" class="button button-large">'. __( 'Previous', FAKTURO_TEXT_DOMAIN ) .'</a>	
 						<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="'. __( 'Next', FAKTURO_TEXT_DOMAIN ) .'"/>
@@ -672,8 +785,23 @@ class fktr_wizzard {
 					</div>
 					</form>
 					';
-		self::ouput($print_html, __('Company Info', FAKTURO_TEXT_DOMAIN));
+		self::ouput($print_html, __('Money Format', FAKTURO_TEXT_DOMAIN));
 	
+	}
+	/**
+	* Static function action_two
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function action_four() {
+		$new_options = get_option('fakturo_system_options_group', array());
+		$new_options['currency'] = $_POST['fakturo_system_options_group']['currency'];
+		$new_options['currency_position'] = $_POST['fakturo_system_options_group']['currency_position'];
+		$new_options['thousand'] = $_POST['fakturo_system_options_group']['thousand'];
+		$new_options['decimal'] = $_POST['fakturo_system_options_group']['decimal'];
+		$new_options['decimal_numbers'] = $_POST['fakturo_system_options_group']['decimal_numbers'];
+		update_option('fakturo_system_options_group', $new_options);
 	}
 	/**
 	* Static function page_step_five
@@ -683,7 +811,7 @@ class fktr_wizzard {
 	*/
 	public static function page_step_five() {
 		
-		$print_html = '<h1>'.__('Step Four', FAKTURO_TEXT_DOMAIN).'</h1>
+		$print_html = '<h1>'.__('Step Five', FAKTURO_TEXT_DOMAIN).'</h1>
 					'.self::get_form().'
 					<p>Install content</p>
 					<div id="buttons_container">
