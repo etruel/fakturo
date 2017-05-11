@@ -142,7 +142,10 @@ class fktr_popup_taxonomy {
 				403
 			);
 		}
-
+		do_action('fktr_popup_tax_'.$taxnow.'_print_styles');
+		wp_print_styles();
+		do_action('fktr_popup_tax_'.$taxnow.'_print_scripts');
+		wp_print_scripts();
 		?>
 		<div class="form-wrap">
 		<h2><?php echo $tax->labels->add_new_item; ?></h2>

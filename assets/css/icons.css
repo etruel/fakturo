@@ -52,9 +52,9 @@
 }
 .slidercheck[type="checkbox"]:not(:checked) + label,
 .slidercheck[type="checkbox"]:checked + label {
-  position: relative;
-  padding-left: 75px;
-  cursor: pointer;
+  position: relative !important;
+  padding-left: 75px !important;
+  cursor: pointer !important;
   
 }
 .slidercheck[type="checkbox"]:not(:checked) + label:before,

@@ -1,4 +1,11 @@
 jQuery(document).ready(function() {
+	init_events();
+});
+jQuery(document).on('popup-tax-loaded', function(e) {
+	init_events();
+});
+
+function init_events() {
 	var decimal_numbers = parseInt(setting_system.decimal_numbers);
 	var decimal_ex = '';
 	for (var i = 0; i < decimal_numbers; i++) {
@@ -36,29 +43,32 @@ jQuery(document).ready(function() {
 		
 		return true;
 	}
-	
+	jQuery(document).on('popup-tax-validate', function(e){
+		validate_form(e);
+	});
 	jQuery('#edittag').submit(function(e){
-		validate_form();
+		validate_form(e);
 	});
 	jQuery('#addtag').submit(function(e){
-		validate_form();
+		validate_form(e);
 	});
-	
-});
-function validate_form() {
+
+}
+function validate_form(e) {
 	if (jQuery('#term_meta_symbol').val() == '') {
-			alert('Symbol empty');
+			jQuery('#term_meta_symbol').addClass('form-invalid');
 			jQuery('#term_meta_symbol').focus();
 			e.preventDefault();
 			return false;
 		}
-		
+		jQuery('#term_meta_symbol').removeClass('form-invalid');
 		if (validateReference(jQuery('#term_meta_reference').val()) == false) {
-			alert('Invalid reference');
+			jQuery('#term_meta_reference').addClass('form-invalid');
 			jQuery('#term_meta_reference').focus();
 			e.preventDefault();
 			return false;
 		}
+		jQuery('#term_meta_reference').removeClass('form-invalid');
 }
 
 function validateReference(textval) {

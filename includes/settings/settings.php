@@ -59,6 +59,14 @@ class fktrSettings {
 					
 
 			) );
+
+			wp_enqueue_script( 'jquery-fktr-new-terms-popup', FAKTURO_PLUGIN_URL . 'assets/js/new-terms-popup.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_localize_script('jquery-fktr-new-terms-popup', 'backend_object',
+			array('ajax_url' => admin_url( 'admin-ajax.php' ),
+					'loading_image' => admin_url('images/spinner.gif'), 
+					'loading_text' => __('Loading...', FAKTURO_TEXT_DOMAIN ),
+				)
+			);
 			
 		}
 	}
@@ -68,6 +76,7 @@ class fktrSettings {
 		wp_enqueue_style('thickbox');
 		wp_enqueue_style('style-select2',FAKTURO_PLUGIN_URL .'assets/css/select2.min.css');	
 		if ($current_screen->id == 'admin_page_fakturo-settings-system' || $current_screen->id == "fakturo_page_fakturo-settings" ) {
+			wp_enqueue_style('fktr-new-terms-popup',FAKTURO_PLUGIN_URL .'assets/css/new-terms-popup.css');	
 			wp_enqueue_style('style-settings',FAKTURO_PLUGIN_URL .'assets/css/settings-system.css');
 			
 		}
@@ -324,14 +333,40 @@ class fktrSettings {
 					<tr valign="top">
 						<th scope="row">'. __( 'Country', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
-							'.$selectCountry.'
+							'.$selectCountry.' '.fktr_popup_taxonomy::button(
+																	array(
+																		'taxonomy' => 'fktr_countries',
+																		'echo' => 0,
+																		'class' => 'button',
+																		'selector' => '#fakturo_info_options_group_country',
+																	)
+																).'
 						</td>
                     </tr>
                     <tr valign="top">
 						<th scope="row">'. __( 'State', FAKTURO_TEXT_DOMAIN ) .'</th>
-						<td id="td_select_state">
-							'.$selectState.'
-						</td>
+						<td>
+								<table style="border-spacing: 0px; width: 350px;">
+									<tr>
+										<td id="td_select_state" style="padding:0px;">
+											'.$selectState.'  
+										</td>
+										<td style="padding:0px; padding-left:5px;">
+											 '.fktr_popup_taxonomy::button(
+																array(
+																	'taxonomy' => 'fktr_countries',
+																	'echo' => 0,
+																	'class' => 'button',
+																	'opcional_add_new_item'	=> __( 'Add New State', FAKTURO_TEXT_DOMAIN ),
+																	'selector_parent_select' => '#fakturo_info_options_group_country',
+																	'selector' => '#fakturo_info_options_group_state',
+																)
+															).'
+									    </td>
+									</tr>
+								</table>
+							</td>
+
                     </tr>
                     <tr valign="top">
 						<th scope="row">'. __( 'City', FAKTURO_TEXT_DOMAIN ) .'</th>
@@ -354,7 +389,14 @@ class fktrSettings {
 					<tr valign="top">
 						<th scope="row">'. __( 'Tax condition', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td>
-							'.$selectTaxCondition.' 
+							'.$selectTaxCondition.' '.fktr_popup_taxonomy::button(
+																	array(
+																		'taxonomy' => 'fktr_tax_conditions',
+																		'echo' => 0,
+																		'class' => 'button',
+																		'selector' => '#fakturo_info_options_group_tax_condition',
+																	)
+																).'
 						</td>
                     </tr>
 					<tr valign="top">

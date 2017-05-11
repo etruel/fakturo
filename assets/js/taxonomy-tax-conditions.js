@@ -26,14 +26,23 @@ jQuery(document).ready(function() {
 		}
 		return true;
 	}
-	jQuery('form').submit(function(e){
-		if (parseInt(jQuery('#term_meta_invoice_type').val()) < 1) {
-			jQuery('#term_meta_invoice_type').select2('open');
-			e.preventDefault();
-			return false;
-		}
-		
+	jQuery(document).on('popup-tax-validate', function(e){
+		validate_form(e);
+	});
+	jQuery('#edittag').submit(function(e){
+		validate_form(e);
+	});
+	jQuery('#addtag').submit(function(e){
+		validate_form(e);
 	});
 	
 
 });
+
+function validate_form(e) {
+	if (parseInt(jQuery('#term_meta_invoice_type').val()) < 1) {
+		jQuery('#term_meta_invoice_type').select2('open');
+		e.preventDefault();
+		return false;
+	}
+}

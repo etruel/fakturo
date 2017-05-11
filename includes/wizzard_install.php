@@ -109,6 +109,7 @@ class fktr_wizzard {
 				'loading_states_text' => __('Loading states...', FAKTURO_TEXT_DOMAIN ),
 				'loading_currencies_text' => __('Loading currencies...', FAKTURO_TEXT_DOMAIN ),
 				'ajax_nonce' => wp_create_nonce('fktr_wizzard_ajax_nonce'),
+				'loading_text' => __('Loading...', FAKTURO_TEXT_DOMAIN ),
 			)
 		);
 
@@ -148,6 +149,10 @@ class fktr_wizzard {
 	* @since 0.7
 	*/
 	public static function styles() {
+
+		wp_enqueue_style('main',FAKTURO_PLUGIN_URL .'assets/css/main.css');	
+		wp_enqueue_style('fktr_icons',FAKTURO_PLUGIN_URL .'assets/css/icons.css');	
+		
 		wp_enqueue_style('style-select2',FAKTURO_PLUGIN_URL .'assets/css/select2.min.css');	
 		wp_enqueue_style('fktr-new-terms-popup',FAKTURO_PLUGIN_URL .'assets/css/new-terms-popup.css');	
 		if (self::$current_request['step'] == 2) {
@@ -176,6 +181,34 @@ class fktr_wizzard {
 					'.wp_nonce_field('fktr_wizzard_nonce').'
 					<input type="hidden" name="action" value="fktr_wizzard_post"/>
 					<input type="hidden" name="step_action" value="'.self::$current_request['step'].'"/>';
+		return $ret;
+	}
+	/**
+	* Static function get_buttons
+	* @access public
+	* @return HTML of buttons previous next and skip.
+	* @since 0.7
+	*/
+	public static function get_buttons() {
+		$steps = self::get_steps();
+		$ret = '<div id="buttons_container">';
+		if ((self::$current_request['step']-1) >= 1) {
+			$ret .= '<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step='.(self::$current_request['step']-1)).'" class="button button-large">'. __( 'Previous', FAKTURO_TEXT_DOMAIN ) .'</a>	';
+		}
+
+		if (self::$current_request['step'] == count($steps)) {
+			$ret .= '<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="'. __( 'Finish', FAKTURO_TEXT_DOMAIN ) .'"/>';
+		} else {
+			$ret .= '<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="'. __( 'Next', FAKTURO_TEXT_DOMAIN ) .'"/>';
+		}	
+
+		if ((self::$current_request['step']) < count($steps)) {
+			$ret .= '  <a href="'.admin_url('admin-post.php?action=fktr_wizzard&step='.(self::$current_request['step']+1)).'" class="button button-large">'. __( 'Skip', FAKTURO_TEXT_DOMAIN ) .'</a>';
+		} else {
+			$ret .= '  <a href="'.admin_url('admin-post.php?action=fktr_wizzard&step='.(self::$current_request['step']+1)).'" class="button button-large">'. __( 'Skip and Finish', FAKTURO_TEXT_DOMAIN ) .'</a>';
+		}
+						
+		$ret .= '</div>';
 		return $ret;
 	}
 	/**
@@ -222,10 +255,7 @@ class fktr_wizzard {
 	                    </tr>
 	                </table>
 	                </div>
-					<div id="buttons_container">
-						<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="'. __( 'Next', FAKTURO_TEXT_DOMAIN ) .'"/>
-						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=2').'" class="button button-large">'. __( 'Skip', FAKTURO_TEXT_DOMAIN ) .'</a>
-					</div>
+					'.self::get_buttons().'
 					</form>
 					';
 		self::ouput($print_html, __('Load Countries and States', FAKTURO_TEXT_DOMAIN));
@@ -548,11 +578,7 @@ class fktr_wizzard {
 							</td>
 	                    </tr>
 					</table>
-					<div id="buttons_container">
-						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=1').'" class="button button-large">'. __( 'Previous', FAKTURO_TEXT_DOMAIN ) .'</a>	
-						<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="'. __( 'Next', FAKTURO_TEXT_DOMAIN ) .'"/>
-						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=3').'" class="button button-large">'. __( 'Skip', FAKTURO_TEXT_DOMAIN ) .'</a>
-					</div>
+					'.self::get_buttons().'
 					</form>
 					';
 		self::ouput($print_html, __('Company Info', FAKTURO_TEXT_DOMAIN));
@@ -606,11 +632,7 @@ class fktr_wizzard {
 	                        </td>
 	                    </tr>
 	                </table>
-					<div id="buttons_container">
-						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=2').'" class="button button-large">'. __( 'Previous', FAKTURO_TEXT_DOMAIN ) .'</a>	
-						<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="'. __( 'Next', FAKTURO_TEXT_DOMAIN ) .'"/>
-						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=4').'" class="button button-large">'. __( 'Skip', FAKTURO_TEXT_DOMAIN ) .'</a>
-					</div>
+					'.self::get_buttons().'
 					</form>
 					';
 		self::ouput($print_html, __('Load Currencies', FAKTURO_TEXT_DOMAIN));
@@ -778,11 +800,7 @@ class fktr_wizzard {
 
 					</table>	
 					
-					<div id="buttons_container">
-						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=3').'" class="button button-large">'. __( 'Previous', FAKTURO_TEXT_DOMAIN ) .'</a>	
-						<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="'. __( 'Next', FAKTURO_TEXT_DOMAIN ) .'"/>
-						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=5').'" class="button button-large">'. __( 'Skip', FAKTURO_TEXT_DOMAIN ) .'</a>
-					</div>
+					'.self::get_buttons().'
 					</form>
 					';
 		self::ouput($print_html, __('Money Format', FAKTURO_TEXT_DOMAIN));
@@ -814,11 +832,8 @@ class fktr_wizzard {
 		$print_html = '<h1>'.__('Step Five', FAKTURO_TEXT_DOMAIN).'</h1>
 					'.self::get_form().'
 					<p>Install content</p>
-					<div id="buttons_container">
-						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=3').'" class="button button-large">'. __( 'Previous', FAKTURO_TEXT_DOMAIN ) .'</a>	
-						<input type="submit" class="button button-large button-orange" style="padding-left:30px; padding-right:30px;" value="'. __( 'Next', FAKTURO_TEXT_DOMAIN ) .'"/>
-						<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step=5').'" class="button button-large">'. __( 'Skip', FAKTURO_TEXT_DOMAIN ) .'</a>
-					</div>
+
+					'.self::get_buttons().'
 					</form>
 					';
 		self::ouput($print_html, __('Company Info', FAKTURO_TEXT_DOMAIN));
