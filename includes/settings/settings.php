@@ -62,7 +62,7 @@ class fktrSettings {
 
 			wp_enqueue_script( 'jquery-fktr-new-terms-popup', FAKTURO_PLUGIN_URL . 'assets/js/new-terms-popup.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_localize_script('jquery-fktr-new-terms-popup', 'backend_object',
-			array('ajax_url' => admin_url( 'admin-ajax.php' ),
+				array('ajax_url' => admin_url( 'admin-ajax.php' ),
 					'loading_image' => admin_url('images/spinner.gif'), 
 					'loading_text' => __('Loading...', FAKTURO_TEXT_DOMAIN ),
 				)
@@ -648,9 +648,9 @@ class fktrSettings {
 						<th>'. __( 'Currency', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td class="italic-label">
 								  '.$selectCurrency.'	
-								  <label for="fakturo_system_currency">
-								  '. __( 'Choose your currency.', FAKTURO_TEXT_DOMAIN ) .' 
-							        </label>
+								  <p class="description">
+								 	 '. __( 'Choose your currency.', FAKTURO_TEXT_DOMAIN ) .' 
+							      </p>
 						</td>
 					  </tr>
 					  <tr>
@@ -660,9 +660,9 @@ class fktrSettings {
 										<option value="before"'.selected('before', $options['currency_position'], false).'>Before - $10</option>
 										<option value="after"'.selected('after', $options['currency_position'], false).'>After - 10$</option>
 									</select>
-									<label for="fakturo_system_position">
+									<p class="description">
 										'. __( 'Choose the location of the currency sign.', FAKTURO_TEXT_DOMAIN ) .'             
-									</label>
+									</p>
 							</td>
 						
 					  </tr>
@@ -671,9 +671,9 @@ class fktrSettings {
 							<th>'. __( 'Thousands Separator', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
 								<input id="fakturo_system_options_group_thousand" name="fakturo_system_options_group[thousand]" type="text" size="5" value="'.$options['thousand'].'">
-								<label for="fakturo_system_thousand">
+								<p class="description">
 									'. __( 'The symbol (usually , or .) to separate thousands', FAKTURO_TEXT_DOMAIN ) .'           
-								</label>
+								</p>
 					
 							</td>
 						
@@ -683,9 +683,9 @@ class fktrSettings {
 							<th>'. __( 'Decimal Separator', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
 								<input id="fakturo_system_options_group_decimal" name="fakturo_system_options_group[decimal]" type="text" size="5" value="'.$options['decimal'].'">
-								<label for="fakturo_system_decimal">
+								<p class="description">
 									'. __( 'The symbol (usually , or .) to separate decimal points', FAKTURO_TEXT_DOMAIN ) .'           
-								</label>
+								</p>
 					
 							</td>
 						
@@ -695,9 +695,9 @@ class fktrSettings {
 							<th>'. __( 'Decimal numbers', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
 								<input id="fakturo_system_options_group_decimal_numbers" type="number" min="0" max="9" maxlength="1" name="fakturo_system_options_group[decimal_numbers]" value="'.$options['decimal_numbers'].'">
-								<label for="fakturo_system_decimal_numbers">
+								<p class="description">
 									'. __( 'Enter the number of numbers decimals', FAKTURO_TEXT_DOMAIN ) .'           
-								</label>
+								</p>
 					
 							</td>
 						
@@ -707,9 +707,9 @@ class fktrSettings {
 							<th>'. __( 'Default Invoice Type', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
 								  '.$selectInvoiceType.'	
-								  <label for="fakturo_system_options_group_invoice_type">
-								  '. __( 'Choose the default Invoice Type used in the system', FAKTURO_TEXT_DOMAIN ) .' 
-							        </label>
+								  <p class="description">
+								  	'. __( 'Choose the default Invoice Type used in the system', FAKTURO_TEXT_DOMAIN ) .' 
+							      </p>
 							</td>
 						
 					  </tr>
@@ -719,9 +719,9 @@ class fktrSettings {
 							<th>'. __( 'Default Price Scale', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
 								  '.$selectPriceScales.'	
-								  <label for="fakturo_system_options_group_price_scale">
-								  '. __( 'Choose the default Price Scale used in the system', FAKTURO_TEXT_DOMAIN ) .' 
-							        </label>
+								  <p class="description">
+								  	'. __( 'Choose the default Price Scale used in the system', FAKTURO_TEXT_DOMAIN ) .' 
+							       </p>
 							</td>
 						
 					  </tr>
@@ -750,18 +750,18 @@ class fktrSettings {
 						<th>'. __( 'Sale Point', FAKTURO_TEXT_DOMAIN ) .'</th>
 						<td class="italic-label">
 								  '.$selectSalePoint.'	
-								  <label for="fakturo_system_sale_point">
-								  '. __( 'Choose your sale point.', FAKTURO_TEXT_DOMAIN ) .' 
-							        </label>
+								  <p class="description">
+								  	'. __( 'Choose your sale point.', FAKTURO_TEXT_DOMAIN ) .' 
+							      </p>
 						</td>
 					  </tr>
 					  <tr>
 							<th>'. __( 'Number of digits of the receipt number', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
 								<input id="fakturo_system_options_group_digits_receipt_number" name="fakturo_system_options_group[digits_receipt_number]" type="number" maxlength="2" min=2 max=20 value="'.$options['digits_receipt_number'].'">
-								<label for="fakturo_system_digits_receipt_number">
+								 <p class="description">
 									'. __( 'Choose the default number of digits of the receipt number.', FAKTURO_TEXT_DOMAIN ) .'           
-								</label>
+								</p>
 					
 							</td>
 						
@@ -770,9 +770,9 @@ class fktrSettings {
 							<th>'. __( 'Number of digits of the invoice number', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
 								<input id="fakturo_system_options_group_digits_invoice_number" name="fakturo_system_options_group[digits_invoice_number]" type="number" maxlength="2" min=2 max=20 value="'.$options['digits_invoice_number'].'">
-								<label for="fakturo_system_digits_invoice_number">
+								<p class="description">
 									'. __( 'Choose the default number of digits of the invoice number.', FAKTURO_TEXT_DOMAIN ) .'           
-								</label>
+								</p>
 					
 							</td>
 						
@@ -781,9 +781,9 @@ class fktrSettings {
 							<th>'. __( 'Format invoice numbers in lists and reports', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
 									'.$echoSelectListInvoiceNumber.'
-									<label for="fakturo_system_position">
+									<p class="description">
 										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
-									</label>
+									</p>
 							</td>
 						
 					  </tr>
@@ -809,9 +809,9 @@ class fktrSettings {
 							<th>'. __( 'Format of number of receipt', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
 								<input id="fakturo_system_options_group_format_number_receipt" name="fakturo_system_options_group[format_number_receipt]" type="text" value="'.$options['format_number_receipt'].'">
-								<label for="fakturo_system_format_invoice_number">
+								<p class="description">
 									'. __( 'Choose the default Format of number of receipt used in the system', FAKTURO_TEXT_DOMAIN ) .'           
-								</label>
+								</p>
 					
 							</td>
 						
@@ -820,9 +820,9 @@ class fktrSettings {
 							<th>'. __( 'Search code on invoices, budgets, etc..', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
 									'.$echoSelectSearchCode.'
-									<label for="fakturo_system_position">
+									<p class="description">
 										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
-									</label>
+									</p>
 							</td>
 						
 					  </tr>
@@ -830,18 +830,18 @@ class fktrSettings {
 							<th>'. __( 'Default code for invoice', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
 									'.$echoSelectDefaultCode.'
-									<label for="fakturo_system_position">
+									<p class="description">
 										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
-									</label>
+									</p>
 							</td>
 					  </tr>
 					   <tr>
 							<th>'. __( 'Default description for invoice', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
 									'.$echoSelectDefaultDescription.'
-									<label for="fakturo_system_options_group_default_description">
+									<p class="description">
 										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
-									</label>
+									</p>
 							</td>
 					  </tr>
 					  
@@ -849,9 +849,9 @@ class fktrSettings {
 							<th>'. __( 'Default date format', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
 									'.$echoSelectDefaultDate.'
-									<label for="fakturo_system_options_group_dateformat">
+									<p class="description">
 										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
-									</label>
+									</p>
 							</td>
 				
 					  </tr>

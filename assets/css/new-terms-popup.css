@@ -47,6 +47,10 @@
     font-size: 13px;
     font-style: italic;
 }
+#fktr_background_popup_taxonomy #popup_content .form-wrap .form-field {
+    margin: 1em 0;
+    padding: 0;
+}
 #fktr_background_popup_taxonomy #popup_content .form-wrap label {
     display: block;
     padding: 2px 0;

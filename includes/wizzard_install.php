@@ -45,7 +45,7 @@ class fktr_wizzard {
 	*/
 	public static function get_steps() {
 		if (empty($steps)) {
-			$steps = array('Load Countries', 'Company Info', 'Load Currencies', 'Money Format', 'Other 5', 'Other 6');
+			$steps = array('Load Countries', 'Company Info', 'Load Currencies', 'Money Format', 'Invoices', 'Other 6');
 			$steps = apply_filters('fktr_steps_setup_array', $steps);
 		}
 		return $steps;
@@ -138,6 +138,11 @@ class fktr_wizzard {
 					'currencies' => $currencies ,
 				)
 			);
+			
+		} 
+		if (self::$current_request['step'] == 5) {
+			wp_enqueue_script( 'jquery-wizzard-invoices', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_invoices_format.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			
 			
 		} 
 		
@@ -828,15 +833,166 @@ class fktr_wizzard {
 	* @since 0.7
 	*/
 	public static function page_step_five() {
+		$options = get_option('fakturo_system_options_group');
+		$selectInvoiceType = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Choose a Invoice Type', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => $options['invoice_type'],
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[invoice_type]',
+										'id'            	 => 'fakturo_system_options_group_invoice_type',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_invoice_types',
+										'hide_if_empty'      => false
+									));
+		$selectSalePoint = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Choose a Sale Point', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => $options['sale_point'],
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[sale_point]',
+										'id'                 => 'fakturo_system_options_group_sale_point',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_sale_points',
+										'hide_if_empty'      => false
+									));
+
+		$selectListInvoiceNumber = array();
+		$selectListInvoiceNumber['sale_point'] = __( 'Sale point', FAKTURO_TEXT_DOMAIN );
+		$selectListInvoiceNumber['invoice_number'] = __('Invoice number', FAKTURO_TEXT_DOMAIN );
+		$selectListInvoiceNumber['invoice_type_name'] = __('Invoice Type name', FAKTURO_TEXT_DOMAIN );
+		$selectListInvoiceNumber['invoice_type_short_name'] = __('Invoice Type Short-name', FAKTURO_TEXT_DOMAIN );
+		$selectListInvoiceNumber['invoice_type_symbol'] = __('Invoice Type symbol', FAKTURO_TEXT_DOMAIN );
 		
-		$print_html = '<h1>'.__('Step Five', FAKTURO_TEXT_DOMAIN).'</h1>
+		$selectListInvoiceNumber = apply_filters('fktr_list_invoice_number_array', $selectListInvoiceNumber);
+		
+		//echo print_r($options['search_code'], true);
+		//
+		$echoSelectListInvoiceNumber = '<select id="fakturo_system_options_group_list_invoice_number" name="fakturo_system_options_group[list_invoice_number][]" multiple="multiple" style="width:400px;">';
+		foreach ($selectListInvoiceNumber as $key => $txt) {
+			$echoSelectListInvoiceNumber .= '<option value="'.$key.'"'.selected($key, (array_search($key, $options['list_invoice_number'])!==false) ? $key : '' , false).'>'.$txt.'</option>';
+		}
+		$echoSelectListInvoiceNumber .= '</select>';		
+
+		$print_html = '<h1>'.__('Invoices', FAKTURO_TEXT_DOMAIN).'</h1>
 					'.self::get_form().'
-					<p>Install content</p>
+				<table class="form-table">
+				<tr>
+				<td>
+					<table class="form-table">
+						<tr>
+							<td>'. __( 'Default Invoice Type', FAKTURO_TEXT_DOMAIN ) .'<br/><br/> </td>
+							<td class="italic-label">
+								  '.$selectInvoiceType.' '.fktr_popup_taxonomy::button(
+																	array(
+																		'taxonomy' => 'fktr_invoice_types',
+																		'echo' => 0,
+																		'class' => 'button',
+																		'selector' => '#fakturo_system_options_group_invoice_type',
+																	)
+															).'	
+								  <p class="description">
+								  	'. __( 'Choose the default Invoice Type used in the system', FAKTURO_TEXT_DOMAIN ) .' 
+							      </p>
+							</td>
+						
+					  </tr>
+					  <tr>
+						<td>'. __( 'Sale Point', FAKTURO_TEXT_DOMAIN ) .'</td>
+						<td class="italic-label">
+								  '.$selectSalePoint.' '.fktr_popup_taxonomy::button(
+																	array(
+																		'taxonomy' => 'fktr_sale_points',
+																		'echo' => 0,
+																		'class' => 'button',
+																		'selector' => '#fakturo_system_options_group_sale_point',
+																	)
+															).'
+								  <p class="description">
+								  	'. __( 'Choose your sale point.', FAKTURO_TEXT_DOMAIN ) .' 
+							      </p>
+						</td>
+					  </tr>
+					 
+					   <tr>
+							<td style="width: 200px;">'. __( 'Number of digits of the invoice number', FAKTURO_TEXT_DOMAIN ) .'</td>
+							<td class="italic-label">
+								<input id="fakturo_system_options_group_digits_invoice_number" name="fakturo_system_options_group[digits_invoice_number]" type="number" maxlength="2" min=2 max=20 value="'.$options['digits_invoice_number'].'">
+								<p class="description">
+									'. __( 'Choose the default number of digits of the invoice number.', FAKTURO_TEXT_DOMAIN ) .'           
+								</p>
+					
+							</td>
+						
+					  </tr>
+					  <tr>
+							<td style="width: 200px;">'. __( 'Format invoice numbers in lists and reports', FAKTURO_TEXT_DOMAIN ) .'</td>
+							<td class="italic-label">
+									'.$echoSelectListInvoiceNumber.'
+									<p class="description">
+										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
+									</p>
+							</td>
+						
+					  </tr>
+					   <tr>
+							<td style="width: 200px;">'. __( 'Individual numeration by Invoice Type', FAKTURO_TEXT_DOMAIN ) .'</td>
+							<td class="italic-label">
+								<input id="fakturo_system_options_group_individual_numeration_by_invoice_type" class="slidercheck" type="checkbox" name="fakturo_system_options_group[individual_numeration_by_invoice_type]" value="1" '.(($options['individual_numeration_by_invoice_type'])?'checked="checked"':'').'>
+								<label for="fakturo_system_options_group_individual_numeration_by_invoice_type"><span class="ui"></span>  </label>
+								<p class="description">'
+									. __( 'Activate for use individual numeration by Invoice Type', FAKTURO_TEXT_DOMAIN ).'
+								</p>
+							
+							</td>
+						
+					  </tr>
+					   <tr>
+							<td style="width: 200px;">'. __( 'Individual numeration by Sale Point', FAKTURO_TEXT_DOMAIN ) .'</td>
+							<td class="italic-label">
+								<input id="fakturo_system_options_group_individual_numeration_by_sale_point" class="slidercheck" type="checkbox" name="fakturo_system_options_group[individual_numeration_by_sale_point]" value="1" '.(($options['individual_numeration_by_sale_point'])?'checked="checked"':'').'>
+								<label for="fakturo_system_options_group_individual_numeration_by_sale_point"><span class="ui"></span>	</label>
+								<p class="description">'
+									. __( 'Activate for use individual numeration by Sale Point', FAKTURO_TEXT_DOMAIN ).'
+								</p>
+							</td>
+						
+					  </tr>
+					</table>
+				</td>
+				<td style="text-align: center; width: 40%;">
+					Example the current format to invoice numbers
+					<div id="invoice_format_test" style="text-align: center;  font-size: 34px;"> 
+						0002 00123456
+					</div>
+					
+				</td>
+				</tr>
+
+				</table>
 
 					'.self::get_buttons().'
 					</form>
 					';
-		self::ouput($print_html, __('Company Info', FAKTURO_TEXT_DOMAIN));
+		self::ouput($print_html, __('Invoices', FAKTURO_TEXT_DOMAIN));
 	
 	}
 	/**
@@ -942,7 +1098,15 @@ class fktr_wizzard {
 			input[type=text], textarea, select {
 				width: 300px;
 			}
-			
+			.form-table td p {
+			    margin-top: 4px !important;
+			    margin-bottom: 0 !important;
+			}
+			p.description, p.help, span.description {
+			    font-size: 13px;
+			    font-style: italic;
+			}
+
 			#error-page {
 				background: #fff;
 				color: #444;
