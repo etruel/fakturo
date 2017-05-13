@@ -26,7 +26,8 @@ class fktr_tax_nvoice_types {
 		add_filter('manage_'.self::$tax_name.'_custom_column',  array(__CLASS__, 'theme_columns'), 10, 3);
 		
 		add_action('admin_enqueue_scripts', array(__CLASS__, 'scripts'), 10, 1);
-
+		add_action('fktr_popup_tax_'.self::$tax_name.'_print_scripts', array(__CLASS__, 'scripts'), 10, 1);
+		
 		add_filter('redirect_term_location', array(__CLASS__, 'redirect_term_location'), 0, 2);
 	}
 	
@@ -112,12 +113,12 @@ class fktr_tax_nvoice_types {
 		<style type="text/css">.form-field.term-parent-wrap,.form-field.term-slug-wrap, .form-field label[for="parent"], .form-field #parent {display: none;}  .form-field.term-description-wrap { display:none;} .inline.hide-if-no-js{ display:none;} .view{ display:none;}</style>
 		<div class="form-field" id="short_name_div">
 			<label for="term_meta[short_name]">'.__( 'Short Name', FAKTURO_TEXT_DOMAIN ).'</label>
-			<input type="text" name="term_meta[short_name]" id="term_meta[short_name]" value="">
+			<input type="text" name="term_meta[short_name]" id="term_meta_short_name" value="">
 			<p class="description">'.__( 'Enter a short name of the invoice types', FAKTURO_TEXT_DOMAIN ).'</p>
 		</div>
 		
 		
-		<div class="form-field" id="Symbol_div">
+		<div class="form-field" id="symbol_div">
 			<label for="term_meta[symbol]">'.__( 'Symbol', FAKTURO_TEXT_DOMAIN ).'</label>
 			<input style="width: 60px;text-align: center; padding-right: 0px; " maxlength="1" type="text" name="term_meta[symbol]" id="term_meta_symbol" value="">
 			<p class="description">'.__( 'Enter a symbol', FAKTURO_TEXT_DOMAIN ).'</p>
@@ -150,7 +151,7 @@ class fktr_tax_nvoice_types {
 				<label for="term_meta[short_name]">'.__( 'Short Name', FAKTURO_TEXT_DOMAIN ).'</label>
 			</th>
 			<td>
-				<input type="text" name="term_meta[short_name]" id="term_meta[short_name]" value="'.$term_meta->short_name.'">
+				<input type="text" name="term_meta[short_name]" id="term_meta_short_name" value="'.$term_meta->short_name.'">
 				<p class="description">'.__( 'Enter a short name of the invoice types', FAKTURO_TEXT_DOMAIN ).'</p>
 			</td>
 		</tr>
@@ -159,7 +160,7 @@ class fktr_tax_nvoice_types {
 				<label for="term_meta[symbol]">'.__( 'Symbol', FAKTURO_TEXT_DOMAIN ).'</label>
 			</th>
 			<td>
-				<input style="width: 60px;text-align: center; padding-right: 0px; " maxlength="1" type="text" name="term_meta[symbol]" id="term_meta_symbol" value="'.$term_meta->symbol.'">
+				<input style="width: 60px;text-align: center; padding-right: 0px; " maxlength="1" type="text" name="term_meta_symbol" id="term_meta_symbol" value="'.$term_meta->symbol.'">
 				<p class="description">'.__( 'Enter a symbol', FAKTURO_TEXT_DOMAIN ).'</p>
 			</td>
 		</tr>

@@ -33,7 +33,9 @@ class fktr_wizzard {
 		add_action('fktr_wizzard_action_4', array(__CLASS__, 'action_four'));
 
 		add_action('fktr_wizzard_install_step_5', array(__CLASS__, 'page_step_five'));
-
+		add_action('fktr_wizzard_action_5', array(__CLASS__, 'action_five'));
+		
+		add_action('fktr_wizzard_install_step_6', array(__CLASS__, 'page_step_six'));
 		
 		
 	}
@@ -45,7 +47,7 @@ class fktr_wizzard {
 	*/
 	public static function get_steps() {
 		if (empty($steps)) {
-			$steps = array('Load Countries', 'Company Info', 'Load Currencies', 'Money Format', 'Invoices', 'Other 6');
+			$steps = array('Load Countries', 'Company Info', 'Load Currencies', 'Money Format', 'Invoices', 'Receipts');
 			$steps = apply_filters('fktr_steps_setup_array', $steps);
 		}
 		return $steps;
@@ -812,7 +814,7 @@ class fktr_wizzard {
 	
 	}
 	/**
-	* Static function action_two
+	* Static function action_four
 	* @access public
 	* @return void
 	* @since 0.7
@@ -993,6 +995,52 @@ class fktr_wizzard {
 					</form>
 					';
 		self::ouput($print_html, __('Invoices', FAKTURO_TEXT_DOMAIN));
+	
+	}
+	/**
+	* Static function action_five
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function action_five() {
+		$new_options = get_option('fakturo_system_options_group', array());
+		$new_options['invoice_type'] = $_POST['fakturo_system_options_group']['invoice_type'];
+		$new_options['sale_point'] = $_POST['fakturo_system_options_group']['sale_point'];
+		$new_options['digits_invoice_number'] = $_POST['fakturo_system_options_group']['digits_invoice_number'];
+		$new_options['list_invoice_number'] = $_POST['fakturo_system_options_group']['list_invoice_number'];
+		if (!isset($_POST['fakturo_system_options_group']['individual_numeration_by_invoice_type'])){
+			$_POST['fakturo_system_options_group']['individual_numeration_by_invoice_type'] = 0;
+		}
+		if (!isset($_POST['fakturo_system_options_group']['individual_numeration_by_sale_point'])){
+			$_POST['fakturo_system_options_group']['individual_numeration_by_sale_point'] = 0;
+		}
+		$new_options['individual_numeration_by_invoice_type'] = $_POST['fakturo_system_options_group']['individual_numeration_by_invoice_type'];
+		$new_options['individual_numeration_by_sale_point'] = $_POST['fakturo_system_options_group']['individual_numeration_by_sale_point'];
+		update_option('fakturo_system_options_group', $new_options);
+	}
+	/**
+	* Static function page_step_six
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function page_step_six() {
+		
+		$print_html = '<h1>'.__('Receipts', FAKTURO_TEXT_DOMAIN).'</h1>
+					'.self::get_form().'
+					<table class="form-table">
+						<tr>
+							
+								
+					 	</tr>
+
+					</table>	
+					
+					'.self::get_buttons().'
+					</form>
+					';
+		self::ouput($print_html, __('Receipts', FAKTURO_TEXT_DOMAIN));
 	
 	}
 	/**

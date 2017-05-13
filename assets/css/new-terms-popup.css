@@ -1,5 +1,6 @@
 #fktr_background_popup_taxonomy #popup_content {
 	margin: 10px;
+	padding-right: 10px;
 }
 #fktr_background_popup_taxonomy {
 	position:fixed;

@@ -1,4 +1,4 @@
-var example_invoi_type = {term_id:759, name: "Type B", slug:"tipo-b", short_name:"invB", symbol:"B"};
+var example_invoi_type = {term_id:759, name: "Invoice", slug:"tipo-b", short_name:"inv", symbol:"I"};
 var example_sale_point = {term_id:759, code: "2"};
 var example_number = '1295';
 jQuery(document).ready(function() {

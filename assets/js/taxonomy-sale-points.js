@@ -19,14 +19,24 @@ jQuery(document).ready(function() {
 		}
 		return true;
 	}
-	
-	jQuery('form').submit(function(e){
-		if (jQuery('#term_meta_code').val() == '') {
-			jQuery('#term_meta_code').focus();
-			e.preventDefault();
-			return false;
-		}
-		
+	jQuery(document).on('popup-tax-validate', function(e){
+		validate_form(e);
+	});
+	jQuery('#edittag').submit(function(e){
+		validate_form(e);
+	});
+	jQuery('#addtag').submit(function(e){
+		validate_form(e);
 	});
 
+
 });
+function validate_form(e) {
+	if (jQuery('#term_meta_code').val() == '') {
+		jQuery('#term_meta_code').addClass("form-invalid");
+		jQuery('#term_meta_code').focus();
+		e.preventDefault();
+		return false;
+	}
+	jQuery('#term_meta_code').removeClass("form-invalid");
+}

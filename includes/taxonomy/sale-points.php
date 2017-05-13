@@ -27,6 +27,8 @@ class fktr_tax_sale_points {
 		add_filter('manage_'.self::$tax_name.'_custom_column',  array(__CLASS__, 'theme_columns'), 10, 3);
 		
 		add_action('admin_enqueue_scripts', array(__CLASS__, 'scripts'), 10, 1);
+		add_action('fktr_popup_tax_'.self::$tax_name.'_print_scripts', array(__CLASS__, 'scripts'), 10, 1);
+		
 		add_filter('before_save_tax_'.self::$tax_name, array(__CLASS__, 'before_save'), 10, 1);
 		add_filter('redirect_term_location', array(__CLASS__, 'redirect_term_location'), 0, 2);
 		
