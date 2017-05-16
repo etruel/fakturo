@@ -14,6 +14,9 @@ class fktr_wizzard {
 	*/
 	public static function hooks() {
 		add_action('admin_post_fktr_wizzard', array(__CLASS__, 'page'));
+		add_action('admin_post_nopriv_fktr_wizzard', array(__CLASS__, 'redirect_login'));
+
+		
 		add_action('fktr_wizzard_output_print_scripts', array(__CLASS__, 'scripts'));
 		add_action('fktr_wizzard_output_print_styles', array(__CLASS__, 'styles'));
 		
@@ -38,6 +41,17 @@ class fktr_wizzard {
 		add_action('fktr_wizzard_install_step_6', array(__CLASS__, 'page_step_six'));
 		
 		
+	}
+	/**
+	* Static function redirect_login
+	* Redirect to login page when is user not logged.
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function redirect_login() {
+		wp_redirect(wp_login_url(admin_url('admin-post.php?'.http_build_query($_GET)), true));
+		die();
 	}
 	/**
 	* Static function get_steps
@@ -144,7 +158,20 @@ class fktr_wizzard {
 		} 
 		if (self::$current_request['step'] == 5) {
 			wp_enqueue_script( 'jquery-wizzard-invoices', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_invoices_format.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			
+			$invoices_types = get_fakturo_terms(array(
+							'taxonomy' => 'fktr_invoice_types',
+							'hide_empty' => false,
+				));
+			$sale_points = get_fakturo_terms(array(
+							'taxonomy' => 'fktr_sale_points',
+							'hide_empty' => false,
+				));
+			wp_localize_script('jquery-wizzard-invoices', 'invoices_object',
+				array(
+					'invoices_types' => $invoices_types,
+					'sale_points' => $sale_points,
+				)
+			);
 			
 		} 
 		

@@ -98,9 +98,15 @@ class fktr_tax_currency {
 	}
 		
 	public static function scripts() {
+		$requerimient = array( 'jquery' );
+		if (isset($_GET['action'])) {
+			if ($_GET['action']=='fktr_popup_taxonomy') {
+				$requerimient = array();
+			}
+		}
 		if (isset($_GET['taxonomy']) && $_GET['taxonomy'] == 'fktr_currencies') {
-			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			wp_enqueue_script( 'taxonomy-currencies', FAKTURO_PLUGIN_URL . 'assets/js/taxonomy-currencies.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', $requerimient, WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'taxonomy-currencies', FAKTURO_PLUGIN_URL . 'assets/js/taxonomy-currencies.js', $requerimient, WPE_FAKTURO_VERSION, true );
 			$setting_system = get_option('fakturo_system_options_group', false);
 			wp_localize_script('taxonomy-currencies', 'setting_system',
 				array(

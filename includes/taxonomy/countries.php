@@ -98,6 +98,12 @@ class fktr_tax_countries {
 	}
 	
 	public static function scripts() {
+		$requerimient = array( 'jquery' );
+		if (isset($_GET['action'])) {
+			if ($_GET['action']=='fktr_popup_taxonomy') {
+				$requerimient = array();
+			}
+		}
 		if (isset($_GET['taxonomy']) && $_GET['taxonomy'] == self::$tax_name) {
 			
 		}

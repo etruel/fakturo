@@ -101,9 +101,15 @@ class fktr_tax_sale_points {
 	}
 
 	public static function scripts() {
+		$requerimient = array( 'jquery' );
+		if (isset($_GET['action'])) {
+			if ($_GET['action']=='fktr_popup_taxonomy') {
+				$requerimient = array();
+			}
+		}
 		if (isset($_GET['taxonomy']) && $_GET['taxonomy'] == self::$tax_name) {
-			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			wp_enqueue_script( 'taxonomy-price-scales', FAKTURO_PLUGIN_URL . 'assets/js/taxonomy-sale-points.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', $requerimient, WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'taxonomy-price-scales', FAKTURO_PLUGIN_URL . 'assets/js/taxonomy-sale-points.js', $requerimient, WPE_FAKTURO_VERSION, true );
 			
 		}
 		

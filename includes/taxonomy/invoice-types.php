@@ -100,9 +100,15 @@ class fktr_tax_nvoice_types {
 		
 	}
 	public static function scripts() {
+		$requerimient = array( 'jquery' );
+		if (isset($_GET['action'])) {
+			if ($_GET['action']=='fktr_popup_taxonomy') {
+				$requerimient = array();
+			}
+		}
 		if (isset($_GET['taxonomy']) && $_GET['taxonomy'] == self::$tax_name) {
-			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			wp_enqueue_script( 'taxonomy-taxes', FAKTURO_PLUGIN_URL . 'assets/js/taxonomy-invoice-types.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', $requerimient, WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'taxonomy-taxes', FAKTURO_PLUGIN_URL . 'assets/js/taxonomy-invoice-types.js', $requerimient, WPE_FAKTURO_VERSION, true );
 			
 		}
 		
