@@ -1,3 +1,8 @@
 input[type=text], textarea, select {
     width: 300px;
 }
+#atab_fakturo_wizard {
+	color: red;
+    font-weight: bold;
+    text-shadow: yellow 0px 0px 3px;
+}

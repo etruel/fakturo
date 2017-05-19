@@ -57,6 +57,14 @@ class fktrNotices {
 	}
 	public static function settings_notices() {
 		
+		if (current_user_can('fktr_manage_wizard')) {
+			$first_time_wizard = get_option('fktr_first_time_wizard', false);
+			if (!$first_time_wizard) {
+				echo '<div id="message" class="notice notice-warning is-dismissible"><p>'.__('If it is your first time in the Fakturo you can easily configure it through the wizard.', FAKTURO_TEXT_DOMAIN ).' <a href="'.admin_url('admin-post.php?action=fktr_wizard').'" class="button button-primary">'.__('Enter Wizard', FAKTURO_TEXT_DOMAIN ).'</a></p></div>';
+				return true;
+			}
+		}
+
 		$count_currencies = wp_count_terms('fktr_currencies');
 		if ($count_currencies == 0) {
 			echo '<div id="message" class="notice notice-warning is-dismissible"><p>'.sprintf(__('Fakturo needs <strong>%s</strong> on the <a href="%s">%s</a> for proper operation.', FAKTURO_TEXT_DOMAIN ), __('at least one currency', FAKTURO_TEXT_DOMAIN), admin_url('edit-tags.php?taxonomy=fktr_currencies'), __('Currencies', FAKTURO_TEXT_DOMAIN)).'</p></div>';

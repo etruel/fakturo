@@ -34,6 +34,7 @@ class fktrUserRoles {
 			'delete_users' => true,
 			
 			'fakturo_reports' => true,
+			'fktr_manage_wizard' => true,
 			
 		);
 		/*

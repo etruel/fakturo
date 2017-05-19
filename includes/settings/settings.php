@@ -899,6 +899,7 @@ class fktrSettings {
 				'invoice_type' =>  array('text' => __( 'Invoice Types', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_invoice_types'), 'screen' => 'edit-fktr_invoice_types'),
 				'sale_points' =>  array('text' => __( 'Sale Points', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_sale_points'), 'screen' => 'edit-fktr_sale_points'),
 				'payment_types' =>  array('text' => __( 'Payment Types', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_payment_types'), 'screen' => 'edit-fktr_payment_types'), 
+				'fakturo_wizard' =>  array('text' => __( 'Run Configurations Wizard', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin-post.php?action=fktr_wizard'), 'screen' => 'fktr_wizard'), 
 				'default' => array('text' => __( '​​Company Settings', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-settings'), 'screen' => 'fakturo_page_fakturo-settings')
 				)
 			),
@@ -983,7 +984,7 @@ class fktrSettings {
 			foreach ($sections_tabs[$current_tab] as $sec_id => $sections) {
 				if ($sec_id != 'default') {
 					$active = ($current_screen->id == $sections['screen'] || (!empty($current_screen->post_type) && $current_screen->post_type == $sections['screen']) ) ?  ' current' : '';
-					echo '<li>'.$delimiter.'<a href="' . esc_url( $sections['url'] ) . '" title="' . esc_attr( $sections['text'] ) . '" class="' . $active . '">' . esc_html( $sections['text'] ) . '</a></li>';
+					echo '<li>'.$delimiter.'<a href="' . esc_url( $sections['url'] ) . '" title="' . esc_attr( $sections['text'] ) . '" class="' . $active . '" id="atab_'.$sec_id.'">' . esc_html( $sections['text'] ) . '</a></li>';
 					$delimiter = ' | ';
 				}
 			}

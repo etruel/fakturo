@@ -87,11 +87,11 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Added the capabilities of the report pages and sections.
 * Added Client's account report.
 * Wizard install
-* Loading all countries and states on wizzard install.
-* Company info on wizzard install.
-* Loading all currencies on wizzard install.
-* Money Format on wizzard install.
-* Invoice and Format invoice number on wizzard install.
+* Loading all countries and states on wizard install.
+* Company info on wizard install.
+* Loading all currencies on wizard install.
+* Money Format on wizard install.
+* Invoice and Format invoice number on wizard install.
 
 = 0.6 Beta =
 * Added default contents to emails and print templates instead to begin from scratch.

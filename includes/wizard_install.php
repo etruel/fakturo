@@ -2,7 +2,7 @@
 	// Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class fktr_wizzard {
+class fktr_wizard {
 
 	public static $steps = array();
 	public static $current_request = array();
@@ -14,14 +14,17 @@ class fktr_wizzard {
 	* @since 0.7
 	*/
 	public static function hooks() {
-		add_action('admin_post_fktr_wizzard', array(__CLASS__, 'page'));
-		add_action('admin_post_nopriv_fktr_wizzard', array(__CLASS__, 'redirect_login'));
+
+		add_action('admin_init', array(__CLASS__, 'force_redirect'));
+
+		add_action('admin_post_fktr_wizard', array(__CLASS__, 'page'));
+		add_action('admin_post_nopriv_fktr_wizard', array(__CLASS__, 'redirect_login'));
 
 		
-		add_action('fktr_wizzard_output_print_scripts', array(__CLASS__, 'scripts'));
-		add_action('fktr_wizzard_output_print_styles', array(__CLASS__, 'styles'));
+		add_action('fktr_wizard_output_print_scripts', array(__CLASS__, 'scripts'));
+		add_action('fktr_wizard_output_print_styles', array(__CLASS__, 'styles'));
 		
-		add_action('admin_post_fktr_wizzard_post', array(__CLASS__, 'post_actions'));
+		add_action('admin_post_fktr_wizard_post', array(__CLASS__, 'post_actions'));
 
 		self::add_step(1, __( 'Load Countries', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_step_one'), array(__CLASS__, 'action_one'));
 		add_action('wp_ajax_fktr_load_countries_states', array(__CLASS__, 'load_countries_ajax'));
@@ -38,12 +41,43 @@ class fktr_wizzard {
 		self::add_step(8, __( 'Stock', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_stock'), array(__CLASS__, 'action_stock'));
 		self::add_step(9, __( 'Payment Type', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_payment_type'), array(__CLASS__, 'action_payment_type'));
 
-		
-		
+	}
+	/**
+	* Static function redirect_login
+	* Redirect to login page when is user not logged.
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function redirect_login() {
+		wp_redirect(wp_login_url(admin_url('admin-post.php?'.http_build_query($_GET)), true));
+		die();
+	}
+	/**
+	* Static function force_redirect
+	* Force redirect to wizard page if exist a const FORCE_REDIRECT_FKTR_WIZARD.
+	* @access public
+	* @return void
+	* @since version
+	*/
+	public static function force_redirect() {
+		if (defined('FORCE_REDIRECT_FKTR_WIZARD')) {
+			if (current_user_can('fktr_manage_wizard')) {
+				$first_time_wizard = get_option('fktr_first_time_wizard', false);
+				if (!$first_time_wizard) {
+					wp_redirect(admin_url('admin-post.php?action=fktr_wizard'));
+					die();
+				}
+			}
+		}
 	}
 	/**
 	* Static function add_steep
 	* @access public
+	* @param int $step with current step number to add.
+	* @param string $title with current step title to add.
+	* @param callback $callback_page with current step callback_page to add.
+	* @param callback $callback_action with current step callback_action to add.
 	* @return true on success or false on failure.
 	* @since 0.7
 	*/
@@ -62,29 +96,19 @@ class fktr_wizzard {
 		if (!isset(self::$steps_data[$step_offset])) {
 			self::$steps_data[$step_offset] = $new_step;
 		} else {
-			remove_action('fktr_wizzard_install_step_'.$step, self::$steps_data[$step_offset]['callback_page']);
+			remove_action('fktr_wizard_install_step_'.$step, self::$steps_data[$step_offset]['callback_page']);
 			if (!empty(self::$steps_data[$step_offset]['callback_action'])) {
-				remove_action('fktr_wizzard_action_'.$step, self::$steps_data[$step_offset]['callback_action']);
+				remove_action('fktr_wizard_action_'.$step, self::$steps_data[$step_offset]['callback_action']);
 			}
 			self::$steps_data[$step_offset] = $new_step;
 		}
-		add_action('fktr_wizzard_install_step_'.$step, self::$steps_data[$step_offset]['callback_page']);
+		add_action('fktr_wizard_install_step_'.$step, self::$steps_data[$step_offset]['callback_page']);
 		if (!empty(self::$steps_data[$step_offset]['callback_action'])) {
-			add_action('fktr_wizzard_action_'.$step, self::$steps_data[$step_offset]['callback_action']);
+			add_action('fktr_wizard_action_'.$step, self::$steps_data[$step_offset]['callback_action']);
 		}
 		return true;
 	}
-	/**
-	* Static function redirect_login
-	* Redirect to login page when is user not logged.
-	* @access public
-	* @return void
-	* @since 0.7
-	*/
-	public static function redirect_login() {
-		wp_redirect(wp_login_url(admin_url('admin-post.php?'.http_build_query($_GET)), true));
-		die();
-	}
+	
 	/**
 	* Static function get_steps
 	* @access public
@@ -96,7 +120,6 @@ class fktr_wizzard {
 		foreach (self::$steps_data as $step_data) {
 			$steps[] = $step_data['title'];
 		}
-		//$steps = array(, , , , , , , , );
 		$steps = apply_filters('fktr_steps_setup_array', $steps);
 		return $steps;
 	}
@@ -108,7 +131,7 @@ class fktr_wizzard {
 	*/
 	public static function default_request_values() {
 		$default_values = array(
-							'action' => 'fktr_wizzard',
+							'action' => 'fktr_wizard',
 							'step' => 1
 						);
 		return $default_values;
@@ -120,20 +143,20 @@ class fktr_wizzard {
 	* @since 0.7
 	*/
 	public static function post_actions() {
-		if (!wp_verify_nonce($_POST['_wpnonce'], 'fktr_wizzard_nonce' ) ) {
+		if (!wp_verify_nonce($_POST['_wpnonce'], 'fktr_wizard_nonce' ) ) {
 		    wp_die(__( 'Security check', FAKTURO_TEXT_DOMAIN )); 
 		}
 		
 		if (!empty($_POST['step_action']) && is_numeric($_POST['step_action'])) {
-			do_action('fktr_wizzard_action_'.$_POST['step_action']);
+			do_action('fktr_wizard_action_'.$_POST['step_action']);
 		} else {
-			$output = ''.__('A problem please try again.').'<br/><br/> <a href="'.admin_url('admin-post.php?action=fktr_wizzard').'" class="button">'.__('Back.').'</a>';
+			$output = ''.__('A problem please try again.').'<br/><br/> <a href="'.admin_url('admin-post.php?action=fktr_wizard').'" class="button">'.__('Back.').'</a>';
 			wp_die($output); 
 		}
 		$all_steps = self::get_steps();
 		if (count($all_steps) > $_POST['step_action']) {
 			//redirect to next steep
-			wp_redirect(admin_url('admin-post.php?action=fktr_wizzard&step='.($_POST['step_action']+1)));
+			wp_redirect(admin_url('admin-post.php?action=fktr_wizard&step='.($_POST['step_action']+1)));
 		} else {
 			// redirect to dashboard
 			wp_redirect(admin_url('admin.php?page=fakturo_dashboard'));
@@ -148,43 +171,43 @@ class fktr_wizzard {
 	public static function scripts() {
 		wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 		wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-		wp_enqueue_script( 'jquery-wizzard-main', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_main.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+		wp_enqueue_script( 'jquery-wizard-main', FAKTURO_PLUGIN_URL . 'assets/js/wizard_main.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 		wp_enqueue_script( 'jquery-fktr-new-terms-popup', FAKTURO_PLUGIN_URL . 'assets/js/new-terms-popup.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 		$steps = self::get_steps();
 		$porcent_per_steep = ((100-count($steps))/count($steps));
-		wp_localize_script('jquery-wizzard-main', 'backend_object',
+		wp_localize_script('jquery-wizard-main', 'backend_object',
 			array('ajax_url' => admin_url( 'admin-ajax.php' ),
 				'loading_states_text' => __('Loading countries and states...', FAKTURO_TEXT_DOMAIN ),
 				'porcent_per_steep' => $porcent_per_steep,
 				'loading_image' => admin_url('images/spinner.gif'), 
 				'loading_states_text' => __('Loading states...', FAKTURO_TEXT_DOMAIN ),
 				'loading_currencies_text' => __('Loading currencies...', FAKTURO_TEXT_DOMAIN ),
-				'ajax_nonce' => wp_create_nonce('fktr_wizzard_ajax_nonce'),
+				'ajax_nonce' => wp_create_nonce('fktr_wizard_ajax_nonce'),
 				'loading_text' => __('Loading...', FAKTURO_TEXT_DOMAIN ),
 			)
 		);
 
 		if (self::$current_request['step'] == 1) {
-			wp_enqueue_script( 'jquery-wizzard-countries-states', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_countries_states.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'jquery-wizard-countries-states', FAKTURO_PLUGIN_URL . 'assets/js/wizard_countries_states.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 		} 
 
 		if (self::$current_request['step'] == 2) {
 			wp_enqueue_script('media-upload');
 			wp_enqueue_script('thickbox');
-			wp_enqueue_script( 'jquery-settings', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_company_info.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'jquery-settings', FAKTURO_PLUGIN_URL . 'assets/js/wizard_company_info.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			
 		} 
 		if (self::$current_request['step'] == 3) {
-			wp_enqueue_script( 'jquery-wizzard-currencies', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_currencies.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'jquery-wizard-currencies', FAKTURO_PLUGIN_URL . 'assets/js/wizard_currencies.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 		} 
 
 		if (self::$current_request['step'] == 4) {
-			wp_enqueue_script( 'jquery-wizzard-money', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_money.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'jquery-wizard-money', FAKTURO_PLUGIN_URL . 'assets/js/wizard_money.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			$currencies = get_fakturo_terms(array(
 							'taxonomy' => 'fktr_currencies',
 							'hide_empty' => false,
 				));
-			wp_localize_script('jquery-wizzard-money', 'money_object',
+			wp_localize_script('jquery-wizard-money', 'money_object',
 				array(
 					'currencies' => $currencies ,
 				)
@@ -192,7 +215,7 @@ class fktr_wizzard {
 			
 		} 
 		if (self::$current_request['step'] == 5) {
-			wp_enqueue_script( 'jquery-wizzard-invoices', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_invoices_format.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'jquery-wizard-invoices', FAKTURO_PLUGIN_URL . 'assets/js/wizard_invoices_format.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			$invoices_types = get_fakturo_terms(array(
 							'taxonomy' => 'fktr_invoice_types',
 							'hide_empty' => false,
@@ -201,7 +224,7 @@ class fktr_wizzard {
 							'taxonomy' => 'fktr_sale_points',
 							'hide_empty' => false,
 				));
-			wp_localize_script('jquery-wizzard-invoices', 'invoices_object',
+			wp_localize_script('jquery-wizard-invoices', 'invoices_object',
 				array(
 					'invoices_types' => $invoices_types,
 					'sale_points' => $sale_points,
@@ -210,12 +233,12 @@ class fktr_wizzard {
 			
 		} 
 		if (self::$current_request['step'] == 6) {
-			wp_enqueue_script( 'jquery-wizzard-receipts', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_receipt_format.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'jquery-wizard-receipts', FAKTURO_PLUGIN_URL . 'assets/js/wizard_receipt_format.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 		} 
 
 		if (self::$current_request['step'] == 7) {
-			wp_enqueue_script('jquery-wizzard-date-format', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_date_format.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			wp_localize_script('jquery-wizzard-date-format', 'date_object',
+			wp_enqueue_script('jquery-wizard-date-format', FAKTURO_PLUGIN_URL . 'assets/js/wizard_date_format.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_localize_script('jquery-wizard-date-format', 'date_object',
 				array(
 					'date_one' => date_i18n('d/m/Y', time()),
 					'date_two' => date_i18n('m/d/Y', time()),
@@ -249,8 +272,13 @@ class fktr_wizzard {
 	* @since 0.7
 	*/
 	public static function page() {
-		self::$current_request = wp_parse_args($_GET, self::default_request_values());
-		do_action('fktr_wizzard_install_step_'.self::$current_request['step']);
+		if (current_user_can('fktr_manage_wizard')) {
+			update_option('fktr_first_time_wizard', true);
+			self::$current_request = wp_parse_args($_GET, self::default_request_values());
+			do_action('fktr_wizard_install_step_'.self::$current_request['step']);
+		} else {
+			wp_die(__('A security problem occurred, Please contact the admin.', FAKTURO_TEXT_DOMAIN));
+		}
 	}
 	/**
 	* Static function get_form
@@ -260,8 +288,8 @@ class fktr_wizzard {
 	*/
 	public static function get_form() {
 		$ret = '<form method="post" action="'.admin_url('admin-post.php').'">
-					'.wp_nonce_field('fktr_wizzard_nonce').'
-					<input type="hidden" name="action" value="fktr_wizzard_post"/>
+					'.wp_nonce_field('fktr_wizard_nonce').'
+					<input type="hidden" name="action" value="fktr_wizard_post"/>
 					<input type="hidden" name="step_action" value="'.self::$current_request['step'].'"/>';
 		return $ret;
 	}
@@ -275,7 +303,7 @@ class fktr_wizzard {
 		$steps = self::get_steps();
 		$ret = '<div id="buttons_container">';
 		if ((self::$current_request['step']-1) >= 1) {
-			$ret .= '<a href="'.admin_url('admin-post.php?action=fktr_wizzard&step='.(self::$current_request['step']-1)).'" class="button button-large">'. __( 'Previous', FAKTURO_TEXT_DOMAIN ) .'</a>	';
+			$ret .= '<a href="'.admin_url('admin-post.php?action=fktr_wizard&step='.(self::$current_request['step']-1)).'" class="button button-large">'. __( 'Previous', FAKTURO_TEXT_DOMAIN ) .'</a>	';
 		}
 
 		if (self::$current_request['step'] == count($steps)) {
@@ -285,7 +313,7 @@ class fktr_wizzard {
 		}	
 
 		if ((self::$current_request['step']) < count($steps)) {
-			$ret .= '  <a href="'.admin_url('admin-post.php?action=fktr_wizzard&step='.(self::$current_request['step']+1)).'" class="button button-large">'. __( 'Skip', FAKTURO_TEXT_DOMAIN ) .'</a>';
+			$ret .= '  <a href="'.admin_url('admin-post.php?action=fktr_wizard&step='.(self::$current_request['step']+1)).'" class="button button-large">'. __( 'Skip', FAKTURO_TEXT_DOMAIN ) .'</a>';
 		} else {
 			$ret .= '  <a href="'.admin_url('admin.php?page=fakturo_dashboard').'" class="button button-large">'. __( 'Skip and Finish', FAKTURO_TEXT_DOMAIN ) .'</a>';
 		}
@@ -350,7 +378,7 @@ class fktr_wizzard {
 	* @since 0.7
 	*/
 	public static function load_countries_ajax() {
-		check_ajax_referer('fktr_wizzard_ajax_nonce', 'nonce');
+		check_ajax_referer('fktr_wizard_ajax_nonce', 'nonce');
 		$country_id = 0;
 		if (!empty($_REQUEST['country_id']) && is_numeric($_REQUEST['country_id'])) {
 			$country_id = $_REQUEST['country_id'];
@@ -727,7 +755,7 @@ class fktr_wizzard {
 	* @since 0.7
 	*/
 	public static function load_currencies_ajax() {
-		check_ajax_referer('fktr_wizzard_ajax_nonce', 'nonce');
+		check_ajax_referer('fktr_wizard_ajax_nonce', 'nonce');
 		$currency_id = 0;
 		if (isset($_REQUEST['currency_id']) && is_numeric($_REQUEST['currency_id'])) {
 			$currency_id = $_REQUEST['currency_id'];
@@ -1683,9 +1711,9 @@ class fktr_wizzard {
 			?>
 		</style>
 		<?php
-			do_action('fktr_wizzard_output_print_styles');
+			do_action('fktr_wizard_output_print_styles');
 			wp_print_styles();
-			do_action('fktr_wizzard_output_print_scripts');
+			do_action('fktr_wizard_output_print_scripts');
 			wp_print_scripts();
 		?>
 	</head>
@@ -1736,5 +1764,5 @@ class fktr_wizzard {
 	}
 
 }
-fktr_wizzard::hooks();
+fktr_wizard::hooks();
 ?>
