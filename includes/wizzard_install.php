@@ -6,6 +6,7 @@ class fktr_wizzard {
 
 	public static $steps = array();
 	public static $current_request = array();
+	public static $steps_data = array();
 	/**
 	* Static function hooks
 	* @access public
@@ -21,26 +22,57 @@ class fktr_wizzard {
 		add_action('fktr_wizzard_output_print_styles', array(__CLASS__, 'styles'));
 		
 		add_action('admin_post_fktr_wizzard_post', array(__CLASS__, 'post_actions'));
-		add_action('fktr_wizzard_install_step_1', array(__CLASS__, 'page_step_one'));
-		add_action('fktr_wizzard_action_1', array(__CLASS__, 'action_one'));
+
+		self::add_step(1, __( 'Load Countries', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_step_one'), array(__CLASS__, 'action_one'));
 		add_action('wp_ajax_fktr_load_countries_states', array(__CLASS__, 'load_countries_ajax'));
 
-		add_action('fktr_wizzard_install_step_2', array(__CLASS__, 'page_step_two'));
-		add_action('fktr_wizzard_action_2', array(__CLASS__, 'action_two'));
+		self::add_step(2, __( 'Company Info', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_step_two'), array(__CLASS__, 'action_two'));
 
-		add_action('fktr_wizzard_install_step_3', array(__CLASS__, 'page_step_three'));
+		self::add_step(3, __( 'Load Currencies', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_step_three'), null);
 		add_action('wp_ajax_fktr_load_currencies', array(__CLASS__, 'load_currencies_ajax'));
 
+		self::add_step(4, __( 'Money Format', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_step_four'), array(__CLASS__, 'action_four'));
+		self::add_step(5, __( 'Invoices', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_step_five'), array(__CLASS__, 'action_five'));
+		self::add_step(6, __( 'Receipts', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_step_six'), array(__CLASS__, 'action_six'));
+		self::add_step(7, __( 'Date Format', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_step_seven'), array(__CLASS__, 'action_seven'));
+		self::add_step(8, __( 'Stock', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_stock'), array(__CLASS__, 'action_stock'));
+		self::add_step(9, __( 'Payment Type', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_payment_type'), array(__CLASS__, 'action_payment_type'));
 
-		add_action('fktr_wizzard_install_step_4', array(__CLASS__, 'page_step_four'));
-		add_action('fktr_wizzard_action_4', array(__CLASS__, 'action_four'));
-
-		add_action('fktr_wizzard_install_step_5', array(__CLASS__, 'page_step_five'));
-		add_action('fktr_wizzard_action_5', array(__CLASS__, 'action_five'));
-		
-		add_action('fktr_wizzard_install_step_6', array(__CLASS__, 'page_step_six'));
 		
 		
+	}
+	/**
+	* Static function add_steep
+	* @access public
+	* @return true on success or false on failure.
+	* @since 0.7
+	*/
+	public static function add_step($step, $title, $callback_page, $callback_action) {
+		$step_offset = $step-1;
+		$new_step = array(
+				'step' => $step, 
+				'title' => $title, 
+				'callback_page' => $callback_page, 
+				'callback_action' => $callback_action
+			);
+		$new_step = apply_filters('fktr_new_step_array_data', $new_step);
+		if (empty($new_step)) {
+			return false;
+		}
+		if (!isset(self::$steps_data[$step_offset])) {
+			self::$steps_data[$step_offset] = $new_step;
+		} else {
+			remove_action('fktr_wizzard_install_step_'.$step, self::$steps_data[$step_offset]['callback_page']);
+			if (!empty(self::$steps_data[$step_offset]['callback_action'])) {
+				remove_action('fktr_wizzard_action_'.$step, self::$steps_data[$step_offset]['callback_action']);
+			}
+			self::$steps_data[$step_offset] = $new_step;
+		}
+		add_action('fktr_wizzard_install_step_'.$step, self::$steps_data[$step_offset]['callback_page']);
+		if (!empty(self::$steps_data[$step_offset]['callback_action'])) {
+			add_action('fktr_wizzard_action_'.$step, self::$steps_data[$step_offset]['callback_action']);
+		}
+		return true;
 	}
 	/**
 	* Static function redirect_login
@@ -60,10 +92,12 @@ class fktr_wizzard {
 	* @since 0.7
 	*/
 	public static function get_steps() {
-		if (empty($steps)) {
-			$steps = array('Load Countries', 'Company Info', 'Load Currencies', 'Money Format', 'Invoices', 'Receipts');
-			$steps = apply_filters('fktr_steps_setup_array', $steps);
+		$steps = array();
+		foreach (self::$steps_data as $step_data) {
+			$steps[] = $step_data['title'];
 		}
+		//$steps = array(, , , , , , , , );
+		$steps = apply_filters('fktr_steps_setup_array', $steps);
 		return $steps;
 	}
 	/**
@@ -101,7 +135,8 @@ class fktr_wizzard {
 			//redirect to next steep
 			wp_redirect(admin_url('admin-post.php?action=fktr_wizzard&step='.($_POST['step_action']+1)));
 		} else {
-			// redirect to welcome
+			// redirect to dashboard
+			wp_redirect(admin_url('admin.php?page=fakturo_dashboard'));
 		}
 	}
 	/**
@@ -174,6 +209,19 @@ class fktr_wizzard {
 			);
 			
 		} 
+		if (self::$current_request['step'] == 6) {
+			wp_enqueue_script( 'jquery-wizzard-receipts', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_receipt_format.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+		} 
+
+		if (self::$current_request['step'] == 7) {
+			wp_enqueue_script('jquery-wizzard-date-format', FAKTURO_PLUGIN_URL . 'assets/js/wizzard_date_format.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_localize_script('jquery-wizzard-date-format', 'date_object',
+				array(
+					'date_one' => date_i18n('d/m/Y', time()),
+					'date_two' => date_i18n('m/d/Y', time()),
+				)
+			);
+		} 
 		
 	}
 	/**
@@ -239,7 +287,7 @@ class fktr_wizzard {
 		if ((self::$current_request['step']) < count($steps)) {
 			$ret .= '  <a href="'.admin_url('admin-post.php?action=fktr_wizzard&step='.(self::$current_request['step']+1)).'" class="button button-large">'. __( 'Skip', FAKTURO_TEXT_DOMAIN ) .'</a>';
 		} else {
-			$ret .= '  <a href="'.admin_url('admin-post.php?action=fktr_wizzard&step='.(self::$current_request['step']+1)).'" class="button button-large">'. __( 'Skip and Finish', FAKTURO_TEXT_DOMAIN ) .'</a>';
+			$ret .= '  <a href="'.admin_url('admin.php?page=fakturo_dashboard').'" class="button button-large">'. __( 'Skip and Finish', FAKTURO_TEXT_DOMAIN ) .'</a>';
 		}
 						
 		$ret .= '</div>';
@@ -1053,23 +1101,245 @@ class fktr_wizzard {
 	* @since 0.7
 	*/
 	public static function page_step_six() {
-		
+		$options = get_option('fakturo_system_options_group');
+		if (empty($options['digits_receipt_number'])) {
+			$options['digits_receipt_number'] = 8;
+		}
 		$print_html = '<h1>'.__('Receipts', FAKTURO_TEXT_DOMAIN).'</h1>
 					'.self::get_form().'
 					<table class="form-table">
 						<tr>
-							
+							<td>
+								<table class="form-table">
+									<tr>
+										<td>'. __( 'Number of digits of the receipt number', FAKTURO_TEXT_DOMAIN ) .'<br/><br/></td>
+										<td class="italic-label">
+											<input id="fakturo_system_options_group_digits_receipt_number" name="fakturo_system_options_group[digits_receipt_number]" type="number" maxlength="2" min=2 max=20 value="'.$options['digits_receipt_number'].'">
+											 <p class="description">
+												'. __( 'Choose the default number of digits of the receipt number.', FAKTURO_TEXT_DOMAIN ) .'           
+											</p>
 								
-					 	</tr>
-
+										</td>
+								  </tr>
+								</table>
+							</td>
+							<td style="text-align: center; width: 40%;">
+								Example the current format to receipt numbers
+								<div id="receipt_format_test" style="text-align: center;  font-size: 34px;"> 
+									00000
+								</div>
+								
+							</td>
+						</tr>
 					</table>	
-					
+					<br/><br/>
 					'.self::get_buttons().'
 					</form>
 					';
 		self::ouput($print_html, __('Receipts', FAKTURO_TEXT_DOMAIN));
 	
 	}
+	/**
+	* Static function action_six
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function action_six() {
+		$new_options = get_option('fakturo_system_options_group', array());
+		$new_options['digits_receipt_number'] = $_POST['fakturo_system_options_group']['digits_receipt_number'];
+		update_option('fakturo_system_options_group', $new_options);
+	}
+	/**
+	* Static function page_step_seven
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function page_step_seven() {
+		$options = get_option('fakturo_system_options_group');
+		if (empty($options['dateformat'])) {
+			$options['dateformat'] = 'd/m/Y';
+		}
+		$selectDefaultDate = array();
+		$selectDefaultDate['d/m/Y'] = __( 'dd/mm/YYYY', FAKTURO_TEXT_DOMAIN );
+		$selectDefaultDate['m/d/Y'] = __( 'mm/dd/YYYY', FAKTURO_TEXT_DOMAIN );						
+		$selectDefaultDate = apply_filters('fktr_default_format_date_array', $selectDefaultDate);
+		
+		$echoSelectDefaultDate = '<select id="fakturo_system_options_group_dateformat" name="fakturo_system_options_group[dateformat]">';
+		foreach ($selectDefaultDate as $key => $txt) {
+			$echoSelectDefaultDate .= '<option value="'.$key.'"'.selected($key, $options['dateformat'], false).'>'.$txt.'</option>';
+		}
+		$echoSelectDefaultDate .= '</select>';	
+		$print_html = '<h1>'.__('Date Format', FAKTURO_TEXT_DOMAIN).'</h1>
+					'.self::get_form().'
+					<table class="form-table">
+						<tr>
+							<td>
+								<table class="form-table">
+									<tr>
+										<td>'. __( 'Default date format', FAKTURO_TEXT_DOMAIN ) .'<br/></td>
+										<td class="italic-label">
+												'.$echoSelectDefaultDate.'
+												<p class="description">
+													'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
+												</p>
+										</td>
+											
+								 	</tr>
+
+								</table>	
+							</td>
+							<td style="text-align: center; width: 40%;">
+								Example the current date format
+								<div id="date_format_test" style="text-align: center;  font-size: 34px;"> 
+									12/31/1992
+								</div>
+								
+							</td>
+						</tr>
+					</table><br/><br/>
+					'.self::get_buttons().'
+					</form>
+					';
+		self::ouput($print_html, __('Date Format', FAKTURO_TEXT_DOMAIN));
+	
+	}
+	/**
+	* Static function action_seven
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function action_seven() {
+		$new_options = get_option('fakturo_system_options_group', array());
+		$new_options['dateformat'] = $_POST['fakturo_system_options_group']['dateformat'];
+		update_option('fakturo_system_options_group', $new_options);
+	}
+	/**
+	* Static function page_stock
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function page_stock() {
+		$options = get_option('fakturo_system_options_group');
+		$print_html = '<h1>'.__('Stock', FAKTURO_TEXT_DOMAIN).'</h1>
+					'.self::get_form().'
+					<table class="form-table">
+						 
+					  <tr>
+							<td>'. __( 'Use stock for products', FAKTURO_TEXT_DOMAIN ) .'<br/><br/></td>
+							<td class="italic-label">
+								<input id="fakturo_system_options_group_use_stock_product" class="slidercheck" type="checkbox" name="fakturo_system_options_group[use_stock_product]" value="1" '.(($options['use_stock_product'])?'checked="checked"':'').'>
+								<label for="fakturo_system_options_group_use_stock_product"><span class="ui"></span></label>
+								<p class="description">'. __( 'Activate for use stock for products', FAKTURO_TEXT_DOMAIN ).'</p>
+							</td>
+						
+					  </tr>
+					  <tr>
+							<td>'. __( 'Allow negative stocks', FAKTURO_TEXT_DOMAIN ) .'<br/><br/></td>
+							<td class="italic-label">
+								<input id="fakturo_system_options_group_stock_less_zero" class="slidercheck" type="checkbox" name="fakturo_system_options_group[stock_less_zero]" value="1" '.(($options['stock_less_zero'])?'checked="checked"':'').'>
+								<label for="fakturo_system_options_group_stock_less_zero"><span class="ui"></span></label>
+								<p class="description">'. __( 'Activate for use stock less than zero.', FAKTURO_TEXT_DOMAIN ).'</p>
+							
+							</td>
+					  </tr>
+
+					</table>	
+					
+					'.self::get_buttons().'
+					</form>
+					';
+		self::ouput($print_html, __('Stock', FAKTURO_TEXT_DOMAIN));
+	
+	}
+	/**
+	* Static function action_stock
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function action_stock() {
+		$new_options = get_option('fakturo_system_options_group', array());
+		if (!isset($_POST['fakturo_system_options_group']['use_stock_product'])){
+			$_POST['fakturo_system_options_group']['use_stock_product'] = 0;
+		}
+		if (!isset($_POST['fakturo_system_options_group']['stock_less_zero'])){
+			$_POST['fakturo_system_options_group']['stock_less_zero'] = 0;
+		}
+		$new_options['use_stock_product'] = $_POST['fakturo_system_options_group']['use_stock_product'];
+		$new_options['stock_less_zero'] = $_POST['fakturo_system_options_group']['stock_less_zero'];
+		update_option('fakturo_system_options_group', $new_options);
+	}
+	/**
+	* Static function page_payment_type
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function page_payment_type() {
+		$options = get_option('fakturo_system_options_group');
+		$selectPaymentType = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Choose a Payment Type', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => $options['payment_type'],
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[payment_type]',
+										'id'               => 'fakturo_system_options_group_payment_type',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_payment_types',
+										'hide_if_empty'      => false
+									));
+		$print_html = '<h1>'.__('Payment Type', FAKTURO_TEXT_DOMAIN).'</h1>
+					'.self::get_form().'
+					<table class="form-table">
+						<tr>
+						<td>'. __( 'Default Payment Type', FAKTURO_TEXT_DOMAIN ) .'<br/><br/> </td>
+						<td class="italic-label">
+								  '.$selectPaymentType.'  '.fktr_popup_taxonomy::button(
+																	array(
+																		'taxonomy' => 'fktr_payment_types',
+																		'echo' => 0,
+																		'class' => 'button',
+																		'selector' => '#fakturo_system_options_group_payment_type',
+																	)
+															).'
+								  <p class="description">
+								 	 '. __( 'Choose your default Payment Type.', FAKTURO_TEXT_DOMAIN ) .' 
+							      </p>
+						</td>
+
+					</table>	
+					
+					'.self::get_buttons().'
+					</form>
+					';
+		self::ouput($print_html, __('Payment Type', FAKTURO_TEXT_DOMAIN));
+	
+	}
+	/**
+	* Static function action_stock
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function action_payment_type() {
+		$new_options = get_option('fakturo_system_options_group', array());
+		$new_options['payment_type'] = $_POST['fakturo_system_options_group']['payment_type'];
+		update_option('fakturo_system_options_group', $new_options);
+	}
+	
 	/**
 	* Static function ouput
 	* @access public
@@ -1447,7 +1717,7 @@ class fktr_wizzard {
 					if ($key_step == self::$current_request['step']) {
 						$class = ' class="active"';
 					}
-					echo '<div'.$class.' style="width:'.$porcent_per_steep.'%">'.$st.'</div>';
+					echo '<div'.$class.' style="width:'.$porcent_per_steep.'%; margin-right: 21px; margin-left: -12px;">'.$st.'</div>';
 				}
 			?>
         	

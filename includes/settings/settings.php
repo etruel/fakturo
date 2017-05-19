@@ -142,6 +142,8 @@ class fktrSettings {
 			$value_system['default_code'] = 'reference';
 			$value_system['default_description'] = 'short_description';
 			$value_system['dateformat'] = 'dd/mm/YYYY';
+			$value_system['payment_type'] = 0;
+			
 			$value_system = apply_filters('fktr_system_options_init', $value_system);
 			update_option('fakturo_system_options_group' , $value_system);
 		}
@@ -464,9 +466,7 @@ class fktrSettings {
 			$options['individual_numeration_by_sale_point'] = 0;
 		}
 		
-		if (empty($options['format_number_receipt'])) {
-			$options['format_number_receipt'] = '';
-		}
+
 		if (empty($options['search_code'])) {
 			$options['search_code'] = array();
 		}
@@ -479,6 +479,10 @@ class fktrSettings {
 		if (empty($options['dateformat'])) {
 			$options['dateformat'] = 'd/m/Y';
 		}
+		if (!isset($options['payment_type'])) {
+			$options['payment_type'] = 0;
+		}
+		
 
 		update_option('fakturo_system_options_group' , $options);
 		
@@ -523,6 +527,27 @@ class fktrSettings {
 										'depth'              => 1,
 										'tab_index'          => 0,
 										'taxonomy'           => 'fktr_currencies',
+										'hide_if_empty'      => false
+									));
+
+		$selectPaymentType = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Choose a Payment Type', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => $options['payment_type'],
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[payment_type]',
+										'id'               => 'fakturo_system_options_group_payment_type',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_payment_types',
 										'hide_if_empty'      => false
 									));
 									
@@ -805,17 +830,7 @@ class fktrSettings {
 							</td>
 						
 					  </tr>
-					  <tr>
-							<th>'. __( 'Format of number of receipt', FAKTURO_TEXT_DOMAIN ) .'</th>
-							<td class="italic-label">
-								<input id="fakturo_system_options_group_format_number_receipt" name="fakturo_system_options_group[format_number_receipt]" type="text" value="'.$options['format_number_receipt'].'">
-								<p class="description">
-									'. __( 'Choose the default Format of number of receipt used in the system', FAKTURO_TEXT_DOMAIN ) .'           
-								</p>
-					
-							</td>
-						
-					  </tr>
+					 
 					  <tr>
 							<th>'. __( 'Search code on invoices, budgets, etc..', FAKTURO_TEXT_DOMAIN ) .'</th>
 							<td class="italic-label">
@@ -855,7 +870,15 @@ class fktrSettings {
 							</td>
 				
 					  </tr>
-					  
+					  <tr>
+						<th>'. __( 'Default Payment Type', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<td class="italic-label">
+								  '.$selectPaymentType.'	
+								  <p class="description">
+								 	 '. __( 'Choose your default Payment Type.', FAKTURO_TEXT_DOMAIN ) .' 
+							      </p>
+						</td>
+					  </tr>
 					  ';
 				
 				echo '</table>';
