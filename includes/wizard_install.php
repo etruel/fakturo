@@ -39,8 +39,10 @@ class fktr_wizard {
 		self::add_step(6, __( 'Receipts', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_step_six'), array(__CLASS__, 'action_six'));
 		self::add_step(7, __( 'Date Format', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_step_seven'), array(__CLASS__, 'action_seven'));
 		self::add_step(8, __( 'Stock', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_stock'), array(__CLASS__, 'action_stock'));
-		self::add_step(9, __( 'Payment Type', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_payment_type'), array(__CLASS__, 'action_payment_type'));
+		self::add_step(9, __( 'Payments', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_payments'), array(__CLASS__, 'action_payments'));
+		self::add_step(10, __('Taxes', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_taxes'), array(__CLASS__, 'action_taxes'));
 
+		
 	}
 	/**
 	* Static function redirect_login
@@ -244,6 +246,15 @@ class fktr_wizard {
 					'date_two' => date_i18n('m/d/Y', time()),
 				)
 			);
+		} 
+
+		if (self::$current_request['step'] == 9) {
+			wp_enqueue_script('jquery-wizard-payments', FAKTURO_PLUGIN_URL . 'assets/js/wizard_payments.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			
+		} 
+		if (self::$current_request['step'] == 10) {
+			wp_enqueue_script('jquery-wizard-taxes', FAKTURO_PLUGIN_URL . 'assets/js/wizard_taxes.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			
 		} 
 		
 	}
@@ -1302,12 +1313,12 @@ class fktr_wizard {
 		update_option('fakturo_system_options_group', $new_options);
 	}
 	/**
-	* Static function page_payment_type
+	* Static function page_payments
 	* @access public
 	* @return void
 	* @since 0.7
 	*/
-	public static function page_payment_type() {
+	public static function page_payments() {
 		$options = get_option('fakturo_system_options_group');
 		$selectPaymentType = wp_dropdown_categories( array(
 										'show_option_all'    => '',
@@ -1329,44 +1340,151 @@ class fktr_wizard {
 										'taxonomy'           => 'fktr_payment_types',
 										'hide_if_empty'      => false
 									));
-		$print_html = '<h1>'.__('Payment Type', FAKTURO_TEXT_DOMAIN).'</h1>
+
+		$selectBankEntities = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Choose a Bank Entitie', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => $options['bank_entity'],
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[bank_entity]',
+										'id'               => 'fakturo_system_options_group_bank_entity',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_bank_entities',
+										'hide_if_empty'      => false
+									));
+
+		$print_html = '<h1>'.__('Payments', FAKTURO_TEXT_DOMAIN).'</h1>
 					'.self::get_form().'
 					<table class="form-table">
 						<tr>
-						<td>'. __( 'Default Payment Type', FAKTURO_TEXT_DOMAIN ) .'<br/><br/> </td>
-						<td class="italic-label">
-								  '.$selectPaymentType.'  '.fktr_popup_taxonomy::button(
-																	array(
-																		'taxonomy' => 'fktr_payment_types',
-																		'echo' => 0,
-																		'class' => 'button',
-																		'selector' => '#fakturo_system_options_group_payment_type',
-																	)
-															).'
-								  <p class="description">
-								 	 '. __( 'Choose your default Payment Type.', FAKTURO_TEXT_DOMAIN ) .' 
-							      </p>
-						</td>
-
+							<td>'. __( 'Default Payment Type', FAKTURO_TEXT_DOMAIN ) .'<br/><br/> </td>
+							<td class="italic-label">
+									  '.$selectPaymentType.'  '.fktr_popup_taxonomy::button(
+																		array(
+																			'taxonomy' => 'fktr_payment_types',
+																			'echo' => 0,
+																			'class' => 'button',
+																			'selector' => '#fakturo_system_options_group_payment_type',
+																		)
+																).'
+									  <p class="description">
+									 	 '. __( 'Choose your default Payment Type, You can add more payment types to use in payments.', FAKTURO_TEXT_DOMAIN ) .' 
+								      </p>
+							</td>
+						</tr>
+						<tr>
+							<td>'. __( 'Default Bank Entity', FAKTURO_TEXT_DOMAIN ) .'<br/><br/> </td>
+							<td class="italic-label">
+									  '.$selectBankEntities.'  '.fktr_popup_taxonomy::button(
+																		array(
+																			'taxonomy' => 'fktr_bank_entities',
+																			'echo' => 0,
+																			'class' => 'button',
+																			'selector' => '#fakturo_system_options_group_bank_entity',
+																		)
+																).'
+									  <p class="description">
+									 	 '. __( 'Choose your default Bank Entity, You can add more Bank Entities to use in payments.', FAKTURO_TEXT_DOMAIN ) .' 
+								      </p>
+							</td>
+						</tr>
 					</table>	
 					
 					'.self::get_buttons().'
 					</form>
 					';
-		self::ouput($print_html, __('Payment Type', FAKTURO_TEXT_DOMAIN));
+		self::ouput($print_html, __('Payments', FAKTURO_TEXT_DOMAIN));
 	
 	}
 	/**
-	* Static function action_stock
+	* Static function action_payments
 	* @access public
 	* @return void
 	* @since 0.7
 	*/
-	public static function action_payment_type() {
+	public static function action_payments() {
 		$new_options = get_option('fakturo_system_options_group', array());
 		$new_options['payment_type'] = $_POST['fakturo_system_options_group']['payment_type'];
+		$new_options['bank_entity'] = $_POST['fakturo_system_options_group']['bank_entity'];
 		update_option('fakturo_system_options_group', $new_options);
 	}
+
+	/**
+	* Static function page_taxes
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function page_taxes() {
+		$options = get_option('fakturo_system_options_group');
+		$selectTax = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Choose a Tax', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => $options['tax'],
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[tax]',
+										'id'               => 'fakturo_system_options_group_tax',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_tax',
+										'hide_if_empty'      => false
+									));
+		$print_html = '<h1>'.__('Taxes', FAKTURO_TEXT_DOMAIN).'</h1>
+					'.self::get_form().'
+					<table class="form-table">
+						<tr>
+							<td>'. __( 'Default Tax', FAKTURO_TEXT_DOMAIN ) .'<br/><br/> </td>
+							<td class="italic-label">
+									  '.$selectTax.'  '.fktr_popup_taxonomy::button(
+																		array(
+																			'taxonomy' => 'fktr_tax',
+																			'echo' => 0,
+																			'class' => 'button',
+																			'selector' => '#fakturo_system_options_group_tax',
+																		)
+																).'
+									  <p class="description">
+									 	 '. __( 'Choose your default Tax, You can add more Taxes to use.', FAKTURO_TEXT_DOMAIN ) .' 
+								      </p>
+							</td>
+						</tr>
+					</table>	
+					
+					'.self::get_buttons().'
+					</form>
+					';
+		self::ouput($print_html, __('Taxes', FAKTURO_TEXT_DOMAIN));
+	
+	}
+	/**
+	* Static function action_taxes
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function action_taxes() {
+		$new_options = get_option('fakturo_system_options_group', array());
+		$new_options['tax'] = $_POST['fakturo_system_options_group']['tax'];
+		update_option('fakturo_system_options_group', $new_options);
+	}
+	
 	
 	/**
 	* Static function ouput

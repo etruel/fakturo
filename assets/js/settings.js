@@ -36,6 +36,10 @@ jQuery(document).ready(function() {
 	});
 	jQuery("#fakturo_info_options_group_state").select2();
 
+	jQuery("#fakturo_system_options_group_payment_type").select2();
+	jQuery("#fakturo_system_options_group_bank_entity").select2();
+	jQuery("#fakturo_system_options_group_tax").select2();
+	
 	
 	jQuery('#upload_logo_button').click(function() {
 		formfield = jQuery('#url').attr('name');

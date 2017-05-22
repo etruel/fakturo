@@ -143,6 +143,9 @@ class fktrSettings {
 			$value_system['default_description'] = 'short_description';
 			$value_system['dateformat'] = 'dd/mm/YYYY';
 			$value_system['payment_type'] = 0;
+			$value_system['bank_entity'] = 0;
+			$value_system['tax'] = 0;
+			
 			
 			$value_system = apply_filters('fktr_system_options_init', $value_system);
 			update_option('fakturo_system_options_group' , $value_system);
@@ -482,9 +485,57 @@ class fktrSettings {
 		if (!isset($options['payment_type'])) {
 			$options['payment_type'] = 0;
 		}
+		if (!isset($options['bank_entity'])) {
+			$options['bank_entity'] = 0;
+		}
+		if (!isset($options['tax'])) {
+			$options['tax'] = 0;
+		}
 		
 
 		update_option('fakturo_system_options_group' , $options);
+
+
+		$selectTax = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Choose a Tax', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => $options['tax'],
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[tax]',
+										'id'               => 'fakturo_system_options_group_tax',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_tax',
+										'hide_if_empty'      => false
+									));
+		$selectBankEntities = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Choose a Bank Entitie', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => $options['bank_entity'],
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[bank_entity]',
+										'id'               => 'fakturo_system_options_group_bank_entity',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_bank_entities',
+										'hide_if_empty'      => false
+									));
 		
 		$selectSalePoint = wp_dropdown_categories( array(
 										'show_option_all'    => '',
@@ -879,8 +930,26 @@ class fktrSettings {
 							      </p>
 						</td>
 					  </tr>
+
+					   <tr>
+						<th>'. __( 'Default Bank Entity', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<td class="italic-label">
+								  '.$selectBankEntities.'	
+								  <p class="description">
+								 	 '. __( 'Choose your default Bank Entity.', FAKTURO_TEXT_DOMAIN ) .' 
+							      </p>
+						</td>
+					  </tr>
+					  <tr>
+						<th>'. __( 'Default Tax', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<td class="italic-label">
+								  '.$selectTax.'	
+								  <p class="description">
+								 	 '. __( 'Choose your default Tax.', FAKTURO_TEXT_DOMAIN ) .' 
+							      </p>
+						</td>
+					  </tr>
 					  ';
-				
 				echo '</table>';
 				submit_button();
 			echo '</form>
