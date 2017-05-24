@@ -28,7 +28,8 @@ class fktr_wizard {
 
 		self::add_step(1, __( 'Load Countries', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_step_one'), array(__CLASS__, 'action_one'));
 		add_action('wp_ajax_fktr_load_countries_states', array(__CLASS__, 'load_countries_ajax'));
-
+		add_action('wp_ajax_fktr_load_selected_countries_states', array(__CLASS__, 'load_countries_states_ajax'));
+		
 		self::add_step(2, __( 'Company Info', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_step_two'), array(__CLASS__, 'action_two'));
 
 		self::add_step(3, __( 'Load Currencies', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_step_three'), null);
@@ -268,12 +269,15 @@ class fktr_wizard {
 
 		wp_enqueue_style('main',FAKTURO_PLUGIN_URL .'assets/css/main.css');	
 		wp_enqueue_style('fktr_icons',FAKTURO_PLUGIN_URL .'assets/css/icons.css');	
+		wp_enqueue_style('main-wizard',FAKTURO_PLUGIN_URL .'assets/css/main-wizard.css');	
 		
 		wp_enqueue_style('style-select2',FAKTURO_PLUGIN_URL .'assets/css/select2.min.css');	
 		wp_enqueue_style('fktr-new-terms-popup',FAKTURO_PLUGIN_URL .'assets/css/new-terms-popup.css');	
 		if (self::$current_request['step'] == 2) {
 			wp_enqueue_style('thickbox');
 		}
+
+
 		
 	}
 	/**
@@ -312,7 +316,7 @@ class fktr_wizard {
 	*/
 	public static function get_buttons() {
 		$steps = self::get_steps();
-		$ret = '<div id="buttons_container">';
+		$ret = '<div id="buttons_container" class="buttons_container">';
 		if ((self::$current_request['step']-1) >= 1) {
 			$ret .= '<a href="'.admin_url('admin-post.php?action=fktr_wizard&step='.(self::$current_request['step']-1)).'" class="button button-large">'. __( 'Previous', FAKTURO_TEXT_DOMAIN ) .'</a>	';
 		}
@@ -347,8 +351,13 @@ class fktr_wizard {
 		}
 		$html_select_countries .= '</select>';
 
-		$print_html = '<h1>'.__('Load Countries and States', FAKTURO_TEXT_DOMAIN).'</h1>
-					'.self::get_form().'
+		$print_html = '
+						'.self::get_form().'
+						<div id="header_title"> 
+							<h1>'.__('Load Countries and States', FAKTURO_TEXT_DOMAIN).'</h1>
+							'.self::get_buttons().'
+					   </div>
+					
 					<div id="content_step">
 					<p>'.__('Do you want load all countries and states by default?', FAKTURO_TEXT_DOMAIN).'</p>
 					
@@ -362,16 +371,20 @@ class fktr_wizard {
 	                    <tr valign="top">
 							<th scope="row"><input type="radio" name="load_contries_states" value="yes_only_a_country"/></th>
 							<td>
-								'. __( 'Yes, but only a country.', FAKTURO_TEXT_DOMAIN ) .'
-								<div id="container_select_countries" style="display:none;"> 
+								'. __( 'Yes, but only some countries.', FAKTURO_TEXT_DOMAIN ) .'
+								<div id="container_select_countries" style="display:none;">
+									<table id="selected_countries" style="width:330px; margin-bottom:5px;">
+
+									</table> 
 									'.$html_select_countries.'
+									<input type="button" id="btn_add_select_country" class="button button-orange" value="'. __( 'Add', FAKTURO_TEXT_DOMAIN ) .'"/>
 								</div>
 	                        </td>
 	                    </tr>
 	                    <tr valign="top">
 	                        <th scope="row"><input type="radio" name="load_contries_states" value="no"/></th>
 							<td>
-								'. __( 'No', FAKTURO_TEXT_DOMAIN ) .'
+								'. __( 'No, you can add them later.', FAKTURO_TEXT_DOMAIN ) .'
 	                        </td>
 	                    </tr>
 	                </table>
@@ -381,6 +394,81 @@ class fktr_wizard {
 					';
 		self::ouput($print_html, __('Load Countries and States', FAKTURO_TEXT_DOMAIN));
 		
+	}
+	/**
+	* Static function load_countries_states_ajax
+	* @access public
+	* @return void
+	* @since 0.7
+	*/
+	public static function load_countries_states_ajax() {
+		check_ajax_referer('fktr_wizard_ajax_nonce', 'nonce');
+		$country_id = 0;
+		if (!empty($_REQUEST['country_id']) && is_numeric($_REQUEST['country_id'])) {
+			$country_id = $_REQUEST['country_id'];
+		}
+		if (empty($country_id)) {
+			wp_die('error');
+		}
+		$state_index = 0;
+		if (isset($_REQUEST['state_index']) && is_numeric($_REQUEST['state_index'])) {
+			$state_index = $_REQUEST['state_index'];
+		}
+
+		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/country-states.php';
+		$count_insert = 0;
+		foreach ($countries as $kc => $country) {
+			if ($country[0] != $country_id) {
+				continue; 
+			}
+			$count_insert++;
+			$termc = term_exists($country[2], 'fktr_countries');
+			if ($termc !== 0 && $termc !== null) {
+				// exist this term
+			} else {
+				$termc = wp_insert_term($country[2], 'fktr_countries');
+				if (is_wp_error($termc)){
+										
+				}
+				
+				// don't exist term
+			}
+			$country_term = $termc['term_id'];
+			$total_count_states = 0;
+			foreach ($states as $ks => $state) {	
+				if ($state[2] == $country[0]) {
+					$total_count_states++;
+				}
+			}
+
+			
+			$count_states = 0;
+			foreach ($states as $ks => $state) {	
+				if ($state[2] == $country[0]) {
+					$count_states++;
+					if ($count_states > $state_index) {
+						$term_s = term_exists($state[1], 'fktr_countries', $country_term);
+						if ($term_s !== 0 && $term_s !== null) {
+									// exist state
+						} else {
+							$term_s = wp_insert_term($state[1], 'fktr_countries', array('parent' => $country_term));
+
+							if (is_wp_error($term_s)){
+								$term_s = wp_insert_term($state[1], 'fktr_countries', array('parent' => $country_term));
+							} else {
+								$state_term = $term_s['term_id'];
+							}
+								
+						}
+						break;
+					}
+				}
+			}
+				
+			
+			echo $total_count_states;
+			die();
+		}
 	}
 	/**
 	* Static function load_countries_ajax
@@ -435,6 +523,7 @@ class fktr_wizard {
 					}	
 				}
 			}
+			break;
 		}
 		if ($country_id == count($countries)) {
 			die('last_country');
@@ -453,51 +542,19 @@ class fktr_wizard {
 		if (!empty($_POST['load_contries_states'])) {
 			$load_contries_states = $_POST['load_contries_states'];
 		}
-		/*
-		Activate only on ajax loading countries fail.
-		if ($load_contries_states == 'yes') {
-			require_once FAKTURO_PLUGIN_DIR . 'includes/libs/country-states.php';
-			$count_insert = 0;
-			foreach ($countries as $kc => $country) {
-				$count_insert++;
-				$termc = term_exists($country[2], 'fktr_countries');
-				if ($termc !== 0 && $termc !== null) {
-					// exist this term
-				} else {
-					// don't exist term
-					$termc = wp_insert_term($country[2], 'fktr_countries');
-					if (is_wp_error($termc)){
-										
-					}
-					error_log('insert country:'.$country[2]);
-					$country_term = $termc['term_id'];
-					foreach ($states as $ks => $state) {
-						
-						if ($state[2] == $country[0]) {
-							$count_insert++;
-							if ($count_insert >= 100 ) {
-								$count_insert = 0;
-							    wp_cache_flush();
-							    error_log('wp_cache_flush');
-							}
-							$term_s = term_exists($state[1], 'fktr_countries', $country_term);
-							if ($term_s !== 0 && $term_s !== null) {
-								// exist state
-							} else {
-								$term_s = wp_insert_term($state[1], 'fktr_countries', array('parent' => $country_term));
-								if (is_wp_error($term_s)){
-									error_log($term->get_error_message());
-								}
-								error_log('insert:'.$state[1]);
-								$state_term = $term_s['term_id'];
-							}
-						}
-
-						
-					}
-				}
-			}
-		}
+		/* Delete all countries.
+		DELETE FROM
+		wp_terms
+		WHERE term_id IN
+		( SELECT * FROM (
+		    SELECT wp_terms.term_id
+		    FROM wp_terms
+		    JOIN wp_term_taxonomy
+		    ON wp_term_taxonomy.term_id = wp_terms.term_id
+		    WHERE taxonomy = 'fktr_countries'
+		    AND count = 0
+		) as T
+		);
 		*/
 		
 		
@@ -577,8 +634,13 @@ class fktr_wizard {
 			'taxonomy'           => 'fktr_tax_conditions',
 			'hide_if_empty'      => false
 		));
-		$print_html = '<h1>'.__('Company Info', FAKTURO_TEXT_DOMAIN).'</h1>
-					'.self::get_form().'
+		$print_html = '
+						'.self::get_form().'
+						<div id="header_title"> 
+							<h1>'.__('Company Info', FAKTURO_TEXT_DOMAIN).'</h1>
+							'.self::get_buttons().'
+					    </div>
+					
 					<table class="form-table">
 						<tr valign="top">
 							<th scope="row">'. __( 'Name', FAKTURO_TEXT_DOMAIN ) .'</th>
@@ -727,8 +789,12 @@ class fktr_wizard {
 			$html_select_currencies .= '<option value="' . $kc . '">' . esc_html($currency['name']) . '</option>';
 		}
 		$html_select_currencies .= '</select>';
-		$print_html = '<h1>'.__('Load Currencies', FAKTURO_TEXT_DOMAIN).'</h1>
+		$print_html = '
 					'.self::get_form().'
+						<div id="header_title"> 
+							<h1>'.__('Load Currencies', FAKTURO_TEXT_DOMAIN).'</h1>
+							'.self::get_buttons().'
+					   </div>
 					<p>Do you want load all currencies by default?</p>
 					<table class="form-table">
 						<tr valign="top">
@@ -1721,6 +1787,18 @@ class fktr_wizard {
 				margin: 30px 0 0 0;
 				padding: 0;
 				padding-bottom: 7px;
+			}
+			#header_title h1 {
+				display: inline;
+				border-bottom: 0px;
+			}
+			#header_title #buttons_container {
+				float: right;
+				
+			}
+			#header_title {
+				padding-bottom: 6px;
+				border-bottom: 1px solid #dadada;
 			}
 			
 			ul li {
