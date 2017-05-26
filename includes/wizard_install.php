@@ -1438,7 +1438,7 @@ class fktr_wizard {
 										'child_of'           => 0,
 										'exclude'            => '',
 										'echo'               => 0,
-										'selected'           => $options['tax'],
+										'selected'           => 0,
 										'hierarchical'       => 1, 
 										'name'               => 'fakturo_system_options_group[tax]',
 										'id'                 => 'fakturo_system_options_group_tax',
