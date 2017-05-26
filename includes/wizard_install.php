@@ -36,13 +36,11 @@ class fktr_wizard {
 		add_action('wp_ajax_fktr_load_currencies', array(__CLASS__, 'load_currencies_ajax'));
 
 		self::add_step(4, __( 'Money Format', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_step_four'), array(__CLASS__, 'action_four'));
-		self::add_step(5, __( 'Invoices', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_step_five'), array(__CLASS__, 'action_five'));
-		self::add_step(6, __( 'Receipts', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_step_six'), array(__CLASS__, 'action_six'));
-		self::add_step(7, __( 'Date Format', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_step_seven'), array(__CLASS__, 'action_seven'));
-		self::add_step(8, __( 'Stock', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_stock'), array(__CLASS__, 'action_stock'));
-		self::add_step(9, __( 'Payments', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_payments'), array(__CLASS__, 'action_payments'));
-		self::add_step(10, __('Taxes', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_taxes'), array(__CLASS__, 'action_taxes'));
-
+		self::add_step(5, __( 'Invoice Details and Formats', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_invoice_format'), array(__CLASS__, 'action_invoice_format'));
+		
+		self::add_step(6, __( 'Products', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_products'), array(__CLASS__, 'action_products'));
+		self::add_step(7, __( 'Payments', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'page_payments'), array(__CLASS__, 'action_payments'));
+		
 		
 	}
 	/**
@@ -233,13 +231,7 @@ class fktr_wizard {
 					'sale_points' => $sale_points,
 				)
 			);
-			
-		} 
-		if (self::$current_request['step'] == 6) {
 			wp_enqueue_script( 'jquery-wizard-receipts', FAKTURO_PLUGIN_URL . 'assets/js/wizard_receipt_format.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-		} 
-
-		if (self::$current_request['step'] == 7) {
 			wp_enqueue_script('jquery-wizard-date-format', FAKTURO_PLUGIN_URL . 'assets/js/wizard_date_format.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_localize_script('jquery-wizard-date-format', 'date_object',
 				array(
@@ -247,16 +239,20 @@ class fktr_wizard {
 					'date_two' => date_i18n('m/d/Y', time()),
 				)
 			);
+			
 		} 
+		
 
-		if (self::$current_request['step'] == 9) {
+		if (self::$current_request['step'] == 6) {
+			wp_enqueue_script('jquery-wizard-products', FAKTURO_PLUGIN_URL . 'assets/js/wizard_products.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			
+		}
+
+		if (self::$current_request['step'] == 7) {
 			wp_enqueue_script('jquery-wizard-payments', FAKTURO_PLUGIN_URL . 'assets/js/wizard_payments.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			
 		} 
-		if (self::$current_request['step'] == 10) {
-			wp_enqueue_script('jquery-wizard-taxes', FAKTURO_PLUGIN_URL . 'assets/js/wizard_taxes.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			
-		} 
+		 
 		
 	}
 	/**
@@ -806,16 +802,20 @@ class fktr_wizard {
 	                    <tr valign="top">
 							<th scope="row"><input type="radio" name="load_currencies" value="yes_only_a_currency"/></th>
 							<td>
-								'. __( 'Yes, but only a currency.', FAKTURO_TEXT_DOMAIN ) .'
-								<div id="container_select_currency" style="display:none;"> 
+								'. __( 'Yes, but only some currencies.', FAKTURO_TEXT_DOMAIN ) .'
+								<div id="container_select_currency" style="display:none;">
+									<table id="selected_currencies" style="width:330px; margin-bottom:5px;">
+
+									</table> 
 									'.$html_select_currencies.'
+									<input type="button" id="btn_add_select_currency" class="button button-orange" value="'. __( 'Add', FAKTURO_TEXT_DOMAIN ) .'"/> 
 								</div>
 	                        </td>
 	                    </tr>
 	                    <tr valign="top">
 	                        <th scope="row"><input type="radio" name="load_currencies" value="no"/></th>
 							<td>
-								'. __( 'No', FAKTURO_TEXT_DOMAIN ) .'
+								'. __( 'No, you can add them later.', FAKTURO_TEXT_DOMAIN ) .'
 	                        </td>
 	                    </tr>
 	                </table>
@@ -919,8 +919,12 @@ class fktr_wizard {
 										'taxonomy'           => 'fktr_currencies',
 										'hide_if_empty'      => false
 									));
-		$print_html = '<h1>'.__('Money Format', FAKTURO_TEXT_DOMAIN).'</h1>
-					'.self::get_form().'
+		$print_html = '
+						'.self::get_form().'
+						<div id="header_title"> 
+							<h1>'.__('Money Format', FAKTURO_TEXT_DOMAIN).'</h1>
+							'.self::get_buttons().'
+					    </div>
 					<table class="form-table">
 						<tr>
 							<td>
@@ -1009,12 +1013,12 @@ class fktr_wizard {
 		update_option('fakturo_system_options_group', $new_options);
 	}
 	/**
-	* Static function page_step_five
+	* Static function invoice_format
 	* @access public
 	* @return void
 	* @since 0.7
 	*/
-	public static function page_step_five() {
+	public static function page_invoice_format() {
 		$options = get_option('fakturo_system_options_group');
 		$selectInvoiceType = wp_dropdown_categories( array(
 										'show_option_all'    => '',
@@ -1069,13 +1073,43 @@ class fktr_wizard {
 		//echo print_r($options['search_code'], true);
 		//
 		$echoSelectListInvoiceNumber = '<select id="fakturo_system_options_group_list_invoice_number" name="fakturo_system_options_group[list_invoice_number][]" multiple="multiple" style="width:400px;">';
+		foreach ($options['list_invoice_number'] as $k => $key) {
+			if (isset($selectListInvoiceNumber[$key])) {
+				$txt = $selectListInvoiceNumber[$key];
+				$echoSelectListInvoiceNumber .= '<option value="'.$key.'"'.selected($key, (array_search($key, $options['list_invoice_number'])!==false) ? $key : '' , false).'>'.$txt.'</option>';
+				unset($selectListInvoiceNumber[$key]);
+			}
+			
+		}
+
 		foreach ($selectListInvoiceNumber as $key => $txt) {
 			$echoSelectListInvoiceNumber .= '<option value="'.$key.'"'.selected($key, (array_search($key, $options['list_invoice_number'])!==false) ? $key : '' , false).'>'.$txt.'</option>';
 		}
-		$echoSelectListInvoiceNumber .= '</select>';		
+		$echoSelectListInvoiceNumber .= '</select>';	
 
-		$print_html = '<h1>'.__('Invoices', FAKTURO_TEXT_DOMAIN).'</h1>
-					'.self::get_form().'
+		if (empty($options['digits_receipt_number'])) {
+			$options['digits_receipt_number'] = 8;
+		}
+		if (empty($options['dateformat'])) {
+			$options['dateformat'] = 'd/m/Y';
+		}
+		$selectDefaultDate = array();
+		$selectDefaultDate['d/m/Y'] = __( 'dd/mm/YYYY', FAKTURO_TEXT_DOMAIN );
+		$selectDefaultDate['m/d/Y'] = __( 'mm/dd/YYYY', FAKTURO_TEXT_DOMAIN );						
+		$selectDefaultDate = apply_filters('fktr_default_format_date_array', $selectDefaultDate);
+		
+		$echoSelectDefaultDate = '<select id="fakturo_system_options_group_dateformat" name="fakturo_system_options_group[dateformat]">';
+		foreach ($selectDefaultDate as $key => $txt) {
+			$echoSelectDefaultDate .= '<option value="'.$key.'"'.selected($key, $options['dateformat'], false).'>'.$txt.'</option>';
+		}
+		$echoSelectDefaultDate .= '</select>';		
+
+		$print_html = '
+						'.self::get_form().'
+						<div id="header_title"> 
+							<h1>'.__('Invoice Details and Formats', FAKTURO_TEXT_DOMAIN).'</h1>
+							'.self::get_buttons().'
+					    </div>
 				<table class="form-table">
 				<tr>
 				<td>
@@ -1170,54 +1204,13 @@ class fktr_wizard {
 				</tr>
 
 				</table>
-
-					'.self::get_buttons().'
-					</form>
-					';
-		self::ouput($print_html, __('Invoices', FAKTURO_TEXT_DOMAIN));
-	
-	}
-	/**
-	* Static function action_five
-	* @access public
-	* @return void
-	* @since 0.7
-	*/
-	public static function action_five() {
-		$new_options = get_option('fakturo_system_options_group', array());
-		$new_options['invoice_type'] = $_POST['fakturo_system_options_group']['invoice_type'];
-		$new_options['sale_point'] = $_POST['fakturo_system_options_group']['sale_point'];
-		$new_options['digits_invoice_number'] = $_POST['fakturo_system_options_group']['digits_invoice_number'];
-		$new_options['list_invoice_number'] = $_POST['fakturo_system_options_group']['list_invoice_number'];
-		if (!isset($_POST['fakturo_system_options_group']['individual_numeration_by_invoice_type'])){
-			$_POST['fakturo_system_options_group']['individual_numeration_by_invoice_type'] = 0;
-		}
-		if (!isset($_POST['fakturo_system_options_group']['individual_numeration_by_sale_point'])){
-			$_POST['fakturo_system_options_group']['individual_numeration_by_sale_point'] = 0;
-		}
-		$new_options['individual_numeration_by_invoice_type'] = $_POST['fakturo_system_options_group']['individual_numeration_by_invoice_type'];
-		$new_options['individual_numeration_by_sale_point'] = $_POST['fakturo_system_options_group']['individual_numeration_by_sale_point'];
-		update_option('fakturo_system_options_group', $new_options);
-	}
-	/**
-	* Static function page_step_six
-	* @access public
-	* @return void
-	* @since 0.7
-	*/
-	public static function page_step_six() {
-		$options = get_option('fakturo_system_options_group');
-		if (empty($options['digits_receipt_number'])) {
-			$options['digits_receipt_number'] = 8;
-		}
-		$print_html = '<h1>'.__('Receipts', FAKTURO_TEXT_DOMAIN).'</h1>
-					'.self::get_form().'
-					<table class="form-table">
+				<hr/>
+				<table class="form-table" style="width:100%;">
 						<tr>
 							<td>
 								<table class="form-table">
 									<tr>
-										<td>'. __( 'Number of digits of the receipt number', FAKTURO_TEXT_DOMAIN ) .'<br/><br/></td>
+										<td style="width: 200px;">'. __( 'Number of digits of the receipt number', FAKTURO_TEXT_DOMAIN ) .'<br/><br/></td>
 										<td class="italic-label">
 											<input id="fakturo_system_options_group_digits_receipt_number" name="fakturo_system_options_group[digits_receipt_number]" type="number" maxlength="2" min=2 max=20 value="'.$options['digits_receipt_number'].'">
 											 <p class="description">
@@ -1236,54 +1229,14 @@ class fktr_wizard {
 								
 							</td>
 						</tr>
-					</table>	
-					<br/><br/>
-					'.self::get_buttons().'
-					</form>
-					';
-		self::ouput($print_html, __('Receipts', FAKTURO_TEXT_DOMAIN));
-	
-	}
-	/**
-	* Static function action_six
-	* @access public
-	* @return void
-	* @since 0.7
-	*/
-	public static function action_six() {
-		$new_options = get_option('fakturo_system_options_group', array());
-		$new_options['digits_receipt_number'] = $_POST['fakturo_system_options_group']['digits_receipt_number'];
-		update_option('fakturo_system_options_group', $new_options);
-	}
-	/**
-	* Static function page_step_seven
-	* @access public
-	* @return void
-	* @since 0.7
-	*/
-	public static function page_step_seven() {
-		$options = get_option('fakturo_system_options_group');
-		if (empty($options['dateformat'])) {
-			$options['dateformat'] = 'd/m/Y';
-		}
-		$selectDefaultDate = array();
-		$selectDefaultDate['d/m/Y'] = __( 'dd/mm/YYYY', FAKTURO_TEXT_DOMAIN );
-		$selectDefaultDate['m/d/Y'] = __( 'mm/dd/YYYY', FAKTURO_TEXT_DOMAIN );						
-		$selectDefaultDate = apply_filters('fktr_default_format_date_array', $selectDefaultDate);
-		
-		$echoSelectDefaultDate = '<select id="fakturo_system_options_group_dateformat" name="fakturo_system_options_group[dateformat]">';
-		foreach ($selectDefaultDate as $key => $txt) {
-			$echoSelectDefaultDate .= '<option value="'.$key.'"'.selected($key, $options['dateformat'], false).'>'.$txt.'</option>';
-		}
-		$echoSelectDefaultDate .= '</select>';	
-		$print_html = '<h1>'.__('Date Format', FAKTURO_TEXT_DOMAIN).'</h1>
-					'.self::get_form().'
-					<table class="form-table">
+					</table>
+					<hr/>
+					<table class="form-table" style="width:100%;">
 						<tr>
 							<td>
 								<table class="form-table">
 									<tr>
-										<td>'. __( 'Default date format', FAKTURO_TEXT_DOMAIN ) .'<br/></td>
+										<td style="width: 200px;">'. __( 'Default date format', FAKTURO_TEXT_DOMAIN ) .'<br/></td>
 										<td class="italic-label">
 												'.$echoSelectDefaultDate.'
 												<p class="description">
@@ -1303,38 +1256,437 @@ class fktr_wizard {
 								
 							</td>
 						</tr>
-					</table><br/><br/>
+					</table>	
+					<br/><br/>
+
 					'.self::get_buttons().'
 					</form>
 					';
-		self::ouput($print_html, __('Date Format', FAKTURO_TEXT_DOMAIN));
+		self::ouput($print_html, __('Invoices', FAKTURO_TEXT_DOMAIN));
 	
 	}
 	/**
-	* Static function action_seven
+	* Static function action_invoice_format
 	* @access public
 	* @return void
 	* @since 0.7
 	*/
-	public static function action_seven() {
+	public static function action_invoice_format() {
 		$new_options = get_option('fakturo_system_options_group', array());
+		$new_options['invoice_type'] = $_POST['fakturo_system_options_group']['invoice_type'];
+		$new_options['sale_point'] = $_POST['fakturo_system_options_group']['sale_point'];
+		$new_options['digits_invoice_number'] = $_POST['fakturo_system_options_group']['digits_invoice_number'];
+		
+		if (!isset($_POST['fakturo_system_options_group']['list_invoice_number'])){
+			$_POST['fakturo_system_options_group']['list_invoice_number'] = array();
+		}
+		$new_options['list_invoice_number'] = $_POST['fakturo_system_options_group']['list_invoice_number'];
+		if (!isset($_POST['fakturo_system_options_group']['individual_numeration_by_invoice_type'])){
+			$_POST['fakturo_system_options_group']['individual_numeration_by_invoice_type'] = 0;
+		}
+		if (!isset($_POST['fakturo_system_options_group']['individual_numeration_by_sale_point'])){
+			$_POST['fakturo_system_options_group']['individual_numeration_by_sale_point'] = 0;
+		}
+		$new_options['individual_numeration_by_invoice_type'] = $_POST['fakturo_system_options_group']['individual_numeration_by_invoice_type'];
+		$new_options['individual_numeration_by_sale_point'] = $_POST['fakturo_system_options_group']['individual_numeration_by_sale_point'];
+		$new_options['digits_receipt_number'] = $_POST['fakturo_system_options_group']['digits_receipt_number'];
 		$new_options['dateformat'] = $_POST['fakturo_system_options_group']['dateformat'];
 		update_option('fakturo_system_options_group', $new_options);
 	}
+	
+	
 	/**
-	* Static function page_stock
+	* Static function page_products
 	* @access public
 	* @return void
 	* @since 0.7
 	*/
-	public static function page_stock() {
+	public static function page_products() {
 		$options = get_option('fakturo_system_options_group');
-		$print_html = '<h1>'.__('Stock', FAKTURO_TEXT_DOMAIN).'</h1>
-					'.self::get_form().'
+		$selectCategories = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Show categories', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => 0,
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[categories]',
+										'id'            	 => 'fakturo_system_options_group_categories',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_packaging',
+										'hide_if_empty'      => false
+									));
+		$selectModels = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Show models', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => 0,
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[models]',
+										'id'            	 => 'fakturo_system_options_group_models',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_model',
+										'hide_if_empty'      => false
+									));
+
+		$selectProductTypes = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Show product types', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => 0,
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[product_type]',
+										'id'            	 => 'fakturo_system_options_group_product_type',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_product_type',
+										'hide_if_empty'      => false
+									));
+
+		
+		$selectPackagings = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Show Packagings', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => 0,
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[packaging]',
+										'id'            	 => 'fakturo_system_options_group_packaging',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_packaging',
+										'hide_if_empty'      => false
+									));
+		$selectOrigins = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Show Origins', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => 0,
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[origins]',
+										'id'            	 => 'fakturo_system_options_group_origins',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_origins',
+										'hide_if_empty'      => false
+									));
+
+		$selectPriceScales = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Show price scales', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => 0,
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[price_scales]',
+										'id'            	 => 'fakturo_system_options_group_price_scales',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_price_scales',
+										'hide_if_empty'      => false
+									));
+
+		$selectTax = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Show taxes', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => $options['tax'],
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[tax]',
+										'id'                 => 'fakturo_system_options_group_tax',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_tax',
+										'hide_if_empty'      => false
+									));
+
+		$selectLocations = wp_dropdown_categories( array(
+										'show_option_all'    => '',
+										'show_option_none'   => __('Show locations', FAKTURO_TEXT_DOMAIN ),
+										'orderby'            => 'name', 
+										'order'              => 'ASC',
+										'show_count'         => 0,
+										'hide_empty'         => 0, 
+										'child_of'           => 0,
+										'exclude'            => '',
+										'echo'               => 0,
+										'selected'           => 0,
+										'hierarchical'       => 1, 
+										'name'               => 'fakturo_system_options_group[locations]',
+										'id'               => 'fakturo_system_options_group_locations',
+										'class'              => 'form-no-clear',
+										'depth'              => 1,
+										'tab_index'          => 0,
+										'taxonomy'           => 'fktr_locations',
+										'hide_if_empty'      => false
+									));
+		$selectSearchCode = array();
+		$selectSearchCode['reference'] = __( 'Reference', FAKTURO_TEXT_DOMAIN );
+		$selectSearchCode['internal_code'] = __( 'Internal code', FAKTURO_TEXT_DOMAIN );
+		$selectSearchCode['manufacturers_code'] = __( 'Manufacturers code', FAKTURO_TEXT_DOMAIN );							
+		$selectSearchCode = apply_filters('fktr_search_code_array', $selectSearchCode);
+		
+
+		$echoSelectSearchCode = '<select id="fakturo_system_options_group_search_code" name="fakturo_system_options_group[search_code][]" multiple="multiple" >';
+		foreach ($selectSearchCode as $key => $txt) {
+			$echoSelectSearchCode .= '<option value="'.$key.'"'.selected($key, (array_search($key, $options['search_code'])!==false) ? $key : '' , false).'>'.$txt.'</option>';
+		}
+		$echoSelectSearchCode .= '</select>';	
+
+
+		$selectDefaultCode = array();
+		$selectDefaultCode['reference'] = __( 'Reference', FAKTURO_TEXT_DOMAIN );
+		$selectDefaultCode['internal_code'] = __( 'Internal code', FAKTURO_TEXT_DOMAIN );
+		$selectDefaultCode['manufacturers_code'] = __( 'Manufacturers code', FAKTURO_TEXT_DOMAIN );							
+		$selectDefaultCode = apply_filters('fktr_default_code_array', $selectDefaultCode);
+		
+		$echoSelectDefaultCode = '<select id="fakturo_system_options_group_default_code" name="fakturo_system_options_group[default_code]">';
+		foreach ($selectDefaultCode as $key => $txt) {
+			$echoSelectDefaultCode .= '<option value="'.$key.'"'.selected($key, $options['default_code'], false).'>'.$txt.'</option>';
+		}
+		$echoSelectDefaultCode .= '</select>';		
+		
+		
+		$selectDefaultDescription = array();
+		$selectDefaultDescription['short_description'] = __( 'Short Description', FAKTURO_TEXT_DOMAIN );
+		$selectDefaultDescription['description'] = __( 'Description', FAKTURO_TEXT_DOMAIN );						
+		$selectDefaultDescription = apply_filters('fktr_default_description_array', $selectDefaultDescription);
+		
+		$echoSelectDefaultDescription = '<select id="fakturo_system_options_group_default_description" name="fakturo_system_options_group[default_description]">';
+		foreach ($selectDefaultDescription as $key => $txt) {
+			$echoSelectDefaultDescription .= '<option value="'.$key.'"'.selected($key, $options['default_description'], false).'>'.$txt.'</option>';
+		}
+		$echoSelectDefaultDescription .= '</select>';	
+
+		$print_html = '
+						'.self::get_form().'
+						<div id="header_title"> 
+							<h1>'.__('Products', FAKTURO_TEXT_DOMAIN).'</h1>
+							'.self::get_buttons().'
+					    </div>
+
 					<table class="form-table">
-						 
+					    <tr>
+							<td style="width:275px;">'. __( 'Categories', FAKTURO_TEXT_DOMAIN ) .'<br/><br/></td>
+							<td class="italic-label">
+								'.$selectCategories.' '.fktr_popup_taxonomy::button(
+																	array(
+																		'taxonomy' => 'fktr_category',
+																		'echo' => 0,
+																		'class' => 'button',
+																		'selector' => '#fakturo_system_options_group_categories',
+																	)
+															).'
+								  <p class="description">
+								  	'. __( 'Like Tools, electric tools, manual tools, etc.', FAKTURO_TEXT_DOMAIN ) .' 
+							      </p>
+							</td>
+						
+					  </tr>
 					  <tr>
-							<td>'. __( 'Use stock for products', FAKTURO_TEXT_DOMAIN ) .'<br/><br/></td>
+							<td>'. __( 'Models', FAKTURO_TEXT_DOMAIN ) .'<br/><br/></td>
+							<td class="italic-label">
+								'.$selectModels.' '.fktr_popup_taxonomy::button(
+																	array(
+																		'taxonomy' => 'fktr_model',
+																		'echo' => 0,
+																		'class' => 'button',
+																		'selector' => '#fakturo_system_options_group_models',
+																	)
+															).'
+								  <p class="description">
+								  	'. __( 'As a tag of the products you want filter in the future.', FAKTURO_TEXT_DOMAIN ) .' 
+							      </p>
+							</td>
+						
+					  </tr>
+					  <tr>
+							<td>'. __( 'Product Types', FAKTURO_TEXT_DOMAIN ) .'<br/><br/></td>
+							<td class="italic-label">
+								'.$selectProductTypes.' '.fktr_popup_taxonomy::button(
+																	array(
+																		'taxonomy' => 'fktr_product_type',
+																		'echo' => 0,
+																		'class' => 'button',
+																		'selector' => '#fakturo_system_options_group_product_type',
+																	)
+															).'
+								  <p class="description">
+								  	'. __( 'Like Service, spare, supplies, etc.', FAKTURO_TEXT_DOMAIN ) .' 
+							      </p>
+							</td>
+						
+					  </tr>
+					  <tr>
+							<td>'. __( 'Origins', FAKTURO_TEXT_DOMAIN ) .'<br/><br/></td>
+							<td class="italic-label">
+								'.$selectOrigins.' '.fktr_popup_taxonomy::button(
+																	array(
+																		'taxonomy' => 'fktr_origins',
+																		'echo' => 0,
+																		'class' => 'button',
+																		'selector' => '#fakturo_system_options_group_origins',
+																	)
+															).'
+								  <p class="description">
+								  	'. __( 'Choose your sale point.', FAKTURO_TEXT_DOMAIN ) .' 
+							      </p>
+							</td>
+						
+					  </tr>
+					  <tr>
+							<td>'. __( 'Price Scales', FAKTURO_TEXT_DOMAIN ) .'<br/><br/></td>
+							<td class="italic-label">
+								'.$selectPriceScales.' '.fktr_popup_taxonomy::button(
+																	array(
+																		'taxonomy' => 'fktr_price_scales',
+																		'echo' => 0,
+																		'class' => 'button',
+																		'selector' => '#fakturo_system_options_group_price_scales',
+																	)
+															).'
+								  <p class="description">
+								  	'. __( 'Like wholesaler and retailer.', FAKTURO_TEXT_DOMAIN ) .' 
+							      </p>
+							</td>
+						
+					  </tr>
+					  <tr>
+							<td>'. __( 'Taxes', FAKTURO_TEXT_DOMAIN ) .'<br/><br/> </td>
+							<td class="italic-label">
+									  '.$selectTax.'  '.fktr_popup_taxonomy::button(
+																		array(
+																			'taxonomy' => 'fktr_tax',
+																			'echo' => 0,
+																			'class' => 'button',
+																			'selector' => '#fakturo_system_options_group_tax',
+																		)
+																).'
+									  <p class="description">
+									 	 '. __( 'The name and percentage of taxes applied to the products.', FAKTURO_TEXT_DOMAIN ) .' 
+								      </p>
+							</td>
+						</tr>
+					    <tr>
+							<td>'. __( 'Packagings', FAKTURO_TEXT_DOMAIN ) .'<br/><br/></td>
+							<td class="italic-label">
+								'.$selectPackagings.' '.fktr_popup_taxonomy::button(
+																	array(
+																		'taxonomy' => 'fktr_packaging',
+																		'echo' => 0,
+																		'class' => 'button',
+																		'selector' => '#fakturo_system_options_group_packaging',
+																	)
+															).'
+								  <p class="description">
+								  	
+							      </p>
+							</td>
+						
+					    </tr>
+
+					    <tr>
+							<td>'. __( 'Locations', FAKTURO_TEXT_DOMAIN ) .'<br/><br/></td>
+							<td class="italic-label">
+								'.$selectLocations.' '.fktr_popup_taxonomy::button(
+																	array(
+																		'taxonomy' => 'fktr_locations',
+																		'echo' => 0,
+																		'class' => 'button',
+																		'selector' => '#fakturo_system_options_group_locations',
+																	)
+															).'
+								  <p class="description">
+								  	'. __( 'Where the products are physically.', FAKTURO_TEXT_DOMAIN ) .' 
+							      </p>
+							</td>
+						
+					    </tr>
+					  </table>	
+					  <hr/>
+					  <table class="form-table">  
+					  <tr>
+							<td>'. __( 'Default code for invoice', FAKTURO_TEXT_DOMAIN ) .'</td>
+							<td class="italic-label">
+									'.$echoSelectDefaultCode.'
+									<p class="description">
+										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
+									</p>
+							</td>
+					  </tr>
+					   <tr>
+							<td>'. __( 'Default description for invoice', FAKTURO_TEXT_DOMAIN ) .'</td>
+							<td class="italic-label">
+									'.$echoSelectDefaultDescription.'
+									<p class="description">
+										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
+									</p>
+							</td>
+					  </tr>
+					  <tr>
+							<td>'. __( 'Search code on invoices, budgets, etc..', FAKTURO_TEXT_DOMAIN ) .'</td>
+							<td class="italic-label">
+									'.$echoSelectSearchCode.'
+									<p class="description">
+										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
+									</p>
+							</td>
+						
+					  </tr>
+					  </table>	
+					  <hr/>
+					  <table class="form-table">
+					  <tr>
+							<td style="width:275px;">'. __( 'Use stock for products', FAKTURO_TEXT_DOMAIN ) .'<br/><br/></td>
 							<td class="italic-label">
 								<input id="fakturo_system_options_group_use_stock_product" class="slidercheck" type="checkbox" name="fakturo_system_options_group[use_stock_product]" value="1" '.(($options['use_stock_product'])?'checked="checked"':'').'>
 								<label for="fakturo_system_options_group_use_stock_product"><span class="ui"></span></label>
@@ -1357,16 +1709,16 @@ class fktr_wizard {
 					'.self::get_buttons().'
 					</form>
 					';
-		self::ouput($print_html, __('Stock', FAKTURO_TEXT_DOMAIN));
+		self::ouput($print_html, __('Products', FAKTURO_TEXT_DOMAIN));
 	
 	}
 	/**
-	* Static function action_stock
+	* Static function action_products
 	* @access public
 	* @return void
 	* @since 0.7
 	*/
-	public static function action_stock() {
+	public static function action_products() {
 		$new_options = get_option('fakturo_system_options_group', array());
 		if (!isset($_POST['fakturo_system_options_group']['use_stock_product'])){
 			$_POST['fakturo_system_options_group']['use_stock_product'] = 0;
@@ -1374,6 +1726,15 @@ class fktr_wizard {
 		if (!isset($_POST['fakturo_system_options_group']['stock_less_zero'])){
 			$_POST['fakturo_system_options_group']['stock_less_zero'] = 0;
 		}
+		if (!isset($_POST['fakturo_system_options_group']['search_code'])){
+			$_POST['fakturo_system_options_group']['search_code'] = array();
+		}
+		
+
+		$new_options['default_description'] = $_POST['fakturo_system_options_group']['default_description'];
+		$new_options['default_code'] = $_POST['fakturo_system_options_group']['default_code'];
+		$new_options['search_code'] = $_POST['fakturo_system_options_group']['search_code'];
+		
 		$new_options['use_stock_product'] = $_POST['fakturo_system_options_group']['use_stock_product'];
 		$new_options['stock_less_zero'] = $_POST['fakturo_system_options_group']['stock_less_zero'];
 		update_option('fakturo_system_options_group', $new_options);
@@ -1407,29 +1768,14 @@ class fktr_wizard {
 										'hide_if_empty'      => false
 									));
 
-		$selectBankEntities = wp_dropdown_categories( array(
-										'show_option_all'    => '',
-										'show_option_none'   => __('Choose a Bank Entitie', FAKTURO_TEXT_DOMAIN ),
-										'orderby'            => 'name', 
-										'order'              => 'ASC',
-										'show_count'         => 0,
-										'hide_empty'         => 0, 
-										'child_of'           => 0,
-										'exclude'            => '',
-										'echo'               => 0,
-										'selected'           => $options['bank_entity'],
-										'hierarchical'       => 1, 
-										'name'               => 'fakturo_system_options_group[bank_entity]',
-										'id'               => 'fakturo_system_options_group_bank_entity',
-										'class'              => 'form-no-clear',
-										'depth'              => 1,
-										'tab_index'          => 0,
-										'taxonomy'           => 'fktr_bank_entities',
-										'hide_if_empty'      => false
-									));
+		
 
-		$print_html = '<h1>'.__('Payments', FAKTURO_TEXT_DOMAIN).'</h1>
-					'.self::get_form().'
+		$print_html = '
+						'.self::get_form().'
+						<div id="header_title"> 
+							<h1>'.__('Payments', FAKTURO_TEXT_DOMAIN).'</h1>
+							'.self::get_buttons().'
+					    </div>
 					<table class="form-table">
 						<tr>
 							<td>'. __( 'Default Payment Type', FAKTURO_TEXT_DOMAIN ) .'<br/><br/> </td>
@@ -1447,22 +1793,7 @@ class fktr_wizard {
 								      </p>
 							</td>
 						</tr>
-						<tr>
-							<td>'. __( 'Default Bank Entity', FAKTURO_TEXT_DOMAIN ) .'<br/><br/> </td>
-							<td class="italic-label">
-									  '.$selectBankEntities.'  '.fktr_popup_taxonomy::button(
-																		array(
-																			'taxonomy' => 'fktr_bank_entities',
-																			'echo' => 0,
-																			'class' => 'button',
-																			'selector' => '#fakturo_system_options_group_bank_entity',
-																		)
-																).'
-									  <p class="description">
-									 	 '. __( 'Choose your default Bank Entity, You can add more Bank Entities to use in payments.', FAKTURO_TEXT_DOMAIN ) .' 
-								      </p>
-							</td>
-						</tr>
+						
 					</table>	
 					
 					'.self::get_buttons().'
@@ -1480,76 +1811,9 @@ class fktr_wizard {
 	public static function action_payments() {
 		$new_options = get_option('fakturo_system_options_group', array());
 		$new_options['payment_type'] = $_POST['fakturo_system_options_group']['payment_type'];
-		$new_options['bank_entity'] = $_POST['fakturo_system_options_group']['bank_entity'];
 		update_option('fakturo_system_options_group', $new_options);
 	}
 
-	/**
-	* Static function page_taxes
-	* @access public
-	* @return void
-	* @since 0.7
-	*/
-	public static function page_taxes() {
-		$options = get_option('fakturo_system_options_group');
-		$selectTax = wp_dropdown_categories( array(
-										'show_option_all'    => '',
-										'show_option_none'   => __('Choose a Tax', FAKTURO_TEXT_DOMAIN ),
-										'orderby'            => 'name', 
-										'order'              => 'ASC',
-										'show_count'         => 0,
-										'hide_empty'         => 0, 
-										'child_of'           => 0,
-										'exclude'            => '',
-										'echo'               => 0,
-										'selected'           => $options['tax'],
-										'hierarchical'       => 1, 
-										'name'               => 'fakturo_system_options_group[tax]',
-										'id'               => 'fakturo_system_options_group_tax',
-										'class'              => 'form-no-clear',
-										'depth'              => 1,
-										'tab_index'          => 0,
-										'taxonomy'           => 'fktr_tax',
-										'hide_if_empty'      => false
-									));
-		$print_html = '<h1>'.__('Taxes', FAKTURO_TEXT_DOMAIN).'</h1>
-					'.self::get_form().'
-					<table class="form-table">
-						<tr>
-							<td>'. __( 'Default Tax', FAKTURO_TEXT_DOMAIN ) .'<br/><br/> </td>
-							<td class="italic-label">
-									  '.$selectTax.'  '.fktr_popup_taxonomy::button(
-																		array(
-																			'taxonomy' => 'fktr_tax',
-																			'echo' => 0,
-																			'class' => 'button',
-																			'selector' => '#fakturo_system_options_group_tax',
-																		)
-																).'
-									  <p class="description">
-									 	 '. __( 'Choose your default Tax, You can add more Taxes to use.', FAKTURO_TEXT_DOMAIN ) .' 
-								      </p>
-							</td>
-						</tr>
-					</table>	
-					
-					'.self::get_buttons().'
-					</form>
-					';
-		self::ouput($print_html, __('Taxes', FAKTURO_TEXT_DOMAIN));
-	
-	}
-	/**
-	* Static function action_taxes
-	* @access public
-	* @return void
-	* @since 0.7
-	*/
-	public static function action_taxes() {
-		$new_options = get_option('fakturo_system_options_group', array());
-		$new_options['tax'] = $_POST['fakturo_system_options_group']['tax'];
-		update_option('fakturo_system_options_group', $new_options);
-	}
 	
 	
 	/**
@@ -1628,6 +1892,11 @@ class fktr_wizard {
 		<style type="text/css">
 			html {
 				background: #f1f1f1;
+			}
+			hr {
+				border-style: solid;
+			    border: 0px;
+			    border-bottom: 1px solid #dadada;
 			}
 			input[type=text], input[type=search], input[type=radio], input[type=tel], input[type=time], input[type=url], input[type=week], input[type=password], input[type=checkbox], input[type=color], input[type=date], input[type=datetime], input[type=datetime-local], input[type=email], input[type=month], input[type=number], select, textarea {
 			    border: 1px solid #ddd;
@@ -1771,6 +2040,7 @@ class fktr_wizard {
 				text-align: left;
 				width: 19%;
 				visibility: hidden;
+				vertical-align: top;
 			}
 			.wizard-steps div.active {
 				display: inline-block;

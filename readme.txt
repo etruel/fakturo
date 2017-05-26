@@ -91,12 +91,9 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Company info on wizard install.
 * Loading all currencies on wizard install.
 * Money Format on wizard install.
-* Invoice and Format invoice number on wizard install.
-* Receipts and Format receipt number on wizard install.
-* Date Format on wizard install.
-* Stock on wizard install.
+* Invoice Details and Formats on wizard install.
+* Products on wizard install.
 * Payments on wizard install.
-* Taxes on wizard install.
 
 = 0.6 Beta =
 * Added default contents to emails and print templates instead to begin from scratch.

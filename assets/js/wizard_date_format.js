@@ -3,16 +3,16 @@ jQuery(document).ready(function() {
 	
 	
 	jQuery('#fakturo_system_options_group_dateformat').change(function(e) {
-		updateExample();
+		updateExampleDate();
 	});
 	
-	updateExample();
+	updateExampleDate();
 
 
 });
 
 
-function updateExample() {
+function updateExampleDate() {
 	var newVal = '';
 	if (jQuery('#fakturo_system_options_group_dateformat').val() == 'd/m/Y') {
 		newVal = date_object.date_one;
