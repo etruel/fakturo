@@ -144,7 +144,11 @@ label {
 .error_stock_lila {
 	color: #777;
 }
+
 /*fak-seemore and fak-viewless*/
+#fakturo-currencies-box div.inside table tbody tr{
+	display: none;
+}
 .fak-seemore,.fak-viewless{
 	width:90%; 
 	padding:10px 15px;
