@@ -144,3 +144,13 @@ label {
 .error_stock_lila {
 	color: #777;
 }
+/*fak-seemore and fak-viewless*/
+.fak-seemore,fak-viewless{
+	width:90%; 
+	padding:10px 15px;
+    margin-bottom:20px; 
+    background-color:#FFFFFF; 
+    color:#767676; 
+    border:1px solid #E2E2E2; 
+    cursor:pointer;
+}

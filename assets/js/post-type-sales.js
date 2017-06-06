@@ -4,8 +4,8 @@ var count_products = 0;
 var product_data = new Array();
 var DefaultMaskNumbers = '';
 jQuery(document).ready(function() {
-	
-	
+		
+
 
 	jQuery('#title-prompt-text').remove();
 	jQuery("#title").attr("readonly","readonly");
@@ -258,7 +258,33 @@ jQuery(document).ready(function() {
    			}
 		});
 
+		/*CURRENCIES MORE VIEW*/
+		jQuery("#fakturo-currencies-box").append('<center><input class="fak-seemore"  type="button" value="See More" ></center>');
+		var $fak_seemore = 4;
+		var $fak_morelimit = parseInt(jQuery("#fakturo-currencies-box").find('div.inside table tbody tr').length);
+		jQuery(document).on('click','.fak-seemore',function(){
+			$fak_seemore+=4;
+			listCurrencieshiden($fak_seemore);
+			if($fak_seemore>=$fak_morelimit){
+				jQuery(this).val('View less').addClass('fak-viewless').removeClass('fak-seemore');
+			}
+		});
+		jQuery(document).on('click','.fak-viewless',function(){
+			$fak_seemore = 4;
+			listCurrencieshiden($fak_seemore);
+			jQuery(this).val('See More').addClass('fak-seemore').removeClass('fak-viewless');
+		});
+		listCurrencieshiden($fak_seemore);
+
 });
+function listCurrencieshiden(lim){
+	jQuery("#fakturo-currencies-box").find('div.inside table tbody tr').each(function(i){
+		/*hidden element*/
+		if(i>=lim){jQuery(this).hide();}else{jQuery(this).show(500);}
+	});
+
+}
+
 
 function addNoticeMessage(msg, classN) {
 	if (jQuery('#fieldNotice').length) {
