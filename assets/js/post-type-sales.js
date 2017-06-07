@@ -259,20 +259,23 @@ jQuery(document).ready(function() {
 		});
 
 		/*CURRENCIES MORE VIEW*/
-		jQuery("#fakturo-currencies-box").append('<center><input class="fak-seemore"  type="button" value="See More" ></center>');
+		jQuery("#fakturo-currencies-box").append('<center><div class="div-fak-seemore"><input class="fak-seemore"  type="button" value="See More" ></div><div class="div-fak-viewless"><input class="fak-viewless"  type="button" value="View less" ></div></center>');
 		var $fak_seemore = 4;
 		var $fak_morelimit = parseInt(jQuery("#fakturo-currencies-box").find('div.inside table tbody tr').length);
 		jQuery(document).on('click','.fak-seemore',function(){
 			$fak_seemore+=4;
+			jQuery('.fak-viewless').show(0);
 			listCurrencieshiden($fak_seemore);
 			if($fak_seemore>=$fak_morelimit){
-				jQuery(this).val('View less').addClass('fak-viewless').removeClass('fak-seemore');
+				jQuery(this).hide(0);
 			}
 		});
 		jQuery(document).on('click','.fak-viewless',function(){
-			$fak_seemore = 4;
+			$fak_seemore-=4;
+			jQuery('.fak-seemore').show(0);
 			listCurrencieshiden($fak_seemore);
-			jQuery(this).val('See More').addClass('fak-seemore').removeClass('fak-viewless');
+			if($fak_seemore<=4){jQuery(this).hide(0);}
+
 		});
 		listCurrencieshiden($fak_seemore);
 

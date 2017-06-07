@@ -92,16 +92,24 @@
 .submit_cancel_receipt:hover {
 	color: red;
 }
+
 /*fak-seemore and fak-viewless*/
 #fakturo-currencies-box div.inside table tbody tr{
 	display: none;
 }
+.div-fak-seemore, .div-fak-viewless{
+	display: inline-block;
+	width:45% !important;
+}
 .fak-seemore,.fak-viewless{
-	width:90%; 
+	width:100%; 
 	padding:10px 15px;
     margin-bottom:20px; 
     background-color:#FFFFFF; 
     color:#767676; 
     border:1px solid #E2E2E2; 
     cursor:pointer;
+}
+.fak-viewless{
+	display: none;
 }
