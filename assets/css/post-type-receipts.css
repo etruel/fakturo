@@ -95,7 +95,7 @@
 
 /*fak-seemore and fak-viewless*/
 #fakturo-currencies-box div.inside table tbody tr{
-	/*display: none;*/
+	display: none;
 }
 .div-fak-seemore, .div-fak-viewless{
 	display: inline-block;
