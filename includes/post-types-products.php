@@ -303,7 +303,8 @@ class fktrPostTypeProducts {
 			'selected'           => $currency,
 			'hierarchical'       => 1, 
 			'name'               => 'currency',
-			'class'              => 'form-no-clear',
+			'id'				 => 'currency',
+			'class'              => '',
 			'depth'              => 1,
 			'tab_index'          => 0,
 			'taxonomy'           => 'fktr_currencies',
@@ -315,7 +316,7 @@ class fktrPostTypeProducts {
 					<tbody>
 			<tr class="user-address-wrap">
 				<th><label for="cost">'. __('Cost', FAKTURO_TEXT_DOMAIN ). '	</label></th>
-				<td><input type="text" class="large-text" name="cost" id="cost" value="'.number_format($product_data['cost'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).'"></td>
+				<td><input type="text" name="cost" id="cost" value="'.number_format($product_data['cost'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).'"></td>
 			</tr>
 			<tr class="user-address-wrap">
 				<th><label for="currency">'.__('Currency', FAKTURO_TEXT_DOMAIN ).'</label></th>
@@ -353,7 +354,20 @@ class fktrPostTypeProducts {
 				<th style="text-align: center;">'.__('Final', FAKTURO_TEXT_DOMAIN ).'</th>
 			</tr>
 			';
+		$product_tax = get_fakturo_term($product_data['tax'], 'fktr_tax');
 		foreach ($terms as $t) {
+			if (empty($product_data['prices'][$t->term_id])) {
+				$product_data['prices'][$t->term_id] = ($product_data['cost']!= 0) ? ((($product_data['cost']/100)*$t->percentage)+$product_data['cost']) : 0;
+			}
+			if (empty($product_data['prices_final'][$t->term_id])) {
+				
+				$tax_porcent = 0;
+				if(!is_wp_error($product_tax)) {
+					$tax_porcent = $product_tax->percentage;
+				}
+
+				$product_data['prices_final'][$t->term_id] = ($product_data['prices'][$t->term_id]!= 0) ? ((($product_data['prices'][$t->term_id]/100)*$tax_porcent)+$product_data['prices'][$t->term_id]) : 0;
+			}
 			
 			$echoHtml .= '<tr class="pricestr" data-id="'.$t->term_id.'" data-porcentage="'.$t->percentage.'">
 				<td style="text-align: center;">'.$t->name.' ('.$t->percentage.'%)</td>
