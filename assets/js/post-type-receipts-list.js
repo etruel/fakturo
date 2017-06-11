@@ -5,7 +5,7 @@ jQuery(document).ready(function() {
 		var printWin = window.open(jQuery(this).attr('href'), "PrintWindow", "width=400,height=400");
 		jQuery(printWin.document).ready(function() {
 			printWin.print();
-			printWin.close();
+			setTimeout(function () { printWin.close(); }, 3500);
 		});
 
 		e.preventDefault();
