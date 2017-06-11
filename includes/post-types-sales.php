@@ -92,6 +92,9 @@ class fktrPostTypeSales {
 					_e('Receipts Numbers: Amount', FAKTURO_TEXT_DOMAIN);
 					echo '<br/>';
 					foreach ($sale_data['receipts'] as $receipt_id => $affected) {
+						if (is_wp_error($currencyDefault)) {
+							return false;
+						}
 						$receipt_data = fktrPostTypeReceipts::get_receipt_data($receipt_id);
 						echo $receipt_data['post_title'].': '.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($affected, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'';
 					}
@@ -117,6 +120,7 @@ class fktrPostTypeSales {
 			}
 			$tpl = new fktr_tpl;
 			$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, false);
+			error_log($print_template['content']);
 			$html = $tpl->fromString($print_template['content']);
 			if (isset($_REQUEST['pdf'])) {
 				$pdf = fktr_pdf::getInstance();
