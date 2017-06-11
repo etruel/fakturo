@@ -120,7 +120,6 @@ class fktrPostTypeSales {
 			}
 			$tpl = new fktr_tpl;
 			$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, false);
-			error_log($print_template['content']);
 			$html = $tpl->fromString($print_template['content']);
 			if (isset($_REQUEST['pdf'])) {
 				$pdf = fktr_pdf::getInstance();

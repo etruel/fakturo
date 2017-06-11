@@ -247,10 +247,7 @@ class reports {
 				'default' => array('text' => __( '​​Sales', FAKTURO_TEXT_DOMAIN ), 'sec' => 'sales', 'cap' => 'fktr_report_sales')
 				)
 			),
-			'receipts' => apply_filters('ftkr_report_receipts_sections', array( 
-				'default' =>  array('text' => __( 'Receipts', FAKTURO_TEXT_DOMAIN ), 'sec' => 'receipts', 'cap' => 'fktr_report_receipts')				
-				)
-			),
+			
 			'clients' => apply_filters('ftkr_report_clients_sections', array( 
 				'client_summary' =>  array('text' => __( 'Summary', FAKTURO_TEXT_DOMAIN ), 'sec' => 'client_summary', 'cap' => 'fktr_report_client_summary'),
 				'client_incomes' =>  array('text' => __( 'Incomes', FAKTURO_TEXT_DOMAIN ), 'sec' => 'client_incomes', 'cap' => 'fktr_report_client_incomes'),
