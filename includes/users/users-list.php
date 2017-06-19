@@ -57,7 +57,7 @@ class fktrUsersList {
 			return $views;
 		}
 			
-		$fakturo_role = current_user_can('fakturo_manager') || current_user_can('fakturo_seller') || current_user_can('fakturo_customer');
+		$fakturo_role = (current_user_can('fakturo_manager') || current_user_can('fakturo_seller') || current_user_can('fakturo_customer')) && !is_super_admin();
 		if($fakturo_role){
 			$fakturo_roles = array('fakturo_manager','fakturo_seller','fakturo_customer');
 			$views= array_intersect_key( $views, array_flip($fakturo_roles) );
@@ -83,7 +83,7 @@ class fktrUsersList {
 		global $pagenow,$wp_query,$current_user;
 		if ( !is_admin() || (!$pagenow=='user-new.php' && !$pagenow=='user-edit.php') ) 
 			return $editable_roles;
-		$fakturo_role=current_user_can('fakturo_manager') || current_user_can('fakturo_seller');
+		$fakturo_role = (current_user_can('fakturo_manager') || current_user_can('fakturo_seller')) && !is_super_admin();
 		if($fakturo_role){
 			$fakturo_roles = array('fakturo_manager','fakturo_seller');
 			$editable_roles= array_intersect_key( $editable_roles, array_flip($fakturo_roles) );
@@ -95,7 +95,7 @@ class fktrUsersList {
 		global $pagenow,$wp_query,$current_user;
 
 		if ( is_admin() && $pagenow=='users.php' ) {
-			$fakturo_role=current_user_can('fakturo_manager') || current_user_can('fakturo_seller');
+			$fakturo_role = (current_user_can('fakturo_manager') || current_user_can('fakturo_seller')) && !is_super_admin();
 			if($fakturo_role){
 				global $wpdb;
 				$fakturo_roles = array('fakturo_manager','fakturo_seller');
@@ -117,6 +117,7 @@ class fktrUsersList {
 				}
 			}
 		}
+		return $query;
 	}
 	
 	/****** Funciones para estilos y javascripts en perfil de usuario   ***************/

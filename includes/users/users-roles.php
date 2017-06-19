@@ -242,6 +242,7 @@ class fktrUserRoles {
 		//Add capabilities to admin (if don't want to allow admins to edits Seller events can be disabled from Settings ;-)
 		foreach(self::$fakturo_manager_caps as $key => $value) {
 			$wp_roles->add_cap( 'administrator', $key, $value );
+			$wp_roles->add_cap( 'super', $key, $value );
 		}
 	}
 
