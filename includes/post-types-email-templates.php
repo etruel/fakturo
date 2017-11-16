@@ -674,7 +674,7 @@ class fktrPostTypeEmailTemplates {
 	public static function get_default_template() {
 		$default_email_templates = array();
 		$args = array(
-			'public'   => true
+			'public'   => false
 		); 
 		$output = 'objects'; 
 		$operator = 'and'; 

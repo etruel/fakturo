@@ -625,7 +625,7 @@ class fktrPostTypePrintTemplates {
 	public static function get_default_template() {
 		$default_print_templates = array();
 		$args = array(
-			'public'   => true
+			'public'   => false
 		); 
 		$output = 'objects'; 
 		$operator = 'and'; 
