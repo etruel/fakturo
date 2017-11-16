@@ -1003,7 +1003,7 @@ class fktrSettings {
 				)
 			),
 			'extensions' => apply_filters('ftkr_extensions_sections', array( 
-				'default' => array('text' =>  __( 'Extensions', FAKTURO_TEXT_DOMAIN ), 'url' => '', 'screen' => '')
+				'default' => array('text' =>  __( 'Extensions', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('plugins.php?page=fakturo'), 'screen' => '')
 				)
 			) ,
 			'licenses' => apply_filters('ftkr_licenses_sections', array( 
