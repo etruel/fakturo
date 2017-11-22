@@ -85,6 +85,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 = 0.7.1 Beta =
 * Fixed issue on user list.
 * Fixed issue on reset to default button of print templates.
+* Added client phone on print templates and email template.
 
 = 0.7 Beta =
 * Added reports page.

@@ -180,7 +180,8 @@ class fktrPostTypePrintTemplates {
 			$tpl->assign( "fktr_invoice_background_image", FAKTURO_PLUGIN_URL . 'assets/images/invoice_background.jpg');
 
 			$sale_invoice = fktrPostTypeSales::get_sale_data($object->id);
-			
+			$client_data = fktrPostTypeClients::get_client_data($sale_invoice['client_id']);
+			$sale_invoice['client_data']['phone'] = $client_data['phone'];
 			$sale_invoice['client_data']['tax_condition'] = (array)get_fakturo_term($sale_invoice['client_data']['tax_condition'], 'fktr_tax_conditions');
 			$sale_invoice['client_data']['payment_type'] = (array)get_fakturo_term($sale_invoice['client_data']['payment_type'], 'fktr_payment_types');
 			$sale_invoice['invoice_type'] = (array)get_fakturo_term($sale_invoice['invoice_type'], 'fktr_invoice_types');
