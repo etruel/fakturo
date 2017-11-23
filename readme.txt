@@ -86,6 +86,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Fixed issue on user list.
 * Fixed issue on reset to default button of print templates.
 * Added client phone on print templates and email template.
+* Added a function to convert numbers to letters.
 
 = 0.7 Beta =
 * Added reports page.
