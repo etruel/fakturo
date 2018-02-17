@@ -229,10 +229,10 @@ class fktrUsersList {
 	 * 
 	 */
 	public static function modify_contact_methods($profile_fields) {
-		$new_fields['address'] = __("Address", FAKTURO_TEXT_DOMAIN );
-		$new_fields['phone'] = __("Telephone", FAKTURO_TEXT_DOMAIN );
-		$new_fields['cellular'] = __("Cellular", FAKTURO_TEXT_DOMAIN );
-		$new_fields['facebook'] = __("Facebook URL", FAKTURO_TEXT_DOMAIN );
+		$new_fields['address'] = __("Address", 'fakturo' );
+		$new_fields['phone'] = __("Telephone", 'fakturo' );
+		$new_fields['cellular'] = __("Cellular", 'fakturo' );
+		$new_fields['facebook'] = __("Facebook URL", 'fakturo' );
 				
 //		$profile_fields['twitter'] = 'Twitter Username';
 //		$profile_fields['facebook'] = 'Facebook URL';

@@ -60,26 +60,26 @@ class fktrNotices {
 		if (current_user_can('fktr_manage_wizard')) {
 			$first_time_wizard = get_option('fktr_first_time_wizard', false);
 			if (!$first_time_wizard) {
-				echo '<div id="message" class="notice notice-warning is-dismissible"><p>'.__('If it is your first time in the Fakturo you can easily configure it through the wizard.', FAKTURO_TEXT_DOMAIN ).' <a href="'.admin_url('admin-post.php?action=fktr_wizard').'" class="button button-primary">'.__('Enter Wizard', FAKTURO_TEXT_DOMAIN ).'</a></p></div>';
+				echo '<div id="message" class="notice notice-warning is-dismissible"><p>'.__('If it is your first time in the Fakturo you can easily configure it through the wizard.', 'fakturo' ).' <a href="'.admin_url('admin-post.php?action=fktr_wizard').'" class="button button-primary">'.__('Enter Wizard', 'fakturo' ).'</a></p></div>';
 				return true;
 			}
 		}
 
 		$count_currencies = wp_count_terms('fktr_currencies');
 		if ($count_currencies == 0) {
-			echo '<div id="message" class="notice notice-warning is-dismissible"><p>'.sprintf(__('Fakturo needs <strong>%s</strong> on the <a href="%s">%s</a> for proper operation.', FAKTURO_TEXT_DOMAIN ), __('at least one currency', FAKTURO_TEXT_DOMAIN), admin_url('edit-tags.php?taxonomy=fktr_currencies'), __('Currencies', FAKTURO_TEXT_DOMAIN)).'</p></div>';
+			echo '<div id="message" class="notice notice-warning is-dismissible"><p>'.sprintf(__('Fakturo needs <strong>%s</strong> on the <a href="%s">%s</a> for proper operation.', 'fakturo' ), __('at least one currency', 'fakturo'), admin_url('edit-tags.php?taxonomy=fktr_currencies'), __('Currencies', 'fakturo')).'</p></div>';
 			return true;
 
 		}
 		$count_invoice_types = wp_count_terms('fktr_invoice_types');
 		if ($count_invoice_types == 0) {
-			echo '<div id="message" class="notice notice-warning is-dismissible"><p>'.sprintf(__('Fakturo needs <strong>%s</strong> on the <a href="%s">%s</a> for proper operation.', FAKTURO_TEXT_DOMAIN ), __('at least one Invoice Type', FAKTURO_TEXT_DOMAIN), admin_url('edit-tags.php?taxonomy=fktr_invoice_types'), __('Invoice Types', FAKTURO_TEXT_DOMAIN)).'</p></div>';
+			echo '<div id="message" class="notice notice-warning is-dismissible"><p>'.sprintf(__('Fakturo needs <strong>%s</strong> on the <a href="%s">%s</a> for proper operation.', 'fakturo' ), __('at least one Invoice Type', 'fakturo'), admin_url('edit-tags.php?taxonomy=fktr_invoice_types'), __('Invoice Types', 'fakturo')).'</p></div>';
 			return true;
 
 		}
 		$count_sale_points = wp_count_terms('fktr_sale_points');
 		if ($count_sale_points == 0) {
-			echo '<div id="message" class="notice notice-warning is-dismissible"><p>'.sprintf(__('Fakturo needs <strong>%s</strong> on the <a href="%s">%s</a> for proper operation.', FAKTURO_TEXT_DOMAIN ), __('at least one Sale Point', FAKTURO_TEXT_DOMAIN), admin_url('edit-tags.php?taxonomy=fktr_sale_points'), __('Sale Points', FAKTURO_TEXT_DOMAIN)).'</p></div>';
+			echo '<div id="message" class="notice notice-warning is-dismissible"><p>'.sprintf(__('Fakturo needs <strong>%s</strong> on the <a href="%s">%s</a> for proper operation.', 'fakturo' ), __('at least one Sale Point', 'fakturo'), admin_url('edit-tags.php?taxonomy=fktr_sale_points'), __('Sale Points', 'fakturo')).'</p></div>';
 			return true;
 
 		}
@@ -87,11 +87,11 @@ class fktrNotices {
 		
 		$setting_system = get_option('fakturo_system_options_group', false);
 		if ($setting_system['currency'] <= 0) {
-			echo '<div id="message" class="notice notice-warning is-dismissible"><p>'.sprintf(__('Fakturo needs <strong>%s</strong> on the <a href="%s">%s</a> for proper operation.', FAKTURO_TEXT_DOMAIN ), __('Default Currency', FAKTURO_TEXT_DOMAIN), admin_url('admin.php?page=fakturo-settings-system'), __('System Settings', FAKTURO_TEXT_DOMAIN)).'</p></div>';
+			echo '<div id="message" class="notice notice-warning is-dismissible"><p>'.sprintf(__('Fakturo needs <strong>%s</strong> on the <a href="%s">%s</a> for proper operation.', 'fakturo' ), __('Default Currency', 'fakturo'), admin_url('admin.php?page=fakturo-settings-system'), __('System Settings', 'fakturo')).'</p></div>';
 			return true;
 		} 
 		if ($setting_system['invoice_type'] <= 0) {
-			echo '<div id="message" class="notice notice-warning is-dismissible"><p>'.sprintf(__('Fakturo needs <strong>%s</strong> on the <a href="%s">%s</a> for proper operation.', FAKTURO_TEXT_DOMAIN ), __('Default Invoice Type', FAKTURO_TEXT_DOMAIN), admin_url('admin.php?page=fakturo-settings-system'), __('System Settings', FAKTURO_TEXT_DOMAIN)).'</p></div>';
+			echo '<div id="message" class="notice notice-warning is-dismissible"><p>'.sprintf(__('Fakturo needs <strong>%s</strong> on the <a href="%s">%s</a> for proper operation.', 'fakturo' ), __('Default Invoice Type', 'fakturo'), admin_url('admin.php?page=fakturo-settings-system'), __('System Settings', 'fakturo')).'</p></div>';
 			return true;
 		}
 	}

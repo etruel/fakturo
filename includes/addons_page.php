@@ -43,8 +43,8 @@ class fktr_admin_page {
 	public static function admin_menu() {
 		$page = add_submenu_page(
 		'plugins.php',
-			__( 'Add-ons', FAKTURO_TEXT_DOMAIN),
-			__( 'Fakturo Add-ons', FAKTURO_TEXT_DOMAIN),
+			__( 'Add-ons', 'fakturo'),
+			__( 'Fakturo Add-ons', 'fakturo'),
 			'manage_options',
 			'fakturo',
 			array(__CLASS__, 'plugins_page')
@@ -52,8 +52,8 @@ class fktr_admin_page {
 		add_action('admin_print_scripts-' . $page, array(__CLASS__, 'addons_scripts'));
 		$page = add_submenu_page(
 			'fakturo_dashboard',
-			__( 'Add-ons', FAKTURO_TEXT_DOMAIN),
-			__( 'Extensions', FAKTURO_TEXT_DOMAIN),
+			__( 'Add-ons', 'fakturo'),
+			__( 'Extensions', 'fakturo'),
 			'manage_options',
 			'plugins.php?page=fakturo'
 		);
@@ -118,7 +118,7 @@ class fktr_admin_page {
 	}
 	public static function addons_row_actions($actions, $plugin_file, $plugin_data, $context) {
 		$actions = array();
-		$actions['buynow'] =  '<a target="_Blank" class="edit" aria-label="' . esc_attr( sprintf( __( 'Go to %s WebPage',FAKTURO_TEXT_DOMAIN), $plugin_data['Name'] ) ) . '" title="' . esc_attr( sprintf( __( 'Open %s WebPage in new window.',FAKTURO_TEXT_DOMAIN), $plugin_data['Name'] ) ) . '" href="'.$plugin_data['PluginURI'].'">' . __('Details',FAKTURO_TEXT_DOMAIN) . '</a>';
+		$actions['buynow'] =  '<a target="_Blank" class="edit" aria-label="' . esc_attr( sprintf( __( 'Go to %s WebPage','fakturo'), $plugin_data['Name'] ) ) . '" title="' . esc_attr( sprintf( __( 'Open %s WebPage in new window.','fakturo'), $plugin_data['Name'] ) ) . '" href="'.$plugin_data['PluginURI'].'">' . __('Details','fakturo') . '</a>';
 		return $actions;
 	}
 
@@ -185,27 +185,27 @@ class fktr_admin_page {
 		if (strpos($plugin_data['Name'], 'Fakturo ') === false ) {
 			return true;
 		}
-		$caption = ( (isset($plugin_data['installed']) && ($plugin_data['installed']) ) || !isset($plugin_data['Remote'])) ? __('Installed', FAKTURO_TEXT_DOMAIN) : __('Purchase', FAKTURO_TEXT_DOMAIN);
+		$caption = ( (isset($plugin_data['installed']) && ($plugin_data['installed']) ) || !isset($plugin_data['Remote'])) ? __('Installed', 'fakturo') : __('Purchase', 'fakturo');
 		if (isset($plugin_data['installed']) && ($plugin_data['installed']) ) {
 			if(!isset($plugin_data['Remote'])) {
-				$caption = __('Installed', FAKTURO_TEXT_DOMAIN);
-				$title = __('See details and prices on etruel\'s store', FAKTURO_TEXT_DOMAIN);
+				$caption = __('Installed', 'fakturo');
+				$title = __('See details and prices on etruel\'s store', 'fakturo');
 				$url   = 'https'.strstr( $plugin_data['PluginURI'], '://');
 			}
 		}else {
 			if(!isset($plugin_data['Remote'])) {
-				$caption = __('Locally', FAKTURO_TEXT_DOMAIN);
-				$title = __('Go to plugin URI', FAKTURO_TEXT_DOMAIN);
+				$caption = __('Locally', 'fakturo');
+				$title = __('Go to plugin URI', 'fakturo');
 				$url   = '#'.$plugin_data['Name'];
 			}else{
-				$caption = __('Purchase', FAKTURO_TEXT_DOMAIN); //**** 
-				$title = __('Go to purchase on the etruel\'s store', FAKTURO_TEXT_DOMAIN);
+				$caption = __('Purchase', 'fakturo'); //**** 
+				$title = __('Go to purchase on the etruel\'s store', 'fakturo');
 				$url   = 'https'.strstr( $plugin_data['buynowURI'], '://');
 			}
 		}
 				
-		$target = ( $caption == __('Locally', FAKTURO_TEXT_DOMAIN) ) ? '_self' : '_blank';
-		$class = ( $caption == __('Purchase', FAKTURO_TEXT_DOMAIN) ) ? 'button-primary' : '';
+		$target = ( $caption == __('Locally', 'fakturo') ) ? '_self' : '_blank';
+		$class = ( $caption == __('Purchase', 'fakturo') ) ? 'button-primary' : '';
 		
 		echo '<a target="'.$target.'" class="button '.$class.'" title="'.$title.'" href="'.$url.'">' . $caption . '</a>';
 		return true;

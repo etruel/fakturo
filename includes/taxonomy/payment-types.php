@@ -40,22 +40,22 @@ class fktr_tax_payment_types {
 	public static function init() {
 		
 		$labels_model = array(
-			'name'                       => _x( 'Payment Types', 'Payment Types', FAKTURO_TEXT_DOMAIN ),
-			'singular_name'              => _x( 'Payment Type', 'Payment Type', FAKTURO_TEXT_DOMAIN ),
-			'search_items'               => __( 'Search Payment Types', FAKTURO_TEXT_DOMAIN ),
-			'popular_items'              => __( 'Popular Payment Types', FAKTURO_TEXT_DOMAIN ),
-			'all_items'                  => __( 'All Payment Types', FAKTURO_TEXT_DOMAIN ),
-			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
+			'name'                       => _x( 'Payment Types', 'Payment Types', 'fakturo' ),
+			'singular_name'              => _x( 'Payment Type', 'Payment Type', 'fakturo' ),
+			'search_items'               => __( 'Search Payment Types', 'fakturo' ),
+			'popular_items'              => __( 'Popular Payment Types', 'fakturo' ),
+			'all_items'                  => __( 'All Payment Types', 'fakturo' ),
+			'parent_item'                => __( 'Bank', 'fakturo' ),
 			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Payment Type', FAKTURO_TEXT_DOMAIN ),
-			'update_item'                => __( 'Update Payment Type', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item'               => __( 'Add New Payment Type', FAKTURO_TEXT_DOMAIN ),
-			'new_item_name'              => __( 'New Payment Type Name', FAKTURO_TEXT_DOMAIN ),
-			'separate_items_with_commas' => __( 'Separate Payment Type with commas', FAKTURO_TEXT_DOMAIN ),
-			'add_or_remove_items'        => __( 'Add or remove Payment Types', FAKTURO_TEXT_DOMAIN ),
-			'choose_from_most_used'      => __( 'Choose from the most used Payment Types', FAKTURO_TEXT_DOMAIN ),
-			'not_found'                  => __( 'No Payment Types found.', FAKTURO_TEXT_DOMAIN ),
-			'menu_name'                  => __( 'Payment Types', FAKTURO_TEXT_DOMAIN ),
+			'edit_item'                  => __( 'Edit Payment Type', 'fakturo' ),
+			'update_item'                => __( 'Update Payment Type', 'fakturo' ),
+			'add_new_item'               => __( 'Add New Payment Type', 'fakturo' ),
+			'new_item_name'              => __( 'New Payment Type Name', 'fakturo' ),
+			'separate_items_with_commas' => __( 'Separate Payment Type with commas', 'fakturo' ),
+			'add_or_remove_items'        => __( 'Add or remove Payment Types', 'fakturo' ),
+			'choose_from_most_used'      => __( 'Choose from the most used Payment Types', 'fakturo' ),
+			'not_found'                  => __( 'No Payment Types found.', 'fakturo' ),
+			'menu_name'                  => __( 'Payment Types', 'fakturo' ),
 		);
 
 		$args_model = array(
@@ -124,7 +124,7 @@ class fktr_tax_payment_types {
 	public static function columns($columns) {
 		$new_columns = array(
 			'cb' => '<input type="checkbox" />',
-			'name' => __('Name', FAKTURO_TEXT_DOMAIN),
+			'name' => __('Name', 'fakturo'),
 		);
 		return $new_columns;
 	}

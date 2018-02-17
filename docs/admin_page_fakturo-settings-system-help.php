@@ -14,7 +14,7 @@ $helptexts = array(
 	'SYSTEM SETTINGS ' => array( 
 		'item1' => array( 
 			'title' => __('CONFIGURATION OF THE COMPANY','fakturo'),
-			'tip' => __('','fakturo'),
+		//	'tip' => __('','fakturo'),
 		),
 
 	),
@@ -57,7 +57,7 @@ $helptexts = array(
 		),
 		'item10' => array( 
 			'title' => __('Default Invoice Code','fakturo'),
-			'tip' => __('Select a default code that the invoice will carry when issued. It may be the reference code, internal code or manufacturer’s code.','fakturo'),
+			'tip' => __("Select a default code that the invoice will carry when issued. It may be the reference code, internal code or manufacturer's code.",'fakturo'),
 		),
 		'item11' => array( 
 			'title' => __('Default Date Format','fakturo'),

@@ -49,14 +49,14 @@ class client_account_movements {
 		$ranges = apply_filters('fktr_reports_ranges_timestamp', $ranges, $request);
 		$access = reports::access_tab($request);
 		if (!$access) {
-			$total_html_print .= '<div class="postbox" style="margin-top:10px; padding:30px;"><h2>'.__( "Sorry, you don't have access to this page.", FAKTURO_TEXT_DOMAIN ).'</h2></div>';
+			$total_html_print .= '<div class="postbox" style="margin-top:10px; padding:30px;"><h2>'.__( "Sorry, you don't have access to this page.", 'fakturo' ).'</h2></div>';
 			echo $total_html_print;
 			return true;
 		}
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$currencyDefault = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
 		if (is_wp_error($currencyDefault)) {
-			$total_html_print .= '<p>'.__( 'Account Movements needs the default currency on system settings.', FAKTURO_TEXT_DOMAIN ).'</p>';
+			$total_html_print .= '<p>'.__( 'Account Movements needs the default currency on system settings.', 'fakturo' ).'</p>';
 			echo $total_html_print;
 			return true;
 		}
@@ -68,10 +68,10 @@ class client_account_movements {
 		if (is_numeric($request['client_id']) && $request['client_id'] > 0) {
 			$client_data = fktrPostTypeClients::get_client_data($request['client_id']);
 			
-			$new_array[0] = __('Client', FAKTURO_TEXT_DOMAIN ).': '.$client_data['post_title'];
+			$new_array[0] = __('Client', 'fakturo' ).': '.$client_data['post_title'];
 			
 		} else {
-			$total_html_print = '<div style="margin-left:15px;"><h3>'.__('Select a client please.', FAKTURO_TEXT_DOMAIN ).'</h3></div>';
+			$total_html_print = '<div style="margin-left:15px;"><h3>'.__('Select a client please.', 'fakturo' ).'</h3></div>';
 			echo $total_html_print;
 			return false;
 		}
@@ -80,17 +80,17 @@ class client_account_movements {
 		$objects_client = client_summmary::get_objects_client($request, $ranges, false);
 		$documents_values = $objects_client['documents_values'];
 
-		$new_array[5] = sprintf(__('Date: since %s til %s', FAKTURO_TEXT_DOMAIN ), date_i18n($setting_system['dateformat'], $ranges['from']), date_i18n($setting_system['dateformat'], $ranges['to']));
+		$new_array[5] = sprintf(__('Date: since %s til %s', 'fakturo' ), date_i18n($setting_system['dateformat'], $ranges['from']), date_i18n($setting_system['dateformat'], $ranges['to']));
 		$array_data[] = $new_array;
 		$new_array = $default_array_data;
 		if (!empty($objects_client['objects'])) {
 
-			$new_array[0] = __('Date', FAKTURO_TEXT_DOMAIN);
-			$new_array[1] = __('Type', FAKTURO_TEXT_DOMAIN);
-			$new_array[2] = __('Reference', FAKTURO_TEXT_DOMAIN);
-			$new_array[3] = __('Debit', FAKTURO_TEXT_DOMAIN);
-			$new_array[4] = __('Credit', FAKTURO_TEXT_DOMAIN);
-			$new_array[5] = __('Balance', FAKTURO_TEXT_DOMAIN);
+			$new_array[0] = __('Date', 'fakturo');
+			$new_array[1] = __('Type', 'fakturo');
+			$new_array[2] = __('Reference', 'fakturo');
+			$new_array[3] = __('Debit', 'fakturo');
+			$new_array[4] = __('Credit', 'fakturo');
+			$new_array[5] = __('Balance', 'fakturo');
 			$array_data[] = $new_array;
 			$new_array = $default_array_data;
 
@@ -101,10 +101,10 @@ class client_account_movements {
 				$obj_link = admin_url('post.php?post='.$obj['ID'].'&action=edit');
 				
 				if ($obj['post_type']=='fktr_sale') {
-					$obj_type = __('Invoice', FAKTURO_TEXT_DOMAIN);
+					$obj_type = __('Invoice', 'fakturo');
 					
 				} else {
-					$obj_type = __('Receipt', FAKTURO_TEXT_DOMAIN);
+					$obj_type = __('Receipt', 'fakturo');
 					
 				}
 				$debit = 0;
@@ -174,14 +174,14 @@ class client_account_movements {
 		$ranges = apply_filters('fktr_reports_ranges_timestamp', $ranges, $request);
 		$access = reports::access_tab($request);
 		if (!$access) {
-			$total_html_print .= '<div class="postbox" style="margin-top:10px; padding:30px;"><h2>'.__( "Sorry, you don't have access to this page.", FAKTURO_TEXT_DOMAIN ).'</h2></div>';
+			$total_html_print .= '<div class="postbox" style="margin-top:10px; padding:30px;"><h2>'.__( "Sorry, you don't have access to this page.", 'fakturo' ).'</h2></div>';
 			echo $total_html_print;
 			return true;
 		}
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$currencyDefault = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
 		if (is_wp_error($currencyDefault)) {
-			$total_html_print .= '<p>'.__( 'Account Movements needs the default currency on system settings.', FAKTURO_TEXT_DOMAIN ).'</p>';
+			$total_html_print .= '<p>'.__( 'Account Movements needs the default currency on system settings.', 'fakturo' ).'</p>';
 			echo $total_html_print;
 			return true;
 		}
@@ -200,9 +200,9 @@ class client_account_movements {
 			$client_data = fktrPostTypeClients::get_client_data($request['client_id']);
 			
 			
-			$html_client_data = '<div style="width:50%; text-align: left; display: inline-block;"><h3>'.__('Client', FAKTURO_TEXT_DOMAIN ).': '.$client_data['post_title'].'</h3></div>';
+			$html_client_data = '<div style="width:50%; text-align: left; display: inline-block;"><h3>'.__('Client', 'fakturo' ).': '.$client_data['post_title'].'</h3></div>';
 		} else {
-			$total_html_print = '<div style="margin-left:15px;"><h3>'.__('Select a client please.', FAKTURO_TEXT_DOMAIN ).'</h3></div>';
+			$total_html_print = '<div style="margin-left:15px;"><h3>'.__('Select a client please.', 'fakturo' ).'</h3></div>';
 			echo $total_html_print;
 			return false;
 		}
@@ -211,29 +211,29 @@ class client_account_movements {
 		$objects_client = client_summmary::get_objects_client($request, $ranges, false);
 		$documents_values = $objects_client['documents_values'];
 
-		$total_html_print .= '<div style="width:50%; text-align: right; display: inline-block;"><h3>'.sprintf(__('Date: since %s til %s', FAKTURO_TEXT_DOMAIN ), date_i18n($setting_system['dateformat'], $ranges['from']), date_i18n($setting_system['dateformat'], $ranges['to'])).'</h3></div>';
+		$total_html_print .= '<div style="width:50%; text-align: right; display: inline-block;"><h3>'.sprintf(__('Date: since %s til %s', 'fakturo' ), date_i18n($setting_system['dateformat'], $ranges['from']), date_i18n($setting_system['dateformat'], $ranges['to'])).'</h3></div>';
 		$html_objects = '<div style="clear: both;"><h2>No results with this filters</h2></div>';
 		if (!empty($objects_client['objects'])) {
 			$html_objects = '<table class="wp-list-table widefat fixed striped posts" style="width: 100%;">
 				<thead>
 				<tr>
 					<td>
-						'.__('Date', FAKTURO_TEXT_DOMAIN).'
+						'.__('Date', 'fakturo').'
 					</td>
 					<td>
-						'.__('Type', FAKTURO_TEXT_DOMAIN).'
+						'.__('Type', 'fakturo').'
 					</td>
 					<td>
-						'.__('Reference', FAKTURO_TEXT_DOMAIN).'
+						'.__('Reference', 'fakturo').'
 					</td>
 					<td>
-						'.__('Debit', FAKTURO_TEXT_DOMAIN).'
+						'.__('Debit', 'fakturo').'
 					</td>
 					<td>
-						'.__('Credit', FAKTURO_TEXT_DOMAIN).'
+						'.__('Credit', 'fakturo').'
 					</td>
 					<td>
-						'.__('Balance', FAKTURO_TEXT_DOMAIN).'
+						'.__('Balance', 'fakturo').'
 					</td>
 				</tr>
 				</thead>
@@ -245,10 +245,10 @@ class client_account_movements {
 				$obj_link = admin_url('post.php?post='.$obj['ID'].'&action=edit');
 				
 				if ($obj['post_type']=='fktr_sale') {
-					$obj_type = __('Invoice', FAKTURO_TEXT_DOMAIN);
+					$obj_type = __('Invoice', 'fakturo');
 					
 				} else {
-					$obj_type = __('Receipt', FAKTURO_TEXT_DOMAIN);
+					$obj_type = __('Receipt', 'fakturo');
 					
 				}
 				$debit = 0;
@@ -338,7 +338,7 @@ class client_account_movements {
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$currencyDefault = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
 		if (is_wp_error($currencyDefault)) {
-			echo '<p>'.__( 'Account Movements needs the default currency on system settings.', FAKTURO_TEXT_DOMAIN ).'</p>';
+			echo '<p>'.__( 'Account Movements needs the default currency on system settings.', 'fakturo' ).'</p>';
 			return true;
 		}
 		
@@ -349,9 +349,9 @@ class client_account_movements {
 			$client_data = fktrPostTypeClients::get_client_data($request['client_id']);
 			
 			
-			$html_client_data = '<div style="float:left; margin-left:15px;"><h3>'.__('Client', FAKTURO_TEXT_DOMAIN ).': '.$client_data['post_title'].'</h3></div>';
+			$html_client_data = '<div style="float:left; margin-left:15px;"><h3>'.__('Client', 'fakturo' ).': '.$client_data['post_title'].'</h3></div>';
 		} else {
-			echo '<div style="margin-left:15px;"><h3>'.__('Select a client please.', FAKTURO_TEXT_DOMAIN ).'</h3></div>';
+			echo '<div style="margin-left:15px;"><h3>'.__('Select a client please.', 'fakturo' ).'</h3></div>';
 			return false;
 		}
 		echo $html_client_data;
@@ -359,29 +359,29 @@ class client_account_movements {
 		$objects_client = client_summmary::get_objects_client($request, $ranges, false);
 		$documents_values = $objects_client['documents_values'];
 
-		echo '<div style="float:right; margin-right:15px;"><h3>'.sprintf(__('Date: since %s til %s', FAKTURO_TEXT_DOMAIN ), date_i18n($setting_system['dateformat'], $ranges['from']), date_i18n($setting_system['dateformat'], $ranges['to'])).'</h3></div>';
+		echo '<div style="float:right; margin-right:15px;"><h3>'.sprintf(__('Date: since %s til %s', 'fakturo' ), date_i18n($setting_system['dateformat'], $ranges['from']), date_i18n($setting_system['dateformat'], $ranges['to'])).'</h3></div>';
 		$html_objects = '<div style="clear: both;"><h2>No results with this filters</h2></div>';
 		if (!empty($objects_client['objects'])) {
 			$html_objects = '<table class="wp-list-table widefat fixed striped posts">
 				<thead>
 				<tr>
 					<td>
-						'.__('Date', FAKTURO_TEXT_DOMAIN).'
+						'.__('Date', 'fakturo').'
 					</td>
 					<td>
-						'.__('Type', FAKTURO_TEXT_DOMAIN).'
+						'.__('Type', 'fakturo').'
 					</td>
 					<td>
-						'.__('Reference', FAKTURO_TEXT_DOMAIN).'
+						'.__('Reference', 'fakturo').'
 					</td>
 					<td>
-						'.__('Debit', FAKTURO_TEXT_DOMAIN).'
+						'.__('Debit', 'fakturo').'
 					</td>
 					<td>
-						'.__('Credit', FAKTURO_TEXT_DOMAIN).'
+						'.__('Credit', 'fakturo').'
 					</td>
 					<td>
-						'.__('Balance', FAKTURO_TEXT_DOMAIN).'
+						'.__('Balance', 'fakturo').'
 					</td>
 				</tr>
 				</thead>
@@ -393,10 +393,10 @@ class client_account_movements {
 				$obj_link = admin_url('post.php?post='.$obj['ID'].'&action=edit');
 				
 				if ($obj['post_type']=='fktr_sale') {
-					$obj_type = __('Invoice', FAKTURO_TEXT_DOMAIN);
+					$obj_type = __('Invoice', 'fakturo');
 					
 				} else {
-					$obj_type = __('Receipt', FAKTURO_TEXT_DOMAIN);
+					$obj_type = __('Receipt', 'fakturo');
 					
 				}
 				$debit = 0;
@@ -458,7 +458,7 @@ class client_account_movements {
 		$selectClients = fakturo_get_select_post(array(
 											'echo' => 0,
 											'post_type' => 'fktr_client',
-											'show_option_none' => __('Select a client please.', FAKTURO_TEXT_DOMAIN ),
+											'show_option_none' => __('Select a client please.', 'fakturo' ),
 											'name' => 'client_id',
 											'id' => 'client_id',
 											'class' => '',
@@ -466,17 +466,17 @@ class client_account_movements {
 										));
 
 		$array_range = array();
-		$array_range['today'] = __( 'Today', FAKTURO_TEXT_DOMAIN );
-		$array_range['yesterday'] = __( 'Yesterday', FAKTURO_TEXT_DOMAIN );
-		$array_range['this_week'] = __( 'This Week', FAKTURO_TEXT_DOMAIN );
-		$array_range['last_week'] = __( 'Last Week', FAKTURO_TEXT_DOMAIN );
-		$array_range['this_month'] = __( 'This Month', FAKTURO_TEXT_DOMAIN );
-		$array_range['last_month'] = __( 'Last Month', FAKTURO_TEXT_DOMAIN );
-		$array_range['this_quarter'] = __( 'This Quarter', FAKTURO_TEXT_DOMAIN );
-		$array_range['last_quarter'] = __( 'Last Quarter', FAKTURO_TEXT_DOMAIN );
-		$array_range['this_year'] = __( 'This Year', FAKTURO_TEXT_DOMAIN );
-		$array_range['last_year'] = __( 'Last Year', FAKTURO_TEXT_DOMAIN );
-		$array_range['other'] = __( 'Custom', FAKTURO_TEXT_DOMAIN );
+		$array_range['today'] = __( 'Today', 'fakturo' );
+		$array_range['yesterday'] = __( 'Yesterday', 'fakturo' );
+		$array_range['this_week'] = __( 'This Week', 'fakturo' );
+		$array_range['last_week'] = __( 'Last Week', 'fakturo' );
+		$array_range['this_month'] = __( 'This Month', 'fakturo' );
+		$array_range['last_month'] = __( 'Last Month', 'fakturo' );
+		$array_range['this_quarter'] = __( 'This Quarter', 'fakturo' );
+		$array_range['last_quarter'] = __( 'Last Quarter', 'fakturo' );
+		$array_range['this_year'] = __( 'This Year', 'fakturo' );
+		$array_range['last_year'] = __( 'Last Year', 'fakturo' );
+		$array_range['other'] = __( 'Custom', 'fakturo' );
 		/*
 		* These filters can be used to add or update range values on select html.
 		*/
@@ -495,10 +495,10 @@ class client_account_movements {
 				'.$select_range_html.'
 				'.$selectClients.'
 				
-				<input type="submit" class="button-secondary" value="'.__( 'Filter', FAKTURO_TEXT_DOMAIN ).'"/>
+				<input type="submit" class="button-secondary" value="'.__( 'Filter', 'fakturo' ).'"/>
 				
-				<a class="button-secondary right" href="'.admin_url('admin-post.php?action=client_account_movements_download_csv&'.http_build_query($request)).'">'.__( 'CSV', FAKTURO_TEXT_DOMAIN ).'</a>
-				<a class="button-secondary right" style="margin-right:10px;" href="'.admin_url('admin-post.php?action=client_account_movements_print_pdf&'.http_build_query($request)).'">'.__( 'PDF', FAKTURO_TEXT_DOMAIN ).'</a>
+				<a class="button-secondary right" href="'.admin_url('admin-post.php?action=client_account_movements_download_csv&'.http_build_query($request)).'">'.__( 'CSV', 'fakturo' ).'</a>
+				<a class="button-secondary right" style="margin-right:10px;" href="'.admin_url('admin-post.php?action=client_account_movements_print_pdf&'.http_build_query($request)).'">'.__( 'PDF', 'fakturo' ).'</a>
 				
 			</form>
 		</div>';

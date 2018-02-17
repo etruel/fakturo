@@ -17,7 +17,7 @@ function fktr_add_dashboard_widgets() {
 
 	wp_add_dashboard_widget(
                  'fktr_dashboard_widget_sale_summary',         // Widget slug.
-                 __('Fakturo - Sales Summary', FAKTURO_TEXT_DOMAIN ),         // Title.
+                 __('Fakturo - Sales Summary', 'fakturo' ),         // Title.
                  'fktr_widget_dashboard_sale_summary' // Display function.
         );
 	global $wp_meta_boxes;
@@ -37,7 +37,7 @@ function fktr_default_dashboard_widgets() {
 	
 	fktr_add_dashboard_widget(
         'fktr_dashboard_widget_sale_summary',         // Widget slug.
-        __( 'Fakturo - Sales Summary', FAKTURO_TEXT_DOMAIN ),         // Title.
+        __( 'Fakturo - Sales Summary', 'fakturo' ),         // Title.
         'fktr_widget_dashboard_sale_summary' // Display function.
     );
 	/* fktr_add_dashboard_widget(
@@ -97,7 +97,7 @@ function fktr_widget_dashboard_sale_summary() {
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$currencyDefault = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
 		if (is_wp_error($currencyDefault)) {
-			echo '<p>'.__( 'Sales Summary needs the default currency on system settings.', FAKTURO_TEXT_DOMAIN ).'</p>';
+			echo '<p>'.__( 'Sales Summary needs the default currency on system settings.', 'fakturo' ).'</p>';
 			return true;
 		}
 		
@@ -152,37 +152,36 @@ function fktr_widget_dashboard_sale_summary() {
 		
 			
 		echo '<div class="seccion1" class="white">
-				
 				<table  width="100%" cellspacing="0">
 					<tr>
 						<td>
-							<p>Current Mothn</p>
+							<p>'. _('Current Month','fakturo') .'</p>
 							<ol>
-								<li><span class="sp_left">Earning</span>  <span class="sp_right"> '.$money_format_current_month.'</span><br style="clear: both;"></li>
-								<li><span class="sp_left">Sales</span> <span class="sp_right">'.$count_sales_current_month.' </span></li>
+								<li><span class="sp_left">'. _('Earning','fakturo') .'</span>  <span class="sp_right"> '.$money_format_current_month.'</span><br style="clear: both;"></li>
+								<li><span class="sp_left">'. _('Sales','fakturo') .'</span> <span class="sp_right">'.$count_sales_current_month.' </span></li>
 							</ol>
 						</td>
 						<td>
-							<p>Today</p>
+							<p>'. _('Today','fakturo') .'</p>
 							<ol>
-								<li><span class="sp_left">Earning</span> <span class="sp_right">'.$money_format_today.'</span><br style="clear: both;"></li>
-								<li><span class="sp_left">Sales</span> <span class="sp_right">'.$count_sales_today.'</span></li>
+								<li><span class="sp_left">'. _('Earning','fakturo') .'</span> <span class="sp_right">'.$money_format_today.'</span><br style="clear: both;"></li>
+								<li><span class="sp_left">'. _('Sales','fakturo') .'</span> <span class="sp_right">'.$count_sales_today.'</span></li>
 							</ol>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<p>Last Mothn</p>
+							<p>'. _('Last Month','fakturo') .'</p>
 							<ol>
-								<li><span class="sp_left">Earning</span> <span class="sp_right">'.$money_format_last_month.'</span><br style="clear: both;"></li>
-								<li><span class="sp_left">Sales</span> <span class="sp_right">'.$count_sales_last_month.'</span></li>
+								<li><span class="sp_left">'. _('Earning','fakturo') .'</span> <span class="sp_right">'.$money_format_last_month.'</span><br style="clear: both;"></li>
+								<li><span class="sp_left">'. _('Sales','fakturo') .'</span> <span class="sp_right">'.$count_sales_last_month.'</span></li>
 							</ol>
 						</td>
 						<td>
-							<p>Total</p>
+							<p>'. _('Total','fakturo') .'</p>
 							<ol>
-								<li><span class="sp_left">Earning</span> <span class="sp_right">'.$money_format_total.'</span><br style="clear: both;"></li>
-								<li><span class="sp_left">Sales</span> <span class="sp_right">'.$count_sales_total.'</span></li>
+								<li><span class="sp_left">'. _('Earning','fakturo') .'</span> <span class="sp_right">'.$money_format_total.'</span><br style="clear: both;"></li>
+								<li><span class="sp_left">'. _('Sales','fakturo') .'</span> <span class="sp_right">'.$count_sales_total.'</span></li>
 							</ol>
 						</td>
 					</tr>

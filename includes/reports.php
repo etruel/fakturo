@@ -50,7 +50,7 @@ class reports {
 		$ranges = apply_filters('fktr_reports_ranges_timestamp', $ranges, $request);
 		$access = self::access_tab($request);
 		if (!$access) {
-			echo '<div class="postbox" style="margin-top:10px; padding:30px;"><h2>'.__( "Sorry, you don't have access to this page.", FAKTURO_TEXT_DOMAIN ).'</h2></div>';
+			echo '<div class="postbox" style="margin-top:10px; padding:30px;"><h2>'.__( "Sorry, you don't have access to this page.", 'fakturo' ).'</h2></div>';
 			return true;
 		}
 		/*
@@ -244,15 +244,15 @@ class reports {
 	public static function get_tabs($tab = false) {
 		$sections_tabs = array(
 			'sales' => apply_filters('ftkr_report_sales_sections', array( 
-				'default' => array('text' => __( '​​Sales', FAKTURO_TEXT_DOMAIN ), 'sec' => 'sales', 'cap' => 'fktr_report_sales')
+				'default' => array('text' => __( '​​Sales', 'fakturo' ), 'sec' => 'sales', 'cap' => 'fktr_report_sales')
 				)
 			),
 			
 			'clients' => apply_filters('ftkr_report_clients_sections', array( 
-				'client_summary' =>  array('text' => __( 'Summary', FAKTURO_TEXT_DOMAIN ), 'sec' => 'client_summary', 'cap' => 'fktr_report_client_summary'),
-				'client_incomes' =>  array('text' => __( 'Incomes', FAKTURO_TEXT_DOMAIN ), 'sec' => 'client_incomes', 'cap' => 'fktr_report_client_incomes'),
-				'client_account_movements' =>  array('text' => __( 'Client&#x27;s account', FAKTURO_TEXT_DOMAIN ), 'sec' => 'client_account_movements', 'cap' => 'fktr_report_client_account_movements'),
-				'default' =>  array('text' => __( 'Clients', FAKTURO_TEXT_DOMAIN ), 'sec' => 'client_summary', 'cap' => 'fktr_report_client_summary')				
+				'client_summary' =>  array('text' => __( 'Summary', 'fakturo' ), 'sec' => 'client_summary', 'cap' => 'fktr_report_client_summary'),
+				'client_incomes' =>  array('text' => __( 'Incomes', 'fakturo' ), 'sec' => 'client_incomes', 'cap' => 'fktr_report_client_incomes'),
+				'client_account_movements' =>  array('text' => __( 'Client&#x27;s account', 'fakturo' ), 'sec' => 'client_account_movements', 'cap' => 'fktr_report_client_account_movements'),
+				'default' =>  array('text' => __( 'Clients', 'fakturo' ), 'sec' => 'client_summary', 'cap' => 'fktr_report_client_summary')				
 				)
 			),
 		);

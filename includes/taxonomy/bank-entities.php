@@ -43,22 +43,22 @@ class fktr_tax_bank_entities {
 	public static function init() {
 		
 		$labels = array(
-			'name'                       => _x( 'Bank Entities', 'Bank Entities', FAKTURO_TEXT_DOMAIN ),
-			'singular_name'              => _x( 'Bank Entity', 'Bank Entity', FAKTURO_TEXT_DOMAIN ),
-			'search_items'               => __( 'Search Bank Entities', FAKTURO_TEXT_DOMAIN ),
-			'popular_items'              => __( 'Popular Bank Entities', FAKTURO_TEXT_DOMAIN ),
-			'all_items'                  => __( 'All Bank Entities', FAKTURO_TEXT_DOMAIN ),
-			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
+			'name'                       => _x( 'Bank Entities', 'Bank Entities', 'fakturo' ),
+			'singular_name'              => _x( 'Bank Entity', 'Bank Entity', 'fakturo' ),
+			'search_items'               => __( 'Search Bank Entities', 'fakturo' ),
+			'popular_items'              => __( 'Popular Bank Entities', 'fakturo' ),
+			'all_items'                  => __( 'All Bank Entities', 'fakturo' ),
+			'parent_item'                => __( 'Bank', 'fakturo' ),
 			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Bank Entity', FAKTURO_TEXT_DOMAIN ),
-			'update_item'                => __( 'Update Bank Entity', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item'               => __( 'Add New Bank Entity', FAKTURO_TEXT_DOMAIN ),
-			'new_item_name'              => __( 'New Bank Entity Name', FAKTURO_TEXT_DOMAIN ),
-			'separate_items_with_commas' => __( 'Separate Bank Entity with commas', FAKTURO_TEXT_DOMAIN ),
-			'add_or_remove_items'        => __( 'Add or remove Bank Entities', FAKTURO_TEXT_DOMAIN ),
-			'choose_from_most_used'      => __( 'Choose from the most used Bank Entities', FAKTURO_TEXT_DOMAIN ),
-			'not_found'                  => __( 'No Bank Entities found.', FAKTURO_TEXT_DOMAIN ),
-			'menu_name'                  => __( 'Bank Entities', FAKTURO_TEXT_DOMAIN ),
+			'edit_item'                  => __( 'Edit Bank Entity', 'fakturo' ),
+			'update_item'                => __( 'Update Bank Entity', 'fakturo' ),
+			'add_new_item'               => __( 'Add New Bank Entity', 'fakturo' ),
+			'new_item_name'              => __( 'New Bank Entity Name', 'fakturo' ),
+			'separate_items_with_commas' => __( 'Separate Bank Entity with commas', 'fakturo' ),
+			'add_or_remove_items'        => __( 'Add or remove Bank Entities', 'fakturo' ),
+			'choose_from_most_used'      => __( 'Choose from the most used Bank Entities', 'fakturo' ),
+			'not_found'                  => __( 'No Bank Entities found.', 'fakturo' ),
+			'menu_name'                  => __( 'Bank Entities', 'fakturo' ),
 		);
 
 		$args = array(
@@ -130,7 +130,7 @@ class fktr_tax_bank_entities {
 	public static function columns($columns) {
 		$new_columns = array(
 			'cb' => '<input type="checkbox" />',
-			'name' => __('Name', FAKTURO_TEXT_DOMAIN),
+			'name' => __('Name', 'fakturo'),
 		);
 		return $new_columns;
 	}

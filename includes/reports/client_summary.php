@@ -146,7 +146,7 @@ class client_summmary {
 
 
 				
-					$obj_type = __('Invoice', FAKTURO_TEXT_DOMAIN);
+					$obj_type = __('Invoice', 'fakturo');
 
 
 					if ($new_sum) {
@@ -196,7 +196,7 @@ class client_summmary {
 						$total = -fakturo_transform_money($object_data['currency_id'], $setting_system['currency'], $object_data['total_to_pay']);
 						
 					}
-					$obj_type = __('Receipt', FAKTURO_TEXT_DOMAIN);
+					$obj_type = __('Receipt', 'fakturo');
 					
 					$documents_values['Receipts']['subtotal'] = $documents_values['Receipts']['subtotal']+$subtotal;
 					$tax = 0;
@@ -225,7 +225,7 @@ class client_summmary {
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$currencyDefault = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
 		if (is_wp_error($currencyDefault)) {
-			echo '<p>'.__( 'Client Summary needs the default currency on system settings.', FAKTURO_TEXT_DOMAIN ).'</p>';
+			echo '<p>'.__( 'Client Summary needs the default currency on system settings.', 'fakturo' ).'</p>';
 			return true;
 		}
 		
@@ -237,13 +237,13 @@ class client_summmary {
 		if (is_numeric($request['client_id']) && $request['client_id'] > 0) {
 			$client_data = fktrPostTypeClients::get_client_data($request['client_id']);
 			$client_link = admin_url('post.php?post='.$request['client_id'].'&action=edit');
-			$country_name = __('No country', FAKTURO_TEXT_DOMAIN );
+			$country_name = __('No country', 'fakturo' );
 			$country_data = get_fakturo_term($client_data['selected_country'], 'fktr_countries');
 			if(!is_wp_error($country_data)) {
 				$country_name = $country_data->name;
 			}
 			
-			$state_name = __('No state', FAKTURO_TEXT_DOMAIN );
+			$state_name = __('No state', 'fakturo' );
 			$state_data = get_fakturo_term($client_data['selected_state'], 'fktr_countries');
 			if(!is_wp_error($state_data)) {
 				$state_name = $state_data->name;
@@ -251,32 +251,32 @@ class client_summmary {
 		
 	
 
-			$html_client_data = '<div style="float:left; margin-left:15px;"><h3>'.__('Client', FAKTURO_TEXT_DOMAIN ).': '.$client_data['post_title'].'</h3></div>';
+			$html_client_data = '<div style="float:left; margin-left:15px;"><h3>'.__('Client', 'fakturo' ).': '.$client_data['post_title'].'</h3></div>';
 		}
 		echo $html_client_data;
-		echo '<div style="float:right; margin-right:15px;"><h3>'.sprintf(__('Date: since %s til %s', FAKTURO_TEXT_DOMAIN ), date_i18n($setting_system['dateformat'].' '.get_option( 'time_format' ), $ranges['from']), date_i18n($setting_system['dateformat'].' '.get_option( 'time_format' ), $ranges['to'])).'</h3></div>';
+		echo '<div style="float:right; margin-right:15px;"><h3>'.sprintf(__('Date: since %s til %s', 'fakturo' ), date_i18n($setting_system['dateformat'].' '.get_option( 'time_format' ), $ranges['from']), date_i18n($setting_system['dateformat'].' '.get_option( 'time_format' ), $ranges['to'])).'</h3></div>';
 		$html_objects = '<div style="clear: both;"><h2>No results with this filters</h2></div>';
 		if (!empty($objects_client['objects'])) {
 			$html_objects = '<table class="wp-list-table widefat fixed striped posts">
 				<thead>
 				<tr>
 					<td>
-						'.__('Date', FAKTURO_TEXT_DOMAIN).'
+						'.__('Date', 'fakturo').'
 					</td>
 					<td>
-						'.__('Type', FAKTURO_TEXT_DOMAIN).'
+						'.__('Type', 'fakturo').'
 					</td>
 					<td>
-						'.__('Reference', FAKTURO_TEXT_DOMAIN).'
+						'.__('Reference', 'fakturo').'
 					</td>
 					<td>
-						'.__('Subtotal', FAKTURO_TEXT_DOMAIN).'
+						'.__('Subtotal', 'fakturo').'
 					</td>
 					<td>
-						'.__('Tax', FAKTURO_TEXT_DOMAIN).'
+						'.__('Tax', 'fakturo').'
 					</td>
 					<td>
-						'.__('Total', FAKTURO_TEXT_DOMAIN).'
+						'.__('Total', 'fakturo').'
 					</td>
 				</tr>
 				</thead>
@@ -290,11 +290,11 @@ class client_summmary {
 				$total_print = 0;
 				$tax = 0;
 				if ($obj['post_type']=='fktr_sale') {
-					$obj_type = __('Invoice', FAKTURO_TEXT_DOMAIN);
+					$obj_type = __('Invoice', 'fakturo');
 					$total_documents['subtotal'] = $total_documents['subtotal']+$obj['report_subtotal'];
 					$total_documents['total'] = $total_documents['total']+$obj['report_total'];
 				} else {
-					$obj_type = __('Receipt', FAKTURO_TEXT_DOMAIN);
+					$obj_type = __('Receipt', 'fakturo');
 					$total_documents['subtotal'] = $total_documents['subtotal']+$obj['report_subtotal'];
 					$total_documents['total'] = $total_documents['total']+$obj['report_total'];
 				}
@@ -345,10 +345,10 @@ class client_summmary {
 					<thead>
 					<tr>
 						<td>
-							'.__('Documents', FAKTURO_TEXT_DOMAIN).'
+							'.__('Documents', 'fakturo').'
 						</td>';
 			$html_totals_data .= '<td>
-							'.__('Subtotal', FAKTURO_TEXT_DOMAIN).'
+							'.__('Subtotal', 'fakturo').'
 						</td>';
 			foreach ($array_taxes as $tk => $tx) {
 				$html_totals_data .= '<td>
@@ -356,7 +356,7 @@ class client_summmary {
 						</td>';
 			}
 			$html_totals_data .= '<td>
-							'.__('Total', FAKTURO_TEXT_DOMAIN).'
+							'.__('Total', 'fakturo').'
 						</td>';
 
 	 
@@ -419,7 +419,7 @@ class client_summmary {
 		$selectClients = fakturo_get_select_post(array(
 											'echo' => 0,
 											'post_type' => 'fktr_client',
-											'show_option_none' => __('All clients', FAKTURO_TEXT_DOMAIN ),
+											'show_option_none' => __('All clients', 'fakturo' ),
 											'name' => 'client_id',
 											'id' => 'client_id',
 											'class' => '',
@@ -427,17 +427,17 @@ class client_summmary {
 										));
 
 		$array_range = array();
-		$array_range['today'] = __( 'Today', FAKTURO_TEXT_DOMAIN );
-		$array_range['yesterday'] = __( 'Yesterday', FAKTURO_TEXT_DOMAIN );
-		$array_range['this_week'] = __( 'This Week', FAKTURO_TEXT_DOMAIN );
-		$array_range['last_week'] = __( 'Last Week', FAKTURO_TEXT_DOMAIN );
-		$array_range['this_month'] = __( 'This Month', FAKTURO_TEXT_DOMAIN );
-		$array_range['last_month'] = __( 'Last Month', FAKTURO_TEXT_DOMAIN );
-		$array_range['this_quarter'] = __( 'This Quarter', FAKTURO_TEXT_DOMAIN );
-		$array_range['last_quarter'] = __( 'Last Quarter', FAKTURO_TEXT_DOMAIN );
-		$array_range['this_year'] = __( 'This Year', FAKTURO_TEXT_DOMAIN );
-		$array_range['last_year'] = __( 'Last Year', FAKTURO_TEXT_DOMAIN );
-		$array_range['other'] = __( 'Custom', FAKTURO_TEXT_DOMAIN );
+		$array_range['today'] = __( 'Today', 'fakturo' );
+		$array_range['yesterday'] = __( 'Yesterday', 'fakturo' );
+		$array_range['this_week'] = __( 'This Week', 'fakturo' );
+		$array_range['last_week'] = __( 'Last Week', 'fakturo' );
+		$array_range['this_month'] = __( 'This Month', 'fakturo' );
+		$array_range['last_month'] = __( 'Last Month', 'fakturo' );
+		$array_range['this_quarter'] = __( 'This Quarter', 'fakturo' );
+		$array_range['last_quarter'] = __( 'Last Quarter', 'fakturo' );
+		$array_range['this_year'] = __( 'This Year', 'fakturo' );
+		$array_range['last_year'] = __( 'Last Year', 'fakturo' );
+		$array_range['other'] = __( 'Custom', 'fakturo' );
 		/*
 		* These filters can be used to add or update range values on select html.
 		*/
@@ -455,8 +455,8 @@ class client_summmary {
 				<input type="hidden" name="sec" value="'.$request['sec'].'"/>
 				'.$select_range_html.'
 				'.$selectClients.'
-				<label style="margin-left:10px;margin-right:10px;"><input type="checkbox" name="show_details" id="show_details" value="1" '.checked($request['show_details'], 1, false).'/>'.__( 'Show details', FAKTURO_TEXT_DOMAIN ).'</label>
-				<input type="submit" class="button-secondary" value="'.__( 'Filter', FAKTURO_TEXT_DOMAIN ).'"/>
+				<label style="margin-left:10px;margin-right:10px;"><input type="checkbox" name="show_details" id="show_details" value="1" '.checked($request['show_details'], 1, false).'/>'.__( 'Show details', 'fakturo' ).'</label>
+				<input type="submit" class="button-secondary" value="'.__( 'Filter', 'fakturo' ).'"/>
 			</form>
 		</div>';
 

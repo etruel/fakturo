@@ -38,22 +38,22 @@ class fktr_tax_tax_conditions {
 	}
 	public static function init() {
 		$labels = array(
-			'name'                       => _x( 'Tax Conditions', 'Tax Conditions', FAKTURO_TEXT_DOMAIN ),
-			'singular_name'              => _x( 'Tax Condition', 'Tax Condition', FAKTURO_TEXT_DOMAIN ),
-			'search_items'               => __( 'Search Tax Conditions', FAKTURO_TEXT_DOMAIN ),
-			'popular_items'              => __( 'Popular Tax Conditions', FAKTURO_TEXT_DOMAIN ),
-			'all_items'                  => __( 'All Tax Conditions', FAKTURO_TEXT_DOMAIN ),
-			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
+			'name'                       => _x( 'Tax Conditions', 'Tax Conditions', 'fakturo' ),
+			'singular_name'              => _x( 'Tax Condition', 'Tax Condition', 'fakturo' ),
+			'search_items'               => __( 'Search Tax Conditions', 'fakturo' ),
+			'popular_items'              => __( 'Popular Tax Conditions', 'fakturo' ),
+			'all_items'                  => __( 'All Tax Conditions', 'fakturo' ),
+			'parent_item'                => __( 'Bank', 'fakturo' ),
 			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Tax Condition', FAKTURO_TEXT_DOMAIN ),
-			'update_item'                => __( 'Update Tax Condition', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item'               => __( 'Add New Tax Condition', FAKTURO_TEXT_DOMAIN ),
-			'new_item_name'              => __( 'New Tax Condition Name', FAKTURO_TEXT_DOMAIN ),
-			'separate_items_with_commas' => __( 'Separate Tax Condition with commas', FAKTURO_TEXT_DOMAIN ),
-			'add_or_remove_items'        => __( 'Add or remove Tax Conditions', FAKTURO_TEXT_DOMAIN ),
-			'choose_from_most_used'      => __( 'Choose from the most used Tax Conditions', FAKTURO_TEXT_DOMAIN ),
-			'not_found'                  => __( 'No Tax Conditions found.', FAKTURO_TEXT_DOMAIN ),
-			'menu_name'                  => __( 'Tax Conditions', FAKTURO_TEXT_DOMAIN ),
+			'edit_item'                  => __( 'Edit Tax Condition', 'fakturo' ),
+			'update_item'                => __( 'Update Tax Condition', 'fakturo' ),
+			'add_new_item'               => __( 'Add New Tax Condition', 'fakturo' ),
+			'new_item_name'              => __( 'New Tax Condition Name', 'fakturo' ),
+			'separate_items_with_commas' => __( 'Separate Tax Condition with commas', 'fakturo' ),
+			'add_or_remove_items'        => __( 'Add or remove Tax Conditions', 'fakturo' ),
+			'choose_from_most_used'      => __( 'Choose from the most used Tax Conditions', 'fakturo' ),
+			'not_found'                  => __( 'No Tax Conditions found.', 'fakturo' ),
+			'menu_name'                  => __( 'Tax Conditions', 'fakturo' ),
 		);
 
 		$args = array(
@@ -114,7 +114,7 @@ class fktr_tax_tax_conditions {
 	public static function add_form_fields() {
 		$selectInvoiceTypes = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Invoice Type', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a Invoice Type', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -137,20 +137,20 @@ class fktr_tax_tax_conditions {
 		<style type="text/css">.form-field.term-parent-wrap,.form-field.term-slug-wrap, .form-field label[for="parent"], .form-field #parent {display: none;}  .form-field.term-description-wrap { display:none;} .inline.hide-if-no-js{ display:none;} .view{ display:none;}</style>
 		
 		<div class="form-field" id="rate_div">
-			<label for="term_meta[invoice_type]">'.__( 'Invoice Types', FAKTURO_TEXT_DOMAIN ).'</label>
+			<label for="term_meta[invoice_type]">'.__( 'Invoice Types', 'fakturo' ).'</label>
 			'.$selectInvoiceTypes.'
-			<p class="description">'.__( 'Select default Invoice Type for this Tax Condition.', FAKTURO_TEXT_DOMAIN ).'</p>
+			<p class="description">'.__( 'Select default Invoice Type for this Tax Condition.', 'fakturo' ).'</p>
 		</div>
 		
 		<div class="form-field" id="overwrite_taxes_div">
 			<input type="checkbox" class="slidercheck" value="1" name="term_meta_overwrite_taxes" id="term_meta_overwrite_taxes">
-			<label for="term_meta_overwrite_taxes"><span class="ui"></span>'.__('Overwrite Taxes', FAKTURO_TEXT_DOMAIN ).'	</label>
+			<label for="term_meta_overwrite_taxes"><span class="ui"></span>'.__('Overwrite Taxes', 'fakturo' ).'	</label>
 			
 		</div>
 		<div class="form-field" id="tax_percentage_div" style="display:none;">
-			<label for="term_meta[tax_percentage]">'.__('Tax Percentage', FAKTURO_TEXT_DOMAIN ).'</label>
+			<label for="term_meta[tax_percentage]">'.__('Tax Percentage', 'fakturo' ).'</label>
 			<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[tax_percentage]" id="term_meta_tax_percentage" value="0"/>%
-			<p class="description">'.__( 'Enter a tax percentage', FAKTURO_TEXT_DOMAIN ).'</p>
+			<p class="description">'.__( 'Enter a tax percentage', 'fakturo' ).'</p>
 		</div>
 		';
 		echo $echoHtml;
@@ -161,7 +161,7 @@ class fktr_tax_tax_conditions {
 		$term_meta = get_fakturo_term($term->term_id, self::$tax_name);
 		$selectInvoiceTypes = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Invoice Type', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a Invoice Type', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -182,11 +182,11 @@ class fktr_tax_tax_conditions {
 		$echoHtml = '<style type="text/css">.form-field.term-parent-wrap, .form-field.term-slug-wrap {display: none;} .form-field.term-description-wrap { display:none;}  </style>
 					<tr class="form-field">
 			<th scope="row" valign="top">
-				<label for="term_meta[invoice_type]">'.__( 'Invoice Types', FAKTURO_TEXT_DOMAIN ).'</label>
+				<label for="term_meta[invoice_type]">'.__( 'Invoice Types', 'fakturo' ).'</label>
 			</th>
 			<td>
 				'.$selectInvoiceTypes.'
-				<p class="description">'.__( 'Select default Invoice Type for this Tax Condition.', FAKTURO_TEXT_DOMAIN ).'</p>
+				<p class="description">'.__( 'Select default Invoice Type for this Tax Condition.', 'fakturo' ).'</p>
 			</td>
 		</tr>
 		<tr class="form-field">
@@ -195,16 +195,16 @@ class fktr_tax_tax_conditions {
 			</th>
 			<td>
 				<input type="checkbox" class="slidercheck" value="1" name="term_meta_overwrite_taxes" id="term_meta_overwrite_taxes" '.(($term_meta->overwrite_taxes)?'checked="checked"':'').'>
-				<label for="term_meta_overwrite_taxes"><span class="ui"></span>'.__('Overwrite Taxes', FAKTURO_TEXT_DOMAIN ).'	</label>
+				<label for="term_meta_overwrite_taxes"><span class="ui"></span>'.__('Overwrite Taxes', 'fakturo' ).'	</label>
 			</td>
 		</tr>
 		<tr class="form-field" id="tax_percentage_div" '.(($term_meta->overwrite_taxes)?'':'style="display:none;"').'>
 			<th scope="row" valign="top">
-				<label for="term_meta[tax_percentage]">'.__( 'Tax Percentage', FAKTURO_TEXT_DOMAIN ).'</label>
+				<label for="term_meta[tax_percentage]">'.__( 'Tax Percentage', 'fakturo' ).'</label>
 			</th>
 			<td>
 				<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[tax_percentage]" id="term_meta_tax_percentage" value="'.$term_meta->tax_percentage.'"/>%
-				<p class="description">'.__( 'Enter a tax percentage', FAKTURO_TEXT_DOMAIN ).'</p>
+				<p class="description">'.__( 'Enter a tax percentage', 'fakturo' ).'</p>
 			</td>
 		</tr>
 		';
@@ -214,9 +214,9 @@ class fktr_tax_tax_conditions {
 	public static function columns($columns) {
 		$new_columns = array(
 			'cb' => '<input type="checkbox" />',
-			'name' => __('Name', FAKTURO_TEXT_DOMAIN),
-			'invoice_type' => __('Invoice Type', FAKTURO_TEXT_DOMAIN),
-			'overwrite_taxes' => __('Overwrite Taxes', FAKTURO_TEXT_DOMAIN),
+			'name' => __('Name', 'fakturo'),
+			'invoice_type' => __('Invoice Type', 'fakturo'),
+			'overwrite_taxes' => __('Overwrite Taxes', 'fakturo'),
 		);
 		return $new_columns;
 	}
@@ -226,7 +226,7 @@ class fktr_tax_tax_conditions {
 		
 		switch ($column_name) {
 			case 'invoice_type': 
-				$invoice_name = __( 'No invoice type', FAKTURO_TEXT_DOMAIN );
+				$invoice_name = __( 'No invoice type', 'fakturo' );
 				if ($term->invoice_type > 0) {
 					$invoice_type_data = get_fakturo_term($term->invoice_type, 'fktr_invoice_types');
 					if(!is_wp_error($invoice_type_data)) {
@@ -236,10 +236,10 @@ class fktr_tax_tax_conditions {
 				$out = esc_attr($invoice_name).'';
 				break;
 			case 'overwrite_taxes': 
-				$overwrite_taxes = __('No', FAKTURO_TEXT_DOMAIN );
+				$overwrite_taxes = __('No', 'fakturo' );
 				if ($term->overwrite_taxes > 0) {
 					$tax_percentage = fakturo_porcent_to_mask($term->tax_percentage);
-					$overwrite_taxes =  __('Yes:', FAKTURO_TEXT_DOMAIN).' '.$tax_percentage.'%';
+					$overwrite_taxes =  __('Yes:', 'fakturo').' '.$tax_percentage.'%';
 				}
 				$out = esc_attr($overwrite_taxes).'';
 				break;

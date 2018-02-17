@@ -47,22 +47,22 @@ class fktr_tax_stock {
 	}
 	public static function init() {
 		$labels = array(
-			'name'                       => _x( 'Stocks', 'Stocks', FAKTURO_TEXT_DOMAIN ),
-			'singular_name'              => _x( 'Stock', 'Stock', FAKTURO_TEXT_DOMAIN ),
-			'search_items'               => __( 'Search Stocks', FAKTURO_TEXT_DOMAIN ),
-			'popular_items'              => null, // para que no aparezca la nube de populares  __( 'Popular Stocks', FAKTURO_TEXT_DOMAIN ),
-			'all_items'                  => __( 'All Stocks', FAKTURO_TEXT_DOMAIN ),
-			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
+			'name'                       => _x( 'Stocks', 'Stocks', 'fakturo' ),
+			'singular_name'              => _x( 'Stock', 'Stock', 'fakturo' ),
+			'search_items'               => __( 'Search Stocks', 'fakturo' ),
+			'popular_items'              => null, // para que no aparezca la nube de populares  __( 'Popular Stocks', 'fakturo' ),
+			'all_items'                  => __( 'All Stocks', 'fakturo' ),
+			'parent_item'                => __( 'Bank', 'fakturo' ),
 			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Stock', FAKTURO_TEXT_DOMAIN ),
-			'update_item'                => __( 'Update Stock', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item'               => __( 'Add New Stock', FAKTURO_TEXT_DOMAIN ),
-			'new_item_name'              => __( 'New Stock Name', FAKTURO_TEXT_DOMAIN ),
-			'separate_items_with_commas' => __( 'Separate Stock with commas', FAKTURO_TEXT_DOMAIN ),
-			'add_or_remove_items'        => __( 'Add or remove Stocks', FAKTURO_TEXT_DOMAIN ),
-			'choose_from_most_used'      => __( 'Choose from the most used Stocks', FAKTURO_TEXT_DOMAIN ),
-			'not_found'                  => __( 'No Stocks found.', FAKTURO_TEXT_DOMAIN ),
-			'menu_name'                  => __( 'Stocks', FAKTURO_TEXT_DOMAIN ),
+			'edit_item'                  => __( 'Edit Stock', 'fakturo' ),
+			'update_item'                => __( 'Update Stock', 'fakturo' ),
+			'add_new_item'               => __( 'Add New Stock', 'fakturo' ),
+			'new_item_name'              => __( 'New Stock Name', 'fakturo' ),
+			'separate_items_with_commas' => __( 'Separate Stock with commas', 'fakturo' ),
+			'add_or_remove_items'        => __( 'Add or remove Stocks', 'fakturo' ),
+			'choose_from_most_used'      => __( 'Choose from the most used Stocks', 'fakturo' ),
+			'not_found'                  => __( 'No Stocks found.', 'fakturo' ),
+			'menu_name'                  => __( 'Stocks', 'fakturo' ),
 		);
 
 		$args = array(
@@ -149,7 +149,7 @@ class fktr_tax_stock {
 					
 					'datetimepicker' => json_encode($objectL10n),
 					
-					'txt_search_products' => __('Search products...', FAKTURO_TEXT_DOMAIN ),
+					'txt_search_products' => __('Search products...', 'fakturo' ),
 					'characters_to_search' => apply_filters('fktr_sales_characters_to_search_product', 3),
 					'ajax_url' => admin_url( 'admin-ajax.php' ),
 				));
@@ -166,7 +166,7 @@ class fktr_tax_stock {
 	
 		$selectLocation = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Location', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a Location', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -241,38 +241,38 @@ class fktr_tax_stock {
 		</style>
 		<div class="form-field" id="type_div">
 			
-			<input type="radio" name="term_meta[type]" checked="true" id="term_meta_type" value="1"/><span>'.__('Entry', FAKTURO_TEXT_DOMAIN ).'</span>
-			<br/><input type="radio" name="term_meta[type]" id="term_meta_type" value="2"/><span>'.__('Output', FAKTURO_TEXT_DOMAIN ).'</span>
+			<input type="radio" name="term_meta[type]" checked="true" id="term_meta_type" value="1"/><span>'.__('Entry', 'fakturo' ).'</span>
+			<br/><input type="radio" name="term_meta[type]" id="term_meta_type" value="2"/><span>'.__('Output', 'fakturo' ).'</span>
 			
 		</div>
 		<div style="clear: both;"></div>
 		
 		<div class="form-field" id="date_div">
-			<label for="term_meta[date]">'.__('Date', FAKTURO_TEXT_DOMAIN ).'</label>
+			<label for="term_meta[date]">'.__('Date', 'fakturo' ).'</label>
 			<input style="width: 100px;text-align: center; padding-right: 0px; "  type="text" name="term_meta[date]" id="term_meta_date" value="'.date_i18n($setting_system['dateformat'], $date ).'"/>
-			<p class="description">'.__( 'Enter a date.', FAKTURO_TEXT_DOMAIN ).'</p>
+			<p class="description">'.__( 'Enter a date.', 'fakturo' ).'</p>
 		</div>
 		<div class="form-field" id="location_div">
-			<label for="term_meta[location]">'.__( 'Location', FAKTURO_TEXT_DOMAIN ).'</label>
+			<label for="term_meta[location]">'.__( 'Location', 'fakturo' ).'</label>
 			'.$selectLocation.'
-			<p class="description">'.__( 'Select a stock location.', FAKTURO_TEXT_DOMAIN ).'</p>
+			<p class="description">'.__( 'Select a stock location.', 'fakturo' ).'</p>
 		</div>
 		<div class="form-field" id="product_div">
-			<label for="term_meta[product]">'.__( 'Product', FAKTURO_TEXT_DOMAIN ).'</label>
+			<label for="term_meta[product]">'.__( 'Product', 'fakturo' ).'</label>
 			<select name="term_meta[product]" id="product_select" class="js-example-basic-multiple select2-hidden-accessible" multiple="" style="width:65%;" tabindex="-1" aria-hidden="true">
 			</select>
-			<p class="description">'.__( 'Select a product for add stock.', FAKTURO_TEXT_DOMAIN ).'</p>
+			<p class="description">'.__( 'Select a product for add stock.', 'fakturo' ).'</p>
 		</div>
 		
 		<div class="form-field" id="cost_div">
-			<label for="term_meta[cost]">'.__('Cost', FAKTURO_TEXT_DOMAIN ).'</label>
+			<label for="term_meta[cost]">'.__('Cost', 'fakturo' ).'</label>
 			<input style="width: 120px;" type="text" name="term_meta[cost]" id="term_meta_cost" value=""/>
-			<p class="description">'.__( 'Enter the cost.', FAKTURO_TEXT_DOMAIN ).'</p>
+			<p class="description">'.__( 'Enter the cost.', 'fakturo' ).'</p>
 		</div>
 		<div class="form-field" id="quantity_div">
-			<label for="term_meta[quantity]">'.__('Quantity', FAKTURO_TEXT_DOMAIN ).'</label>
+			<label for="term_meta[quantity]">'.__('Quantity', 'fakturo' ).'</label>
 			<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[quantity]" id="term_meta_quantity" value="1"/>
-			<p class="description">'.__( 'Enter a quantity.', FAKTURO_TEXT_DOMAIN ).'</p>
+			<p class="description">'.__( 'Enter a quantity.', 'fakturo' ).'</p>
 		</div>
 		
 		
@@ -296,11 +296,11 @@ class fktr_tax_stock {
 	public static function columns($columns) {
 		$new_columns = array(
 			'cb' => '<input type="checkbox" />',
-			'order' => __('Order number', FAKTURO_TEXT_DOMAIN),
-			'product' => __('Product', FAKTURO_TEXT_DOMAIN),
-			'location' => __('Location', FAKTURO_TEXT_DOMAIN),
-			'quantity' => __('Quantity', FAKTURO_TEXT_DOMAIN),
-			'type' => __('Type', FAKTURO_TEXT_DOMAIN),
+			'order' => __('Order number', 'fakturo'),
+			'product' => __('Product', 'fakturo'),
+			'location' => __('Location', 'fakturo'),
+			'quantity' => __('Quantity', 'fakturo'),
+			'type' => __('Type', 'fakturo'),
 		);
 		
 		return $new_columns;
@@ -322,7 +322,7 @@ class fktr_tax_stock {
 				$out = esc_attr($term->name).'';
 				break;
 			case 'product': 
-				$product_name = __( 'No product', FAKTURO_TEXT_DOMAIN );
+				$product_name = __( 'No product', 'fakturo' );
 				if ($term->product > 0) {
 					$product_data = fktrPostTypeProducts::get_product_data($term->product);
 					
@@ -333,7 +333,7 @@ class fktr_tax_stock {
 				$out = esc_attr($product_name).'';
 				break;
 			case 'location': 
-				$location = __('No location', FAKTURO_TEXT_DOMAIN );
+				$location = __('No location', 'fakturo' );
 				if ($term->location > 0) {
 					$tax_locations =  get_fakturo_term($term->location, 'fktr_locations');
 					$location =  $tax_locations->name;

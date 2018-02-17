@@ -43,22 +43,22 @@ class fktr_tax_sale_points {
 		
 	
 		$labels = array(
-			'name'                       => _x( 'Sale Points', 'Sale Points', FAKTURO_TEXT_DOMAIN ),
-			'singular_name'              => _x( 'Sale Point', 'Sale Point', FAKTURO_TEXT_DOMAIN ),
-			'search_items'               => __( 'Search Sale Points', FAKTURO_TEXT_DOMAIN ),
-			'popular_items'              => __( 'Popular Sale Points', FAKTURO_TEXT_DOMAIN ),
-			'all_items'                  => __( 'All Sale Points', FAKTURO_TEXT_DOMAIN ),
-			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
+			'name'                       => _x( 'Sale Points', 'Sale Points', 'fakturo' ),
+			'singular_name'              => _x( 'Sale Point', 'Sale Point', 'fakturo' ),
+			'search_items'               => __( 'Search Sale Points', 'fakturo' ),
+			'popular_items'              => __( 'Popular Sale Points', 'fakturo' ),
+			'all_items'                  => __( 'All Sale Points', 'fakturo' ),
+			'parent_item'                => __( 'Bank', 'fakturo' ),
 			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Sale Point', FAKTURO_TEXT_DOMAIN ),
-			'update_item'                => __( 'Update Sale Point', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item'               => __( 'Add New Sale Point', FAKTURO_TEXT_DOMAIN ),
-			'new_item_name'              => __( 'New Sale Point Name', FAKTURO_TEXT_DOMAIN ),
-			'separate_items_with_commas' => __( 'Separate Sale Point with commas', FAKTURO_TEXT_DOMAIN ),
-			'add_or_remove_items'        => __( 'Add or remove Sale Points', FAKTURO_TEXT_DOMAIN ),
-			'choose_from_most_used'      => __( 'Choose from the most used Sale Points', FAKTURO_TEXT_DOMAIN ),
-			'not_found'                  => __( 'No Sale Points found.', FAKTURO_TEXT_DOMAIN ),
-			'menu_name'                  => __( 'Sale Points', FAKTURO_TEXT_DOMAIN ),
+			'edit_item'                  => __( 'Edit Sale Point', 'fakturo' ),
+			'update_item'                => __( 'Update Sale Point', 'fakturo' ),
+			'add_new_item'               => __( 'Add New Sale Point', 'fakturo' ),
+			'new_item_name'              => __( 'New Sale Point Name', 'fakturo' ),
+			'separate_items_with_commas' => __( 'Separate Sale Point with commas', 'fakturo' ),
+			'add_or_remove_items'        => __( 'Add or remove Sale Points', 'fakturo' ),
+			'choose_from_most_used'      => __( 'Choose from the most used Sale Points', 'fakturo' ),
+			'not_found'                  => __( 'No Sale Points found.', 'fakturo' ),
+			'menu_name'                  => __( 'Sale Points', 'fakturo' ),
 		);
 
 		$args = array(
@@ -120,9 +120,9 @@ class fktr_tax_sale_points {
 		$echoHtml = '
 		<style type="text/css">.form-field.term-parent-wrap,.form-field.term-slug-wrap, .form-field label[for="parent"], .form-field #parent {display: none;}  .form-field.term-description-wrap { display:none;} .inline.hide-if-no-js{ display:none;} .view{ display:none;}</style>
 		<div class="form-field" id="code_div">
-			<label for="term_meta[code]">'.__( 'Code', FAKTURO_TEXT_DOMAIN ).'</label>
+			<label for="term_meta[code]">'.__( 'Code', 'fakturo' ).'</label>
 			<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="4" type="text" name="term_meta[code]" id="term_meta_code" value=""/>
-			<p class="description">'.__( 'Enter a code', FAKTURO_TEXT_DOMAIN ).'</p>
+			<p class="description">'.__( 'Enter a code', 'fakturo' ).'</p>
 		</div>
 		'.$extraHtml.'
 		';
@@ -136,11 +136,11 @@ class fktr_tax_sale_points {
 		$echoHtml = '<style type="text/css">.form-field.term-parent-wrap, .form-field.term-slug-wrap {display: none;} .form-field.term-description-wrap { display:none;}  </style>
 		<tr class="form-field">
 			<th scope="row" valign="top">
-				<label for="term_meta[code]">'.__( 'Code', FAKTURO_TEXT_DOMAIN ).'</label>
+				<label for="term_meta[code]">'.__( 'Code', 'fakturo' ).'</label>
 			</th>
 			<td>
 				<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="4" type="text" name="term_meta[code]" id="term_meta_code" value="'.$term_meta->code.'"/>
-				<p class="description">'.__( 'Enter a code', FAKTURO_TEXT_DOMAIN ).'</p>
+				<p class="description">'.__( 'Enter a code', 'fakturo' ).'</p>
 			</td>
 			'.$extraHtml.'
 		</tr>
@@ -151,8 +151,8 @@ class fktr_tax_sale_points {
 	public static function columns($columns) {
 		$new_columns = array(
 			'cb' => '<input type="checkbox" />',
-			'name' => __('Name', FAKTURO_TEXT_DOMAIN),
-			'code' => __('Code', FAKTURO_TEXT_DOMAIN),
+			'name' => __('Name', 'fakturo'),
+			'code' => __('Code', 'fakturo'),
 		);
 		return $new_columns;
 	}

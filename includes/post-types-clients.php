@@ -31,18 +31,18 @@ class fktrPostTypeClients {
 	}
 	public static function setup() {
 		$labels = array( 
-			'name' => __( 'Clients', FAKTURO_TEXT_DOMAIN ),
-			'singular_name' => __( 'Client', FAKTURO_TEXT_DOMAIN ),
-			'add_new' => __( 'Add New', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item' => __( 'Add New Client', FAKTURO_TEXT_DOMAIN ),
-			'edit_item' => __( 'Edit Client', FAKTURO_TEXT_DOMAIN ),
-			'new_item' => __( 'New Client', FAKTURO_TEXT_DOMAIN ),
-			'view_item' => __( 'View Client', FAKTURO_TEXT_DOMAIN ),
-			'search_items' => __( 'Search Clients', FAKTURO_TEXT_DOMAIN ),
-			'not_found' => __( 'No clients found', FAKTURO_TEXT_DOMAIN ),
-			'not_found_in_trash' => __( 'No clients found in Trash', FAKTURO_TEXT_DOMAIN ),
-			'parent_item_colon' => __( 'Parent Client:', FAKTURO_TEXT_DOMAIN ),
-			'menu_name' => __( 'Clients', FAKTURO_TEXT_DOMAIN ),
+			'name' => __( 'Clients', 'fakturo' ),
+			'singular_name' => __( 'Client', 'fakturo' ),
+			'add_new' => __( 'Add New', 'fakturo' ),
+			'add_new_item' => __( 'Add New Client', 'fakturo' ),
+			'edit_item' => __( 'Edit Client', 'fakturo' ),
+			'new_item' => __( 'New Client', 'fakturo' ),
+			'view_item' => __( 'View Client', 'fakturo' ),
+			'search_items' => __( 'Search Clients', 'fakturo' ),
+			'not_found' => __( 'No clients found', 'fakturo' ),
+			'not_found_in_trash' => __( 'No clients found in Trash', 'fakturo' ),
+			'parent_item_colon' => __( 'Parent Client:', 'fakturo' ),
+			'menu_name' => __( 'Clients', 'fakturo' ),
 		);
 		$capabilities = array(
 			'publish_post' => 'publish_fktr_client',
@@ -87,7 +87,7 @@ class fktrPostTypeClients {
 	}
 	public static function name_placeholder( $title_placeholder , $post ) {
 		if($post->post_type == 'fktr_client') {
-			$title_placeholder = __('Enter Client name here', FAKTURO_TEXT_DOMAIN );
+			$title_placeholder = __('Enter Client name here', 'fakturo' );
 			
 		}
 		return $title_placeholder;
@@ -103,9 +103,9 @@ class fktrPostTypeClients {
 			wp_enqueue_script( 'post-type-clients', FAKTURO_PLUGIN_URL . 'assets/js/post-type-clients.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_localize_script('post-type-clients', 'client_object',
 				array('ajax_url' => admin_url( 'admin-ajax.php' ),
-					'loading_states_text' => __('Loading states...', FAKTURO_TEXT_DOMAIN ),
-					'update_client_contacts' => __('Update Client to save changes.', FAKTURO_TEXT_DOMAIN ),
-					'privider_delete_this_item' => __('Delete this item',  FAKTURO_TEXT_DOMAIN  )
+					'loading_states_text' => __('Loading states...', 'fakturo' ),
+					'update_client_contacts' => __('Update Client to save changes.', 'fakturo' ),
+					'privider_delete_this_item' => __('Delete this item',  'fakturo'  )
 				) );
 			
 			
@@ -123,12 +123,12 @@ class fktrPostTypeClients {
 	}
 	public static function meta_boxes() {
 		
-		add_meta_box('fakturo-active-box', __('Active client', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'active'), 'fktr_client', 'side', 'high');
+		add_meta_box('fakturo-active-box', __('Active client', 'fakturo' ), array('fktrPostTypeClients', 'active'), 'fktr_client', 'side', 'high');
 		remove_meta_box('postimagediv', 'fktr_client', 'side' );
-		add_meta_box('postimagediv', __('Client Image', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'thumbnail_box'), 'fktr_client', 'side', 'high');
-		add_meta_box('fakturo-trade-box', __('Trader data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'trade_box'),'fktr_client','normal', 'default' );
-		add_meta_box('fakturo-data-box', __('Client data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'data_box'),'fktr_client','normal', 'default' );
-		add_meta_box('fakturo-options-box', __('Client Contacts', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeClients', 'options_box'),'fktr_client','normal', 'default' );
+		add_meta_box('postimagediv', __('Client Image', 'fakturo' ), array('fktrPostTypeClients', 'thumbnail_box'), 'fktr_client', 'side', 'high');
+		add_meta_box('fakturo-trade-box', __('Trader data', 'fakturo' ), array('fktrPostTypeClients', 'trade_box'),'fktr_client','normal', 'default' );
+		add_meta_box('fakturo-data-box', __('Client data', 'fakturo' ), array('fktrPostTypeClients', 'data_box'),'fktr_client','normal', 'default' );
+		add_meta_box('fakturo-options-box', __('Client Contacts', 'fakturo' ), array('fktrPostTypeClients', 'options_box'),'fktr_client','normal', 'default' );
 		do_action('add_ftkr_client_meta_boxes');
 	}
 	public static function thumbnail_box() {
@@ -137,7 +137,7 @@ class fktrPostTypeClients {
 		$echoHtml = '
 			<div id="snapshot_container_wrapper">
 				<div id="snapshot_container_buttons">
-					<a id="snapshot_btn" href="javascript:showSnapshot()" class="nobutton">' . __( 'Take a snapshot', FAKTURO_TEXT_DOMAIN ) . '</a>
+					<a id="snapshot_btn" href="javascript:showSnapshot()" class="nobutton">' . __( 'Take a snapshot', 'fakturo' ) . '</a>
 					<div id="my_camera" style="display:none;">				
 					</div>
 					<img src="" id="snap_image" style="display:none;">
@@ -165,7 +165,7 @@ class fktrPostTypeClients {
 					<tbody>
 					<tr class="tr_fktr">
 						<th rowspan="2">
-						<input id="active" type="checkbox" class="slidercheck" name="active" value="1" '.(($client_data['active'])?'checked="checked"':'').'><label for="active"><span class="ui"></span>'.__('Active', FAKTURO_TEXT_DOMAIN ).'	</label>
+						<input id="active" type="checkbox" class="slidercheck" name="active" value="1" '.(($client_data['active'])?'checked="checked"':'').'><label for="active"><span class="ui"></span>'.__('Active', 'fakturo' ).'	</label>
 						</th>
 					</tr>
 					</tbody>
@@ -183,7 +183,7 @@ class fktrPostTypeClients {
 		
 		$selectPaymentTypes = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Payment Type', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a Payment Type', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -205,7 +205,7 @@ class fktrPostTypeClients {
 		
 		$selectBankEntities = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Bank Entity', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a Bank Entity', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -227,7 +227,7 @@ class fktrPostTypeClients {
 		
 		$selectTaxCondition = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Tax Condition', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a Tax Condition', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -247,7 +247,7 @@ class fktrPostTypeClients {
 		
 		$selectPriceScale = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Price Scale', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a Price Scale', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -267,7 +267,7 @@ class fktrPostTypeClients {
 		
 		$selectCurrency = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Currency', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a Currency', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -291,45 +291,45 @@ class fktrPostTypeClients {
 					<tbody>
 					
 					<tr class="tr_fktr">
-						<th><label for="taxpayer">'.__('Taxpayer ID', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<th><label for="taxpayer">'.__('Taxpayer ID', 'fakturo' ).'	</label></th>
 						<td>
 							<input id="taxpayer" type="text" name="taxpayer" value="'.$client_data['taxpayer'].'" class="regular-text">
 							<span id="cuit_validation"></span>
-							<div style="font-size:0.85em;" id="cuit_validation_note">'.__("Cuit number's validation only. Check www.afip.gov.ar", FAKTURO_TEXT_DOMAIN ).'</div>
+							<div style="font-size:0.85em;" id="cuit_validation_note">'.__("Cuit number's validation only. Check www.afip.gov.ar", 'fakturo' ).'</div>
 						</td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="selected_payment_type">'.__('Payment Type', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<th><label for="selected_payment_type">'.__('Payment Type', 'fakturo' ).'	</label></th>
 						<td>'.$selectPaymentTypes.'</td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="selected_bank_entity">'.__('Bank Entity', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<th><label for="selected_bank_entity">'.__('Bank Entity', 'fakturo' ).'	</label></th>
 						<td>'.$selectBankEntities.'</td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="bank_account">'.__('Bank Account', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+						<th><label for="bank_account">'.__('Bank Account', 'fakturo' ) .'	</label></th>
 						<td><input id="bank_account" type="text" name="bank_account" value="'.$client_data['bank_account'].'" class="regular-text"></td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="selected_tax_condition">'.__('Tax Condition', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<th><label for="selected_tax_condition">'.__('Tax Condition', 'fakturo' ).'	</label></th>
 						<td>'.$selectTaxCondition.'</td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="selected_price_scale">'.__('Price Scale', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<th><label for="selected_price_scale">'.__('Price Scale', 'fakturo' ).'	</label></th>
 						<td>'.$selectPriceScale.'</td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="selected_currency">'.__('Currency', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<th><label for="selected_currency">'.__('Currency', 'fakturo' ).'	</label></th>
 						<td>'.$selectCurrency.'</td>
 					</tr>
 					
 					<tr class="tr_fktr">
-						<th><label for="credit_limit">'.__('Credit Limit', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<th><label for="credit_limit">'.__('Credit Limit', 'fakturo' ).'	</label></th>
 						<td><input id="credit_limit" type="number" name="credit_limit" value="'.$client_data['credit_limit'].'" class="small-text"/></td>
 					</tr>
 					
 					<tr class="tr_fktr">
-						<th><label for="credit_limit_interval">'.__('Credit Limit Interval', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<th><label for="credit_limit_interval">'.__('Credit Limit Interval', 'fakturo' ).'	</label></th>
 						<td><input id="credit_limit_interval" type="number" name="credit_limit_interval" value="'.$client_data['credit_limit_interval'].'" class="small-text"/></td>
 					</tr>
 					
@@ -345,7 +345,7 @@ class fktrPostTypeClients {
 		$client_data = self::get_client_data($post->ID);
 		$selectCountry = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a country', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a country', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -366,7 +366,7 @@ class fktrPostTypeClients {
 		
 		$selectState = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a state', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a state', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -386,7 +386,7 @@ class fktrPostTypeClients {
 
 		$selectEmptyState = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a state', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a state', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -407,53 +407,53 @@ class fktrPostTypeClients {
 		if ($client_data['selected_country'] == 0 || strlen($selectState) < strlen($selectEmptyState)+1) {
 			
 			$selectState = '<select name="selected_state" id="selected_state">
-								<option value="0">'. __('Choose a country before', FAKTURO_TEXT_DOMAIN ) .'</option>
+								<option value="0">'. __('Choose a country before', 'fakturo' ) .'</option>
 							</select>';
 		}
 		$echoHtml = '<table class="form-table">
 					<tbody>
 					
 					<tr class="user-address-wrap">
-						<th><label for="address">'.__('Address', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<th><label for="address">'.__('Address', 'fakturo' ).'	</label></th>
 						<td><input type="text" name="address" id="address" value="'.$client_data['address'].'" class="regular-text"></td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="country">'. __('Country', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<th><label for="country">'. __('Country', 'fakturo' ).'	</label></th>
 						<td>'.$selectCountry.'</td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="states">'. __('States', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+						<th><label for="states">'. __('States', 'fakturo' ) .'	</label></th>
 						<td id="td_select_state">
 							'.$selectState.'
 						</td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="city">'.__('City', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+						<th><label for="city">'.__('City', 'fakturo' ) .'	</label></th>
 						<td><input id="city" type="text" name="city" value="'.$client_data['city'].'" class="regular-text"></td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="postcode">'.__('Postcode', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+						<th><label for="postcode">'.__('Postcode', 'fakturo' ) .'	</label></th>
 						<td><input id="postcode" type="text" name="postcode" value="'.$client_data['postcode'].'" class="regular-text"></td>
 					</tr>
 					
 					<tr class="tr_fktr">
-						<th><label for="phone">'.__('Phone', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+						<th><label for="phone">'.__('Phone', 'fakturo' ) .'	</label></th>
 						<td><input id="phone" type="text" name="phone" value="'.$client_data['phone'].'" class="regular-text"></td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="cell_phone">'.__('Cell phone', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+						<th><label for="cell_phone">'.__('Cell phone', 'fakturo' ) .'	</label></th>
 						<td><input id="cell_phone" type="text" name="cell_phone" value="'.$client_data['cell_phone'].'" class="regular-text"></td>
 					</tr>
 					<tr class="user-email-wrap">
-						<th><label for="email">'.__('E-mail', FAKTURO_TEXT_DOMAIN ) .'</label></th>
+						<th><label for="email">'.__('E-mail', 'fakturo' ) .'</label></th>
 						<td><input type="email" name="email" id="email" value="'.$client_data['email'].'" class="regular-text ltr"></td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="facebook_url">'.__('Facebook URL', FAKTURO_TEXT_DOMAIN ).'</label></th>
+						<th><label for="facebook_url">'.__('Facebook URL', 'fakturo' ).'</label></th>
 						<td><input id="facebook_url" type="text" name="facebook_url" value="'.$client_data['facebook_url'].'" class="regular-text"></td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="web">'.__('Web', FAKTURO_TEXT_DOMAIN ).'</label></th>
+						<th><label for="web">'.__('Web', 'fakturo' ).'</label></th>
 						<td><input id="web" type="text" name="web" value="'.$client_data['web'].'" class="regular-text"></td>
 					</tr>
 					
@@ -494,7 +494,7 @@ class fktrPostTypeClients {
 							<input name="uc_address[]" type="text" value="'.stripslashes(@$user_contacts['uc_address'][$i]).'" class="large-text"/>
 						</div>
 						<div class="" id="uc_actions">
-							<label title="'. __('Delete this item',  FAKTURO_TEXT_DOMAIN  ).'" data-id="'.$i.'" class="delete"></label>
+							<label title="'. __('Delete this item',  'fakturo'  ).'" data-id="'.$i.'" class="delete"></label>
 						</div>
 					</div>';
 			$a=$i;
@@ -506,11 +506,11 @@ class fktrPostTypeClients {
 					<tr class="user-display-name-wrap">
 						<td>
 							<div class="uc_header">
-							<div class="uc_column">'.__('Description', FAKTURO_TEXT_DOMAIN  ).'</div>
-							<div class="uc_column">'.__('Phone', FAKTURO_TEXT_DOMAIN  ) .'</div>
-							<div class="uc_column">'. __('Email', FAKTURO_TEXT_DOMAIN  ) .'</div>
-							<div class="uc_column">'. __('Position', FAKTURO_TEXT_DOMAIN  ) .'</div>
-							<div class="uc_column">'. __('Address', FAKTURO_TEXT_DOMAIN  ) .'</div>
+							<div class="uc_column">'.__('Description', 'fakturo'  ).'</div>
+							<div class="uc_column">'.__('Phone', 'fakturo'  ) .'</div>
+							<div class="uc_column">'. __('Email', 'fakturo'  ) .'</div>
+							<div class="uc_column">'. __('Position', 'fakturo'  ) .'</div>
+							<div class="uc_column">'. __('Address', 'fakturo'  ) .'</div>
 							</div>
 							<br />
 			
@@ -519,7 +519,7 @@ class fktrPostTypeClients {
 							</div>
 							<input id="ucfield_max" value="'.$a.'" type="hidden" name="ucfield_max"/>
 							<div id="paging-box">		  
-								<a href="#" class="button-primary add" id="addmoreuc" style="font-weight: bold; text-decoration: none;"> '.__('Add User Contact', FAKTURO_TEXT_DOMAIN  ).'</a>
+								<a href="#" class="button-primary add" id="addmoreuc" style="font-weight: bold; text-decoration: none;"> '.__('Add User Contact', 'fakturo'  ).'</a>
 								<label id="msgdrag"></label>
 							</div>
 						</td>
@@ -540,7 +540,7 @@ class fktrPostTypeClients {
 		
 		$selectState = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a state', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a state', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -560,7 +560,7 @@ class fktrPostTypeClients {
 		if ($_POST['country_id'] < 1 ) {
 			
 			$selectState = '<select name="selected_state" id="selected_state">
-								<option value="0">'. __('Choose a country before', FAKTURO_TEXT_DOMAIN ) .'</option>
+								<option value="0">'. __('Choose a country before', 'fakturo' ) .'</option>
 							</select>';
 		}
 		wp_die($selectState);

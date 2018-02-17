@@ -123,7 +123,7 @@ class fktr_tax_locations {
 	public static function columns($columns) {
 		$new_columns = array(
 			'cb' => '<input type="checkbox" />',
-			'name' => __('Name', FAKTURO_TEXT_DOMAIN),
+			'name' => __('Name', 'fakturo'),
 		);
 		return $new_columns;
 	}

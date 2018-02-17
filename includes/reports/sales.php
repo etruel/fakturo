@@ -57,17 +57,17 @@ class sales_report {
 	*/
 	public static function get_form_filters($request) {
 		$array_range = array();
-		$array_range['today'] = __( 'Today', FAKTURO_TEXT_DOMAIN );
-		$array_range['yesterday'] = __( 'Yesterday', FAKTURO_TEXT_DOMAIN );
-		$array_range['this_week'] = __( 'This Week', FAKTURO_TEXT_DOMAIN );
-		$array_range['last_week'] = __( 'Last Week', FAKTURO_TEXT_DOMAIN );
-		$array_range['this_month'] = __( 'This Month', FAKTURO_TEXT_DOMAIN );
-		$array_range['last_month'] = __( 'Last Month', FAKTURO_TEXT_DOMAIN );
-		$array_range['this_quarter'] = __( 'This Quarter', FAKTURO_TEXT_DOMAIN );
-		$array_range['last_quarter'] = __( 'Last Quarter', FAKTURO_TEXT_DOMAIN );
-		$array_range['this_year'] = __( 'This Year', FAKTURO_TEXT_DOMAIN );
-		$array_range['last_year'] = __( 'Last Year', FAKTURO_TEXT_DOMAIN );
-		$array_range['other'] = __( 'Custom', FAKTURO_TEXT_DOMAIN );
+		$array_range['today'] = __( 'Today', 'fakturo' );
+		$array_range['yesterday'] = __( 'Yesterday', 'fakturo' );
+		$array_range['this_week'] = __( 'This Week', 'fakturo' );
+		$array_range['last_week'] = __( 'Last Week', 'fakturo' );
+		$array_range['this_month'] = __( 'This Month', 'fakturo' );
+		$array_range['last_month'] = __( 'Last Month', 'fakturo' );
+		$array_range['this_quarter'] = __( 'This Quarter', 'fakturo' );
+		$array_range['last_quarter'] = __( 'Last Quarter', 'fakturo' );
+		$array_range['this_year'] = __( 'This Year', 'fakturo' );
+		$array_range['last_year'] = __( 'Last Year', 'fakturo' );
+		$array_range['other'] = __( 'Custom', 'fakturo' );
 		/*
 		* These filters can be used to add or update range values on select html.
 		*/
@@ -84,7 +84,7 @@ class sales_report {
 				<input type="hidden" name="page" value="fakturo_reports"/>
 				<input type="hidden" name="sec" value="'.$request['sec'].'"/>
 				'.$select_range_html.'
-				<input type="submit" class="button-secondary" value="'.__( 'Filter', FAKTURO_TEXT_DOMAIN ).'"/>
+				<input type="submit" class="button-secondary" value="'.__( 'Filter', 'fakturo' ).'"/>
 			</form>
 		</div>';
 

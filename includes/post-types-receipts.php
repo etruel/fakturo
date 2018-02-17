@@ -59,7 +59,7 @@ class fktrPostTypeReceipts {
 		return array(
 	        'cb' => '<input type="checkbox" />',
 	        'title' => __('Title'),
-	        'invoices_affected' =>__( 'Invoices affected', FAKTURO_TEXT_DOMAIN),
+	        'invoices_affected' =>__( 'Invoices affected', 'fakturo'),
 	        'date' => __('Date'),
 			
 	    );
@@ -87,7 +87,7 @@ class fktrPostTypeReceipts {
 			if ($id_print_template) {
 				$print_template = fktrPostTypePrintTemplates::get_print_template_data($id_print_template);
 			} else {
-				wp_die(__('No print template assigned to receipts', FAKTURO_TEXT_DOMAIN ));
+				wp_die(__('No print template assigned to receipts', 'fakturo' ));
 			}
 			$tpl = new fktr_tpl;
 			$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, false);
@@ -114,7 +114,7 @@ class fktrPostTypeReceipts {
 	}
 	 public static function bulk_actions($actions){
 
-        $actions['send_receipt_pdf_client'] = __( 'Send pdf to clients', FAKTURO_TEXT_DOMAIN);
+        $actions['send_receipt_pdf_client'] = __( 'Send pdf to clients', 'fakturo');
 
         return $actions;
     }
@@ -131,8 +131,8 @@ class fktrPostTypeReceipts {
 	}
 	public static function row_actions($actions, $post) {
 		if ($post->post_type == 'fktr_receipt' && ($post->post_status != 'cancelled' && $post->post_status != 'trash')) {
-			$actions['cancelled'] = '<a class="submit_cancel_receipt" href="'.admin_url('admin-post.php?post='.$post->ID.'&action=cancel_receipt').'" onclick="return confirm(\''.__('Do you want cancel this receipt?', FAKTURO_TEXT_DOMAIN ).'\');">Cancel this receipt</a>';
-			$actions['print_receipt'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_receipt').'" class="btn_print_receipt" target="_new">'.__( 'Print Receipt', FAKTURO_TEXT_DOMAIN ).'</a>';
+			$actions['cancelled'] = '<a class="submit_cancel_receipt" href="'.admin_url('admin-post.php?post='.$post->ID.'&action=cancel_receipt').'" onclick="return confirm(\''.__('Do you want cancel this receipt?', 'fakturo' ).'\');">Cancel this receipt</a>';
+			$actions['print_receipt'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_receipt').'" class="btn_print_receipt" target="_new">'.__( 'Print Receipt', 'fakturo' ).'</a>';
 
 
 			if (empty($actions['send_invoice_to_client'])) {
@@ -141,7 +141,7 @@ class fktrPostTypeReceipts {
 				if (!empty($client_data['email'])) {
 					$url = admin_url('admin-post.php?id='.$post->ID.'&action=send_receipt_to_client');
 					$url = wp_nonce_url($url, 'send_receipt_to_client', '_wpnonce');
-					$actions['send_receipt_to_client'] = '<a href="'.$url.'" class="btn_send_receipt">'.__( 'Send PDF to Client', FAKTURO_TEXT_DOMAIN ).'</a>';
+					$actions['send_receipt_to_client'] = '<a href="'.$url.'" class="btn_send_receipt">'.__( 'Send PDF to Client', 'fakturo' ).'</a>';
 				}
 			}
 			
@@ -187,14 +187,14 @@ class fktrPostTypeReceipts {
 		if (isset($post) && $post->post_type == 'fktr_receipt') {
 			switch( $safe_text ) {
 				case __('Save Draft');
-					$safe_text = __('Save as Pendient', FAKTURO_TEXT_DOMAIN );
+					$safe_text = __('Save as Pendient', 'fakturo' );
 					break;
 
 				case __('Publish');
-					$safe_text = __('Save', FAKTURO_TEXT_DOMAIN );
+					$safe_text = __('Save', 'fakturo' );
 					break;
 				case __('Update');
-					$safe_text = __('Save', FAKTURO_TEXT_DOMAIN );
+					$safe_text = __('Save', 'fakturo' );
 					break;
 				default:
 					break;
@@ -215,7 +215,7 @@ class fktrPostTypeReceipts {
 				$delete_link = add_query_arg( 'action', $action, admin_url( sprintf( $post_type_object->_edit_link, $post_id ) ) );
 				$delete_link = wp_nonce_url( $delete_link, "$action-post_{$post->ID}" );
 				
-				$delink = "$delete_link\" onclick=\"return confirm('".__('Delete this item permanently ?', FAKTURO_TEXT_DOMAIN )."')";
+				$delink = "$delete_link\" onclick=\"return confirm('".__('Delete this item permanently ?', 'fakturo' )."')";
 			}
 		}
 		return $delink;
@@ -225,18 +225,18 @@ class fktrPostTypeReceipts {
 	public static function setup() {
 		
 		$labels = array( 
-			'name' => __( 'Receipts', FAKTURO_TEXT_DOMAIN ),
-			'singular_name' => __( 'Receipt', FAKTURO_TEXT_DOMAIN ),
-			'add_new' => __( 'Add New', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item' => __( 'Add New Receipt', FAKTURO_TEXT_DOMAIN ),
-			'edit_item' => __( 'Edit Receipt', FAKTURO_TEXT_DOMAIN ),
-			'new_item' => __( 'New Receipt', FAKTURO_TEXT_DOMAIN ),
-			'view_item' => __( 'View Receipt', FAKTURO_TEXT_DOMAIN ),
-			'search_items' => __( 'Search Receipts', FAKTURO_TEXT_DOMAIN ),
-			'not_found' => __( 'No Receipts found', FAKTURO_TEXT_DOMAIN ),
-			'not_found_in_trash' => __( 'No Receipts found in Trash', FAKTURO_TEXT_DOMAIN ),
-			'parent_item_colon' => __( 'Parent Receipt:', FAKTURO_TEXT_DOMAIN ),
-			'menu_name' => __( 'Receipts', FAKTURO_TEXT_DOMAIN ),
+			'name' => __( 'Receipts', 'fakturo' ),
+			'singular_name' => __( 'Receipt', 'fakturo' ),
+			'add_new' => __( 'Add New', 'fakturo' ),
+			'add_new_item' => __( 'Add New Receipt', 'fakturo' ),
+			'edit_item' => __( 'Edit Receipt', 'fakturo' ),
+			'new_item' => __( 'New Receipt', 'fakturo' ),
+			'view_item' => __( 'View Receipt', 'fakturo' ),
+			'search_items' => __( 'Search Receipts', 'fakturo' ),
+			'not_found' => __( 'No Receipts found', 'fakturo' ),
+			'not_found_in_trash' => __( 'No Receipts found in Trash', 'fakturo' ),
+			'parent_item_colon' => __( 'Parent Receipt:', 'fakturo' ),
+			'menu_name' => __( 'Receipts', 'fakturo' ),
 		);
 		$capabilities = array(
 			'publish_post' => 'publish_fktr_receipt',
@@ -279,7 +279,7 @@ class fktrPostTypeReceipts {
 		register_post_type( 'fktr_receipt', $args );
 
 		register_post_status('cancelled', array(
-			'label'                     => __('Cancelled', FAKTURO_TEXT_DOMAIN),
+			'label'                     => __('Cancelled', 'fakturo'),
 			'public'                    => true,
 			'exclude_from_search'       => false,
 			'show_in_admin_all_list'    => true,
@@ -298,22 +298,22 @@ class fktrPostTypeReceipts {
 		global $post, $post_ID;
 		$messages['fktr_receipt'] = array(
 			 0 => '', 
-			 1 => __('Receipt updated.', FAKTURO_TEXT_DOMAIN ),
+			 1 => __('Receipt updated.', 'fakturo' ),
 			 2 => '',
 			 3 => '',
-			 4 => __( 'Receipt updated.', FAKTURO_TEXT_DOMAIN ),
+			 4 => __( 'Receipt updated.', 'fakturo' ),
 			 5 => '',
-			 6 => __('Receipt published.', FAKTURO_TEXT_DOMAIN ),
-			 7 => __('Receipt saved.', FAKTURO_TEXT_DOMAIN ),
-			 8 => __('Receipt submitted.', FAKTURO_TEXT_DOMAIN ),
-			 9 => sprintf(__('Receipt scheduled for: <strong>%1$s</strong>.', FAKTURO_TEXT_DOMAIN ), date_i18n( __( 'M j, Y @ G:i', FAKTURO_TEXT_DOMAIN ), strtotime( $post->post_date ) )),
-			10 => __('Pending updated.', FAKTURO_TEXT_DOMAIN ),
+			 6 => __('Receipt published.', 'fakturo' ),
+			 7 => __('Receipt saved.', 'fakturo' ),
+			 8 => __('Receipt submitted.', 'fakturo' ),
+			 9 => sprintf(__('Receipt scheduled for: <strong>%1$s</strong>.', 'fakturo' ), date_i18n( __( 'M j, Y @ G:i', 'fakturo' ), strtotime( $post->post_date ) )),
+			10 => __('Pending updated.', 'fakturo' ),
 		);
 		return $messages;
 	}
 	public static function name_placeholder( $title_placeholder , $post ) {
 		if($post->post_type == 'fktr_receipt') {
-			$title_placeholder = __('Your invoice number', FAKTURO_TEXT_DOMAIN );
+			$title_placeholder = __('Your invoice number', 'fakturo' );
 		}
 		return $title_placeholder;
 	}
@@ -380,7 +380,7 @@ class fktrPostTypeReceipts {
 				
 			$selectBankEntities = wp_dropdown_categories( array(
 				'show_option_all'    => '',
-				'show_option_none'   => __('Choose a Bank Entity', FAKTURO_TEXT_DOMAIN ),
+				'show_option_none'   => __('Choose a Bank Entity', 'fakturo' ),
 				'orderby'            => 'name', 
 				'order'              => 'ASC',
 				'show_count'         => 0,
@@ -400,7 +400,7 @@ class fktrPostTypeReceipts {
 			));
 			$selectCurrencies = wp_dropdown_categories( array(
 				'show_option_all'    => '',
-				'show_option_none'   => __('Choose a Currency', FAKTURO_TEXT_DOMAIN ),
+				'show_option_none'   => __('Choose a Currency', 'fakturo' ),
 				'orderby'            => 'name', 
 				'order'              => 'ASC',
 				'show_count'         => 0,
@@ -444,8 +444,8 @@ class fktrPostTypeReceipts {
 					'datetimepicker' => $objectL10n,
 					
 					
-					'txt_loading' => __('Loading', FAKTURO_TEXT_DOMAIN ),
-					'txt_cancel' => __('Cancel', FAKTURO_TEXT_DOMAIN ),
+					'txt_loading' => __('Loading', 'fakturo' ),
+					'txt_cancel' => __('Cancel', 'fakturo' ),
 					'url_loading_image' => get_bloginfo('wpurl').'/wp-admin/images/wpspin_light.gif',
 					
 					'currencies' => $currencies,
@@ -464,16 +464,16 @@ class fktrPostTypeReceipts {
 	
 	public static function meta_boxes() {
 		global $post;
-		add_meta_box('fakturo-currencies-box', __('Currencies', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'currencies_box'),'fktr_receipt','side', 'high' );
+		add_meta_box('fakturo-currencies-box', __('Currencies', 'fakturo' ), array(__CLASS__, 'currencies_box'),'fktr_receipt','side', 'high' );
 		if ($post->post_status == 'publish') {
-			add_meta_box('fakturo-cancel-receipt-box', __('Cancel receipt', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'cancel_box'),'fktr_receipt','side', 'low' );
+			add_meta_box('fakturo-cancel-receipt-box', __('Cancel receipt', 'fakturo' ), array(__CLASS__, 'cancel_box'),'fktr_receipt','side', 'low' );
 		}
-		add_meta_box('fakturo-receipt-box', __('Receipt data', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'receipt_box'),'fktr_receipt','normal', 'high' );
+		add_meta_box('fakturo-receipt-box', __('Receipt data', 'fakturo' ), array(__CLASS__, 'receipt_box'),'fktr_receipt','normal', 'high' );
 		do_action('add_ftkr_receipt_meta_boxes');
 	}
 	public static function cancel_box() {
 		global $post;
-		$echoHtml = '<a class="submit_cancel_receipt" href="'.admin_url('admin-post.php?post='.$post->ID.'&action=cancel_receipt').'" onclick="return confirm(\''.__('Do you want cancel this receipt?', FAKTURO_TEXT_DOMAIN ).'\');">Cancel this receipt</a>';
+		$echoHtml = '<a class="submit_cancel_receipt" href="'.admin_url('admin-post.php?post='.$post->ID.'&action=cancel_receipt').'" onclick="return confirm(\''.__('Do you want cancel this receipt?', 'fakturo' ).'\');">Cancel this receipt</a>';
 		$echoHtml = apply_filters('fktr_receipt_cancel_box', $echoHtml);
 		echo $echoHtml;
 		do_action('add_fktr_receipt_cancel_box', $echoHtml);
@@ -524,18 +524,18 @@ class fktrPostTypeReceipts {
 			$selectClients = fakturo_get_select_post(array(
 											'echo' => 0,
 											'post_type' => 'fktr_client',
-											'show_option_none' => __('Choose a Client', FAKTURO_TEXT_DOMAIN ),
+											'show_option_none' => __('Choose a Client', 'fakturo' ),
 											'name' => 'client_id',
 											'id' => 'client_id',
 											'class' => '',
 											'selected' => $receipt_data['client_id']
 										));
 		} 
-		$selectPaymentTypes = __('No payment type', FAKTURO_TEXT_DOMAIN );
+		$selectPaymentTypes = __('No payment type', 'fakturo' );
 		if ($post->post_status != 'publish' && $post->post_status != 'cancelled') {
 			$selectPaymentTypes = wp_dropdown_categories( array(
 				'show_option_all'    => '',
-				'show_option_none'   => __('Choose a Payment Type', FAKTURO_TEXT_DOMAIN ),
+				'show_option_none'   => __('Choose a Payment Type', 'fakturo' ),
 				'orderby'            => 'name', 
 				'order'              => 'ASC',
 				'show_count'         => 0,
@@ -560,7 +560,7 @@ class fktrPostTypeReceipts {
 			}
 		}
 		
-		$receiptSymbol = __('No Symbol', FAKTURO_TEXT_DOMAIN);
+		$receiptSymbol = __('No Symbol', 'fakturo');
 		$receiptCurrency = get_fakturo_term($receipt_data['currency_id'], 'fktr_currencies');
 		if(!is_wp_error($receiptCurrency)) {
 			$receiptSymbol = $receiptCurrency->symbol;
@@ -568,11 +568,11 @@ class fktrPostTypeReceipts {
 		
 		$defaultCurrency = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
 		
-		$selectCurrencies = __('No currency, used the default currency.', FAKTURO_TEXT_DOMAIN );
+		$selectCurrencies = __('No currency, used the default currency.', 'fakturo' );
 		if ($post->post_status != 'publish' && $post->post_status != 'cancelled') {
 			$selectCurrencies = wp_dropdown_categories( array(
 				'show_option_all'    => '',
-				'show_option_none'   => __('Choose a Currency', FAKTURO_TEXT_DOMAIN ),
+				'show_option_none'   => __('Choose a Currency', 'fakturo' ),
 				'orderby'            => 'name', 
 				'order'              => 'ASC',
 				'show_count'         => 0,
@@ -600,7 +600,7 @@ class fktrPostTypeReceipts {
 		}
 		
 		$checksHtml = '<tr id="message_check_table">
-							<th>'. __('No checks in receipt, You can add a check.', FAKTURO_TEXT_DOMAIN  ) .'</th>
+							<th>'. __('No checks in receipt, You can add a check.', 'fakturo'  ) .'</th>
 						</tr>';
 		if ($post->post_status != 'publish' && $post->post_status != 'cancelled') {
 			
@@ -610,12 +610,12 @@ class fktrPostTypeReceipts {
 				foreach ($receipt_data['ck_ids'] as $term_id) {
 					$term_check = get_fakturo_term($term_id, 'fktr_check');
 					if(!is_wp_error($term_check)) {
-						$bank_text = __('No bank', FAKTURO_TEXT_DOMAIN);
+						$bank_text = __('No bank', 'fakturo');
 						$term_bank = get_fakturo_term($term_check->bank_id, 'fktr_bank_entities');
 						if(!is_wp_error($term_bank)) {
 							$bank_text = $term_bank->name;
 						}
-						$symbol = __('No Symbol', FAKTURO_TEXT_DOMAIN);
+						$symbol = __('No Symbol', 'fakturo');
 						$checkCurrency = get_fakturo_term($term_check->currency_id, 'fktr_currencies');
 						if(!is_wp_error($checkCurrency)) {
 							$symbol = $checkCurrency->symbol;
@@ -632,14 +632,14 @@ class fktrPostTypeReceipts {
 				
 			} else {
 				$checksHtml = '<tr id="message_check_table">
-							<th>'. __('No checks in receipt.', FAKTURO_TEXT_DOMAIN  ) .'</th>
+							<th>'. __('No checks in receipt.', 'fakturo'  ) .'</th>
 						</tr>';
 				
 			}
 			
 		}
 		$invsHtml = '<tr>
-						<th>'. __('No invoice available, please select a cliente.', FAKTURO_TEXT_DOMAIN  ) .'</th>
+						<th>'. __('No invoice available, please select a cliente.', 'fakturo'  ) .'</th>
 					</tr>';
 		if ($post->post_status != 'publish' && $post->post_status != 'cancelled') {
 			
@@ -650,7 +650,7 @@ class fktrPostTypeReceipts {
 					$affected = $receipt_data['to_pay'][$kc];
 					$data_inv = fktrPostTypeSales::get_sale_data($invoice_id);
 					$data_inv['date'] = date_i18n($setting_system['dateformat'], $data_inv['date']);
-					$symbol = __('No Symbol', FAKTURO_TEXT_DOMAIN);
+					$symbol = __('No Symbol', 'fakturo');
 					$invCurrency = get_fakturo_term($data_inv['invoice_currency'], 'fktr_currencies');
 					if(!is_wp_error($invCurrency)) {
 							$symbol = $invCurrency->symbol;
@@ -667,7 +667,7 @@ class fktrPostTypeReceipts {
 				}
 			} else {
 				$invsHtml = '<tr>
-						<th>'. __('No invoice available.', FAKTURO_TEXT_DOMAIN  ) .'</th>
+						<th>'. __('No invoice available.', 'fakturo'  ) .'</th>
 					</tr>';
 				
 			}
@@ -679,27 +679,27 @@ class fktrPostTypeReceipts {
 				<tbody>
 
 					<tr class="tr_fktr">
-						<th><label for="client_id">'.__('Client', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<th><label for="client_id">'.__('Client', 'fakturo' ).'	</label></th>
 						<td>'.$selectClients.'</td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="receipt_number">'.__('Receipt Number', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<th><label for="receipt_number">'.__('Receipt Number', 'fakturo' ).'	</label></th>
 						<td>'.(($post->post_status != 'publish' && $post->post_status != 'cancelled')?' <input type="text" name="receipt_number" id="receipt_number" value="'.$receipt_data['receipt_number'].'"/>': $receipt_data['receipt_number']).'</td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="available_to_include">'.__('Available to include', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<th><label for="available_to_include">'.__('Available to include', 'fakturo' ).'	</label></th>
 						<td>'.(($post->post_status != 'publish' && $post->post_status != 'cancelled')?'<div id="client_available_to_include" data-available="0">No money available to include</div>   <input type="text" name="available_to_include" id="available_to_include" value="'.$receipt_data['available_to_include'].'"/>':''.(($setting_system['currency_position'] == 'before')?''.$defaultCurrency->symbol.' ':'').''.number_format($receipt_data['available_to_include'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$defaultCurrency->symbol.'':'').'').'</td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="payment_type_id">'.__('Payment Type', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<th><label for="payment_type_id">'.__('Payment Type', 'fakturo' ).'	</label></th>
 						<td>'.$selectPaymentTypes.'</td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="currency_id">'.__('Currency', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<th><label for="currency_id">'.__('Currency', 'fakturo' ).'	</label></th>
 						<td>'.$selectCurrencies.'</td>
 					</tr>
 					<tr class="tr_fktr">
-						<th><label for="cash">'.__('Cash', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+						<th><label for="cash">'.__('Cash', 'fakturo' ).'	</label></th>
 						<td>'.(($post->post_status != 'publish' && $post->post_status != 'cancelled')?' <input type="text" name="cash" id="cash" value="'.$receipt_data['cash'].'"/>': ''.(($setting_system['currency_position'] == 'before')?''.$term_currency->symbol.' ':'').''.number_format($receipt_data['cash'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$term_currency->symbol.'':'').'').'</td>
 					</tr>
 					
@@ -711,17 +711,17 @@ class fktrPostTypeReceipts {
 			<div id="checks_content">
 				<table id="checks_header_table">
 					<tr>
-						<th class="ck_column">'. __('Nro', FAKTURO_TEXT_DOMAIN  ) .'</th>
-						<th class="ck_column">'. __('Bank', FAKTURO_TEXT_DOMAIN  ) .'</th>
-						<th class="ck_column">'. __('Value', FAKTURO_TEXT_DOMAIN  ) .'</th>
-						'.(($post->post_status != 'publish' && $post->post_status != 'cancelled')? '<th class="ck_column">'. __('Actions', FAKTURO_TEXT_DOMAIN  ) .'</th>' : '').'
+						<th class="ck_column">'. __('Nro', 'fakturo'  ) .'</th>
+						<th class="ck_column">'. __('Bank', 'fakturo'  ) .'</th>
+						<th class="ck_column">'. __('Value', 'fakturo'  ) .'</th>
+						'.(($post->post_status != 'publish' && $post->post_status != 'cancelled')? '<th class="ck_column">'. __('Actions', 'fakturo'  ) .'</th>' : '').'
 						
 					</tr>
 				</table>
 				<table id="checks_table">
 					'.$checksHtml.'
 				</table>
-				'.(($post->post_status != 'publish' && $post->post_status != 'cancelled')? '<a href="#" class="button-primary add" id="add_more_check" style="margin-top:5px; font-weight: bold; text-decoration: none; height: 31px;line-height: 29px;"> '.__('Add ckeck', FAKTURO_TEXT_DOMAIN  ).'</a>': '').'
+				'.(($post->post_status != 'publish' && $post->post_status != 'cancelled')? '<a href="#" class="button-primary add" id="add_more_check" style="margin-top:5px; font-weight: bold; text-decoration: none; height: 31px;line-height: 29px;"> '.__('Add ckeck', 'fakturo'  ).'</a>': '').'
 				
 			</div>
 			
@@ -730,11 +730,11 @@ class fktrPostTypeReceipts {
 				<table id="invoices_header_table">
 					<tr>
 						<th></th>
-						<th class="in_column">'. __('Date', FAKTURO_TEXT_DOMAIN  ) .'</th>
-						<th class="in_column">'. __('Invoice Number', FAKTURO_TEXT_DOMAIN  ) .'</th>
-						<th class="in_column">'. __('Value Original', FAKTURO_TEXT_DOMAIN  ) .'</th>
-						<th class="in_column">'. __('In current currecy', FAKTURO_TEXT_DOMAIN  ) .'</th>
-						<th class="in_column">'. __('To Pay', FAKTURO_TEXT_DOMAIN  ) .'</th>
+						<th class="in_column">'. __('Date', 'fakturo'  ) .'</th>
+						<th class="in_column">'. __('Invoice Number', 'fakturo'  ) .'</th>
+						<th class="in_column">'. __('Value Original', 'fakturo'  ) .'</th>
+						<th class="in_column">'. __('In current currecy', 'fakturo'  ) .'</th>
+						<th class="in_column">'. __('To Pay', 'fakturo'  ) .'</th>
 					</tr>
 				</table>
 				<table id="invoices_table">
@@ -746,28 +746,28 @@ class fktrPostTypeReceipts {
 			
 			<table class="form-table">
 				<tr class="tr_fktr">
-					<th><label>'.__('Current account balance', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+					<th><label>'.__('Current account balance', 'fakturo' ).'	</label></th>
 					<td id="receipt_acc_current_balance"><input type="hidden" id="current_acc_balance" name="current_acc_balance" value="'.$receipt_data['current_acc_balance'].'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['current_acc_balance'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
 				</tr>
 				<tr class="tr_fktr">
-					<th><label>'.__('Total to impute', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+					<th><label>'.__('Total to impute', 'fakturo' ).'	</label></th>
 					<td id="receipt_total_to_impute"><input type="hidden" id="total_to_impute" name="total_to_impute" value="'.$receipt_data['total_to_impute'].'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['total_to_impute'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
 				</tr>
 				<tr class="tr_fktr">
-					<th><label>'.__('Total to pay', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+					<th><label>'.__('Total to pay', 'fakturo' ).'	</label></th>
 					<td id="receipt_total_to_pay"><input type="hidden" id="total_to_pay" name="total_to_pay" value="'.$receipt_data['total_to_pay'].'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['total_to_pay'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
 				</tr>
 				<tr class="tr_fktr">
-					<th><label>'.__('Available to include', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+					<th><label>'.__('Available to include', 'fakturo' ).'	</label></th>
 					<td id="receipt_available_to_include"><input type="hidden" id="total_available_to_include" name="total_available_to_include" value="'.$receipt_data['total_available_to_include'].'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['total_available_to_include'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
 				</tr>
 				<tr id="tr_positive_balance" class="tr_fktr">
-					<th><label>'.__('Positive balance', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+					<th><label>'.__('Positive balance', 'fakturo' ).'	</label></th>
 					<td id="receipt_positive_balance"><input type="hidden" id="positive_balance" name="positive_balance" value="'.$receipt_data['positive_balance'].'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['positive_balance'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
 				</tr>
 				
 				<tr class="tr_fktr">
-					<th><label>'.__('Future account balance', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+					<th><label>'.__('Future account balance', 'fakturo' ).'	</label></th>
 					<td id="receipt_acc_future_balance"><input type="hidden" id="future_balance" name="future_balance" value="'.$receipt_data['future_balance'].'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['future_balance'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
 				</tr>
 			</table>	
@@ -820,7 +820,7 @@ class fktrPostTypeReceipts {
 			$response->add( array(
 				'data'	=> 'error',
 				'supplemental' => array(
-					'message' => __('This receipt number is already in use, Please try again.', FAKTURO_TEXT_DOMAIN ),
+					'message' => __('This receipt number is already in use, Please try again.', 'fakturo' ),
 					'inputSelector' => '#receipt_number',
 					'function' => 'updateSuggestReceiptNumber',
 				),

@@ -45,26 +45,26 @@ class fktrPostTypeEmailTemplates {
 	public static function reset_email_template() {
 
 		if (!isset($_GET['_nonce']) || !wp_verify_nonce($_GET['_nonce'], 'reset_email_to_default')) {
-			fktrNotices::add(array('below-h2' => false, 'text' => __('A problem, please try again.', FAKTURO_TEXT_DOMAIN )));
+			fktrNotices::add(array('below-h2' => false, 'text' => __('A problem, please try again.', 'fakturo' )));
 			wp_redirect(admin_url('edit.php?post_type=fktr_email_template'));
 			exit;
 		}
 
 		$template_id = $_REQUEST['id'];
 		if (empty($template_id)) {
-			fktrNotices::add(array('below-h2' => false, 'text' => __('Invalid e-mail template id.', FAKTURO_TEXT_DOMAIN )));
+			fktrNotices::add(array('below-h2' => false, 'text' => __('Invalid e-mail template id.', 'fakturo' )));
 			wp_redirect(admin_url('edit.php?post_type=fktr_email_template'));
 			exit;
 		}
 		
 		$email_template = self::get_email_template_data($template_id);
 		if (!isset($email_template['assigned'])) {
-			fktrNotices::add(array('below-h2' => false, 'text' => __('This e-mail template has no assigned object.', FAKTURO_TEXT_DOMAIN )));
+			fktrNotices::add(array('below-h2' => false, 'text' => __('This e-mail template has no assigned object.', 'fakturo' )));
 			wp_redirect(admin_url('post.php?post='.$template_id.'&action=edit'));
 			exit;
 		}
 		if ($email_template['assigned'] == -1) {
-			fktrNotices::add(array('below-h2' => false, 'text' => __('This e-mail template has no assigned object.', FAKTURO_TEXT_DOMAIN )));
+			fktrNotices::add(array('below-h2' => false, 'text' => __('This e-mail template has no assigned object.', 'fakturo' )));
 			wp_redirect(admin_url('post.php?post='.$template_id.'&action=edit'));
 			exit;
 		}
@@ -77,7 +77,7 @@ class fktrPostTypeEmailTemplates {
 		  );
 		wp_update_post($args_template);
 		update_post_meta($template_id, 'content',  $new);
-		fktrNotices::add(array('below-h2' => false, 'text' => __('This e-mail template has been reset to default.', FAKTURO_TEXT_DOMAIN )));
+		fktrNotices::add(array('below-h2' => false, 'text' => __('This e-mail template has been reset to default.', 'fakturo' )));
 		wp_redirect(admin_url('post.php?post='.$template_id.'&action=edit'));
 		exit;
 	}
@@ -86,10 +86,10 @@ class fktrPostTypeEmailTemplates {
 		if ($post->post_type != 'fktr_email_template') {
 			return true;
 		}
-		$preview_button = '<a  id="preview_button" class="button button-large" href="'.admin_url('admin-post.php?id='.$post->ID.'&action=show_email_template').'" target="_new" style="margin-left:5px;">'. __('Preview', FAKTURO_TEXT_DOMAIN) . '</a>';	
+		$preview_button = '<a  id="preview_button" class="button button-large" href="'.admin_url('admin-post.php?id='.$post->ID.'&action=show_email_template').'" target="_new" style="margin-left:5px;">'. __('Preview', 'fakturo') . '</a>';	
 
 		$reset_url = wp_nonce_url(admin_url('admin-post.php?id='.$post->ID.'&action=reset_email_template'), 'reset_email_to_default', '_nonce');
-		$reset_button = '<a  id="reset_button" class="button button-large" href="'.$reset_url.'" style="margin:5px;">'. __('Reset to default', FAKTURO_TEXT_DOMAIN) . '</a>';
+		$reset_button = '<a  id="reset_button" class="button button-large" href="'.$reset_url.'" style="margin:5px;">'. __('Reset to default', 'fakturo') . '</a>';
 
 
 		$echoHtml = '
@@ -118,7 +118,7 @@ class fktrPostTypeEmailTemplates {
 			exit;
 		}
 		if ($email_template['assigned'] == -1) {
-			wp_die('<h3>'.__('This e-mail template has no assigned object.', FAKTURO_TEXT_DOMAIN ).'</h3>');
+			wp_die('<h3>'.__('This e-mail template has no assigned object.', 'fakturo' ).'</h3>');
 		}
 		
 		$object = new stdClass();
@@ -131,14 +131,14 @@ class fktrPostTypeEmailTemplates {
 
 			$htmlContent = $tpl->fromString($email_template['content']);
 			$htmlSubject = $tpl->fromString($email_template['subject']);
-			echo '<div style="padding: 15px 10px; font-size: 14px; border-radius: 2px; border: 1px solid #ddd;">'.__('E-mail template', FAKTURO_TEXT_DOMAIN ).': '.$email_template['post_title'].'</div><br/>';
-			echo '<div style="padding: 15px 10px; font-size: 14px; border-radius: 2px; border: 1px solid #ddd;">'.__('E-mail Subject', FAKTURO_TEXT_DOMAIN ).': ['.$htmlSubject.']</div><br/>';
-			echo '<div style="padding: 15px 10px; font-size: 14px; border-radius: 2px; border: 1px solid #ddd;">'.__('E-mail Body', FAKTURO_TEXT_DOMAIN ).': ['.$htmlContent.']</div><br/>';
+			echo '<div style="padding: 15px 10px; font-size: 14px; border-radius: 2px; border: 1px solid #ddd;">'.__('E-mail template', 'fakturo' ).': '.$email_template['post_title'].'</div><br/>';
+			echo '<div style="padding: 15px 10px; font-size: 14px; border-radius: 2px; border: 1px solid #ddd;">'.__('E-mail Subject', 'fakturo' ).': ['.$htmlSubject.']</div><br/>';
+			echo '<div style="padding: 15px 10px; font-size: 14px; border-radius: 2px; border: 1px solid #ddd;">'.__('E-mail Body', 'fakturo' ).': ['.$htmlContent.']</div><br/>';
 
 			
 			exit();
 		}
-		wp_die('<h3>'.__('Could not find any object related to this e-mail template', FAKTURO_TEXT_DOMAIN ).'</h3>');
+		wp_die('<h3>'.__('Could not find any object related to this e-mail template', 'fakturo' ).'</h3>');
 		
 	}
 	public static function assignment($tpl, $object, $default_template) {
@@ -302,18 +302,18 @@ class fktrPostTypeEmailTemplates {
 	public static function setup() {
 		
 		$labels = array( 
-			'name' => __( 'Email Templates', FAKTURO_TEXT_DOMAIN ),
-			'singular_name' => __( 'Email Template', FAKTURO_TEXT_DOMAIN ),
-			'add_new' => __( 'Add New', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item' => __( 'Add New Email Template', FAKTURO_TEXT_DOMAIN ),
-			'edit_item' => __( 'Edit Email Template', FAKTURO_TEXT_DOMAIN ),
-			'new_item' => __( 'New Email Template', FAKTURO_TEXT_DOMAIN ),
-			'view_item' => __( 'View Email Template', FAKTURO_TEXT_DOMAIN ),
-			'search_items' => __( 'Search Email Templates', FAKTURO_TEXT_DOMAIN ),
-			'not_found' => __( 'No Email Templates found', FAKTURO_TEXT_DOMAIN ),
-			'not_found_in_trash' => __( 'No Email Templates found in Trash', FAKTURO_TEXT_DOMAIN ),
-			'parent_item_colon' => __( 'Parent Email Template:', FAKTURO_TEXT_DOMAIN ),
-			'menu_name' => __( 'Email Templates', FAKTURO_TEXT_DOMAIN ),
+			'name' => __( 'Email Templates', 'fakturo' ),
+			'singular_name' => __( 'Email Template', 'fakturo' ),
+			'add_new' => __( 'Add New', 'fakturo' ),
+			'add_new_item' => __( 'Add New Email Template', 'fakturo' ),
+			'edit_item' => __( 'Edit Email Template', 'fakturo' ),
+			'new_item' => __( 'New Email Template', 'fakturo' ),
+			'view_item' => __( 'View Email Template', 'fakturo' ),
+			'search_items' => __( 'Search Email Templates', 'fakturo' ),
+			'not_found' => __( 'No Email Templates found', 'fakturo' ),
+			'not_found_in_trash' => __( 'No Email Templates found in Trash', 'fakturo' ),
+			'parent_item_colon' => __( 'Parent Email Template:', 'fakturo' ),
+			'menu_name' => __( 'Email Templates', 'fakturo' ),
 		);
 		$capabilities = array(
 			'publish_post' => 'publish_fktr_email_template',
@@ -364,22 +364,22 @@ class fktrPostTypeEmailTemplates {
 		global $post, $post_ID;
 		$messages['fktr_email_template'] = array(
 			 0 => '', 
-			 1 => __('Email template updated.', FAKTURO_TEXT_DOMAIN ),
+			 1 => __('Email template updated.', 'fakturo' ),
 			 2 => '',
 			 3 => '',
-			 4 => __( 'Email template updated.', FAKTURO_TEXT_DOMAIN ),
+			 4 => __( 'Email template updated.', 'fakturo' ),
 			 5 => '',
-			 6 => __('Email template published.', FAKTURO_TEXT_DOMAIN ),
-			 7 => __('Email template saved.', FAKTURO_TEXT_DOMAIN ),
-			 8 => __('Email template submitted.', FAKTURO_TEXT_DOMAIN ),
-			 9 => sprintf(__('Email template scheduled for: <strong>%1$s</strong>.', FAKTURO_TEXT_DOMAIN ), date_i18n( __( 'M j, Y @ G:i', FAKTURO_TEXT_DOMAIN ), strtotime( $post->post_date ) )),
-			10 => __('Pending Email template.', FAKTURO_TEXT_DOMAIN ),
+			 6 => __('Email template published.', 'fakturo' ),
+			 7 => __('Email template saved.', 'fakturo' ),
+			 8 => __('Email template submitted.', 'fakturo' ),
+			 9 => sprintf(__('Email template scheduled for: <strong>%1$s</strong>.', 'fakturo' ), date_i18n( __( 'M j, Y @ G:i', 'fakturo' ), strtotime( $post->post_date ) )),
+			10 => __('Pending Email template.', 'fakturo' ),
 		);
 		return $messages;
 	}
 	public static function name_placeholder( $title_placeholder , $post ) {
 		if($post->post_type == 'fktr_email_template') {
-			$title_placeholder = __('Your E-mail template name', FAKTURO_TEXT_DOMAIN );
+			$title_placeholder = __('Your E-mail template name', 'fakturo' );
 			
 		}
 		return $title_placeholder;
@@ -390,15 +390,15 @@ class fktrPostTypeEmailTemplates {
 	    //check for your post type
 	    if ($post->post_type =="fktr_email_template"){
 	       
-	        $actions['show_email_template'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=show_email_template').'" target="_new">'.__( 'Preview', FAKTURO_TEXT_DOMAIN ).'</a>';
-	        $actions['copy'] = '<a href="'.admin_url('admin.php?action=copy_email_template&post='.$post->ID.'').'" title="' . esc_attr(__("Clone this item", FAKTURO_TEXT_DOMAIN)) . '">' .  __('Copy', FAKTURO_TEXT_DOMAIN) . '</a>';
+	        $actions['show_email_template'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=show_email_template').'" target="_new">'.__( 'Preview', 'fakturo' ).'</a>';
+	        $actions['copy'] = '<a href="'.admin_url('admin.php?action=copy_email_template&post='.$post->ID.'').'" title="' . esc_attr(__("Clone this item", 'fakturo')) . '">' .  __('Copy', 'fakturo') . '</a>';
 	       
 	    }
 	    return $actions;
 	}
 	public static function copy_email_template() {
 		if (! ( isset( $_GET['post']) || isset( $_POST['post'])  || ( isset($_REQUEST['action']) && 'copy_email_template' == $_REQUEST['action'] ) ) ) {
-			wp_die(__('No email template ID has been supplied!',  FAKTURO_TEXT_DOMAIN));
+			wp_die(__('No email template ID has been supplied!',  'fakturo'));
 		}
 
 		// Get the original post
@@ -411,7 +411,7 @@ class fktrPostTypeEmailTemplates {
 				return;
 			}
 			$prefix = "";
-			$suffix = __("(Copy)",  FAKTURO_TEXT_DOMAIN) ;
+			$suffix = __("(Copy)",  'fakturo') ;
 			if (!empty($prefix)) $prefix.= " ";
 			if (!empty($suffix)) $suffix = " ".$suffix;
 			$status = 'publish';
@@ -462,7 +462,7 @@ class fktrPostTypeEmailTemplates {
 
 		} else {
 			$post_type_obj = get_post_type_object( $post->post_type );
-			wp_die(esc_attr(__('Copy email template failed, could not find original:',  FAKTURO_TEXT_DOMAIN)) . ' ' . $id);
+			wp_die(esc_attr(__('Copy email template failed, could not find original:',  'fakturo')) . ' ' . $id);
 		}
 	}
 	public static function styles() {
@@ -479,16 +479,16 @@ class fktrPostTypeEmailTemplates {
 			
 			wp_enqueue_script( 'post-type-email-template', FAKTURO_PLUGIN_URL . 'assets/js/post-type-email-template.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 
-			$preview_button = '<a  id="preview_button" class="button button-large" href="'.admin_url('admin-post.php?id='.$post->ID.'&action=show_email_template').'" target="_new" style="margin-left:5px;">'. __('Preview', FAKTURO_TEXT_DOMAIN) . '</a>';
+			$preview_button = '<a  id="preview_button" class="button button-large" href="'.admin_url('admin-post.php?id='.$post->ID.'&action=show_email_template').'" target="_new" style="margin-left:5px;">'. __('Preview', 'fakturo') . '</a>';
 			
 			wp_localize_script('post-type-email-template', 'email_template_object',
 				array(
 						'ajax_url' => admin_url( 'admin-ajax.php' ),
 						'preview_button' => $preview_button,
-						'msg_save_before' => __('Save before to preview print template', FAKTURO_TEXT_DOMAIN),
-						'msg_loading_var' => __('Loading vars...', FAKTURO_TEXT_DOMAIN),
-						'msg_reset' => __('This will remove all your modified data. Are you sure?', FAKTURO_TEXT_DOMAIN),
-						'msg_before_reset' => __('Save before to reset to default.', FAKTURO_TEXT_DOMAIN),
+						'msg_save_before' => __('Save before to preview print template', 'fakturo'),
+						'msg_loading_var' => __('Loading vars...', 'fakturo'),
+						'msg_reset' => __('This will remove all your modified data. Are you sure?', 'fakturo'),
+						'msg_before_reset' => __('Save before to reset to default.', 'fakturo'),
 					
 				));
 		
@@ -508,8 +508,8 @@ class fktrPostTypeEmailTemplates {
 	public static function meta_boxes() {
 		
 
-		add_meta_box('fakturo-template-data-box', __('E-mail Template Data', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'email_template_data_box'),'fktr_email_template','before_editor', 'high' );
-		add_meta_box('fakturo-template-vars-box', __('E-mail Template Vars', FAKTURO_TEXT_DOMAIN ), array(__CLASS__, 'email_template_vars_box'),'fktr_email_template','normal', 'high' );
+		add_meta_box('fakturo-template-data-box', __('E-mail Template Data', 'fakturo' ), array(__CLASS__, 'email_template_data_box'),'fktr_email_template','before_editor', 'high' );
+		add_meta_box('fakturo-template-vars-box', __('E-mail Template Vars', 'fakturo' ), array(__CLASS__, 'email_template_vars_box'),'fktr_email_template','normal', 'high' );
 		
 		
 		do_action('add_ftkr_email_template_meta_boxes');
@@ -568,7 +568,7 @@ class fktrPostTypeEmailTemplates {
 		$object->id = self::get_rand_object_id($object->type, $email_template);
 		$object->assgined = $email_template['assigned'];
 		$echoHtml = '';
-		$echoHtml .= '<div>'.__('Vars with members <strong>ArrayToLoop</strong> means that they are list arrays and should be used in a <strong>Loop</strong>.', FAKTURO_TEXT_DOMAIN ) .'</div>';
+		$echoHtml .= '<div>'.__('Vars with members <strong>ArrayToLoop</strong> means that they are list arrays and should be used in a <strong>Loop</strong>.', 'fakturo' ) .'</div>';
 		$echoHtml .= '<div id="vars_template_content">';
 		if ($object->id) {
 			$tpl = new fktr_tpl;
@@ -599,7 +599,7 @@ class fktrPostTypeEmailTemplates {
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$array_assigned = apply_filters('fktr_assigned_email_template', array());
 		$selectHtml = '<select name="assigned" id="assigned">
-							<option value="-1" '.selected(-1, $email_template['assigned'], false).'> '.__('Select please', FAKTURO_TEXT_DOMAIN ) .' </option>';
+							<option value="-1" '.selected(-1, $email_template['assigned'], false).'> '.__('Select please', 'fakturo' ) .' </option>';
 		foreach ($array_assigned as $key => $value) {
 			$selectHtml .= '<option value="'.$key.'" '.selected($key, $email_template['assigned'], false).'> '.$value .' </option>';
 		}
@@ -607,15 +607,15 @@ class fktrPostTypeEmailTemplates {
 		$echoHtml = '<table>
 					<tbody>
 						<tr class="tr_fktr">
-							<th><label for="description">'.__('Description', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+							<th><label for="description">'.__('Description', 'fakturo' ) .'	</label></th>
 							<td><input id="description" type="text" name="description" value="'.$email_template['description'].'" class="regular-text"></td>
 						</tr>
 						<tr class="tr_fktr">
-							<th><label for="subject">'.__('Subject', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+							<th><label for="subject">'.__('Subject', 'fakturo' ) .'	</label></th>
 							<td><input id="subject" type="text" name="subject" value="'.$email_template['subject'].'" class="regular-text"></td>
 						</tr>
 						<tr class="tr_fktr">
-							<th><label for="assigned">'.__('Assigned to', FAKTURO_TEXT_DOMAIN ) .'	</label></th>
+							<th><label for="assigned">'.__('Assigned to', 'fakturo' ) .'	</label></th>
 							<td>'.$selectHtml.'</td>
 						</tr>
 					

@@ -55,7 +55,7 @@ class fktrSettings {
 
 			wp_localize_script('jquery-settings', 'setting_object',
 				array('ajax_url' => admin_url( 'admin-ajax.php' ),
-					'loading_states_text' => __('Loading states...', FAKTURO_TEXT_DOMAIN ),
+					'loading_states_text' => __('Loading states...', 'fakturo' ),
 					
 
 			) );
@@ -64,7 +64,7 @@ class fktrSettings {
 			wp_localize_script('jquery-fktr-new-terms-popup', 'backend_object',
 				array('ajax_url' => admin_url( 'admin-ajax.php' ),
 					'loading_image' => admin_url('images/spinner.gif'), 
-					'loading_text' => __('Loading...', FAKTURO_TEXT_DOMAIN ),
+					'loading_text' => __('Loading...', 'fakturo' ),
 				)
 			);
 			
@@ -181,7 +181,7 @@ class fktrSettings {
 					}
 					$selectHtml .= '</select>';
 					echo '<tr valign="top">
-						<th scope="row">'.sprintf( __( 'Dialer %s', FAKTURO_TEXT_DOMAIN ), $d+1) .'</th>
+						<th scope="row">'.sprintf( __( 'Dialer %s', 'fakturo' ), $d+1) .'</th>
 						<td>
 							'.$selectHtml.'
                         </td>
@@ -204,7 +204,7 @@ class fktrSettings {
 		update_option('fakturo_info_options_group' , $options);
 		$selectTaxCondition = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Tax Condition', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a Tax Condition', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -224,7 +224,7 @@ class fktrSettings {
 		));
 		$selectCountry = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a country', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a country', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -245,7 +245,7 @@ class fktrSettings {
 		
 		$selectState = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a state', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a state', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -265,7 +265,7 @@ class fktrSettings {
 		));
 		$selectEmptyState = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a state', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a state', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -287,7 +287,7 @@ class fktrSettings {
 		if ($options['country'] == 0 || strlen($selectState) < strlen($selectEmptyState)+1) {
 			
 			$selectState = '<select name="fakturo_info_options_group[state]" id="fakturo_info_options_group_state">
-								<option value="0">'. __('Choose a country before', FAKTURO_TEXT_DOMAIN ) .'</option>
+								<option value="0">'. __('Choose a country before', 'fakturo' ) .'</option>
 							</select>';
 		}
 		echo '<div id="tab_container">
@@ -297,37 +297,37 @@ class fktrSettings {
 			do_settings_sections('fakturo-settings');
 			echo '<table class="form-table">
 					<tr valign="top">
-						<th scope="row">'. __( 'Name', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th scope="row">'. __( 'Name', 'fakturo' ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[name]" value="'.$options['name'].'"/>
                         </td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">'. __( 'Taxpayer ID', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th scope="row">'. __( 'Taxpayer ID', 'fakturo' ) .'</th>
 						<td>
 							<input type="text" size="36" id="fakturo_info_options_group_taxpayer" name="fakturo_info_options_group[taxpayer]" value="'.$options['taxpayer'].'"/>
                         </td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">'. __( 'Gross income tax ID', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th scope="row">'. __( 'Gross income tax ID', 'fakturo' ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[tax]" value="'.$options['tax'].'"/>
                         </td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">'. __( 'Start of activities', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th scope="row">'. __( 'Start of activities', 'fakturo' ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[start]" id="start" value="'.$options['start'].'"/>
                         </td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">'. __( 'Address', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th scope="row">'. __( 'Address', 'fakturo' ) .'</th>
 						<td>
 							<textarea name="fakturo_info_options_group[address]" cols="36" rows="4">'.$options['address'].'</textarea>
 						</td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">'. __( 'Telephone', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th scope="row">'. __( 'Telephone', 'fakturo' ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[telephone]" value="'.$options['telephone'].'"/>
 						</td>
@@ -336,7 +336,7 @@ class fktrSettings {
 					
 					
 					<tr valign="top">
-						<th scope="row">'. __( 'Country', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th scope="row">'. __( 'Country', 'fakturo' ) .'</th>
 						<td>
 							'.$selectCountry.' '.fktr_popup_taxonomy::button(
 																	array(
@@ -349,7 +349,7 @@ class fktrSettings {
 						</td>
                     </tr>
                     <tr valign="top">
-						<th scope="row">'. __( 'State', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th scope="row">'. __( 'State', 'fakturo' ) .'</th>
 						<td>
 								<table style="border-spacing: 0px; width: 350px;">
 									<tr>
@@ -362,7 +362,7 @@ class fktrSettings {
 																	'taxonomy' => 'fktr_countries',
 																	'echo' => 0,
 																	'class' => 'button',
-																	'opcional_add_new_item'	=> __( 'Add New State', FAKTURO_TEXT_DOMAIN ),
+																	'opcional_add_new_item'	=> __( 'Add New State', 'fakturo' ),
 																	'selector_parent_select' => '#fakturo_info_options_group_country',
 																	'selector' => '#fakturo_info_options_group_state',
 																)
@@ -374,25 +374,25 @@ class fktrSettings {
 
                     </tr>
                     <tr valign="top">
-						<th scope="row">'. __( 'City', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th scope="row">'. __( 'City', 'fakturo' ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[city]" value="'.$options['city'].'"/>
 						</td>
                     </tr>
                     <tr valign="top">
-						<th scope="row">'. __( 'Postcode', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th scope="row">'. __( 'Postcode', 'fakturo' ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[postcode]" value="'.$options['postcode'].'"/>
 						</td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">'. __( 'Website', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th scope="row">'. __( 'Website', 'fakturo' ) .'</th>
 						<td>
 							<input type="text" size="36" name="fakturo_info_options_group[website]" value="'.$options['website'].'"/>
 						</td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">'. __( 'Tax condition', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th scope="row">'. __( 'Tax condition', 'fakturo' ) .'</th>
 						<td>
 							'.$selectTaxCondition.' '.fktr_popup_taxonomy::button(
 																	array(
@@ -405,15 +405,15 @@ class fktrSettings {
 						</td>
                     </tr>
 					<tr valign="top">
-						<th scope="row">'. __( 'Company Logo', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th scope="row">'. __( 'Company Logo', 'fakturo' ) .'</th>
 						<td>
 							<label for="upload_image">
 								<input id="url" type="text" size="36" value="'.$options['url'].'" name="fakturo_info_options_group[url]" />
 								<input id="upload_logo_button" type="button" class="button" value="Upload Image" />
-								<br />'.__( 'Enter an URL or upload an image for the company logo.', FAKTURO_TEXT_DOMAIN ).'
+								<br />'.__( 'Enter an URL or upload an image for the company logo.', 'fakturo' ).'
 							</label>
 							
-							<p style="padding-top: 5px;">'. __( 'This is your current logo', FAKTURO_TEXT_DOMAIN ) .'</p><img id="setting_img_log" src="'. $options['url'] .'" style="padding:5px;" />
+							<p style="padding-top: 5px;">'. __( 'This is your current logo', 'fakturo' ) .'</p><img id="setting_img_log" src="'. $options['url'] .'" style="padding:5px;" />
 						</td>
                     </tr>
 				
@@ -498,7 +498,7 @@ class fktrSettings {
 
 		$selectTax = wp_dropdown_categories( array(
 										'show_option_all'    => '',
-										'show_option_none'   => __('Choose a Tax', FAKTURO_TEXT_DOMAIN ),
+										'show_option_none'   => __('Choose a Tax', 'fakturo' ),
 										'orderby'            => 'name', 
 										'order'              => 'ASC',
 										'show_count'         => 0,
@@ -518,7 +518,7 @@ class fktrSettings {
 									));
 		$selectBankEntities = wp_dropdown_categories( array(
 										'show_option_all'    => '',
-										'show_option_none'   => __('Choose a Bank Entitie', FAKTURO_TEXT_DOMAIN ),
+										'show_option_none'   => __('Choose a Bank Entitie', 'fakturo' ),
 										'orderby'            => 'name', 
 										'order'              => 'ASC',
 										'show_count'         => 0,
@@ -539,7 +539,7 @@ class fktrSettings {
 		
 		$selectSalePoint = wp_dropdown_categories( array(
 										'show_option_all'    => '',
-										'show_option_none'   => __('Choose a Sale Point', FAKTURO_TEXT_DOMAIN ),
+										'show_option_none'   => __('Choose a Sale Point', 'fakturo' ),
 										'orderby'            => 'name', 
 										'order'              => 'ASC',
 										'show_count'         => 0,
@@ -562,7 +562,7 @@ class fktrSettings {
 		
 		$selectCurrency = wp_dropdown_categories( array(
 										'show_option_all'    => '',
-										'show_option_none'   => __('Choose a Currency', FAKTURO_TEXT_DOMAIN ),
+										'show_option_none'   => __('Choose a Currency', 'fakturo' ),
 										'orderby'            => 'name', 
 										'order'              => 'ASC',
 										'show_count'         => 0,
@@ -583,7 +583,7 @@ class fktrSettings {
 
 		$selectPaymentType = wp_dropdown_categories( array(
 										'show_option_all'    => '',
-										'show_option_none'   => __('Choose a Payment Type', FAKTURO_TEXT_DOMAIN ),
+										'show_option_none'   => __('Choose a Payment Type', 'fakturo' ),
 										'orderby'            => 'name', 
 										'order'              => 'ASC',
 										'show_count'         => 0,
@@ -605,7 +605,7 @@ class fktrSettings {
 									
 		$selectInvoiceType = wp_dropdown_categories( array(
 										'show_option_all'    => '',
-										'show_option_none'   => __('Choose a Invoice Type', FAKTURO_TEXT_DOMAIN ),
+										'show_option_none'   => __('Choose a Invoice Type', 'fakturo' ),
 										'orderby'            => 'name', 
 										'order'              => 'ASC',
 										'show_count'         => 0,
@@ -625,7 +625,7 @@ class fktrSettings {
 									));
 			$selectPriceScales = wp_dropdown_categories( array(
 										'show_option_all'    => '',
-										'show_option_none'   => __('Choose a Price Scale', FAKTURO_TEXT_DOMAIN ),
+										'show_option_none'   => __('Choose a Price Scale', 'fakturo' ),
 										'orderby'            => 'name', 
 										'order'              => 'ASC',
 										'show_count'         => 0,
@@ -645,9 +645,9 @@ class fktrSettings {
 									));
 									
 		$selectSearchCode = array();
-		$selectSearchCode['reference'] = __( 'Reference', FAKTURO_TEXT_DOMAIN );
-		$selectSearchCode['internal_code'] = __( 'Internal code', FAKTURO_TEXT_DOMAIN );
-		$selectSearchCode['manufacturers_code'] = __( 'Manufacturers code', FAKTURO_TEXT_DOMAIN );							
+		$selectSearchCode['reference'] = __( 'Reference', 'fakturo' );
+		$selectSearchCode['internal_code'] = __( 'Internal code', 'fakturo' );
+		$selectSearchCode['manufacturers_code'] = __( 'Manufacturers code', 'fakturo' );							
 		$selectSearchCode = apply_filters('fktr_search_code_array', $selectSearchCode);
 		
 		//echo print_r($options['search_code'], true);
@@ -660,9 +660,9 @@ class fktrSettings {
 										
 									
 		$selectDefaultCode = array();
-		$selectDefaultCode['reference'] = __( 'Reference', FAKTURO_TEXT_DOMAIN );
-		$selectDefaultCode['internal_code'] = __( 'Internal code', FAKTURO_TEXT_DOMAIN );
-		$selectDefaultCode['manufacturers_code'] = __( 'Manufacturers code', FAKTURO_TEXT_DOMAIN );							
+		$selectDefaultCode['reference'] = __( 'Reference', 'fakturo' );
+		$selectDefaultCode['internal_code'] = __( 'Internal code', 'fakturo' );
+		$selectDefaultCode['manufacturers_code'] = __( 'Manufacturers code', 'fakturo' );							
 		$selectDefaultCode = apply_filters('fktr_default_code_array', $selectDefaultCode);
 		
 		$echoSelectDefaultCode = '<select id="fakturo_system_options_group_default_code" name="fakturo_system_options_group[default_code]">';
@@ -673,8 +673,8 @@ class fktrSettings {
 		
 		
 		$selectDefaultDescription = array();
-		$selectDefaultDescription['short_description'] = __( 'Short Description', FAKTURO_TEXT_DOMAIN );
-		$selectDefaultDescription['description'] = __( 'Description', FAKTURO_TEXT_DOMAIN );						
+		$selectDefaultDescription['short_description'] = __( 'Short Description', 'fakturo' );
+		$selectDefaultDescription['description'] = __( 'Description', 'fakturo' );						
 		$selectDefaultDescription = apply_filters('fktr_default_description_array', $selectDefaultDescription);
 		
 		$echoSelectDefaultDescription = '<select id="fakturo_system_options_group_default_description" name="fakturo_system_options_group[default_description]">';
@@ -684,8 +684,8 @@ class fktrSettings {
 		$echoSelectDefaultDescription .= '</select>';		
 			
 		$selectDefaultDate = array();
-		$selectDefaultDate['d/m/Y'] = __( 'dd/mm/YYYY', FAKTURO_TEXT_DOMAIN );
-		$selectDefaultDate['m/d/Y'] = __( 'mm/dd/YYYY', FAKTURO_TEXT_DOMAIN );						
+		$selectDefaultDate['d/m/Y'] = __( 'dd/mm/YYYY', 'fakturo' );
+		$selectDefaultDate['m/d/Y'] = __( 'mm/dd/YYYY', 'fakturo' );						
 		$selectDefaultDate = apply_filters('fktr_default_format_date_array', $selectDefaultDate);
 		
 		$echoSelectDefaultDate = '<select id="fakturo_system_options_group_dateformat" name="fakturo_system_options_group[dateformat]">';
@@ -695,11 +695,11 @@ class fktrSettings {
 		$echoSelectDefaultDate .= '</select>';		
 		
 		$selectListInvoiceNumber = array();
-		$selectListInvoiceNumber['sale_point'] = __( 'Sale point', FAKTURO_TEXT_DOMAIN );
-		$selectListInvoiceNumber['invoice_number'] = __('Invoice number', FAKTURO_TEXT_DOMAIN );
-		$selectListInvoiceNumber['invoice_type_name'] = __('Invoice Type name', FAKTURO_TEXT_DOMAIN );
-		$selectListInvoiceNumber['invoice_type_short_name'] = __('Invoice Type Short-name', FAKTURO_TEXT_DOMAIN );
-		$selectListInvoiceNumber['invoice_type_symbol'] = __('Invoice Type symbol', FAKTURO_TEXT_DOMAIN );
+		$selectListInvoiceNumber['sale_point'] = __( 'Sale point', 'fakturo' );
+		$selectListInvoiceNumber['invoice_number'] = __('Invoice number', 'fakturo' );
+		$selectListInvoiceNumber['invoice_type_name'] = __('Invoice Type name', 'fakturo' );
+		$selectListInvoiceNumber['invoice_type_short_name'] = __('Invoice Type Short-name', 'fakturo' );
+		$selectListInvoiceNumber['invoice_type_symbol'] = __('Invoice Type symbol', 'fakturo' );
 		
 		$selectListInvoiceNumber = apply_filters('fktr_list_invoice_number_array', $selectListInvoiceNumber);
 		
@@ -721,34 +721,34 @@ class fktrSettings {
 				settings_fields('fakturo-settings-system');
 				do_settings_sections('fakturo-settings-system');
 				echo '<tr>
-						<th>'. __( 'Currency', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th>'. __( 'Currency', 'fakturo' ) .'</th>
 						<td class="italic-label">
 								  '.$selectCurrency.'	
 								  <p class="description">
-								 	 '. __( 'Choose your currency.', FAKTURO_TEXT_DOMAIN ) .' 
+								 	 '. __( 'Choose your currency.', 'fakturo' ) .' 
 							      </p>
 						</td>
 					  </tr>
 					  <tr>
-							<th>'. __( 'Currency Position', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Currency Position', 'fakturo' ) .'</th>
 							<td class="italic-label">
 									<select id="fakturo_system_options_group_currency_position" name="fakturo_system_options_group[currency_position]">
 										<option value="before"'.selected('before', $options['currency_position'], false).'>Before - $10</option>
 										<option value="after"'.selected('after', $options['currency_position'], false).'>After - 10$</option>
 									</select>
 									<p class="description">
-										'. __( 'Choose the location of the currency sign.', FAKTURO_TEXT_DOMAIN ) .'             
+										'. __( 'Choose the location of the currency sign.', 'fakturo' ) .'             
 									</p>
 							</td>
 						
 					  </tr>
 					  
 					  <tr>
-							<th>'. __( 'Thousands Separator', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Thousands Separator', 'fakturo' ) .'</th>
 							<td class="italic-label">
 								<input id="fakturo_system_options_group_thousand" name="fakturo_system_options_group[thousand]" type="text" size="5" value="'.$options['thousand'].'">
 								<p class="description">
-									'. __( 'The symbol (usually , or .) to separate thousands', FAKTURO_TEXT_DOMAIN ) .'           
+									'. __( 'The symbol (usually , or .) to separate thousands', 'fakturo' ) .'           
 								</p>
 					
 							</td>
@@ -756,11 +756,11 @@ class fktrSettings {
 					  </tr>
 					  
 					  <tr>
-							<th>'. __( 'Decimal Separator', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Decimal Separator', 'fakturo' ) .'</th>
 							<td class="italic-label">
 								<input id="fakturo_system_options_group_decimal" name="fakturo_system_options_group[decimal]" type="text" size="5" value="'.$options['decimal'].'">
 								<p class="description">
-									'. __( 'The symbol (usually , or .) to separate decimal points', FAKTURO_TEXT_DOMAIN ) .'           
+									'. __( 'The symbol (usually , or .) to separate decimal points', 'fakturo' ) .'           
 								</p>
 					
 							</td>
@@ -768,11 +768,11 @@ class fktrSettings {
 					  </tr>
 					  
 					  <tr>
-							<th>'. __( 'Decimal numbers', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Decimal numbers', 'fakturo' ) .'</th>
 							<td class="italic-label">
 								<input id="fakturo_system_options_group_decimal_numbers" type="number" min="0" max="9" maxlength="1" name="fakturo_system_options_group[decimal_numbers]" value="'.$options['decimal_numbers'].'">
 								<p class="description">
-									'. __( 'Enter the number of numbers decimals', FAKTURO_TEXT_DOMAIN ) .'           
+									'. __( 'Enter the number of numbers decimals', 'fakturo' ) .'           
 								</p>
 					
 							</td>
@@ -780,11 +780,11 @@ class fktrSettings {
 					  </tr>
 					  
 					   <tr>
-							<th>'. __( 'Default Invoice Type', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Default Invoice Type', 'fakturo' ) .'</th>
 							<td class="italic-label">
 								  '.$selectInvoiceType.'	
 								  <p class="description">
-								  	'. __( 'Choose the default Invoice Type used in the system', FAKTURO_TEXT_DOMAIN ) .' 
+								  	'. __( 'Choose the default Invoice Type used in the system', 'fakturo' ) .' 
 							      </p>
 							</td>
 						
@@ -792,30 +792,30 @@ class fktrSettings {
 					  
 					  
 					   <tr>
-							<th>'. __( 'Default Price Scale', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Default Price Scale', 'fakturo' ) .'</th>
 							<td class="italic-label">
 								  '.$selectPriceScales.'	
 								  <p class="description">
-								  	'. __( 'Choose the default Price Scale used in the system', FAKTURO_TEXT_DOMAIN ) .' 
+								  	'. __( 'Choose the default Price Scale used in the system', 'fakturo' ) .' 
 							       </p>
 							</td>
 						
 					  </tr>
 					  
 					  <tr>
-							<th>'. __( 'Use stock for products', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Use stock for products', 'fakturo' ) .'</th>
 							<td class="italic-label">
 								<input id="fakturo_system_options_group_use_stock_product" class="slidercheck" type="checkbox" name="fakturo_system_options_group[use_stock_product]" value="1" '.(($options['use_stock_product'])?'checked="checked"':'').'>
-								<label for="fakturo_system_options_group_use_stock_product"><span class="ui"></span>'. __( 'Activate for use stock for products', FAKTURO_TEXT_DOMAIN ).'	</label>
+								<label for="fakturo_system_options_group_use_stock_product"><span class="ui"></span>'. __( 'Activate for use stock for products', 'fakturo' ).'	</label>
 							
 							</td>
 						
 					  </tr>
 					  <tr>
-							<th>'. __( 'Allow negative stocks', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Allow negative stocks', 'fakturo' ) .'</th>
 							<td class="italic-label">
 								<input id="fakturo_system_options_group_stock_less_zero" class="slidercheck" type="checkbox" name="fakturo_system_options_group[stock_less_zero]" value="1" '.(($options['stock_less_zero'])?'checked="checked"':'').'>
-								<label for="fakturo_system_options_group_stock_less_zero"><span class="ui"></span>'. __( 'Activate for use stock less than zero.', FAKTURO_TEXT_DOMAIN ).'	</label>
+								<label for="fakturo_system_options_group_stock_less_zero"><span class="ui"></span>'. __( 'Activate for use stock less than zero.', 'fakturo' ).'	</label>
 							
 						
 							</td>
@@ -823,129 +823,129 @@ class fktrSettings {
 					  
 					  
 					  <tr>
-						<th>'. __( 'Sale Point', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th>'. __( 'Sale Point', 'fakturo' ) .'</th>
 						<td class="italic-label">
 								  '.$selectSalePoint.'	
 								  <p class="description">
-								  	'. __( 'Choose your sale point.', FAKTURO_TEXT_DOMAIN ) .' 
+								  	'. __( 'Choose your sale point.', 'fakturo' ) .' 
 							      </p>
 						</td>
 					  </tr>
 					  <tr>
-							<th>'. __( 'Number of digits of the receipt number', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Number of digits of the receipt number', 'fakturo' ) .'</th>
 							<td class="italic-label">
 								<input id="fakturo_system_options_group_digits_receipt_number" name="fakturo_system_options_group[digits_receipt_number]" type="number" maxlength="2" min=2 max=20 value="'.$options['digits_receipt_number'].'">
 								 <p class="description">
-									'. __( 'Choose the default number of digits of the receipt number.', FAKTURO_TEXT_DOMAIN ) .'           
+									'. __( 'Choose the default number of digits of the receipt number.', 'fakturo' ) .'           
 								</p>
 					
 							</td>
 						
 					  </tr>
 					   <tr>
-							<th>'. __( 'Number of digits of the invoice number', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Number of digits of the invoice number', 'fakturo' ) .'</th>
 							<td class="italic-label">
 								<input id="fakturo_system_options_group_digits_invoice_number" name="fakturo_system_options_group[digits_invoice_number]" type="number" maxlength="2" min=2 max=20 value="'.$options['digits_invoice_number'].'">
 								<p class="description">
-									'. __( 'Choose the default number of digits of the invoice number.', FAKTURO_TEXT_DOMAIN ) .'           
+									'. __( 'Choose the default number of digits of the invoice number.', 'fakturo' ) .'           
 								</p>
 					
 							</td>
 						
 					  </tr>
 					  <tr>
-							<th>'. __( 'Format invoice numbers in lists and reports', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Format invoice numbers in lists and reports', 'fakturo' ) .'</th>
 							<td class="italic-label">
 									'.$echoSelectListInvoiceNumber.'
 									<p class="description">
-										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
+										'. __( '', 'fakturo' ) .'             
 									</p>
 							</td>
 						
 					  </tr>
 					   <tr>
-							<th>'. __( 'Individual numeration by Invoice Type', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Individual numeration by Invoice Type', 'fakturo' ) .'</th>
 							<td class="italic-label">
 								<input id="fakturo_system_options_group_individual_numeration_by_invoice_type" class="slidercheck" type="checkbox" name="fakturo_system_options_group[individual_numeration_by_invoice_type]" value="1" '.(($options['individual_numeration_by_invoice_type'])?'checked="checked"':'').'>
-								<label for="fakturo_system_options_group_individual_numeration_by_invoice_type"><span class="ui"></span>'. __( 'Activate for use individual numeration by Invoice Type', FAKTURO_TEXT_DOMAIN ).'	</label>
+								<label for="fakturo_system_options_group_individual_numeration_by_invoice_type"><span class="ui"></span>'. __( 'Activate for use individual numeration by Invoice Type', 'fakturo' ).'	</label>
 							
 							</td>
 						
 					  </tr>
 					   <tr>
-							<th>'. __( 'Individual numeration by Sale Point', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Individual numeration by Sale Point', 'fakturo' ) .'</th>
 							<td class="italic-label">
 								<input id="fakturo_system_options_group_individual_numeration_by_sale_point" class="slidercheck" type="checkbox" name="fakturo_system_options_group[individual_numeration_by_sale_point]" value="1" '.(($options['individual_numeration_by_sale_point'])?'checked="checked"':'').'>
-								<label for="fakturo_system_options_group_individual_numeration_by_sale_point"><span class="ui"></span>'. __( 'Activate for use individual numeration by Sale Point ', FAKTURO_TEXT_DOMAIN ).'	</label>
+								<label for="fakturo_system_options_group_individual_numeration_by_sale_point"><span class="ui"></span>'. __( 'Activate for use individual numeration by Sale Point ', 'fakturo' ).'	</label>
 							
 							</td>
 						
 					  </tr>
 					 
 					  <tr>
-							<th>'. __( 'Search code on invoices, budgets, etc..', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Search code on invoices, budgets, etc..', 'fakturo' ) .'</th>
 							<td class="italic-label">
 									'.$echoSelectSearchCode.'
 									<p class="description">
-										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
+										'. __( '', 'fakturo' ) .'             
 									</p>
 							</td>
 						
 					  </tr>
 					   <tr>
-							<th>'. __( 'Default code for invoice', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Default code for invoice', 'fakturo' ) .'</th>
 							<td class="italic-label">
 									'.$echoSelectDefaultCode.'
 									<p class="description">
-										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
+										'. __( '', 'fakturo' ) .'             
 									</p>
 							</td>
 					  </tr>
 					   <tr>
-							<th>'. __( 'Default description for invoice', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Default description for invoice', 'fakturo' ) .'</th>
 							<td class="italic-label">
 									'.$echoSelectDefaultDescription.'
 									<p class="description">
-										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
+										'. __( '', 'fakturo' ) .'             
 									</p>
 							</td>
 					  </tr>
 					  
 					   <tr>
-							<th>'. __( 'Default date format', FAKTURO_TEXT_DOMAIN ) .'</th>
+							<th>'. __( 'Default date format', 'fakturo' ) .'</th>
 							<td class="italic-label">
 									'.$echoSelectDefaultDate.'
 									<p class="description">
-										'. __( '', FAKTURO_TEXT_DOMAIN ) .'             
+										'. __( '', 'fakturo' ) .'             
 									</p>
 							</td>
 				
 					  </tr>
 					  <tr>
-						<th>'. __( 'Default Payment Type', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th>'. __( 'Default Payment Type', 'fakturo' ) .'</th>
 						<td class="italic-label">
 								  '.$selectPaymentType.'	
 								  <p class="description">
-								 	 '. __( 'Choose your default Payment Type.', FAKTURO_TEXT_DOMAIN ) .' 
+								 	 '. __( 'Choose your default Payment Type.', 'fakturo' ) .' 
 							      </p>
 						</td>
 					  </tr>
 
 					   <tr>
-						<th>'. __( 'Default Bank Entity', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th>'. __( 'Default Bank Entity', 'fakturo' ) .'</th>
 						<td class="italic-label">
 								  '.$selectBankEntities.'	
 								  <p class="description">
-								 	 '. __( 'Choose your default Bank Entity.', FAKTURO_TEXT_DOMAIN ) .' 
+								 	 '. __( 'Choose your default Bank Entity.', 'fakturo' ) .' 
 							      </p>
 						</td>
 					  </tr>
 					  <tr>
-						<th>'. __( 'Default Tax', FAKTURO_TEXT_DOMAIN ) .'</th>
+						<th>'. __( 'Default Tax', 'fakturo' ) .'</th>
 						<td class="italic-label">
 								  '.$selectTax.'	
 								  <p class="description">
-								 	 '. __( 'Choose your default Tax.', FAKTURO_TEXT_DOMAIN ) .' 
+								 	 '. __( 'Choose your default Tax.', 'fakturo' ) .' 
 							      </p>
 						</td>
 					  </tr>
@@ -964,51 +964,51 @@ class fktrSettings {
 		
 		$sections_tabs = array(
 			'general' => apply_filters('ftkr_company_sections', array( 
-				'company_info' => array('text' => __( 'Company Info', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-settings'), 'screen' => 'fakturo_page_fakturo-settings') , 
-				'invoice_type' =>  array('text' => __( 'Invoice Types', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_invoice_types'), 'screen' => 'edit-fktr_invoice_types'),
-				'sale_points' =>  array('text' => __( 'Sale Points', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_sale_points'), 'screen' => 'edit-fktr_sale_points'),
-				'payment_types' =>  array('text' => __( 'Payment Types', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_payment_types'), 'screen' => 'edit-fktr_payment_types'), 
-				'fakturo_wizard' =>  array('text' => __( 'Run Configurations Wizard', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin-post.php?action=fktr_wizard'), 'screen' => 'fktr_wizard'), 
-				'default' => array('text' => __( '​​Company Settings', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-settings'), 'screen' => 'fakturo_page_fakturo-settings')
+				'company_info' => array('text' => __( 'Company Info', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings'), 'screen' => 'fakturo_page_fakturo-settings') , 
+				'invoice_type' =>  array('text' => __( 'Invoice Types', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_invoice_types'), 'screen' => 'edit-fktr_invoice_types'),
+				'sale_points' =>  array('text' => __( 'Sale Points', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_sale_points'), 'screen' => 'edit-fktr_sale_points'),
+				'payment_types' =>  array('text' => __( 'Payment Types', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_payment_types'), 'screen' => 'edit-fktr_payment_types'), 
+				'fakturo_wizard' =>  array('text' => __( 'Run Configurations Wizard', 'fakturo' ), 'url' => admin_url('admin-post.php?action=fktr_wizard'), 'screen' => 'fktr_wizard'), 
+				'default' => array('text' => __( '​​Company Settings', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings'), 'screen' => 'fakturo_page_fakturo-settings')
 				)
 			),
 			'system' => apply_filters('ftkr_system_sections', array( 
-				'system_settings' =>  array('text' => __( 'General', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-settings-system'), 'screen' => 'admin_page_fakturo-settings-system'), 
-				'print-template' =>  array('text' => __( 'Print Templates', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit.php?post_type=fktr_print_template'), 'screen' => 'fktr_print_template'), 
-				'email-template' =>  array('text' => __( 'E-mail Templates', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit.php?post_type=fktr_email_template'), 'screen' => 'fktr_email_template'), 
-				'dashboard-settings' =>  array('text' => __( 'Dashboard Setup', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-settings-dashboard'), 'screen' => 'admin_page_fakturo-settings-dashboard'), 
-				'default' =>  array('text' => __( 'System Settings', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-settings-system'), 'screen' => 'admin_page_fakturo-settings-system')				
+				'system_settings' =>  array('text' => __( 'General', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings-system'), 'screen' => 'admin_page_fakturo-settings-system'), 
+				'print-template' =>  array('text' => __( 'Print Templates', 'fakturo' ), 'url' => admin_url('edit.php?post_type=fktr_print_template'), 'screen' => 'fktr_print_template'), 
+				'email-template' =>  array('text' => __( 'E-mail Templates', 'fakturo' ), 'url' => admin_url('edit.php?post_type=fktr_email_template'), 'screen' => 'fktr_email_template'), 
+				'dashboard-settings' =>  array('text' => __( 'Dashboard Setup', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings-dashboard'), 'screen' => 'admin_page_fakturo-settings-dashboard'), 
+				'default' =>  array('text' => __( 'System Settings', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings-system'), 'screen' => 'admin_page_fakturo-settings-system')				
 				)
 			),
 			'tables' => apply_filters('ftkr_system_sections', array( 
-				'currencies' =>  array('text' => __( 'Currencies', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_currencies'), 'screen' => 'edit-fktr_currencies'),
-				'bank_entities' =>  array('text' => __( 'Bank Entities', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_bank_entities'), 'screen' => 'edit-fktr_bank_entities'),
-				'countries' => array('text' => __( 'Countries and States', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_countries'), 'screen' => 'edit-fktr_countries') ,
-				'default' => array('text' => __( 'Tables', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_currencies'), 'screen' => 'edit-fktr_currencies')
+				'currencies' =>  array('text' => __( 'Currencies', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_currencies'), 'screen' => 'edit-fktr_currencies'),
+				'bank_entities' =>  array('text' => __( 'Bank Entities', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_bank_entities'), 'screen' => 'edit-fktr_bank_entities'),
+				'countries' => array('text' => __( 'Countries and States', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_countries'), 'screen' => 'edit-fktr_countries') ,
+				'default' => array('text' => __( 'Tables', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_currencies'), 'screen' => 'edit-fktr_currencies')
 				)
 			),
 			'products' => apply_filters('ftkr_products_sections', array( 
-				'product_types' =>  array('text' => __( 'Product Types', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_product_type'), 'screen' => 'edit-fktr_product_type') ,
-				'locations' => array('text' =>  __( 'Locations', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_locations'), 'screen' => 'edit-fktr_locations'),
-				'packagings' =>  array('text' => __( 'Packagings', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_packaging'), 'screen' => 'edit-fktr_packaging') , 
-				'price_scales' =>  array('text' => __( 'Price Scales', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_price_scales'), 'screen' => 'edit-fktr_price_scales') ,
-				'origins' =>  array('text' => __( 'Origins', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_origins'), 'screen' => 'edit-fktr_origins') ,
-				'default' => array('text' => __( '​​Products', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_product_type'), 'screen' => 'edit-fktr_product_type')
+				'product_types' =>  array('text' => __( 'Product Types', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_product_type'), 'screen' => 'edit-fktr_product_type') ,
+				'locations' => array('text' =>  __( 'Locations', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_locations'), 'screen' => 'edit-fktr_locations'),
+				'packagings' =>  array('text' => __( 'Packagings', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_packaging'), 'screen' => 'edit-fktr_packaging') , 
+				'price_scales' =>  array('text' => __( 'Price Scales', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_price_scales'), 'screen' => 'edit-fktr_price_scales') ,
+				'origins' =>  array('text' => __( 'Origins', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_origins'), 'screen' => 'edit-fktr_origins') ,
+				'default' => array('text' => __( '​​Products', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_product_type'), 'screen' => 'edit-fktr_product_type')
 				)
 			),
 			'taxes' => apply_filters('ftkr_taxes_sections', array( 
-				'taxes' =>  array('text' => __( 'Taxes', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax'), 'screen' => 'edit-fktr_tax') ,
-				'tax_condition' => array('text' => __( 'Tax Conditions', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax_conditions'), 'screen' => 'edit-fktr_tax_conditions')  ,
-				'default' => array('text' => __( 'Taxes', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax'), 'screen' => 'edit-fktr_tax')
+				'taxes' =>  array('text' => __( 'Taxes', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax'), 'screen' => 'edit-fktr_tax') ,
+				'tax_condition' => array('text' => __( 'Tax Conditions', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax_conditions'), 'screen' => 'edit-fktr_tax_conditions')  ,
+				'default' => array('text' => __( 'Taxes', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax'), 'screen' => 'edit-fktr_tax')
 				)
 			),
 			'extensions' => apply_filters('ftkr_extensions_sections', array( 
-				'default' => array('text' =>  __( 'Extensions', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('plugins.php?page=fakturo'), 'screen' => '')
+				'default' => array('text' =>  __( 'Extensions', 'fakturo' ), 'url' => admin_url('plugins.php?page=fakturo'), 'screen' => '')
 				)
 			) ,
 			'licenses' => apply_filters('ftkr_licenses_sections', array( 
-				'licenses_page' =>  array('text' => __( 'Licenses', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-license-page'), 'screen' => 'admin_page_fakturo-license-page'),
-				'default' => array('text' => __( '​​Licenses', FAKTURO_TEXT_DOMAIN ), 'url' => admin_url('admin.php?page=fakturo-license-page'), 'screen' => 'admin_page_fakturo-license-page')
+				'licenses_page' =>  array('text' => __( 'Licenses', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-license-page'), 'screen' => 'admin_page_fakturo-license-page'),
+				'default' => array('text' => __( '​​Licenses', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-license-page'), 'screen' => 'admin_page_fakturo-license-page')
 				)
 			)
 			
@@ -1076,7 +1076,7 @@ class fktrSettings {
 		
 		$selectState = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a state', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a state', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -1097,7 +1097,7 @@ class fktrSettings {
 		if ($_POST['country_id'] < 1 ) {
 			
 			$selectState = '<select name="fakturo_info_options_group[state]" id="fakturo_info_options_group_state">
-								<option value="0">'. __('Choose a country before', FAKTURO_TEXT_DOMAIN ) .'</option>
+								<option value="0">'. __('Choose a country before', 'fakturo' ) .'</option>
 							</select>';
 		}
 		wp_die($selectState);

@@ -13,17 +13,17 @@ if ( ! class_exists('fktr_mail') ) :
 			
 
 			if (!isset($_REQUEST['_wpnonce']) || !wp_verify_nonce($_REQUEST['_wpnonce'], 'send_invoice_to_client')) {
-				fktrNotices::add(__('WP-NONCE violation or expired.', FAKTURO_TEXT_DOMAIN));
+				fktrNotices::add(__('WP-NONCE violation or expired.', 'fakturo'));
 				wp_redirect(admin_url('edit.php?post_type=fktr_sale'));
 				exit;
 			}
 			if (empty($_REQUEST['id'])) {
-				fktrNotices::add(__('A problem has been occurred on trying send the email.', FAKTURO_TEXT_DOMAIN));
+				fktrNotices::add(__('A problem has been occurred on trying send the email.', 'fakturo'));
 				wp_redirect(admin_url('edit.php?post_type=fktr_sale'));
 				exit;
 			}
 			if (!is_numeric($_REQUEST['id'])) {
-				fktrNotices::add(__('A problem has been occurred on trying send the email.', FAKTURO_TEXT_DOMAIN));
+				fktrNotices::add(__('A problem has been occurred on trying send the email.', 'fakturo'));
 				wp_redirect(admin_url('edit.php?post_type=fktr_sale'));
 				exit;
 			}
@@ -38,7 +38,7 @@ if ( ! class_exists('fktr_mail') ) :
 			$client_data = fktrPostTypeClients::get_client_data($sale_data['client_id']);
 			if ($sale_data['post_status'] != 'publish') {
 				if ($notices) {
-					fktrNotices::add(__('Invoice not completed or incorrect status.', FAKTURO_TEXT_DOMAIN));
+					fktrNotices::add(__('Invoice not completed or incorrect status.', 'fakturo'));
 				}
 				if ($redirect) {
 					wp_redirect(admin_url('edit.php?post_type=fktr_sale'));
@@ -48,7 +48,7 @@ if ( ! class_exists('fktr_mail') ) :
 			}
 			if (empty($client_data['email'])) {
 				if ($notices) {
-					fktrNotices::add(__('The client does not have email.', FAKTURO_TEXT_DOMAIN));
+					fktrNotices::add(__('The client does not have email.', 'fakturo'));
 				}
 				if ($redirect) {
 					wp_redirect(admin_url('edit.php?post_type=fktr_sale'));
@@ -58,7 +58,7 @@ if ( ! class_exists('fktr_mail') ) :
 			}
 			if (!is_email($client_data['email'])) {
 				if ($notices) {
-					fktrNotices::add(__('The E-mail client is a format incorrect.', FAKTURO_TEXT_DOMAIN));
+					fktrNotices::add(__('The E-mail client is a format incorrect.', 'fakturo'));
 				}
 				if ($redirect) {
 					wp_redirect(admin_url('edit.php?post_type=fktr_sale'));
@@ -75,7 +75,7 @@ if ( ! class_exists('fktr_mail') ) :
 				$email_template = fktrPostTypeEmailTemplates::get_email_template_data($id_email_template);
 			} else {
 				if ($notices) {
-					fktrNotices::add(__('No email template assigned to sales invoices', FAKTURO_TEXT_DOMAIN ));
+					fktrNotices::add(__('No email template assigned to sales invoices', 'fakturo' ));
 				}
 				if ($redirect) {
 					wp_redirect(admin_url('edit.php?post_type=fktr_sale'));
@@ -98,7 +98,7 @@ if ( ! class_exists('fktr_mail') ) :
 				$print_template = fktrPostTypePrintTemplates::get_print_template_data($id_print_template);
 			} else {
 				if ($notices) {
-					fktrNotices::add(__('No print template assigned to sales invoices', FAKTURO_TEXT_DOMAIN));
+					fktrNotices::add(__('No print template assigned to sales invoices', 'fakturo'));
 				}
 				if ($redirect) {
 					wp_redirect(admin_url('edit.php?post_type=fktr_sale'));
@@ -119,7 +119,7 @@ if ( ! class_exists('fktr_mail') ) :
 				$pdf ->render();
 			} catch (Exception $e) {
 				if ($notices) {
-					fktrNotices::add(__('A problem to generate the pdf.', FAKTURO_TEXT_DOMAIN));
+					fktrNotices::add(__('A problem to generate the pdf.', 'fakturo'));
 				}
 				if ($redirect) {
 					wp_redirect(admin_url('edit.php?post_type=fktr_sale'));
@@ -138,7 +138,7 @@ if ( ! class_exists('fktr_mail') ) :
 			$sent = wp_mail($client_data['email'], $subject, $mailbody, $headers, $attachments );
 			if (!$sent) {
 				if ($notices) {
-					fktrNotices::add(sprintf(__('A problem has been occurred on trying send the email to %s.', FAKTURO_TEXT_DOMAIN), $client_data['email']));
+					fktrNotices::add(sprintf(__('A problem has been occurred on trying send the email to %s.', 'fakturo'), $client_data['email']));
 				}
 				
 				if ($redirect) {
@@ -148,7 +148,7 @@ if ( ! class_exists('fktr_mail') ) :
 				return false;
 			}
 			if ($notices) {
-				fktrNotices::add(sprintf(__('The email has been sent successfully to %s.', FAKTURO_TEXT_DOMAIN), $client_data['email']));
+				fktrNotices::add(sprintf(__('The email has been sent successfully to %s.', 'fakturo'), $client_data['email']));
 			}
 		}
 		public static function send_receipt_2_client() {
@@ -156,17 +156,17 @@ if ( ! class_exists('fktr_mail') ) :
 			
 
 			if (!isset($_REQUEST['_wpnonce']) || !wp_verify_nonce($_REQUEST['_wpnonce'], 'send_receipt_to_client')) {
-				fktrNotices::add(__('WP-NONCE violation or expired.', FAKTURO_TEXT_DOMAIN));
+				fktrNotices::add(__('WP-NONCE violation or expired.', 'fakturo'));
 				wp_redirect(admin_url('edit.php?post_type=fktr_receipt'));
 				exit;
 			}
 			if (empty($_REQUEST['id'])) {
-				fktrNotices::add(__('A problem has been occurred on trying send the email.', FAKTURO_TEXT_DOMAIN));
+				fktrNotices::add(__('A problem has been occurred on trying send the email.', 'fakturo'));
 				wp_redirect(admin_url('edit.php?post_type=fktr_receipt'));
 				exit;
 			}
 			if (!is_numeric($_REQUEST['id'])) {
-				fktrNotices::add(__('A problem has been occurred on trying send the email.', FAKTURO_TEXT_DOMAIN));
+				fktrNotices::add(__('A problem has been occurred on trying send the email.', 'fakturo'));
 				wp_redirect(admin_url('edit.php?post_type=fktr_receipt'));
 				exit;
 			}
@@ -182,7 +182,7 @@ if ( ! class_exists('fktr_mail') ) :
 			$client_data = fktrPostTypeClients::get_client_data($receipt_data['client_id']);
 			
 			if (empty($client_data['email'])) {
-				fktrNotices::add(__('The client does not have email.', FAKTURO_TEXT_DOMAIN));
+				fktrNotices::add(__('The client does not have email.', 'fakturo'));
 				if ($redirect) {
 					wp_redirect(admin_url('edit.php?post_type=fktr_receipt'));
 					exit;
@@ -190,7 +190,7 @@ if ( ! class_exists('fktr_mail') ) :
 				return false;
 			}
 			if (!is_email($client_data['email'])) {
-				fktrNotices::add(__('The E-mail client is a format incorrect.', FAKTURO_TEXT_DOMAIN));
+				fktrNotices::add(__('The E-mail client is a format incorrect.', 'fakturo'));
 				if ($redirect) {
 					wp_redirect(admin_url('edit.php?post_type=fktr_receipt'));
 					exit;
@@ -205,7 +205,7 @@ if ( ! class_exists('fktr_mail') ) :
 			if ($id_email_template) {
 				$email_template = fktrPostTypeEmailTemplates::get_email_template_data($id_email_template);
 			} else {
-				fktrNotices::add(__('No email template assigned to receipts', FAKTURO_TEXT_DOMAIN ));
+				fktrNotices::add(__('No email template assigned to receipts', 'fakturo' ));
 				if ($redirect) {
 					wp_redirect(admin_url('edit.php?post_type=fktr_receipt'));
 					exit;
@@ -226,7 +226,7 @@ if ( ! class_exists('fktr_mail') ) :
 			if ($id_print_template) {
 				$print_template = fktrPostTypePrintTemplates::get_print_template_data($id_print_template);
 			} else {
-				fktrNotices::add(__('No print template assigned to receipts', FAKTURO_TEXT_DOMAIN));
+				fktrNotices::add(__('No print template assigned to receipts', 'fakturo'));
 				if ($redirect) {
 					wp_redirect(admin_url('edit.php?post_type=fktr_receipt'));
 					exit;
@@ -242,7 +242,7 @@ if ( ! class_exists('fktr_mail') ) :
 				$pdf ->load_html(utf8_decode($html));
 				$pdf ->render();
 			} catch (Exception $e) {
-				fktrNotices::add(__('A problem to generate the pdf.', FAKTURO_TEXT_DOMAIN));
+				fktrNotices::add(__('A problem to generate the pdf.', 'fakturo'));
 				if ($redirect) {
 					wp_redirect(admin_url('edit.php?post_type=fktr_receipt'));
 					exit;
@@ -260,14 +260,14 @@ if ( ! class_exists('fktr_mail') ) :
 			
 			$sent = wp_mail($client_data['email'], $subject, $mailbody, $headers, $attachments );
 			if (!$sent) {
-				fktrNotices::add(sprintf(__('A problem has been occurred on trying send the email to %s.', FAKTURO_TEXT_DOMAIN), $client_data['email']));
+				fktrNotices::add(sprintf(__('A problem has been occurred on trying send the email to %s.', 'fakturo'), $client_data['email']));
 				if ($redirect) {
 					wp_redirect(admin_url('edit.php?post_type=fktr_receipt'));
 					exit;
 				}
 				return false;
 			}
-			fktrNotices::add(sprintf(__('The email has been sent successfully to %s.', FAKTURO_TEXT_DOMAIN), $client_data['email']));
+			fktrNotices::add(sprintf(__('The email has been sent successfully to %s.', 'fakturo'), $client_data['email']));
 		}
 		public static function phpmailer_init($mail) {
 			if (!self::$sending) {

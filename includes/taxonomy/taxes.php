@@ -128,9 +128,9 @@ class fktr_tax_taxes {
 		<style type="text/css">.form-field.term-parent-wrap,.form-field.term-slug-wrap, .form-field label[for="parent"], .form-field #parent {display: none;}  .form-field.term-description-wrap { display:none;} .inline.hide-if-no-js{ display:none;} .view{ display:none;}</style>
 
 		<div class="form-field" id="rate_div">
-			<label for="term_meta[percentage]">'.__( 'Percentage', FAKTURO_TEXT_DOMAIN ).'</label>
+			<label for="term_meta[percentage]">'.__( 'Percentage', 'fakturo' ).'</label>
 			<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[percentage]" id="term_meta_percentage" value="0"/>%
-			<p class="description">'.__( 'Enter a percentage', FAKTURO_TEXT_DOMAIN ).'</p>
+			<p class="description">'.__( 'Enter a percentage', 'fakturo' ).'</p>
 		</div>
 		
 		
@@ -146,11 +146,11 @@ class fktr_tax_taxes {
 	
 		<tr class="form-field">
 			<th scope="row" valign="top">
-				<label for="term_meta[percentage]">'.__( 'Percentage', FAKTURO_TEXT_DOMAIN ).'</label>
+				<label for="term_meta[percentage]">'.__( 'Percentage', 'fakturo' ).'</label>
 			</th>
 			<td>
 				<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[percentage]" id="term_meta_percentage" value="'.$term_meta->percentage.'"/>%
-				<p class="description">'.__( 'Enter a percentage', FAKTURO_TEXT_DOMAIN ).'</p>
+				<p class="description">'.__( 'Enter a percentage', 'fakturo' ).'</p>
 			</td>
 		</tr>
 		
@@ -161,8 +161,8 @@ class fktr_tax_taxes {
 	public static function columns($columns) {
 		$new_columns = array(
 			'cb' => '<input type="checkbox" />',
-			'name' => __('Name', FAKTURO_TEXT_DOMAIN),
-			'percentage' => __('Percentage', FAKTURO_TEXT_DOMAIN),
+			'name' => __('Name', 'fakturo'),
+			'percentage' => __('Percentage', 'fakturo'),
 		);
 		return $new_columns;
 	}

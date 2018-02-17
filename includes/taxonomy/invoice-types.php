@@ -118,27 +118,27 @@ class fktr_tax_nvoice_types {
 		$echoHtml = '
 		<style type="text/css">.form-field.term-parent-wrap,.form-field.term-slug-wrap, .form-field label[for="parent"], .form-field #parent {display: none;}  .form-field.term-description-wrap { display:none;} .inline.hide-if-no-js{ display:none;} .view{ display:none;}</style>
 		<div class="form-field" id="short_name_div">
-			<label for="term_meta[short_name]">'.__( 'Short Name', FAKTURO_TEXT_DOMAIN ).'</label>
+			<label for="term_meta[short_name]">'.__( 'Short Name', 'fakturo' ).'</label>
 			<input type="text" name="term_meta[short_name]" id="term_meta_short_name" value="">
-			<p class="description">'.__( 'Enter a short name of the invoice types', FAKTURO_TEXT_DOMAIN ).'</p>
+			<p class="description">'.__( 'Enter a short name of the invoice types', 'fakturo' ).'</p>
 		</div>
 		
 		
 		<div class="form-field" id="symbol_div">
-			<label for="term_meta[symbol]">'.__( 'Symbol', FAKTURO_TEXT_DOMAIN ).'</label>
+			<label for="term_meta[symbol]">'.__( 'Symbol', 'fakturo' ).'</label>
 			<input style="width: 60px;text-align: center; padding-right: 0px; " maxlength="1" type="text" name="term_meta[symbol]" id="term_meta_symbol" value="">
-			<p class="description">'.__( 'Enter a symbol', FAKTURO_TEXT_DOMAIN ).'</p>
+			<p class="description">'.__( 'Enter a symbol', 'fakturo' ).'</p>
 		</div>
 		
 		<div class="form-field" id="discriminates_taxes_div">
 			<input type="checkbox" class="slidercheck" value="1" name="term_meta_discriminates_taxes" id="term_meta_discriminates_taxes">
-			<label for="term_meta_discriminates_taxes"><span class="ui"></span>'.__('Discriminates taxes', FAKTURO_TEXT_DOMAIN ).'	</label>
+			<label for="term_meta_discriminates_taxes"><span class="ui"></span>'.__('Discriminates taxes', 'fakturo' ).'	</label>
 			
 		</div>
 		
 		<div class="form-field" id="sum_div">
 			<input type="checkbox" class="slidercheck" value="1" name="term_meta_sum" id="term_meta_sum">
-			<label for="term_meta_sum"><span class="ui"></span>'.__('Sum', FAKTURO_TEXT_DOMAIN ).'	</label>
+			<label for="term_meta_sum"><span class="ui"></span>'.__('Sum', 'fakturo' ).'	</label>
 			
 		</div>
 		
@@ -154,20 +154,20 @@ class fktr_tax_nvoice_types {
 		$echoHtml = '<style type="text/css">.form-field.term-parent-wrap, .form-field.term-slug-wrap {display: none;} .form-field.term-description-wrap { display:none;}  </style>
 		<tr class="form-field">
 			<th scope="row" valign="top">
-				<label for="term_meta[short_name]">'.__( 'Short Name', FAKTURO_TEXT_DOMAIN ).'</label>
+				<label for="term_meta[short_name]">'.__( 'Short Name', 'fakturo' ).'</label>
 			</th>
 			<td>
 				<input type="text" name="term_meta[short_name]" id="term_meta_short_name" value="'.$term_meta->short_name.'">
-				<p class="description">'.__( 'Enter a short name of the invoice types', FAKTURO_TEXT_DOMAIN ).'</p>
+				<p class="description">'.__( 'Enter a short name of the invoice types', 'fakturo' ).'</p>
 			</td>
 		</tr>
 		<tr class="form-field">
 			<th scope="row" valign="top">
-				<label for="term_meta[symbol]">'.__( 'Symbol', FAKTURO_TEXT_DOMAIN ).'</label>
+				<label for="term_meta[symbol]">'.__( 'Symbol', 'fakturo' ).'</label>
 			</th>
 			<td>
 				<input style="width: 60px;text-align: center; padding-right: 0px; " maxlength="1" type="text" name="term_meta_symbol" id="term_meta_symbol" value="'.$term_meta->symbol.'">
-				<p class="description">'.__( 'Enter a symbol', FAKTURO_TEXT_DOMAIN ).'</p>
+				<p class="description">'.__( 'Enter a symbol', 'fakturo' ).'</p>
 			</td>
 		</tr>
 		
@@ -177,7 +177,7 @@ class fktr_tax_nvoice_types {
 			</th>
 			<td>
 				<input type="checkbox" class="slidercheck" value="1" name="term_meta_discriminates_taxes" id="term_meta_discriminates_taxes" '.(($term_meta->discriminates_taxes)?'checked="checked"':'').'>
-				<label for="term_meta_discriminates_taxes"><span class="ui"></span>'.__('Discriminates taxes', FAKTURO_TEXT_DOMAIN ).'	</label>
+				<label for="term_meta_discriminates_taxes"><span class="ui"></span>'.__('Discriminates taxes', 'fakturo' ).'	</label>
 			</td>
 		</tr>
 		
@@ -187,7 +187,7 @@ class fktr_tax_nvoice_types {
 			</th>
 			<td>
 				<input type="checkbox" class="slidercheck" value="1" name="term_meta_sum" id="term_meta_sum" '.(($term_meta->sum)?'checked="checked"':'').'>
-				<label for="term_meta_sum"><span class="ui"></span>'.__('Sum', FAKTURO_TEXT_DOMAIN ).'	</label>
+				<label for="term_meta_sum"><span class="ui"></span>'.__('Sum', 'fakturo' ).'	</label>
 			</td>
 		</tr>
 		
@@ -198,10 +198,10 @@ class fktr_tax_nvoice_types {
 	public static function columns($columns) {
 		$new_columns = array(
 			'cb' => '<input type="checkbox" />',
-			'name' => __('Name', FAKTURO_TEXT_DOMAIN),
-			'short_name' => __('Short Name', FAKTURO_TEXT_DOMAIN),
-			'discriminates_taxes' => __('Discriminates taxes', FAKTURO_TEXT_DOMAIN),
-			'sum' => __('Sum', FAKTURO_TEXT_DOMAIN),
+			'name' => __('Name', 'fakturo'),
+			'short_name' => __('Short Name', 'fakturo'),
+			'discriminates_taxes' => __('Discriminates taxes', 'fakturo'),
+			'sum' => __('Sum', 'fakturo'),
 		);
 		return $new_columns;
 	}

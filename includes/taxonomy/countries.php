@@ -38,22 +38,22 @@ class fktr_tax_countries {
 	public static function init() {
 		
 		$labels_model = array(
-			'name'                       => _x( 'Countries', 'Countries', FAKTURO_TEXT_DOMAIN ),
-			'singular_name'              => _x( 'Country', 'Country', FAKTURO_TEXT_DOMAIN ),
-			'search_items'               => __( 'Search Countries', FAKTURO_TEXT_DOMAIN ),
-			'popular_items'              => __( 'Popular Countries', FAKTURO_TEXT_DOMAIN ),
-			'all_items'                  => __( 'All Countries', FAKTURO_TEXT_DOMAIN ),
-			'parent_item'                => __( 'Country', FAKTURO_TEXT_DOMAIN ),
-			'parent_item_colon'          => __( 'Country:', FAKTURO_TEXT_DOMAIN ),
-			'edit_item'                  => __( 'Edit Country', FAKTURO_TEXT_DOMAIN ),
-			'update_item'                => __( 'Update Country', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item'               => __( 'Add New Country', FAKTURO_TEXT_DOMAIN ),
-			'new_item_name'              => __( 'New Country Name', FAKTURO_TEXT_DOMAIN ),
-			'separate_items_with_commas' => __( 'Separate Country with commas', FAKTURO_TEXT_DOMAIN ),
-			'add_or_remove_items'        => __( 'Add or remove Countries', FAKTURO_TEXT_DOMAIN ),
-			'choose_from_most_used'      => __( 'Choose from the most used Countries', FAKTURO_TEXT_DOMAIN ),
-			'not_found'                  => __( 'No Countries found.', FAKTURO_TEXT_DOMAIN ),
-			'menu_name'                  => __( 'Countries', FAKTURO_TEXT_DOMAIN ),
+			'name'                       => _x( 'Countries', 'Countries', 'fakturo' ),
+			'singular_name'              => _x( 'Country', 'Country', 'fakturo' ),
+			'search_items'               => __( 'Search Countries', 'fakturo' ),
+			'popular_items'              => __( 'Popular Countries', 'fakturo' ),
+			'all_items'                  => __( 'All Countries', 'fakturo' ),
+			'parent_item'                => __( 'Country', 'fakturo' ),
+			'parent_item_colon'          => __( 'Country:', 'fakturo' ),
+			'edit_item'                  => __( 'Edit Country', 'fakturo' ),
+			'update_item'                => __( 'Update Country', 'fakturo' ),
+			'add_new_item'               => __( 'Add New Country', 'fakturo' ),
+			'new_item_name'              => __( 'New Country Name', 'fakturo' ),
+			'separate_items_with_commas' => __( 'Separate Country with commas', 'fakturo' ),
+			'add_or_remove_items'        => __( 'Add or remove Countries', 'fakturo' ),
+			'choose_from_most_used'      => __( 'Choose from the most used Countries', 'fakturo' ),
+			'not_found'                  => __( 'No Countries found.', 'fakturo' ),
+			'menu_name'                  => __( 'Countries', 'fakturo' ),
 		);
 
 		$args_model = array(
@@ -130,7 +130,7 @@ class fktr_tax_countries {
 	public static function columns($columns) {
 		$new_columns = array(
 			'cb' => '<input type="checkbox" />',
-			'name' => __('Name', FAKTURO_TEXT_DOMAIN),
+			'name' => __('Name', 'fakturo'),
 		);
 		return $new_columns;
 	}

@@ -40,18 +40,18 @@ class fktrPostTypeProducts {
 	public static function setup() {
 		$slug     = defined( 'FAKTURO_PRODUCT_SLUG' ) ? FAKTURO_PRODUCT_SLUG : 'fktr_products';
 		$labels = array( 
-			'name' => __( 'Products', FAKTURO_TEXT_DOMAIN ),
-			'singular_name' => __( 'Product', FAKTURO_TEXT_DOMAIN ),
-			'add_new' => __( 'Add New', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item' => __( 'Add New Product', FAKTURO_TEXT_DOMAIN ),
-			'edit_item' => __( 'Edit Product', FAKTURO_TEXT_DOMAIN ),
-			'new_item' => __( 'New Product', FAKTURO_TEXT_DOMAIN ),
-			'view_item' => __( 'View Product', FAKTURO_TEXT_DOMAIN ),
-			'search_items' => __( 'Search Products', FAKTURO_TEXT_DOMAIN ),
-			'not_found' => __( 'No products found', FAKTURO_TEXT_DOMAIN ),
-			'not_found_in_trash' => __( 'No products found in Trash', FAKTURO_TEXT_DOMAIN ),
-			'parent_item_colon' => __( 'Parent Product:', FAKTURO_TEXT_DOMAIN ),
-			'menu_name' => __( 'Products', FAKTURO_TEXT_DOMAIN ),
+			'name' => __( 'Products', 'fakturo' ),
+			'singular_name' => __( 'Product', 'fakturo' ),
+			'add_new' => __( 'Add New', 'fakturo' ),
+			'add_new_item' => __( 'Add New Product', 'fakturo' ),
+			'edit_item' => __( 'Edit Product', 'fakturo' ),
+			'new_item' => __( 'New Product', 'fakturo' ),
+			'view_item' => __( 'View Product', 'fakturo' ),
+			'search_items' => __( 'Search Products', 'fakturo' ),
+			'not_found' => __( 'No products found', 'fakturo' ),
+			'not_found_in_trash' => __( 'No products found in Trash', 'fakturo' ),
+			'parent_item_colon' => __( 'Parent Product:', 'fakturo' ),
+			'menu_name' => __( 'Products', 'fakturo' ),
 		);
 		$capabilities = array(
 			'publish_post' => 'publish_fktr_product',
@@ -193,7 +193,7 @@ class fktrPostTypeProducts {
 
 	public static function name_placeholder( $title_placeholder , $post ) {
 		if($post->post_type == 'fktr_product') {
-			$title_placeholder = __('Enter Product name here', FAKTURO_TEXT_DOMAIN );
+			$title_placeholder = __('Enter Product name here', 'fakturo' );
 			
 		}
 		return $title_placeholder;
@@ -240,15 +240,15 @@ class fktrPostTypeProducts {
 		//add_action('wp_ajax_webcam_shot', 'fakturo_ajax_webcam_shot');
 		
 		// Remove Custom Fields Metabox
-		add_meta_box('fakturo-price-box', __('Price', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'price_box'),'fktr_product','side', 'high' );
-		add_meta_box('fakturo-prices', __('Prices', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'prices_box'), 'fktr_product', 'normal', 'default');
+		add_meta_box('fakturo-price-box', __('Price', 'fakturo' ), array('fktrPostTypeProducts', 'price_box'),'fktr_product','side', 'high' );
+		add_meta_box('fakturo-prices', __('Prices', 'fakturo' ), array('fktrPostTypeProducts', 'prices_box'), 'fktr_product', 'normal', 'default');
 		
 		remove_meta_box( 'postimagediv', 'fakturo_product', 'side' );
-		add_meta_box('postimagediv', __('Product Image', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'thumbnail_meta_box'), 'fktr_product', 'side', 'high');
-		add_meta_box( 'fakturo-data-box', __('Complete Product Data', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'data_box'),'fktr_product','normal', 'default' );
+		add_meta_box('postimagediv', __('Product Image', 'fakturo' ), array('fktrPostTypeProducts', 'thumbnail_meta_box'), 'fktr_product', 'side', 'high');
+		add_meta_box( 'fakturo-data-box', __('Complete Product Data', 'fakturo' ), array('fktrPostTypeProducts', 'data_box'),'fktr_product','normal', 'default' );
 
 		
-		add_meta_box( 'fakturo-stock-box', __('Stock', FAKTURO_TEXT_DOMAIN ), array('fktrPostTypeProducts', 'stock_box'),'fktr_product','side', 'high' );
+		add_meta_box( 'fakturo-stock-box', __('Stock', 'fakturo' ), array('fktrPostTypeProducts', 'stock_box'),'fktr_product','side', 'high' );
 		
 		do_action('add_ftkr_product_meta_boxes');
 	}
@@ -259,7 +259,7 @@ class fktrPostTypeProducts {
 		$echoHtml = '
 			<div id="snapshot_container_wrapper">
 				<div id="snapshot_container_buttons">
-					<a id="snapshot_btn" href="javascript:showSnapshot()" class="nobutton">' . __( 'Take a snapshot', FAKTURO_TEXT_DOMAIN ) . '</a>
+					<a id="snapshot_btn" href="javascript:showSnapshot()" class="nobutton">' . __( 'Take a snapshot', 'fakturo' ) . '</a>
 					<div id="my_camera" style="display:none;">				
 					</div>
 					<img src="" id="snap_image" style="display:none;">
@@ -292,7 +292,7 @@ class fktrPostTypeProducts {
 		
 		$selectCurrencies = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Currency', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a Currency', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -315,11 +315,11 @@ class fktrPostTypeProducts {
 		$echoHtml = '<table class="form-table">
 					<tbody>
 			<tr class="user-address-wrap">
-				<th><label for="cost">'. __('Cost', FAKTURO_TEXT_DOMAIN ). '	</label></th>
+				<th><label for="cost">'. __('Cost', 'fakturo' ). '	</label></th>
 				<td><input type="text" name="cost" id="cost" value="'.number_format($product_data['cost'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).'"></td>
 			</tr>
 			<tr class="user-address-wrap">
-				<th><label for="currency">'.__('Currency', FAKTURO_TEXT_DOMAIN ).'</label></th>
+				<th><label for="currency">'.__('Currency', 'fakturo' ).'</label></th>
 				<td>
 					'.$selectCurrencies.'
 				</td>		
@@ -349,9 +349,9 @@ class fktrPostTypeProducts {
 			
 			<tr class="tr_fktr">
 				<th></th>
-				<th style="text-align: center;">'.__('Price', FAKTURO_TEXT_DOMAIN ).'</th>
-				<th style="text-align: center;">'.__('Suggested', FAKTURO_TEXT_DOMAIN ).'</th>
-				<th style="text-align: center;">'.__('Final', FAKTURO_TEXT_DOMAIN ).'</th>
+				<th style="text-align: center;">'.__('Price', 'fakturo' ).'</th>
+				<th style="text-align: center;">'.__('Suggested', 'fakturo' ).'</th>
+				<th style="text-align: center;">'.__('Final', 'fakturo' ).'</th>
 			</tr>
 			';
 		$product_tax = get_fakturo_term($product_data['tax'], 'fktr_tax');
@@ -390,8 +390,8 @@ class fktrPostTypeProducts {
 				));
 		$echoHtml = '<table>
 			<tr class="tr_fktr">
-				<th style="text-align: left;">'.__('Location', FAKTURO_TEXT_DOMAIN ).'</th>
-				<th style="text-align: center;">'.__('Quantity', FAKTURO_TEXT_DOMAIN ).'</th>
+				<th style="text-align: left;">'.__('Location', 'fakturo' ).'</th>
+				<th style="text-align: center;">'.__('Quantity', 'fakturo' ).'</th>
 			</tr>';
 		$total = 0;
 		foreach ($terms as $t) {
@@ -402,7 +402,7 @@ class fktrPostTypeProducts {
 						</tr>';
 		}
 		$echoHtml .= '<tr>
-						<td>'.__('Total', FAKTURO_TEXT_DOMAIN ).':</td>
+						<td>'.__('Total', 'fakturo' ).':</td>
 						<td style="text-align: center;">'.$total.'</td>
 					</tr>
 					</table>';
@@ -420,14 +420,14 @@ class fktrPostTypeProducts {
 		$selectProvider = fakturo_get_select_post(array(
 											'echo' => 0,
 											'post_type' => 'fktr_provider',
-											'show_option_none' => __('Choose a Provider', FAKTURO_TEXT_DOMAIN ),
+											'show_option_none' => __('Choose a Provider', 'fakturo' ),
 											'name' => 'provider',
 											'id' => 'provider',
 											'class' => ''
 										));
 		$selectModel = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Model', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a Model', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -446,7 +446,7 @@ class fktrPostTypeProducts {
 		));			
 		$selectCategory = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Category', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a Category', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -465,7 +465,7 @@ class fktrPostTypeProducts {
 		));
 		$selectProductType = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Product Type', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a Product Type', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -485,7 +485,7 @@ class fktrPostTypeProducts {
 
 		$selectTax = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Tax', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a Tax', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -505,7 +505,7 @@ class fktrPostTypeProducts {
 		
 		$selectPackaging = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Packaging', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a Packaging', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -524,7 +524,7 @@ class fktrPostTypeProducts {
 		));		
 		$selectOrigin = wp_dropdown_categories( array(
 			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Origin', FAKTURO_TEXT_DOMAIN ),
+			'show_option_none'   => __('Choose a Origin', 'fakturo' ),
 			'orderby'            => 'name', 
 			'order'              => 'ASC',
 			'show_count'         => 0,
@@ -547,33 +547,33 @@ class fktrPostTypeProducts {
 					<tbody>
 			
 			<tr class="tr_fktr">
-				<th><label for="provider">'.__('Provider', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+				<th><label for="provider">'.__('Provider', 'fakturo' ).'	</label></th>
 				<td>'.$selectProvider.'</td>
 			</tr>
 			
 			<tr class="tr_fktr">
-				<th><label for="product_type">'.__('Product Type', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+				<th><label for="product_type">'.__('Product Type', 'fakturo' ).'	</label></th>
 				<td>'.$selectProductType.'</td>
 			</tr>
 			<tr class="tr_fktr">
-				<th><label for="tax">'.__('Tax', FAKTURO_TEXT_DOMAIN ).'	</label></th>
+				<th><label for="tax">'.__('Tax', 'fakturo' ).'	</label></th>
 				<td>'.$selectTax.'</td>
 			</tr>
 			
 			<tr class="user-address-wrap">
-				<th><label for="reference">'.__('Reference', FAKTURO_TEXT_DOMAIN ).'</label></th>
+				<th><label for="reference">'.__('Reference', 'fakturo' ).'</label></th>
 				<td><input type="text" name="reference" id="reference" value="'.$product_data['reference'].'" class="regular-text"></td>
 			</tr>
 			<tr class="user-address-wrap">
-				<th><label for="internal">'.__('Internal code', FAKTURO_TEXT_DOMAIN ).'</label></th>
+				<th><label for="internal">'.__('Internal code', 'fakturo' ).'</label></th>
 				<td id="td_internal_code">'.(isset($product_data['ID'])?$product_data['ID']:'').'</td>
 			</tr>
 			<tr class="user-address-wrap">
-				<th><label for="manufacturers">'.__('Manufacturers code', FAKTURO_TEXT_DOMAIN ).'</label></th>
+				<th><label for="manufacturers">'.__('Manufacturers code', 'fakturo' ).'</label></th>
 				<td><input type="text" name="manufacturers" id="manufacturers" value="'.$product_data['manufacturers'].'" class="regular-text"></td>
 			</tr>
 			<tr class="user-address-wrap">
-				<th><label for="description">'.__('Description', FAKTURO_TEXT_DOMAIN ).'</label></th>
+				<th><label for="description">'.__('Description', 'fakturo' ).'</label></th>
 				<td>
 					<textarea style="width:95%;" rows="4" name="description" id="description">'.$product_data['description'].'</textarea>
 				</td>
@@ -581,32 +581,32 @@ class fktrPostTypeProducts {
 		
 			if (isset($setting_system['use_stock_product']) && $setting_system['use_stock_product']) {
 				$echoHtml .= '<tr class="user-address-wrap">
-					<th><label for="min">'.__('Minimal stock', FAKTURO_TEXT_DOMAIN ).'</label></th>
+					<th><label for="min">'.__('Minimal stock', 'fakturo' ).'</label></th>
 					<td><input type="number" name="min" id="min" value="'.$product_data['min'].'" class="regular-text"></td>
 				</tr>
 				<tr class="tr_fktr">
-					<th><label for="min_alert">'.__('Minimal stock alert', FAKTURO_TEXT_DOMAIN ).'</label></th>
+					<th><label for="min_alert">'.__('Minimal stock alert', 'fakturo' ).'</label></th>
 					<td>
 						<input id="min_alert" class="slidercheck" type="checkbox" name="min_alert" value="1" '.(($product_data['min_alert'])?'checked="checked"':'').'>
-						<label for="min_alert"><span class="ui"></span>'.__('Minimal stock alert', FAKTURO_TEXT_DOMAIN ).'	</label>
+						<label for="min_alert"><span class="ui"></span>'.__('Minimal stock alert', 'fakturo' ).'	</label>
 					</td>
 				</tr>';
 			}
 			
 			$echoHtml .= '<tr class="tr_fktr">
-				<th><label for="tax">'. __('Packaging', FAKTURO_TEXT_DOMAIN). '</label></th>
+				<th><label for="tax">'. __('Packaging', 'fakturo'). '</label></th>
 				<td>'.$selectPackaging.'</td> 
 			</tr>
 			<tr class="user-address-wrap">
-				<th><label for="unit">'.__('Units per package', FAKTURO_TEXT_DOMAIN ).'</label></th>
+				<th><label for="unit">'.__('Units per package', 'fakturo' ).'</label></th>
 				<td><input type="text" name="unit" id="unit" value="'.$product_data['unit'].'" class="regular-text"></td>
 			</tr>
 			<tr class="user-address-wrap">
-				<th><label for="note">'.__('Notes', FAKTURO_TEXT_DOMAIN ).'</label></th>
+				<th><label for="note">'.__('Notes', 'fakturo' ).'</label></th>
 				<td><textarea style="width:95%;" rows="4" name="note" id="note">'.$product_data['note'].'</textarea></td>
 			</tr>
 			<tr class="user-address-wrap">
-				<th><label for="origin">'.__('Origin', FAKTURO_TEXT_DOMAIN ).'</label></th>
+				<th><label for="origin">'.__('Origin', 'fakturo' ).'</label></th>
 				<td>'.$selectOrigin.'</td>
 			</tr>
 		</tbody>

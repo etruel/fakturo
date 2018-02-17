@@ -18,8 +18,8 @@ class fktr_welcome {
 	public function admin_menus() {
 		// About Page
 		add_dashboard_page(
-			__( 'Welcome to Fakturo', FAKTURO_TEXT_DOMAIN),
-			__( 'Fakturo News', FAKTURO_TEXT_DOMAIN),
+			__( 'Welcome to Fakturo', 'fakturo'),
+			__( 'Fakturo News', 'fakturo'),
 			self::$minimum_capability,
 			'fakturo-about',
 			array($this, 'about_screen' )
@@ -27,8 +27,8 @@ class fktr_welcome {
 
 		// Changelog Page
 		add_dashboard_page(
-			__( 'Fakturo Changelog', FAKTURO_TEXT_DOMAIN),
-			__( 'Fakturo Changelog', FAKTURO_TEXT_DOMAIN),
+			__( 'Fakturo Changelog', 'fakturo'),
+			__( 'Fakturo Changelog', 'fakturo'),
 			self::$minimum_capability,
 			'fakturo-changelog',
 			array($this, 'changelog_screen' )
@@ -36,8 +36,8 @@ class fktr_welcome {
 
 		// Getting Started Page
 		add_dashboard_page(
-			__( 'Getting started with Fakturo', FAKTURO_TEXT_DOMAIN),
-			__( 'Getting started with Fakturo', FAKTURO_TEXT_DOMAIN),
+			__( 'Getting started with Fakturo', 'fakturo'),
+			__( 'Getting started with Fakturo', 'fakturo'),
 			self::$minimum_capability,
 			'fakturo-getting-started',
 			array($this, 'getting_started_screen' )
@@ -95,10 +95,10 @@ class fktr_welcome {
 		list( $display_version ) = explode( '-', WPE_FAKTURO_VERSION );
 		?>
 		<div id="fakturo-header">
-			<img class="fakturo-badge" src="<?php echo FAKTURO_PLUGIN_URL . '/assets/images/icon-256x256.png'; ?>" alt="<?php _e( 'Fakturo', FAKTURO_TEXT_DOMAIN ); ?>" / >
-			<h1><?php printf( __( 'Welcome to Fakturo %s', FAKTURO_TEXT_DOMAIN ), $display_version ); ?> Beta</h1>
+			<img class="fakturo-badge" src="<?php echo FAKTURO_PLUGIN_URL . '/assets/images/icon-256x256.png'; ?>" alt="<?php _e( 'Fakturo', 'fakturo' ); ?>" / >
+			<h1><?php printf( __( 'Welcome to Fakturo %s', 'fakturo' ), $display_version ); ?> Beta</h1>
 			<p class="about-text">
-				<?php printf( __( 'Thank you for updating to the latest version! Fakturo %s is ready to make your money management faster, safer, and better!', FAKTURO_TEXT_DOMAIN ), $display_version ); ?>
+				<?php printf( __( 'Thank you for updating to the latest version! Fakturo %s is ready to make your money management faster, safer, and better!', 'fakturo' ), $display_version ); ?>
 			</p>
 		</div>
 		<?php
@@ -116,13 +116,13 @@ class fktr_welcome {
 		?>
 		<h1 class="nav-tab-wrapper">
 			<a class="nav-tab <?php echo $selected == 'fakturo-about' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'fakturo-about' ), 'index.php' ) ) ); ?>">
-				<?php _e( "What's New", FAKTURO_TEXT_DOMAIN ); ?>
+				<?php _e( "What's New", 'fakturo' ); ?>
 			</a>
 			<a class="nav-tab <?php echo $selected == 'fakturo-getting-started' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'fakturo-getting-started' ), 'index.php' ) ) ); ?>">
-				<?php _e( 'Getting Started', FAKTURO_TEXT_DOMAIN ); ?>
+				<?php _e( 'Getting Started', 'fakturo' ); ?>
 			</a>
 			<a class="nav-tab <?php echo $selected == 'fakturo-changelog' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'fakturo-changelog' ), 'index.php' ) ) ); ?>">
-				<?php _e( 'Changelog', FAKTURO_TEXT_DOMAIN ); ?>
+				<?php _e( 'Changelog', 'fakturo' ); ?>
 			</a>
 		</h1>
 		<?php
@@ -138,7 +138,7 @@ class fktr_welcome {
 		$file = file_exists( FAKTURO_PLUGIN_DIR . 'readme.txt' ) ? FAKTURO_PLUGIN_DIR . 'readme.txt' : null;
 
 		if ( ! $file ) {
-			$readme = '<p>' . __( 'No valid changelog was found.', FAKTURO_TEXT_DOMAIN ) . '</p>';
+			$readme = '<p>' . __( 'No valid changelog was found.', 'fakturo' ) . '</p>';
 		} else {
 			$readme = file_get_contents( $file );
 			$readme = nl2br( esc_html( $readme ) );
@@ -180,14 +180,14 @@ class fktr_welcome {
 			?>
 
 			<div class="changelog">				
-				<h3><?php _e( 'Full Changelog', FAKTURO_TEXT_DOMAIN );?></h3>
+				<h3><?php _e( 'Full Changelog', 'fakturo' );?></h3>
 				<div class="feature-section">
 					<?php echo $this->parse_readme(); ?>
 				</div>
 			</div>
 
 			<div class="return-to-dashboard">
-				<a href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'fakturo-settings' ), 'admin.php' ) ) ); ?>"><?php _e( 'Go to Fakturo Settings', FAKTURO_TEXT_DOMAIN ); ?></a>
+				<a href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'fakturo-settings' ), 'admin.php' ) ) ); ?>"><?php _e( 'Go to Fakturo Settings', 'fakturo' ); ?></a>
 			</div>
 		</div>
 			<?php

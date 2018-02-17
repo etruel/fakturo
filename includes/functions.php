@@ -83,14 +83,14 @@ function get_fakturo_terms($args = array()) {
 }
 function get_fakturo_term($term_id, $taxonomy, $field = null) {
 	if ($term_id < 1) {
-		return new WP_Error( 'incorrect_term_id', __('You has send a incorrect term_id', FAKTURO_TEXT_DOMAIN));
+		return new WP_Error( 'incorrect_term_id', __('You has send a incorrect term_id', 'fakturo'));
 	}
 	$term = get_term($term_id, $taxonomy);
 	if(is_wp_error($term)) {
 		return $term;
 	}
 	if(!is_object($term)) {
-        return new WP_Error( 'incorrect_term_id', __('You has send a incorrect term_id', FAKTURO_TEXT_DOMAIN));
+        return new WP_Error( 'incorrect_term_id', __('You has send a incorrect term_id', 'fakturo'));
     }
 	$return = new stdClass();
 	$return->term_id = $term->term_id;
@@ -251,13 +251,13 @@ function get_sales_on_range($from, $to) {
 function fktr_get_dialer_options() {
 	$select_options = array();
 	$new_option = new stdClass();
-	$new_option->text = __( 'Select a option', FAKTURO_TEXT_DOMAIN);
+	$new_option->text = __( 'Select a option', 'fakturo');
 	$new_option->icon = 'dashicons-category';
 	$new_option->type = null;
 	$select_options[0] = $new_option;
 
 	$new_option = new stdClass();
-	$new_option->text = __( 'Settings', FAKTURO_TEXT_DOMAIN);
+	$new_option->text = __( 'Settings', 'fakturo');
 	$new_option->icon = 'dashicons-admin-settings';
 	$new_option->type = 'setting';
 	$new_option->caps = 'edit_fakturo_settings';

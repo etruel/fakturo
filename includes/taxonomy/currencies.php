@@ -38,22 +38,22 @@ class fktr_tax_currency {
 	public static function init() {
 		
 		$labels = array(
-			'name'                       => _x( 'Currencies', 'Currencies', FAKTURO_TEXT_DOMAIN ),
-			'singular_name'              => _x( 'Currency', 'Currency', FAKTURO_TEXT_DOMAIN ),
-			'search_items'               => __( 'Search Currencies', FAKTURO_TEXT_DOMAIN ),
-			'popular_items'              => __( 'Popular Currencies', FAKTURO_TEXT_DOMAIN ),
-			'all_items'                  => __( 'All Currencies', FAKTURO_TEXT_DOMAIN ),
-			'parent_item'                => __( 'Bank', FAKTURO_TEXT_DOMAIN ),
+			'name'                       => _x( 'Currencies', 'Currencies', 'fakturo' ),
+			'singular_name'              => _x( 'Currency', 'Currency', 'fakturo' ),
+			'search_items'               => __( 'Search Currencies', 'fakturo' ),
+			'popular_items'              => __( 'Popular Currencies', 'fakturo' ),
+			'all_items'                  => __( 'All Currencies', 'fakturo' ),
+			'parent_item'                => __( 'Bank', 'fakturo' ),
 			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Currency', FAKTURO_TEXT_DOMAIN ),
-			'update_item'                => __( 'Update Currency', FAKTURO_TEXT_DOMAIN ),
-			'add_new_item'               => __( 'Add New Currency', FAKTURO_TEXT_DOMAIN ),
-			'new_item_name'              => __( 'New Currency Name', FAKTURO_TEXT_DOMAIN ),
-			'separate_items_with_commas' => __( 'Separate Currency with commas', FAKTURO_TEXT_DOMAIN ),
-			'add_or_remove_items'        => __( 'Add or remove Currencies', FAKTURO_TEXT_DOMAIN ),
-			'choose_from_most_used'      => __( 'Choose from the most used Currencies', FAKTURO_TEXT_DOMAIN ),
-			'not_found'                  => __( 'No Currencies found.', FAKTURO_TEXT_DOMAIN ),
-			'menu_name'                  => __( 'Currencies', FAKTURO_TEXT_DOMAIN ),
+			'edit_item'                  => __( 'Edit Currency', 'fakturo' ),
+			'update_item'                => __( 'Update Currency', 'fakturo' ),
+			'add_new_item'               => __( 'Add New Currency', 'fakturo' ),
+			'new_item_name'              => __( 'New Currency Name', 'fakturo' ),
+			'separate_items_with_commas' => __( 'Separate Currency with commas', 'fakturo' ),
+			'add_or_remove_items'        => __( 'Add or remove Currencies', 'fakturo' ),
+			'choose_from_most_used'      => __( 'Choose from the most used Currencies', 'fakturo' ),
+			'not_found'                  => __( 'No Currencies found.', 'fakturo' ),
+			'menu_name'                  => __( 'Currencies', 'fakturo' ),
 		);
 
 		$args = array(
@@ -124,24 +124,24 @@ class fktr_tax_currency {
 		$echoHtml = '
 		<style type="text/css">.form-field.term-parent-wrap,.form-field.term-slug-wrap, .form-field label[for="parent"], .form-field #parent {display: none;}  .form-field.term-description-wrap { display:none;} .inline.hide-if-no-js{ display:none;} .view{ display:none;}</style>
 		<div class="form-field" id="plural_div">
-			<label for="term_meta[plural]">'.__( 'Plural', FAKTURO_TEXT_DOMAIN ).'</label>
+			<label for="term_meta[plural]">'.__( 'Plural', 'fakturo' ).'</label>
 			<input type="text" name="term_meta[plural]" id="term_meta[plural]" value="">
-			<p class="description">'.__( 'Enter name plural of the currency', FAKTURO_TEXT_DOMAIN ).'</p>
+			<p class="description">'.__( 'Enter name plural of the currency', 'fakturo' ).'</p>
 		</div>
 		<div class="form-field" id="symbol_div">
-			<label for="term_meta[symbol]">'.__( 'Symbol', FAKTURO_TEXT_DOMAIN ).'</label>
+			<label for="term_meta[symbol]">'.__( 'Symbol', 'fakturo' ).'</label>
 			<input style="width: 60px;text-align: center; padding-right: 0px; " type="text" name="term_meta[symbol]" id="term_meta_symbol" value="">
-			<p class="description">'.__( 'Enter a symbol like $', FAKTURO_TEXT_DOMAIN ).'</p>
+			<p class="description">'.__( 'Enter a symbol like $', 'fakturo' ).'</p>
 		</div>
 		<div class="form-field" id="rate_div">
-			<label for="term_meta[rate]">'.__( 'Rate', FAKTURO_TEXT_DOMAIN ).'</label>
+			<label for="term_meta[rate]">'.__( 'Rate', 'fakturo' ).'</label>
 			<input style="width: 60px;text-align: right; padding-right: 0px; " type="text" name="term_meta[rate]" id="term_meta_rate" value="0">
-			<p class="description">'.__( 'Enter a rate', FAKTURO_TEXT_DOMAIN ).'</p>
+			<p class="description">'.__( 'Enter a rate', 'fakturo' ).'</p>
 		</div>
 		<div class="form-field" id="reference_div">
-			<label for="term_meta[reference]">'.__( 'Reference', FAKTURO_TEXT_DOMAIN ).'</label>
+			<label for="term_meta[reference]">'.__( 'Reference', 'fakturo' ).'</label>
 			<input type="text" name="term_meta[reference]" id="term_meta_reference" value="">
-			<p class="description">'.__( 'Enter a reference website to find the conversion rate', FAKTURO_TEXT_DOMAIN ).'</p>
+			<p class="description">'.__( 'Enter a reference website to find the conversion rate', 'fakturo' ).'</p>
 		</div>
 		
 		';
@@ -155,38 +155,38 @@ class fktr_tax_currency {
 		$echoHtml = '<style type="text/css">.form-field.term-parent-wrap, .form-field.term-slug-wrap {display: none;} .form-field.term-description-wrap { display:none;}  </style>
 		<tr class="form-field">
 			<th scope="row" valign="top">
-				<label for="term_meta[plural]">'.__( 'Plural', FAKTURO_TEXT_DOMAIN ).'</label>
+				<label for="term_meta[plural]">'.__( 'Plural', 'fakturo' ).'</label>
 			</th>
 			<td>
 				<input type="text" name="term_meta[plural]" id="term_meta[plural]" value="'.$term_meta->plural.'">
-				<p class="description">'.__( 'Enter name plural of the currency', FAKTURO_TEXT_DOMAIN ).'</p>
+				<p class="description">'.__( 'Enter name plural of the currency', 'fakturo' ).'</p>
 			</td>
 		</tr>
 		<tr class="form-field">
 			<th scope="row" valign="top">
-				<label for="term_meta[symbol]">'.__( 'Symbol', FAKTURO_TEXT_DOMAIN ).'</label>
+				<label for="term_meta[symbol]">'.__( 'Symbol', 'fakturo' ).'</label>
 			</th>
 			<td>
 				<input type="text" style="width: 60px;text-align: center; padding-right: 0px; " name="term_meta[symbol]" id="term_meta_symbol" value="'.$term_meta->symbol.'">
-				<p class="description">'.__( 'Enter a symbol like $', FAKTURO_TEXT_DOMAIN ).'</p>
+				<p class="description">'.__( 'Enter a symbol like $', 'fakturo' ).'</p>
 			</td>
 		</tr>
 		<tr class="form-field">
 			<th scope="row" valign="top">
-				<label for="term_meta[rate]">'.__( 'Rate', FAKTURO_TEXT_DOMAIN ).'</label>
+				<label for="term_meta[rate]">'.__( 'Rate', 'fakturo' ).'</label>
 			</th>
 			<td>
 				<input style="width: 60px;text-align: right; padding-right: 0px; " type="text" name="term_meta[rate]" id="term_meta_rate" value="'.number_format($term_meta->rate, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).'">
-				<p class="description">'.__( 'Enter a rate', FAKTURO_TEXT_DOMAIN ).'</p>
+				<p class="description">'.__( 'Enter a rate', 'fakturo' ).'</p>
 			</td>
 		</tr>
 		<tr class="form-field">
 			<th scope="row" valign="top">
-				<label for="term_meta[reference]">'.__( 'Reference', FAKTURO_TEXT_DOMAIN ).'</label>
+				<label for="term_meta[reference]">'.__( 'Reference', 'fakturo' ).'</label>
 			</th>
 			<td>
 				<input type="text" name="term_meta[reference]" id="term_meta_reference" value="'.$term_meta->reference.'">
-				<p class="description">'.__( 'Enter a reference website to find the conversion rate', FAKTURO_TEXT_DOMAIN ).'</p>
+				<p class="description">'.__( 'Enter a reference website to find the conversion rate', 'fakturo' ).'</p>
 			</td>
 		</tr>
 		';
@@ -196,9 +196,9 @@ class fktr_tax_currency {
 	public static function columns($columns) {
 		$new_columns = array(
 			'cb' => '<input type="checkbox" />',
-			'name' => __('Name', FAKTURO_TEXT_DOMAIN),
-			'symbol' => __('Symbol', FAKTURO_TEXT_DOMAIN),
-			'rate' => __('Rate', FAKTURO_TEXT_DOMAIN)
+			'name' => __('Name', 'fakturo'),
+			'symbol' => __('Symbol', 'fakturo'),
+			'rate' => __('Rate', 'fakturo')
 		);
 		return $new_columns;
 	}
