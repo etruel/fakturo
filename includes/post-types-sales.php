@@ -1345,6 +1345,8 @@ class fktrPostTypeSales {
 				 AND pm.meta_value = '%s'
                  AND sale.meta_value = '%s'
 				 AND invoicet.meta_value = '%s'
+				 AND invoicet.post_id = sale.post_id 
+				 AND sale.post_id = p.ID
                  GROUP BY p.ID 
 				 LIMIT 1
 			 ", $invoice_number, $sale_point, $invoice_type);
@@ -1359,6 +1361,7 @@ class fktrPostTypeSales {
                  AND sale.meta_key = 'sale_point'
 				 AND pm.meta_value = '%s'
                  AND sale.meta_value = '%s'
+                 AND sale.post_id = p.ID
                  GROUP BY p.ID 
 				 LIMIT 1
 			 ", $invoice_number, $sale_point);
@@ -1373,6 +1376,7 @@ class fktrPostTypeSales {
                  AND invoicet.meta_key = 'invoice_type'
 				 AND pm.meta_value = '%s'
 				 AND invoicet.meta_value = '%s'
+				 AND invoicet.post_id = p.ID
                  GROUP BY p.ID 
 				 LIMIT 1
 			 ", $invoice_number, $invoice_type);
