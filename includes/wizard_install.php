@@ -422,7 +422,7 @@ class fktr_wizard {
 			if ($termc !== 0 && $termc !== null) {
 				// exist this term
 			} else {
-				$termc = wp_insert_term($country[2], 'fktr_countries');
+				$termc = fktr_insert_country_states($country[2], 'fktr_countries');
 				if (is_wp_error($termc)){
 										
 				}
@@ -447,10 +447,10 @@ class fktr_wizard {
 						if ($term_s !== 0 && $term_s !== null) {
 									// exist state
 						} else {
-							$term_s = wp_insert_term($state[1], 'fktr_countries', array('parent' => $country_term));
-
+							
+							$term_s = fktr_insert_country_states($state[1], 'fktr_countries', array('parent' => $country_term));
 							if (is_wp_error($term_s)){
-								$term_s = wp_insert_term($state[1], 'fktr_countries', array('parent' => $country_term));
+								$term_s = fktr_insert_country_states($state[1], 'fktr_countries', array('parent' => $country_term));
 							} else {
 								$state_term = $term_s['term_id'];
 							}
@@ -493,10 +493,11 @@ class fktr_wizard {
 				// exist this term
 			} else {
 				// don't exist term
-				$termc = wp_insert_term($country[2], 'fktr_countries');
+				$termc = fktr_insert_country_states($country[2], 'fktr_countries');
 				if (is_wp_error($termc)){
 										
 				}
+
 				
 				$country_term = $termc['term_id'];
 				foreach ($states as $ks => $state) {
@@ -511,7 +512,9 @@ class fktr_wizard {
 						if ($term_s !== 0 && $term_s !== null) {
 								// exist state
 						} else {
-							$term_s = wp_insert_term($state[1], 'fktr_countries', array('parent' => $country_term));
+
+							$term_s = fktr_insert_country_states($state[1], 'fktr_countries', array('parent' => $country_term));
+
 							if (is_wp_error($term_s)){
 							}
 							$state_term = $term_s['term_id'];

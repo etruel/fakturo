@@ -767,4 +767,55 @@ function fktr_number_to_letter_es($numero) {
 	}
 	return $num_letras;
 } 
+
+function fktr_insert_country_states( $term, $taxonomy, $args = array() ) {
+    global $wpdb;
+ 
+    
+    $defaults = array( 'alias_of' => '', 'description' => '', 'parent' => 0, 'slug' => '');
+    $args = wp_parse_args( $args, $defaults );
+ 
+  
+    $args['name'] = $term;
+    $args['taxonomy'] = $taxonomy;
+ 
+    // Coerce null description to strings, to avoid database errors.
+    $args['description'] = (string) $args['description'];
+ 
+    //$args = sanitize_term($args, $taxonomy, 'db');
+ 
+    // expected_slashed ($name)
+    $name = wp_unslash( $args['name'] );
+    $description = wp_unslash( $args['description'] );
+    $parent = (int) $args['parent'];
+ 
+    $slug_provided = ! empty( $args['slug'] );
+    if ( ! $slug_provided ) {
+        $slug = sanitize_title( $name );
+    } else {
+        $slug = $args['slug'];
+    }
+ 	
+    $slug  = $slug . rand(0, 5);
+  
+ 
+    $data = compact( 'name', 'slug');
+ 
+    if ( false === $wpdb->insert( $wpdb->terms, $data ) ) {
+        return new WP_Error( 'db_insert_error', __( 'Could not insert term into the database.' ), $wpdb->last_error );
+    }
+ 
+    $term_id = (int) $wpdb->insert_id;
+ 
+    $tt_id = $wpdb->get_var( $wpdb->prepare( "SELECT tt.term_taxonomy_id FROM $wpdb->term_taxonomy AS tt INNER JOIN $wpdb->terms AS t ON tt.term_id = t.term_id WHERE tt.taxonomy = %s AND t.term_id = %d", $taxonomy, $term_id ) );
+ 
+    if ( !empty($tt_id) ) {
+        return array('term_id' => $term_id, 'term_taxonomy_id' => $tt_id);
+    }
+    $wpdb->insert( $wpdb->term_taxonomy, compact( 'term_id', 'taxonomy', 'description', 'parent') + array( 'count' => 0 ) );
+    $tt_id = (int) $wpdb->insert_id;
+ 	
+ 	return array( 'term_id' => $term_id, 'term_taxonomy_id' => $tt_id );
+
+}
 ?>

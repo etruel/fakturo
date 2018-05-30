@@ -155,33 +155,33 @@ function fktr_widget_dashboard_sale_summary() {
 				<table  width="100%" cellspacing="0">
 					<tr>
 						<td>
-							<p>'. _('Current Month','fakturo') .'</p>
+							<p>'. __('Current Month','fakturo') .'</p>
 							<ol>
-								<li><span class="sp_left">'. _('Earning','fakturo') .'</span>  <span class="sp_right"> '.$money_format_current_month.'</span><br style="clear: both;"></li>
-								<li><span class="sp_left">'. _('Sales','fakturo') .'</span> <span class="sp_right">'.$count_sales_current_month.' </span></li>
+								<li><span class="sp_left">'. __('Earning','fakturo') .'</span>  <span class="sp_right"> '.$money_format_current_month.'</span><br style="clear: both;"></li>
+								<li><span class="sp_left">'. __('Sales','fakturo') .'</span> <span class="sp_right">'.$count_sales_current_month.' </span></li>
 							</ol>
 						</td>
 						<td>
-							<p>'. _('Today','fakturo') .'</p>
+							<p>'. __('Today','fakturo') .'</p>
 							<ol>
-								<li><span class="sp_left">'. _('Earning','fakturo') .'</span> <span class="sp_right">'.$money_format_today.'</span><br style="clear: both;"></li>
-								<li><span class="sp_left">'. _('Sales','fakturo') .'</span> <span class="sp_right">'.$count_sales_today.'</span></li>
+								<li><span class="sp_left">'. __('Earning','fakturo') .'</span> <span class="sp_right">'.$money_format_today.'</span><br style="clear: both;"></li>
+								<li><span class="sp_left">'. __('Sales','fakturo') .'</span> <span class="sp_right">'.$count_sales_today.'</span></li>
 							</ol>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<p>'. _('Last Month','fakturo') .'</p>
+							<p>'. __('Last Month','fakturo') .'</p>
 							<ol>
-								<li><span class="sp_left">'. _('Earning','fakturo') .'</span> <span class="sp_right">'.$money_format_last_month.'</span><br style="clear: both;"></li>
-								<li><span class="sp_left">'. _('Sales','fakturo') .'</span> <span class="sp_right">'.$count_sales_last_month.'</span></li>
+								<li><span class="sp_left">'. __('Earning','fakturo') .'</span> <span class="sp_right">'.$money_format_last_month.'</span><br style="clear: both;"></li>
+								<li><span class="sp_left">'. __('Sales','fakturo') .'</span> <span class="sp_right">'.$count_sales_last_month.'</span></li>
 							</ol>
 						</td>
 						<td>
-							<p>'. _('Total','fakturo') .'</p>
+							<p>'. __('Total','fakturo') .'</p>
 							<ol>
-								<li><span class="sp_left">'. _('Earning','fakturo') .'</span> <span class="sp_right">'.$money_format_total.'</span><br style="clear: both;"></li>
-								<li><span class="sp_left">'. _('Sales','fakturo') .'</span> <span class="sp_right">'.$count_sales_total.'</span></li>
+								<li><span class="sp_left">'. __('Earning','fakturo') .'</span> <span class="sp_right">'.$money_format_total.'</span><br style="clear: both;"></li>
+								<li><span class="sp_left">'. __('Sales','fakturo') .'</span> <span class="sp_right">'.$count_sales_total.'</span></li>
 							</ol>
 						</td>
 					</tr>
