@@ -8,7 +8,7 @@ var current_count_state = 9999;
 jQuery(document).ready(function() {
 	
 	for (var c = 1; c <= 246; c++) {
-		ajax_urls.push(backend_object.ajax_url+'?action=fktr_load_countries_states&country_id='+c+'&nonce='+backend_object.ajax_nonce);
+		ajax_urls.push(backend_object.ajax_url+'?action=fktr_load_countries_states&nonce='+backend_object.ajax_nonce);
 		ajax_urls_selected.push(backend_object.ajax_url+'?action=fktr_load_selected_countries_states&country_id='+c+'&state_index=0&nonce='+backend_object.ajax_nonce);
 	}
 	
@@ -16,18 +16,20 @@ jQuery(document).ready(function() {
 		if (jQuery('input[name="load_contries_states"]:checked').val() == 'yes') {
 			jQuery('#content_step').fadeOut();
 			jQuery('.buttons_container').first().remove();
-			jQuery('.buttons_container').html(backend_object.loading_states_text+'<img src="'+backend_object.loading_image+'"/> <div id="porcent_loading_fe" style="display: inline;"> 0%</div>');
+			jQuery('input[type="submit"]').remove();
+			jQuery('.buttons_container').prepend(backend_object.loading_states_text+'<img src="'+backend_object.loading_image+'"/> <div id="porcent_loading_fe" style="display: inline;"> 0%</div>');
 			execute_load_countries();
 			e.preventDefault();
 		} else if (jQuery('input[name="load_contries_states"]:checked').val() == 'yes_only_a_country') {
 			jQuery('#content_step').fadeOut();
 			jQuery('.buttons_container').first().remove();
-			jQuery('.buttons_container').html(backend_object.loading_states_text+'<img src="'+backend_object.loading_image+'"/> <div id="porcent_loading_fe" style="display: inline;"> 0%</div>');
+			jQuery('input[type="submit"]').remove();
+			jQuery('.buttons_container').prepend(backend_object.loading_states_text+'<img src="'+backend_object.loading_image+'"/> <div id="porcent_loading_fe" style="display: inline;"> 0%</div>');
 			total_selected_countries = jQuery('.selected_some_countries').length;
 			jQuery('.selected_some_countries').map(function(e) {
 				array_selected_countries.push(jQuery(this).val());
 			});
-			execute_selected_countries();
+			execute_selected_countries_new();
 		    e.preventDefault();
 		}
 	})
@@ -107,28 +109,48 @@ function execute_selected_countries() {
 
 }
 
-function execute_load_countries() {
-	if (current_request < ajax_urls.length) {
-		upload_bar(ajax_urls.length, current_request);
-		jQuery.ajax({
-	        url: ajax_urls[current_request],
-	        type: 'get',
-	        contentType: false,
-	        processData: false,
-	                    
-	        success: function (response) {
-	        	if (response == 'last_country') {
-	        		jQuery('form').submit();
-	        	} else {
-	        		current_request++;
-	            	execute_load_countries();
-	        	}
-	        },  
-	        error: function (response) {
-	           	execute_load_countries();
-	        }
+function execute_selected_countries_new() {
+	
+	current_request = 1;
+	var data = {
+		countries : array_selected_countries
+	};
+	
+	jQuery.post(ajax_urls[current_request], data, function(response) {
+		jQuery('form').submit();
+	})
+	.fail(function(jquery_xhr) {
+		jQuery('form').submit();
+	});
 
-	    });
+	
+}
+
+function execute_load_countries() {
+	
+	if (current_request < ajax_urls.length - 1) {
+		upload_bar(ajax_urls.length, current_request);
+		var data = {
+			countries : new Array()
+		};
+		for (var ct = 0; ct <= 49; ct++) {
+			data.countries[ct] =  current_request + ct;
+		}
+		
+		jQuery.post(ajax_urls[current_request], data, function(response) {
+			if (response == 'last_country') {
+	        	jQuery('form').submit();
+        	} else {
+        		current_request = current_request + 49;
+            	execute_load_countries();
+        	}
+		})
+		.fail(function(jquery_xhr) {
+			execute_load_countries();
+		});
+
+
+
 	}  else {
 		jQuery('form').submit();
 	}

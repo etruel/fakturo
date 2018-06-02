@@ -770,7 +770,7 @@ function fktr_number_to_letter_es($numero) {
 
 function fktr_insert_country_states( $term, $taxonomy, $args = array() ) {
     global $wpdb;
- 
+ 	$time_start = microtime(true);
     
     $defaults = array( 'alias_of' => '', 'description' => '', 'parent' => 0, 'slug' => '');
     $args = wp_parse_args( $args, $defaults );
@@ -807,14 +807,10 @@ function fktr_insert_country_states( $term, $taxonomy, $args = array() ) {
  
     $term_id = (int) $wpdb->insert_id;
  
-    $tt_id = $wpdb->get_var( $wpdb->prepare( "SELECT tt.term_taxonomy_id FROM $wpdb->term_taxonomy AS tt INNER JOIN $wpdb->terms AS t ON tt.term_id = t.term_id WHERE tt.taxonomy = %s AND t.term_id = %d", $taxonomy, $term_id ) );
- 
-    if ( !empty($tt_id) ) {
-        return array('term_id' => $term_id, 'term_taxonomy_id' => $tt_id);
-    }
     $wpdb->insert( $wpdb->term_taxonomy, compact( 'term_id', 'taxonomy', 'description', 'parent') + array( 'count' => 0 ) );
     $tt_id = (int) $wpdb->insert_id;
  	
+ 	$time_end = microtime(true);
  	return array( 'term_id' => $term_id, 'term_taxonomy_id' => $tt_id );
 
 }

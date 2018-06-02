@@ -343,7 +343,7 @@ class fktr_wizard {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/country-states.php';
 		$html_select_countries = '<select name="selected_country" id="selected_country">';
 		foreach ($countries as $kc => $country) {
-			$html_select_countries .= '<option value="' . $country[0] . '">' . esc_html($country[2]) . '</option>';
+			$html_select_countries .= '<option value="' . $kc . '">' . esc_html($country[2]) . '</option>';
 		}
 		$html_select_countries .= '</select>';
 
@@ -474,23 +474,37 @@ class fktr_wizard {
 	*/
 	public static function load_countries_ajax() {
 		check_ajax_referer('fktr_wizard_ajax_nonce', 'nonce');
-		$country_id = 0;
-		if (!empty($_REQUEST['country_id']) && is_numeric($_REQUEST['country_id'])) {
-			$country_id = $_REQUEST['country_id'];
+		$r_countries = array();
+		if (!empty($_REQUEST['countries'])) {
+			$r_countries = $_REQUEST['countries'];
 		}
-		if (empty($country_id)) {
+		if (!is_array($r_countries)) {
+			$r_countries = array();
+		}
+		if (empty($r_countries)) {
 			wp_die('error');
 		}
+		ignore_user_abort(true);
+		set_time_limit(0);
+		$country_id = 999;
+		$start_time = microtime(true);
 		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/country-states.php';
 		$count_insert = 0;
-		foreach ($countries as $kc => $country) {
-			if ($country[0] != $country_id) {
-				continue; 
+		foreach ($r_countries as $kc => $key_country) {
+			
+			if (isset($countries[(int)$key_country]) || array_key_exists($key_country, $countries)) {
+				$country = $countries[(int)$key_country];
+			} else {
+				continue;
 			}
+
+
+			$country_id = $country[0];
 			$count_insert++;
 			$termc = term_exists($country[2], 'fktr_countries');
 			if ($termc !== 0 && $termc !== null) {
 				// exist this term
+				continue;
 			} else {
 				// don't exist term
 				$termc = fktr_insert_country_states($country[2], 'fktr_countries');
@@ -508,7 +522,7 @@ class fktr_wizard {
 							$count_insert = 0;
 							wp_cache_flush();
 						}
-						$term_s = term_exists($state[1], 'fktr_countries', $country_term);
+						$term_s = null;//term_exists($state[1], 'fktr_countries', $country_term);
 						if ($term_s !== 0 && $term_s !== null) {
 								// exist state
 						} else {
@@ -522,8 +536,8 @@ class fktr_wizard {
 					}	
 				}
 			}
-			break;
 		}
+		$end_time = microtime(true);
 		if ($country_id == count($countries)) {
 			die('last_country');
 		} else {
