@@ -11,13 +11,13 @@ jQuery(document).ready(function() {
 	jQuery('input[type="submit"]').click(function(e) {
 		if (jQuery('input[name="load_currencies"]:checked').val() == 'yes') {
 			jQuery('#content_step').fadeOut();
-			jQuery('.buttons_container').first().remove();
+			jQuery('.buttons_container').first().fadeOut();
 			jQuery('.buttons_container').html(backend_object.loading_states_text+'<img src="'+backend_object.loading_image+'"/> <div id="porcent_loading_fe" style="display: inline;"> 0%</div>');
 			execute_load_currencies();
 			e.preventDefault();
 		} else if (jQuery('input[name="load_currencies"]:checked').val() == 'yes_only_a_currency') {
 			jQuery('#content_step').fadeOut();
-			jQuery('.buttons_container').first().remove();
+			jQuery('.buttons_container').first().fadeOut();
 			jQuery('.buttons_container').html(backend_object.loading_states_text+'<img src="'+backend_object.loading_image+'"/> <div id="porcent_loading_fe" style="display: inline;"> 0%</div>');
 			total_selected_currencies = jQuery('.selected_some_currencies').length;
 			jQuery('.selected_some_currencies').map(function(e) {
