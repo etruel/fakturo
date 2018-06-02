@@ -15,16 +15,16 @@ jQuery(document).ready(function() {
 	jQuery('input[type="submit"]').click(function(e) {
 		if (jQuery('input[name="load_contries_states"]:checked').val() == 'yes') {
 			jQuery('#content_step').fadeOut();
-			jQuery('.buttons_container').first().remove();
+			jQuery('.buttons_container').first().fadeOut();
 			jQuery('input[type="submit"]').fadeOut();
 			jQuery('.buttons_container').prepend(backend_object.loading_states_text+'<img src="'+backend_object.loading_image+'"/> <div id="porcent_loading_fe" style="display: inline;"> 0%</div>');
 			execute_load_countries();
 			e.preventDefault();
 		} else if (jQuery('input[name="load_contries_states"]:checked').val() == 'yes_only_a_country') {
 			jQuery('#content_step').fadeOut();
-			jQuery('.buttons_container').first().remove();
+			jQuery('.buttons_container').first().fadeOut();
 			jQuery('input[type="submit"]').fadeOut();
-			jQuery('.buttons_container').prepend(backend_object.loading_states_text+'<img src="'+backend_object.loading_image+'"/> <div id="porcent_loading_fe" style="display: inline;"> 0%</div>');
+			jQuery('.buttons_container').prepend(backend_object.loading_states_text+'<img src="'+backend_object.loading_image+'"/> <div id="porcent_loading_fe" style="display: inline;"></div>');
 			total_selected_countries = jQuery('.selected_some_countries').length;
 			jQuery('.selected_some_countries').map(function(e) {
 				array_selected_countries.push(jQuery(this).val());

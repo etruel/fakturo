@@ -12,13 +12,15 @@ jQuery(document).ready(function() {
 		if (jQuery('input[name="load_currencies"]:checked').val() == 'yes') {
 			jQuery('#content_step').fadeOut();
 			jQuery('.buttons_container').first().fadeOut();
-			jQuery('.buttons_container').html(backend_object.loading_states_text+'<img src="'+backend_object.loading_image+'"/> <div id="porcent_loading_fe" style="display: inline;"> 0%</div>');
+			jQuery('input[type="submit"]').fadeOut();
+			jQuery('.buttons_container').prepend(backend_object.loading_currencies_text+'<img src="'+backend_object.loading_image+'"/> <div id="porcent_loading_fe" class="porcent_loading_fe" style="display: inline;"> 0%</div>');
 			execute_load_currencies();
 			e.preventDefault();
 		} else if (jQuery('input[name="load_currencies"]:checked').val() == 'yes_only_a_currency') {
 			jQuery('#content_step').fadeOut();
 			jQuery('.buttons_container').first().fadeOut();
-			jQuery('.buttons_container').html(backend_object.loading_states_text+'<img src="'+backend_object.loading_image+'"/> <div id="porcent_loading_fe" style="display: inline;"> 0%</div>');
+			jQuery('input[type="submit"]').fadeOut();
+			jQuery('.buttons_container').prepend(backend_object.loading_currencies_text+'<img src="'+backend_object.loading_image+'"/> <div id="porcent_loading_fe" class="porcent_loading_fe" style="display: inline;"> 0%</div>');
 			total_selected_currencies = jQuery('.selected_some_currencies').length;
 			jQuery('.selected_some_currencies').map(function(e) {
 				array_selected_currencies.push(jQuery(this).val());
@@ -112,7 +114,9 @@ function execute_load_currencies() {
 	}
 }
 function upload_bar(length_requests) {
+	jQuery('.porcent_loading_fe').html(' ' + Math.round( (100/length_requests)* current_request )+' %');
+	//console.log(jQuery('#porcent_loading_fe').html());
 	var current_width = jQuery('.stepwizard-row-bar').width() / jQuery('.stepwizard-row-bar').parent().width() * 100;
 	jQuery('.stepwizard-row-bar').css("width", (current_width+(backend_object.porcent_per_steep/length_requests))+'%');
-	jQuery('#porcent_loading_fe').html(' '+Math.round((100/length_requests)*current_request)+' %');
+	
 }
