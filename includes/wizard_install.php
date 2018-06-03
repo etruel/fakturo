@@ -1337,7 +1337,7 @@ class fktr_wizard {
 										'class'              => 'form-no-clear',
 										'depth'              => 1,
 										'tab_index'          => 0,
-										'taxonomy'           => 'fktr_packaging',
+										'taxonomy'           => 'fktr_category',
 										'hide_if_empty'      => false
 									));
 		$selectModels = wp_dropdown_categories( array(

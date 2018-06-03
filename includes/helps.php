@@ -32,10 +32,12 @@ class fktr_helps {
 			$helptexts = apply_filters('fktr_help_'.$screen->id, $helptexts);
 			foreach($helptexts as $key => $section){
 				$tabcontent = '';
-				foreach($section as $section_key => $sdata){
-				 $helptip[$section_key] = htmlentities($sdata['tip']);
-					$tabcontent .= '<p><strong>' . $sdata['title'] . '</strong><br />'.
-						 $sdata['tip'] . '</p>';
+				foreach($section as $section_key => $sdata) {
+					$tip = (!empty($sdata['tip']) ? $sdata['tip'] : '');
+					$title = (!empty($sdata['title']) ? $sdata['title'] : '');
+					$helptip[$section_key] = htmlentities($tip);
+					$tabcontent .= '<p><strong>' . $title . '</strong><br />'.
+						 $tip . '</p>';
 					$tabcontent .= (isset($sdata['plustip'])) ?    '<p>' . $sdata['plustip'] . '</p>' : '';
 				}
 				$screen->add_help_tab(array(
