@@ -161,7 +161,25 @@ class fktrSettings {
 		}
 
 	}
-	
+	public static function sanitize_info_option( $input ) {
+        $new_input = array();
+        
+        $new_input['name'] = ( !empty( $input['name'] ) ? $input['name']  : '' );
+        $new_input['taxpayer'] = ( !empty( $input['taxpayer'] ) ? $input['taxpayer']  : '' );
+        $new_input['tax'] = ( !empty( $input['tax'] ) ? $input['tax']  : '' );
+		$new_input['start'] = ( !empty( $input['start'] ) ? $input['start']  : '' );
+		$new_input['address'] = ( !empty( $input['address'] ) ? $input['address']  : '' );
+		$new_input['telephone'] = ( !empty( $input['telephone'] ) ? $input['telephone']  : '' );
+		$new_input['postcode'] = ( !empty( $input['postcode'] ) ? $input['postcode']  : '' );
+		$new_input['city'] = ( !empty( $input['city'] ) ? $input['city']  : '' );
+		$new_input['state'] = ( !empty( $input['state'] ) ? $input['state']  : '' );
+		$new_input['country'] = ( !empty( $input['country'] ) ? $input['country']  : '' );
+		$new_input['tax_condition'] = ( !empty( $input['tax_condition'] ) ? $input['tax_condition']  : '' );
+		$new_input['website'] = ( !empty( $input['website'] ) ? $input['website']  : '' );
+		$new_input['url'] = ( !empty( $input['url'] ) ? $input['url']  : FAKTURO_PLUGIN_URL . 'assets/images/etruel-logo.png' );
+		       
+        return $new_input;
+    }	
 	public static function fakturo_settings_dashboard() {  
 		global $current_screen;
 		$options = get_option('fakturo_dashboard_options_group');
@@ -197,7 +215,8 @@ class fktrSettings {
 	public static function fakturo_settings() {  
 		global $current_screen;
 		
-		$options = get_option('fakturo_info_options_group');
+		$options = self::sanitize_info_option( get_option('fakturo_info_options_group', array()) );
+
 		if (empty($options['url'])) {
 			$options['url'] = FAKTURO_PLUGIN_URL . 'assets/images/etruel-logo.png';
 		}
@@ -290,6 +309,7 @@ class fktrSettings {
 								<option value="0">'. __('Choose a country before', 'fakturo' ) .'</option>
 							</select>';
 		}
+		settings_errors(); 
 		echo '<div id="tab_container">
 			<br/><h1>Company Info</h1>
 			<form method="post" action="options.php">';
@@ -712,7 +732,7 @@ class fktrSettings {
 		$echoSelectListInvoiceNumber .= '</select>';			
 		 
 	
-									
+		settings_errors(); 							
 		echo '
 		<div id="tab_container">
 			<br/><h1>System Settings</h1>

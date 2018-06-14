@@ -423,6 +423,7 @@ class fktrPostTypeProducts {
 											'show_option_none' => __('Choose a Provider', 'fakturo' ),
 											'name' => 'provider',
 											'id' => 'provider',
+											'selected' => $product_data['provider'],
 											'class' => ''
 										));
 		$selectModel = wp_dropdown_categories( array(
