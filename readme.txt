@@ -82,6 +82,16 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 
 == Changelog ==
+= 0.9 Beta =
+* Added languages files and spanish language.
+* Fixed an issue on products.
+* Fixed some PHP warnings in settings page.
+* Added notices when the settings are updated.
+* Fixed issue on Firefox that doesn't redirect to next page.
+* Fixed some issue in the dashboard widget.
+* Some tweaks in performance on load countries and states in wizard.
+* Fixed issue on control of duplicates for invoice numbers. 
+
 = 0.8 Beta =
 * Fixed issue on user list.
 * Fixed issue on reset to default button of print templates.
