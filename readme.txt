@@ -83,7 +83,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 == Changelog ==
 = 0.9 Beta =
-* Added languages files and spanish language.
+* Added languages files and spanish language. 
 * Fixed an issue on products.
 * Fixed some PHP warnings in settings page.
 * Added notices when the settings are updated.
