@@ -11,12 +11,13 @@
  */
 
 $helptexts = array( 
-	'Campaign Options' => array( 
+	'PRODUCTS' => array( 
+		'tabtitle' =>  __('Product Options', 'fakturo' ),
 		'feeds' => array( 
-			'title' => __('Feeds URLs.', 'wpematico' ),
-			'tip' => __('You must type at least one feed url.', 'wpematico' ).'  '.
-				__('(Less feeds equal less used resources when fetching).', 'wpematico' ).' '.
-				__('Type the domain name to try to autodetect the feed url.', 'wpematico' ),
+			'title' => __('Feeds URLs.', 'fakturo' ),
+			'tip' => __('You must type at least one feed url.', 'fakturo' ).'  '.
+				__('(Less feeds equal less used resources when fetching).', 'fakturo' ).' '.
+				__('Type the domain name to try to autodetect the feed url.', 'fakturo' ),
 		),
 		'itemfetch' => array( 
 			'title' => __('Max items per Fetch.', 'wpematico' ),
@@ -33,7 +34,8 @@ $helptexts = array(
 				<li>'. __('The fetched feed item date is not in the future.', 'wpematico' ).' </li></ul>',
 		),
 	),
-	'Youtube Feeds' => array( 
+	'SECOND' => array( 
+		'tabtitle' =>  __('2ND TAB', 'fakturo' ),
 		'feed_url' => array( 
 			'title' => __('Youtube feeds URLs.', 'wpematico' ),
 			'tip' => __('Channel Videos feed and User Videos feed.', 'wpematico' ).
