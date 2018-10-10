@@ -47,8 +47,8 @@ class fktr_tax_price_scales {
 		
 	
 		$labels = array(
-			'name'                       => _x( 'Price Scales', 'Price Scales', 'fakturo' ),
-			'singular_name'              => _x( 'Price Scale', 'Price Scale', 'fakturo' ),
+			'name'                       => __( 'Price Scales', 'fakturo' ),
+			'singular_name'              => __( 'Price Scale', 'fakturo' ),
 			'search_items'               => __( 'Search Price Scales', 'fakturo' ),
 			'popular_items'              => __( 'Popular Price Scales', 'fakturo' ),
 			'all_items'                  => __( 'All Price Scales', 'fakturo' ),

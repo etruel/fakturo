@@ -311,7 +311,7 @@ class fktrSettings {
 		}
 		settings_errors(); 
 		echo '<div id="tab_container">
-			<br/><h1>Company Info</h1>
+			<br/><h1>'. __( 'Company Info', 'fakturo' ) .'</h1>
 			<form method="post" action="options.php">';
 			settings_fields('fakturo-settings');
 			do_settings_sections('fakturo-settings');
@@ -429,7 +429,7 @@ class fktrSettings {
 						<td>
 							<label for="upload_image">
 								<input id="url" type="text" size="36" value="'.$options['url'].'" name="fakturo_info_options_group[url]" />
-								<input id="upload_logo_button" type="button" class="button" value="Upload Image" />
+								<button id="upload_logo_button" type="button" class="button">'. __('Upload Image', 'fakturo').'</button>
 								<br />'.__( 'Enter an URL or upload an image for the company logo.', 'fakturo' ).'
 							</label>
 							
@@ -735,7 +735,7 @@ class fktrSettings {
 		settings_errors(); 							
 		echo '
 		<div id="tab_container">
-			<br/><h1>System Settings</h1>
+			<br/><h1>'. __( 'System Settings', 'fakturo' ) .'</h1>
 			<form method="post" action="options.php">
 				<table class="form-table">';
 				settings_fields('fakturo-settings-system');

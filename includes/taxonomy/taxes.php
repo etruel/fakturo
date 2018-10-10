@@ -38,22 +38,22 @@ class fktr_tax_taxes {
 	}
 	public static function init() {
 		$labels = array(
-			'name'                       => _x( 'Taxes', 'Taxes' ),
-			'singular_name'              => _x( 'Tax', 'Tax' ),
-			'search_items'               => __( 'Search Taxes' ),
-			'popular_items'              => __( 'Popular Taxes' ),
-			'all_items'                  => __( 'All Taxes' ),
+			'name'                       => __( 'Taxes', 'fakturo' ),
+			'singular_name'              => __( 'Tax', 'fakturo' ),
+			'search_items'               => __( 'Search Taxes', 'fakturo' ),
+			'popular_items'              => __( 'Popular Taxes', 'fakturo' ),
+			'all_items'                  => __( 'All Taxes', 'fakturo' ),
 			'parent_item'                => null,
 			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Tax' ),
-			'update_item'                => __( 'Update Tax' ),
-			'add_new_item'               => __( 'Add New Tax' ),
-			'new_item_name'              => __( 'New Tax Name' ),
-			'separate_items_with_commas' => __( 'Separate Taxes with commas' ),
-			'add_or_remove_items'        => __( 'Add or remove Taxes' ),
-			'choose_from_most_used'      => __( 'Choose from the most used Taxes' ),
-			'not_found'                  => __( 'No Taxes found.' ),
-			'menu_name'                  => __( 'Taxes' ),
+			'edit_item'                  => __( 'Edit Tax', 'fakturo' ),
+			'update_item'                => __( 'Update Tax', 'fakturo' ),
+			'add_new_item'               => __( 'Add New Tax', 'fakturo' ),
+			'new_item_name'              => __( 'New Tax Name', 'fakturo' ),
+			'separate_items_with_commas' => __( 'Separate Taxes with commas', 'fakturo' ),
+			'add_or_remove_items'        => __( 'Add or remove Taxes', 'fakturo' ),
+			'choose_from_most_used'      => __( 'Choose from the most used Taxes', 'fakturo' ),
+			'not_found'                  => __( 'No Taxes found.', 'fakturo' ),
+			'menu_name'                  => __( 'Taxes', 'fakturo' ),
 		);
 
 		$args = array(

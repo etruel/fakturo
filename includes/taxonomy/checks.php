@@ -47,8 +47,8 @@ class fktr_tax_check {
 	}
 	public static function init() {
 		$labels = array(
-			'name'                       => _x( 'Checks', 'Checks', 'fakturo' ),
-			'singular_name'              => _x( 'Check', 'Check', 'fakturo' ),
+			'name'                       => __( 'Checks', 'fakturo' ),
+			'singular_name'              => __( 'Check', 'fakturo' ),
 			'search_items'               => __( 'Search Checks', 'fakturo' ),
 			'popular_items'              => null, // para que no aparezca la nube de populares  __( 'Popular Checks', 'fakturo' ),
 			'all_items'                  => __( 'All Checks', 'fakturo' ),

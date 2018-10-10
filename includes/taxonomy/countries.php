@@ -38,8 +38,8 @@ class fktr_tax_countries {
 	public static function init() {
 		
 		$labels_model = array(
-			'name'                       => _x( 'Countries', 'Countries', 'fakturo' ),
-			'singular_name'              => _x( 'Country', 'Country', 'fakturo' ),
+			'name'                       => __( 'Countries', 'fakturo' ),
+			'singular_name'              => __( 'Country', 'fakturo' ),
 			'search_items'               => __( 'Search Countries', 'fakturo' ),
 			'popular_items'              => __( 'Popular Countries', 'fakturo' ),
 			'all_items'                  => __( 'All Countries', 'fakturo' ),
