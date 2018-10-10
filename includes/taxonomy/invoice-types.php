@@ -58,22 +58,22 @@ class fktr_tax_nvoice_types {
 	
 	public static function init() {
 		$labels = array(
-			'name'                       => _x( 'Invoice Types', 'Invoice Types' ),
-			'singular_name'              => _x( 'Invoice Type', 'Invoice Type' ),
-			'search_items'               => __( 'Search Invoice Types' ),
-			'popular_items'              => __( 'Popular Invoice Types' ),
-			'all_items'                  => __( 'All Invoice Types' ),
+			'name'                       => __( 'Invoice Types', 'fakturo' ),
+			'singular_name'              => __( 'Invoice Type', 'fakturo' ),
+			'search_items'               => __( 'Search Invoice Types','fakturo' ),
+			'popular_items'              => __( 'Popular Invoice Types','fakturo' ),
+			'all_items'                  => __( 'All Invoice Types','fakturo' ),
 			'parent_item'                => null,
 			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Invoice Type' ),
-			'update_item'                => __( 'Update Invoice Type' ),
-			'add_new_item'               => __( 'Add New Invoice Type' ),
-			'new_item_name'              => __( 'New Invoice Type Name' ),
-			'separate_items_with_commas' => __( 'Separate Invoice Types with commas' ),
-			'add_or_remove_items'        => __( 'Add or remove Invoice Types' ),
-			'choose_from_most_used'      => __( 'Choose from the most used Invoice Types' ),
-			'not_found'                  => __( 'No Invoice Types found.' ),
-			'menu_name'                  => __( 'Invoice Types' ),
+			'edit_item'                  => __( 'Edit Invoice Type','fakturo' ),
+			'update_item'                => __( 'Update Invoice Type','fakturo' ),
+			'add_new_item'               => __( 'Add New Invoice Type','fakturo' ),
+			'new_item_name'              => __( 'New Invoice Type Name','fakturo' ),
+			'separate_items_with_commas' => __( 'Separate Invoice Types with commas','fakturo' ),
+			'add_or_remove_items'        => __( 'Add or remove Invoice Types','fakturo' ),
+			'choose_from_most_used'      => __( 'Choose from the most used Invoice Types','fakturo' ),
+			'not_found'                  => __( 'No Invoice Types found.','fakturo' ),
+			'menu_name'                  => __( 'Invoice Types','fakturo' ),
 		);
 
 		$args = array(

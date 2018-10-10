@@ -38,8 +38,8 @@ class fktr_tax_currency {
 	public static function init() {
 		
 		$labels = array(
-			'name'                       => _x( 'Currencies', 'Currencies', 'fakturo' ),
-			'singular_name'              => _x( 'Currency', 'Currency', 'fakturo' ),
+			'name'                       => __( 'Currencies', 'fakturo' ),
+			'singular_name'              => __( 'Currency', 'fakturo' ),
 			'search_items'               => __( 'Search Currencies', 'fakturo' ),
 			'popular_items'              => __( 'Popular Currencies', 'fakturo' ),
 			'all_items'                  => __( 'All Currencies', 'fakturo' ),

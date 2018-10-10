@@ -40,22 +40,22 @@ class fktr_tax_packaging {
 		
 	
 		$labels = array(
-			'name'                       => _x( 'Packagings', 'Packagings' ),
-			'singular_name'              => _x( 'Packaging', 'Packaging' ),
-			'search_items'               => __( 'Search Packagings' ),
-			'popular_items'              => __( 'Popular Packagings' ),
-			'all_items'                  => __( 'All Packagings' ),
+			'name'                       => __( 'Packagings', 'fakturo' ),
+			'singular_name'              => __( 'Packaging', 'fakturo' ),
+			'search_items'               => __( 'Search Packagings', 'fakturo' ),
+			'popular_items'              => __( 'Popular Packagings', 'fakturo' ),
+			'all_items'                  => __( 'All Packagings', 'fakturo' ),
 			'parent_item'                => null,
 			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Packaging' ),
-			'update_item'                => __( 'Update Packaging' ),
-			'add_new_item'               => __( 'Add New Packaging' ),
-			'new_item_name'              => __( 'New Packaging Name' ),
-			'separate_items_with_commas' => __( 'Separate Packagings with commas' ),
-			'add_or_remove_items'        => __( 'Add or remove Packagings' ),
-			'choose_from_most_used'      => __( 'Choose from the most used Packagings' ),
-			'not_found'                  => __( 'No Packagings found.' ),
-			'menu_name'                  => __( 'Packagings' ),
+			'edit_item'                  => __( 'Edit Packaging', 'fakturo' ),
+			'update_item'                => __( 'Update Packaging', 'fakturo' ),
+			'add_new_item'               => __( 'Add New Packaging', 'fakturo' ),
+			'new_item_name'              => __( 'New Packaging Name', 'fakturo' ),
+			'separate_items_with_commas' => __( 'Separate Packagings with commas', 'fakturo' ),
+			'add_or_remove_items'        => __( 'Add or remove Packagings', 'fakturo' ),
+			'choose_from_most_used'      => __( 'Choose from the most used Packagings', 'fakturo' ),
+			'not_found'                  => __( 'No Packagings found.', 'fakturo' ),
+			'menu_name'                  => __( 'Packagings', 'fakturo' ),
 		);
 
 		$args = array(

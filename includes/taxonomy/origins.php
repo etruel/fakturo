@@ -38,22 +38,22 @@ class fktr_tax_origin {
 	}
 	public static function init() {
 		$labels = array(
-			'name'                       => _x( 'Origins', 'Origins' ),
-			'singular_name'              => _x( 'Origin', 'Origin' ),
-			'search_items'               => __( 'Search Origins' ),
-			'popular_items'              => __( 'Popular Origins' ),
-			'all_items'                  => __( 'All Origins' ),
+			'name'                       => __( 'Origins', 'fakturo' ),
+			'singular_name'              => __( 'Origin', 'fakturo' ),//
+			'search_items'               => __( 'Search Origins', 'fakturo' ),
+			'popular_items'              => __( 'Popular Origins', 'fakturo' ),
+			'all_items'                  => __( 'All Origins', 'fakturo' ),
 			'parent_item'                => null,
 			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Origin' ),
-			'update_item'                => __( 'Update Origin' ),
-			'add_new_item'               => __( 'Add New Origin' ),
+			'edit_item'                  => __( 'Edit Origin', 'fakturo' ),
+			'update_item'                => __( 'Update Origin', 'fakturo' ),
+			'add_new_item'               => __( 'Add New Origin', 'fakturo' ),
 			'new_item_name'              => __( 'New Origin Name' ),
-			'separate_items_with_commas' => __( 'Separate Origins with commas' ),
-			'add_or_remove_items'        => __( 'Add or remove Origins' ),
-			'choose_from_most_used'      => __( 'Choose from the most used Origins' ),
-			'not_found'                  => __( 'No Origins found.' ),
-			'menu_name'                  => __( 'Origins' ),
+			'separate_items_with_commas' => __( 'Separate Origins with commas', 'fakturo' ),
+			'add_or_remove_items'        => __( 'Add or remove Origins', 'fakturo' ),
+			'choose_from_most_used'      => __( 'Choose from the most used Origins', 'fakturo' ),
+			'not_found'                  => __( 'No Origins found.', 'fakturo' ),
+			'menu_name'                  => __( 'Origins', 'fakturo' ),
 		);
 
 		$args = array(

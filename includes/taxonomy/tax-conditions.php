@@ -38,8 +38,8 @@ class fktr_tax_tax_conditions {
 	}
 	public static function init() {
 		$labels = array(
-			'name'                       => _x( 'Tax Conditions', 'Tax Conditions', 'fakturo' ),
-			'singular_name'              => _x( 'Tax Condition', 'Tax Condition', 'fakturo' ),
+			'name'                       => __( 'Tax Conditions', 'fakturo' ),
+			'singular_name'              => __( 'Tax Condition', 'fakturo' ),
 			'search_items'               => __( 'Search Tax Conditions', 'fakturo' ),
 			'popular_items'              => __( 'Popular Tax Conditions', 'fakturo' ),
 			'all_items'                  => __( 'All Tax Conditions', 'fakturo' ),

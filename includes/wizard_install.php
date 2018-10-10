@@ -808,7 +808,7 @@ class fktr_wizard {
 							<h1>'.__('Load Currencies', 'fakturo').'</h1>
 							'.self::get_buttons().'
 					   </div>
-					<p>Do you want load all currencies by default?</p>
+					<p>'.__('Do you want load all currencies by default?', 'fakturo').'</p>
 					<table class="form-table">
 						<tr valign="top">
 							<th scope="row"><input type="radio" name="load_currencies" value="yes" checked/></th>
@@ -1212,7 +1212,7 @@ class fktr_wizard {
 					</table>
 				</td>
 				<td style="text-align: center; width: 40%;">
-					Example the current format to invoice numbers
+					'.__('Example the current format to invoice numbers', 'fakturo').'
 					<div id="invoice_format_test" style="text-align: center;  font-size: 34px;"> 
 						0002 00123456
 					</div>
@@ -1239,7 +1239,7 @@ class fktr_wizard {
 								</table>
 							</td>
 							<td style="text-align: center; width: 40%;">
-								Example the current format to receipt numbers
+								'.__('Example the current format to receipt numbers', 'fakturo').'
 								<div id="receipt_format_test" style="text-align: center;  font-size: 34px;"> 
 									00000
 								</div>
@@ -1266,7 +1266,7 @@ class fktr_wizard {
 								</table>	
 							</td>
 							<td style="text-align: center; width: 40%;">
-								Example the current date format
+								'.__('Example the current date format', 'fakturo').'
 								<div id="date_format_test" style="text-align: center;  font-size: 34px;"> 
 									12/31/1992
 								</div>
@@ -1595,7 +1595,7 @@ class fktr_wizard {
 																	)
 															).'
 								  <p class="description">
-								  	'. __( 'Choose your sale point.', 'fakturo' ) .' 
+								  	'. __( 'Select the origin of the product.', 'fakturo' ) .' 
 							      </p>
 							</td>
 						
@@ -2228,7 +2228,7 @@ class fktr_wizard {
 					if ($key_step == self::$current_request['step']) {
 						$class = ' class="active"';
 					}
-					echo '<div'.$class.' style="width:'.$porcent_per_steep.'%; margin-right: 21px; margin-left: -12px;">'.$st.'</div>';
+					echo '<div'.$class.' style="width:'.$porcent_per_steep.'%; margin-right: 21px; margin-left: -12px;">'.__($st, 'fakturo').'</div>';
 				}
 			?>
         	

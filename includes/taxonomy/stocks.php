@@ -47,8 +47,8 @@ class fktr_tax_stock {
 	}
 	public static function init() {
 		$labels = array(
-			'name'                       => _x( 'Stocks', 'Stocks', 'fakturo' ),
-			'singular_name'              => _x( 'Stock', 'Stock', 'fakturo' ),
+			'name'                       => __( 'Stocks', 'fakturo' ),
+			'singular_name'              => __( 'Stock', 'fakturo' ),
 			'search_items'               => __( 'Search Stocks', 'fakturo' ),
 			'popular_items'              => null, // para que no aparezca la nube de populares  __( 'Popular Stocks', 'fakturo' ),
 			'all_items'                  => __( 'All Stocks', 'fakturo' ),

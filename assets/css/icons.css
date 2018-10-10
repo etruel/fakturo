@@ -115,3 +115,23 @@
   box-sizing: border-box;
   margin-top: -1px;
 }
+:lang(es-ES) .slidercheck[type="checkbox"]:checked + label .ui:after {
+    content: 'sí';
+}
+:lang(es-ES) .slidercheck[type="checkbox"]:checked + label:after{
+  left: 25px;
+}
+:lang(es-ES) .slidercheck[type="checkbox"]:not(:checked) + label .ui:before {
+  left: 27px;
+}
+:lang(es-ES) .slidercheck[type="checkbox"]:not(:checked) + label, 
+:lang(es-ES) .slidercheck[type="checkbox"]:checked + label{
+  padding-left: 55px !important;
+}
+:lang(es-ES) .slidercheck[type="checkbox"]:not(:checked) + label:before, 
+:lang(es-ES) .slidercheck[type="checkbox"]:checked + label:before,
+:lang(es-ES) .slidercheck[type="checkbox"]:checked + label .ui, 
+:lang(es-ES) .slidercheck[type="checkbox"]:not(:checked) + label .ui:before, 
+:lang(es-ES) .slidercheck[type="checkbox"]:checked + label .ui:after{
+  width: 50px;
+}

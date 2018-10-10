@@ -43,8 +43,8 @@ class fktr_tax_bank_entities {
 	public static function init() {
 		
 		$labels = array(
-			'name'                       => _x( 'Bank Entities', 'Bank Entities', 'fakturo' ),
-			'singular_name'              => _x( 'Bank Entity', 'Bank Entity', 'fakturo' ),
+			'name'                       => __( 'Bank Entities', 'fakturo' ),
+			'singular_name'              => __( 'Bank Entity', 'fakturo' ),
 			'search_items'               => __( 'Search Bank Entities', 'fakturo' ),
 			'popular_items'              => __( 'Popular Bank Entities', 'fakturo' ),
 			'all_items'                  => __( 'All Bank Entities', 'fakturo' ),

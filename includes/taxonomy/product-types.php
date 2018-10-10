@@ -39,22 +39,22 @@ class fktr_tax_product_types {
 		
 	
 		$labels = array(
-			'name'                       => _x( 'Product Types', 'Product Types' ),
-			'singular_name'              => _x( 'Product Type', 'Product Type' ),
-			'search_items'               => __( 'Search Product Types' ),
-			'popular_items'              => __( 'Popular Product Types' ),
-			'all_items'                  => __( 'All Product Types' ),
+			'name'                       => __( 'Product Types', 'fakturo' ),
+			'singular_name'              => __( 'Product Type', 'fakturo' ),
+			'search_items'               => __( 'Search Product Types', 'fakturo' ),
+			'popular_items'              => __( 'Popular Product Types', 'fakturo' ),
+			'all_items'                  => __( 'All Product Types', 'fakturo' ),
 			'parent_item'                => null,
 			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Product Type' ),
-			'update_item'                => __( 'Update Product Type' ),
-			'add_new_item'               => __( 'Add New Product Type' ),
-			'new_item_name'              => __( 'New Product Type Name' ),
-			'separate_items_with_commas' => __( 'Separate Product Types with commas' ),
-			'add_or_remove_items'        => __( 'Add or remove Product Types' ),
-			'choose_from_most_used'      => __( 'Choose from the most used Product Types' ),
-			'not_found'                  => __( 'No Product Types found.' ),
-			'menu_name'                  => __( 'Product Types' ),
+			'edit_item'                  => __( 'Edit Product Type', 'fakturo' ),
+			'update_item'                => __( 'Update Product Type', 'fakturo' ),
+			'add_new_item'               => __( 'Add New Product Type', 'fakturo' ),
+			'new_item_name'              => __( 'New Product Type Name', 'fakturo' ),
+			'separate_items_with_commas' => __( 'Separate Product Types with commas', 'fakturo' ),
+			'add_or_remove_items'        => __( 'Add or remove Product Types', 'fakturo' ),
+			'choose_from_most_used'      => __( 'Choose from the most used Product Types', 'fakturo' ),
+			'not_found'                  => __( 'No Product Types found.', 'fakturo' ),
+			'menu_name'                  => __( 'Product Types', 'fakturo' ),
 		);
 
 		$args = array(

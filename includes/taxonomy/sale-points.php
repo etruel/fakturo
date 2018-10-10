@@ -43,8 +43,8 @@ class fktr_tax_sale_points {
 		
 	
 		$labels = array(
-			'name'                       => _x( 'Sale Points', 'Sale Points', 'fakturo' ),
-			'singular_name'              => _x( 'Sale Point', 'Sale Point', 'fakturo' ),
+			'name'                       => __( 'Sale Points', 'fakturo' ),
+			'singular_name'              => __( 'Sale Point', 'fakturo' ),//
 			'search_items'               => __( 'Search Sale Points', 'fakturo' ),
 			'popular_items'              => __( 'Popular Sale Points', 'fakturo' ),
 			'all_items'                  => __( 'All Sale Points', 'fakturo' ),

@@ -40,8 +40,8 @@ class fktr_tax_payment_types {
 	public static function init() {
 		
 		$labels_model = array(
-			'name'                       => _x( 'Payment Types', 'Payment Types', 'fakturo' ),
-			'singular_name'              => _x( 'Payment Type', 'Payment Type', 'fakturo' ),
+			'name'                       => __( 'Payment Types', 'fakturo' ),
+			'singular_name'              => __( 'Payment Type', 'fakturo' ),
 			'search_items'               => __( 'Search Payment Types', 'fakturo' ),
 			'popular_items'              => __( 'Popular Payment Types', 'fakturo' ),
 			'all_items'                  => __( 'All Payment Types', 'fakturo' ),

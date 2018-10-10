@@ -39,22 +39,22 @@ class fktr_tax_locations {
 		
 	
 		$labels = array(
-			'name'                       => _x( 'Locations', 'Locations' ),
-			'singular_name'              => _x( 'Location', 'Location' ),
-			'search_items'               => __( 'Search Locations' ),
-			'popular_items'              => __( 'Popular Locations' ),
-			'all_items'                  => __( 'All Locations' ),
+			'name'                       => __( 'Locations', 'fakturo' ),
+			'singular_name'              => __( 'Location', 'fakturo' ),
+			'search_items'               => __( 'Search Locations', 'fakturo' ),
+			'popular_items'              => __( 'Popular Locations', 'fakturo' ),
+			'all_items'                  => __( 'All Locations', 'fakturo' ),
 			'parent_item'                => null,
 			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Location' ),
-			'update_item'                => __( 'Update Location' ),
-			'add_new_item'               => __( 'Add New Location' ),
-			'new_item_name'              => __( 'New Location Name' ),
-			'separate_items_with_commas' => __( 'Separate Locations with commas' ),
-			'add_or_remove_items'        => __( 'Add or remove Locations' ),
-			'choose_from_most_used'      => __( 'Choose from the most used Locations' ),
-			'not_found'                  => __( 'No Locations found.' ),
-			'menu_name'                  => __( 'Locations' ),
+			'edit_item'                  => __( 'Edit Location', 'fakturo' ),
+			'update_item'                => __( 'Update Location', 'fakturo' ),
+			'add_new_item'               => __( 'Add New Location', 'fakturo' ),
+			'new_item_name'              => __( 'New Location Name', 'fakturo' ),
+			'separate_items_with_commas' => __( 'Separate Locations with commas', 'fakturo' ),
+			'add_or_remove_items'        => __( 'Add or remove Locations', 'fakturo' ),
+			'choose_from_most_used'      => __( 'Choose from the most used Locations', 'fakturo' ),
+			'not_found'                  => __( 'No Locations found.', 'fakturo' ),
+			'menu_name'                  => __( 'Locations', 'fakturo' ),
 		);
 
 		$args = array(
