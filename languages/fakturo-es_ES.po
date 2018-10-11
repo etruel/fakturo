@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Fakturo\n"
-"POT-Creation-Date: 2018-10-11 09:27-0400\n"
-"PO-Revision-Date: 2018-10-11 09:40-0400\n"
+"POT-Creation-Date: 2018-10-11 17:16-0400\n"
+"PO-Revision-Date: 2018-10-11 17:16-0400\n"
 "Last-Translator: manuelge <manuel@netmdp.com>\n"
 "Language-Team: NetMdP <dev@netmdp.com>\n"
 "Language: es\n"
@@ -38,7 +38,9 @@ msgstr "Configuración del sistema"
 #: docs/edit-fktr_tax-help.php:17 docs/edit-fktr_tax_conditions-help.php:17
 #: docs/fktr_product-help.php:17 docs/fktr_product-help.php:74
 #: docs/fktr_sale-help.php:17 docs/fktr_sale-help.php:44
-#: docs/fktr_sale-help.php:50
+#: docs/fktr_sale-help.php:50 docs/fktr_subscriptions-help.php:17
+#: docs/fktr_subscriptions-help.php:46 docs/fktr_subscriptions-help.php:52
+#: docs/fktr_subscriptions-help.php:70
 msgid "Concept"
 msgstr "Concepto"
 
@@ -209,6 +211,87 @@ msgstr "Guardar cambios"
 msgid "Click on <b>\""
 msgstr "Haga click en <b>\""
 
+#: docs/admin_page_fktr-afip-extension-page-help.php:15
+msgid "Afip Settings"
+msgstr "Afip configuraciones"
+
+#: docs/admin_page_fktr-afip-extension-page-help.php:17
+msgid "CUIT"
+msgstr ""
+
+#: docs/admin_page_fktr-afip-extension-page-help.php:18
+#: docs/fakturo_page_fakturo-settings-help.php:27
+msgid ""
+"ID required of companies to perform any relevant transaction. For example, "
+"the company’s TIN."
+msgstr ""
+"Identificación requerida de las empresas para realizar cualquier transacción "
+"relevante. Por ejemplo, el TIN de la empresa."
+
+#: docs/admin_page_fktr-afip-extension-page-help.php:20
+msgid "Passphrase"
+msgstr "Frase de contraseña"
+
+#: docs/admin_page_fktr-afip-extension-page-help.php:21
+msgid ""
+"A passphrase is similar to a password in terms of its use, but is generally "
+"longer to add security and must be related to the cert and key."
+msgstr ""
+"Una frase de contraseña es similar a una contraseña en cuanto a su uso, pero "
+"es, generalmente, más larga para agregar seguridad y debe estar relacionada "
+"al cert y a la clave."
+
+#: docs/admin_page_fktr-afip-extension-page-help.php:23
+msgid "Enable logs"
+msgstr "Habilitar registros"
+
+#: docs/admin_page_fktr-afip-extension-page-help.php:24
+msgid ""
+"Enable sequential registration in a file or a database of all events (events "
+"or actions) that affect a particular process. "
+msgstr ""
+"Habilitar registro secuencial en un archivo o en una base de datos de todos "
+"los acontecimientos (eventos o acciones) que afectan a un proceso "
+"particular. "
+
+#: docs/admin_page_fktr-afip-extension-page-help.php:26
+msgid "Sales Points"
+msgstr "Puntos de Venta"
+
+#: docs/admin_page_fktr-afip-extension-page-help.php:27
+msgid ""
+"Set registered points of sale (separated with commas), which will be used in "
+"the Afip system."
+msgstr ""
+"Establezca puntos de venta registrados (separados por comas), que se "
+"utilizarán en el sistema Afip."
+
+#: docs/admin_page_fktr-afip-extension-page-system-help.php:15
+msgid "Afip System"
+msgstr "Sistema Afip"
+
+#: docs/admin_page_fktr-afip-extension-page-system-help.php:17
+msgid "Homologation"
+msgstr "Homologación"
+
+#: docs/admin_page_fktr-afip-extension-page-system-help.php:18
+msgid ""
+"Is a setup of software and hardware for the testing teams to execute test "
+"cases. In other words, it supports test execution with hardware, software "
+"and network configured."
+msgstr ""
+"Es una configuración de software y hardware para que los equipos de prueba "
+"ejecuten casos de prueba. En otras palabras, admite la ejecución de pruebas "
+"con hardware, software y red configurados."
+
+#: docs/admin_page_fktr-afip-extension-page-system-help.php:20
+msgid "Exchange rate"
+msgstr "Tasa de cambio"
+
+#: docs/admin_page_fktr-afip-extension-page-system-help.php:21
+msgid "Exchange rate of currencies from AFIP web service."
+msgstr "Tasa de cambio de las monedas del servicio web de AFIP."
+
 #: docs/edit-fktr_bank_entities-help.php:15 includes/settings/settings.php:1005
 #: includes/taxonomy/bank-entities.php:46
 #: includes/taxonomy/bank-entities.php:61
@@ -308,7 +391,7 @@ msgid "Combination of numbers with which the check is identified."
 msgstr "Combinación de números con los que se identifica el cheque."
 
 #: docs/edit-fktr_check-help.php:26 docs/fktr_receipt-help.php:18
-#: docs/fktr_sale-help.php:23
+#: docs/fktr_sale-help.php:23 docs/fktr_subscriptions-help.php:25
 msgid "Customer"
 msgstr "Cliente"
 
@@ -497,7 +580,8 @@ msgid "Website to find the conversion rate."
 msgstr "Sitio web para encontrar la tasa de conversión."
 
 #: docs/edit-fktr_invoice_types-help.php:15 docs/fktr_sale-help.php:26
-#: includes/post-types-sales.php:1073 includes/taxonomy/invoice-types.php:62
+#: docs/fktr_subscriptions-help.php:28 includes/post-types-sales.php:1073
+#: includes/taxonomy/invoice-types.php:62
 #: includes/taxonomy/tax-conditions.php:218
 msgid "Invoice Type"
 msgstr "Tipo de factura"
@@ -846,14 +930,6 @@ msgstr ""
 #: docs/fakturo_page_fakturo-settings-help.php:26 docs/fktr_client-help.php:17
 msgid "Taxpayer Identification Number"
 msgstr "Número de Identificación del Contribuyente"
-
-#: docs/fakturo_page_fakturo-settings-help.php:27
-msgid ""
-"ID required of companies to perform any relevant transaction. For example, "
-"the company’s TIN."
-msgstr ""
-"Identificación requerida de las empresas para realizar cualquier transacción "
-"relevante. Por ejemplo, el TIN de la empresa."
 
 #: docs/fakturo_page_fakturo-settings-help.php:30
 msgid "Income Tax"
@@ -1317,6 +1393,7 @@ msgstr ""
 "están disponibles para su selección."
 
 #: docs/fktr_provider-help.php:71 docs/fktr_sale-help.php:38
+#: docs/fktr_subscriptions-help.php:40
 msgid "Vendor"
 msgstr "Vendedor"
 
@@ -1431,11 +1508,11 @@ msgstr ""
 "en la tabla de información mostrada. Se genera un código automático, que "
 "identifica la venta a realizar."
 
-#: docs/fktr_sale-help.php:21
+#: docs/fktr_sale-help.php:21 docs/fktr_subscriptions-help.php:23
 msgid "Invoice Details"
 msgstr "Detalles de la factura"
 
-#: docs/fktr_sale-help.php:24
+#: docs/fktr_sale-help.php:24 docs/fktr_subscriptions-help.php:26
 msgid ""
 "Select who will receive the invoice from the customer list. If they are not "
 "found, then you must register the customer on the \"customers\" form. If the "
@@ -1447,7 +1524,7 @@ msgstr ""
 "cliente existe y no aparece, verifique que la opción \"CLIENTE ACTIVO\" esté "
 "seleccionada en el formulario del cliente"
 
-#: docs/fktr_sale-help.php:27
+#: docs/fktr_sale-help.php:27 docs/fktr_subscriptions-help.php:29
 msgid ""
 "Select the type of invoice to be made from the list; it can be INVOICE A, B, "
 "C or credit note."
@@ -1465,9 +1542,9 @@ msgid "Invoice identifier which is randomly generated and is read-only. "
 msgstr ""
 "Identificador de factura que se genera aleatoriamente y es de solo lectura. "
 
-#: docs/fktr_sale-help.php:32 includes/post-types-receipts.php:63
-#: includes/post-types-receipts.php:733 includes/post-types-sales.php:75
-#: includes/post-types-sales.php:1093
+#: docs/fktr_sale-help.php:32 docs/fktr_subscriptions-help.php:34
+#: includes/post-types-receipts.php:63 includes/post-types-receipts.php:733
+#: includes/post-types-sales.php:75 includes/post-types-sales.php:1093
 #: includes/reports/client_account_movements.php:88
 #: includes/reports/client_account_movements.php:221
 #: includes/reports/client_account_movements.php:369
@@ -1478,15 +1555,16 @@ msgstr ""
 msgid "Date"
 msgstr "Fecha"
 
-#: docs/fktr_sale-help.php:33
+#: docs/fktr_sale-help.php:33 docs/fktr_subscriptions-help.php:35
 msgid "This is according the date when the product was bought or sold"
 msgstr "Esto es según la fecha en que el producto fue comprado o vendido"
 
-#: docs/fktr_sale-help.php:35 includes/post-types-sales.php:1099
+#: docs/fktr_sale-help.php:35 docs/fktr_subscriptions-help.php:37
+#: includes/post-types-sales.php:1099
 msgid "Invoice Currency"
 msgstr "Moneda de la factura"
 
-#: docs/fktr_sale-help.php:36
+#: docs/fktr_sale-help.php:36 docs/fktr_subscriptions-help.php:38
 msgid ""
 "Currency which will be displayed on the invoice. It can be Argentinian peso, "
 "dollars or Euros"
@@ -1494,20 +1572,22 @@ msgstr ""
 "Moneda que se mostrará en la factura. Puede ser Peso Argentino, Dólares o "
 "Euros"
 
-#: docs/fktr_sale-help.php:39
+#: docs/fktr_sale-help.php:39 docs/fktr_subscriptions-help.php:41
 msgid "Person who manages the invoice"
 msgstr "Persona que gestiona la factura"
 
-#: docs/fktr_sale-help.php:42 includes/post-types-sales.php:579
+#: docs/fktr_sale-help.php:42 docs/fktr_subscriptions-help.php:44
+#: includes/post-types-sales.php:579
 #: includes/reports/client_account_movements.php:104
 #: includes/reports/client_account_movements.php:248
 #: includes/reports/client_account_movements.php:396
 #: includes/reports/client_summary.php:149
 #: includes/reports/client_summary.php:293
 msgid "Invoice"
-msgstr "Factutra"
+msgstr "Factura"
 
-#: docs/fktr_sale-help.php:45
+#: docs/fktr_sale-help.php:45 docs/fktr_subscriptions-help.php:47
+#: docs/fktr_subscriptions-help.php:53
 msgid ""
 "Proof that is acquired through a purchase or sale. Search for the product to "
 "sell, which automatically comes with its unit price, reference and brief "
@@ -1519,13 +1599,98 @@ msgstr ""
 "breve descripción. Al elegir la cantidad a comprar, los campos total y "
 "subtotal se completarán automáticamente."
 
-#: docs/fktr_sale-help.php:48 includes/post-types-sales.php:576
+#: docs/fktr_sale-help.php:48 docs/fktr_subscriptions-help.php:68
+#: includes/post-types-sales.php:576
 msgid "Discount"
 msgstr "Descuento"
 
-#: docs/fktr_sale-help.php:51
+#: docs/fktr_sale-help.php:51 docs/fktr_subscriptions-help.php:71
 msgid "Amount of money to be discounted depending on the purchase."
 msgstr "Cantidad de dinero a descontar dependiendo de la compra."
+
+#: docs/fktr_subscriptions-help.php:15
+msgid "Subscriptions"
+msgstr "Suscripciones"
+
+#: docs/fktr_subscriptions-help.php:18
+msgid ""
+"The subscription is a business model in which a person is entitled to a "
+"service through a fee."
+msgstr ""
+"La suscripción es un modelo de negocio en la cual una persona tiene derecho "
+"a un servicio mediante una cuota."
+
+#: docs/fktr_subscriptions-help.php:19
+msgid ""
+"Instead of selling products individually, with a subscription, the "
+"consumption of a product or access to a service it&#39;s marketed "
+"intermittently in variable periods (monthly, annually or seasonally). This "
+"way of negotiating has proven to be efficient in cases where a single sale "
+"becomes a repetitive sale."
+msgstr ""
+"En lugar de vender productos individualmente, con una suscripción se "
+"comercializa intermitentemente en períodos variables (mensualmente, "
+"anualmente o por temporadas) el consumo de un producto o el acceso también a "
+"un servicio. Esta forma de negociar ha probado ser eficiente en casos donde "
+"una venta única se convierte en una venta repetitiva."
+
+#: docs/fktr_subscriptions-help.php:31
+msgid "Suscription Number"
+msgstr "Número de subscripción"
+
+#: docs/fktr_subscriptions-help.php:32
+msgid "Suscription identifier which is randomly generated and is read-only. "
+msgstr ""
+"Identificador de suscripción que se genera aleatoriamente y es de solo "
+"lectura. "
+
+#: docs/fktr_subscriptions-help.php:50
+msgid "Invoicing"
+msgstr "Facturación"
+
+#: docs/fktr_subscriptions-help.php:55
+msgid "Active creating invoices on"
+msgstr "Activar la creación de facturas"
+
+#: docs/fktr_subscriptions-help.php:56
+msgid ""
+"Period of time in which the automatic creation of invoices will start, for "
+"example 01/01/2019 at 08:00 AM."
+msgstr ""
+"Período de tiempo en el que se iniciará la creación automatica de facturas, "
+"por ejemplo 01/01/2019 a las 08:00 AM."
+
+#: docs/fktr_subscriptions-help.php:58
+msgid "Finish subscription on"
+msgstr "Finalizar suscripción"
+
+#: docs/fktr_subscriptions-help.php:59
+msgid ""
+"Period of time in which the suscription will finish,it can be by date or by "
+"count."
+msgstr ""
+"Periodo de tiempo en que finalizará la suscripción, puede ser por fecha o "
+"por conteo."
+
+#: docs/fktr_subscriptions-help.php:61
+msgid "Create invoice at the end of the month"
+msgstr "Crear factura al final del mes"
+
+#: docs/fktr_subscriptions-help.php:62
+msgid "Create invoice only at the end of each month."
+msgstr "Crear factura solo al final de cada mes."
+
+#: docs/fktr_subscriptions-help.php:64
+msgid "Period type"
+msgstr "Tipo de periodo"
+
+#: docs/fktr_subscriptions-help.php:65
+msgid ""
+"You can choose between the types of periods to create the CRON job of your "
+"choice."
+msgstr ""
+"Puede elegir entre los tipos de períodos para crear el trabajo CRON de su "
+"preferencia."
 
 #: includes/addons_page.php:46 includes/addons_page.php:55
 msgid "Add-ons"
