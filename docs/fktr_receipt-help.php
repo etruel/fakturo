@@ -12,13 +12,8 @@
 
 
 $helptexts = array( 
-	'PRINT FORMATS' => array( 
-		'item1' => array( 
-			'title' => __('Print Template','fakturo'),
-			'tip' => __('In this field, you can generate the system report or reports assigned to a specific module by entering the template name, description and assigment module.','fakturo'),
-		),
-	),
 	'DATA RECEPTION' => array( 
+		'tabtitle' =>  __('Data reception', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Customer','fakturo'),
 			'tip' => __('Select who will receive the receipt from the customer list. If they are not found, then you must register the customer on the <b>"customers"</b> form. If the customer does exist and doesn’t appear, verify that the option <b>"ACTIVE CUSTOMER"</b> is selected in the customer form.','fakturo'),
@@ -29,7 +24,7 @@ $helptexts = array(
 		),
 		'item3' => array( 
 			'title' => __('Receipt Currency','fakturo'),
-			'tip' => __(': Currency which will be displayed on the receipt. It can be Argentinian peso, dollars or Euros.','fakturo'),
+			'tip' => __('Currency which will be displayed on the receipt. It can be Argentinian peso, dollars or Euros.','fakturo'),
 		),
 		'item4' => array( 
 			'title' => __('Cash','fakturo'),
@@ -45,8 +40,5 @@ $helptexts = array(
 		),
 	)
 );
-
-
-
 
 ?>

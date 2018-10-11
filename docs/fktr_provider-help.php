@@ -12,6 +12,7 @@
 
 $helptexts = array( 
 	'SUPPLIER INFORMATION' => array( 
+		'tabtitle' =>  __('Supplier information', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Taxpayer Identification Number.','fakturo'),
 			'tip' => __('ID required by people or companies to perform any relevant transaction. The number entered in this field will go through a real-time validation process to corroborate its existence','fakturo'),
@@ -46,26 +47,30 @@ $helptexts = array(
 		),
 	),
 	'SUPPLIER CONTACT DETAILS' => array( 
+		'tabtitle' =>  __('Supplier contact details', 'fakturo' ),
 		'item1' => array( 
-			'title' => __('CONTACT DETAILS','fakturo'),
+			'title' => __('Contact info','fakturo'),
 			'tip' => __('Register one or several contacts for the service provider with their corresponding personal contact information.','fakturo'),
 		),
 	),
 	'PROVIDER IMAGE' => array( 
+		'tabtitle' =>  __('Image', 'fakturo' ),
 		'item1' => array( 
-			'title' => __('PROVIDER IMAGE','fakturo'),
+			'title' => __('Provider image','fakturo'),
 			'tip' => __('You can select an image from the WordPress media gallery or take a snapshot with your webcam (useful if you have the supplier in front of you and you want their photo).','fakturo'),
 		),
 	),
 	'ACTIVE PROVIDER' => array( 
+		'tabtitle' =>  __('Active provider', 'fakturo' ),
 		'item1' => array( 
-			'title' => __('PROVIDER ACTIVE','fakturo'),
+			'title' => __('Active provider','fakturo'),
 			'tip' => __('Mark the supplier as active for them to appear in reports and if they are available for selection.','fakturo'),
 		),
 	),
 	'ASSIGN VENDOR' => array( 
+		'tabtitle' =>  __('Vendor', 'fakturo' ),
 		'item1' => array( 
-			'title' => __('ASSIGN VENDOR','fakturo'),
+			'title' => __('Assign Vendor','fakturo'),
 			'tip' => __('Select a registered vendor who represents the service provider face to face.','fakturo'),
 		),
 	),

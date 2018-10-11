@@ -12,10 +12,17 @@
 
 $helptexts = array( 
 	'BANKING ENTITIES' => array( 
+		'tabtitle' =>  __('Bank Entities', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Concept','fakturo'),
 			'tip' => __('Main form to add banks to your system. To add new banking entities, just click on the <b>"Add New Banking Entity"</b> button after the form is filled in.','fakturo'),
 		),
+	),
+	'FIELDS' => array( 
+		'tabtitle' =>  __('Fields', 'fakturo' ),
+		'Item1' => array( 
+			'title' => __('Name','fakturo'),
+			'tip' => __('The name is how it appears on your site.','fakturo'))
 	),
 
 );

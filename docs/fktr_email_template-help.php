@@ -13,14 +13,12 @@
 
 $helptexts = array( 
 	'PRINT FORMATS' => array( 
+		'tabtitle' =>  __('Print Formats', 'fakturo' ),
 		'item1' => array( 
-			'title' => __('Print Template','fakturo'),
-			'tip' => __('In this field, you can generate the system report or reports assigned to a specific module by entering the template name, description and assigment module.','fakturo'),
+			'title' => __('Email Template','fakturo'),
+			'tip' => __('You can add the default email format assigning it to a specific module by entering the name of the template, the description and the subject, these formats will be used when sending reports to customers or provers.','fakturo'),
 		),
 	),
 );
-
-
-
 
 ?>

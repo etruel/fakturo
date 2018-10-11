@@ -12,12 +12,14 @@
 
 $helptexts = array( 
 	'PRODUCTS' => array( 
+		'tabtitle' =>  __('Products', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Concept','fakturo'),
-			'tip' => __('To register products that will go in the inventory for sales, you can click on the "Add New Product" button, which will save the name alongside all other corresponding information in the main form.' )
+			'tip' => __('To register products that will go in the inventory for sales, you can click on the "Add New Product" button, which will save the name alongside all other corresponding information in the main form.', 'fakturo'),
 		),
 	),
 	'PRODUCT INFORMATION' => array( 
+		'tabtitle' =>  __('Products information', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Provider','fakturo'),
 			'tip' => __('Select the service provider that supplies the product.','fakturo'),
@@ -56,6 +58,7 @@ $helptexts = array(
 		),
 	),
 	'ITEM PRICE' => array( 
+		'tabtitle' =>  __('Item price', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Currency','fakturo'),
 			'tip' => __('Select the type of currency used for the purchase of this product (this value can change on the invoice). It can be Argentinian peso, dollars or Euros.','fakturo'),
@@ -66,6 +69,7 @@ $helptexts = array(
 		),
 	),
 	'PRODUCT IMAGE' => array( 
+		'tabtitle' =>  __('Product image', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Concept','fakturo'),
 			'tip' => __('You can select an image from the WordPress media gallery or take a snapshot with your webcam (useful if you have the supplier in front of you and you want their photo).','fakturo'),

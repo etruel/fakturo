@@ -12,13 +12,16 @@
 
 $helptexts = array( 
 	'COMPANY INFO ' => array( 
+		'tabtitle' =>  __('Company Info', 'fakturo' ),
 		'item1' => array( 
-			'title' => __('CONFIGURATION OF THE COMPANY','fakturo'),
-			'tip' => __('','fakturo'),
+			'tip' => __('The fields on this screen determine some of the basics of your company setup.','fakturo').
+				'<br><br>'.__('You must set the name, Taxpayer ID, Gross income tax ID, the start of activities in addition to the basic information.', 'fakturo' ).
+				'<br><br>'.__('You can also add the URL of your site, and even the logo of the company.', 'fakturo' ),
 		),
 
 	),
 	'FIELDS ' => array( 
+		'tabtitle' =>  __('Fields', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Taxpayer Identification Number','fakturo'),
 			'tip' => __('ID required of companies to perform any relevant transaction. For example, the company’s TIN.','fakturo'),
@@ -45,7 +48,7 @@ $helptexts = array(
 		),
 		'item7' => array( 
 			'title' => __('Company Logo','fakturo'),
-			'tip' => __('You can select an image from the WordPress media gallery or take a snapshot with your webcam (useful if you have the supplier in front of you and you want their photo).','fakturo').'<br>'.__('<b>NOTE:</b> Click on "Save Changes" to save your settings. ','fakturo'),
+			'tip' => __('You can select an image from the WordPress media gallery or take a snapshot with your webcam (useful if you have the supplier in front of you and you want their photo).','fakturo').'<br><br>'.__('<b>NOTE:</b> You must click the Save Changes button at the bottom of the screen for new settings to take effect. ','fakturo'),
 		),
 	),	
 );

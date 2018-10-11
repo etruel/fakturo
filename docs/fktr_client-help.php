@@ -12,6 +12,7 @@
 
 $helptexts = array( 
 	'MERCHANT INFORMATION' => array( 
+		'tabtitle' =>  __('Merchant information', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Taxpayer Identification Number','fakturo'),
 			'tip' => __('Identification required of people or companies to perform any relevant transaction; may be an ID or passport.','fakturo'),
@@ -38,6 +39,7 @@ $helptexts = array(
 		),
 	),
 	'CUSTOMER INFORMATION' => array( 
+		'tabtitle' =>  __('Customer information', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Address','fakturo'),
 			'tip' => __('Place or address of the customer.','fakturo'),
@@ -68,12 +70,14 @@ $helptexts = array(
 		),
 	),
 	'CUSTOMER CONTACT DETAILS' => array( 
+		'tabtitle' =>  __('Customer contact details', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('','fakturo'),
 			'tip' => __('Register one or several contacts for the customer with their corresponding personal contact information.','fakturo'),
 		),
 	),
 	'ACTIVE CUSTOMERS' => array( 
+		'tabtitle' =>  __('Active customer', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('','fakturo'),
 			'tip' => __('Mark the customer as active for them to appear in reports and if they are available for selection.','fakturo'),

@@ -12,11 +12,18 @@
 
 $helptexts = array( 
 	'PAYMENT METHODS' => array( 
+		'tabtitle' =>  __('Payment Methods', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Concept','fakturo'),
 			'tip' => __('Register the payment methods which will be visible on the invoice of a purchase. This can be done by clicking on the <b>"Add New Payment Type"</b> button, which will be saved and will appear in the list on the right side of the form. The payment method can be: cash, check, etc.','fakturo'),
 		),
 
+	),
+	'FIELDS' => array( 
+		'tabtitle' =>  __('Fields', 'fakturo' ),
+		'Item1' => array( 
+			'title' => __('Name','fakturo'),
+			'tip' => __('The name is how it appears on your site.','fakturo'))
 	),
 );
 

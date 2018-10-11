@@ -12,13 +12,16 @@
 
 $helptexts = array( 
 	'SYSTEM SETTINGS ' => array( 
+		'tabtitle' =>  __('System Settings', 'fakturo' ),
 		'item1' => array( 
-			'title' => __('CONFIGURATION OF THE COMPANY','fakturo'),
-		//	'tip' => __('','fakturo'),
+			'title' => __('Concept','fakturo'),
+			'tip' => __('In this section you can choose the default system values that will be used during the process. Some examples of the values you can choose are: the currency, the default invoice type, the point of sale, the price scale, the default code for the invoices, the type of payment and even the entity bankary and the tax of your preference.', 'fakturo' ).
+				'<br><br>'.__('It is very important to clarify that some of these values may be modified in the different stages of the process.', 'fakturo' ),
 		),
 
 	),
 	'FIELDS ' => array( 
+		'tabtitle' =>  __('Fields', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Currency Symbol Position','fakturo'),
 			'tip' => __('Select the location of the currency symbol to either before or after the number value.','fakturo'),
@@ -61,17 +64,9 @@ $helptexts = array(
 		),
 		'item11' => array( 
 			'title' => __('Default Date Format','fakturo'),
-			'tip' => __('Select the format for the date on the invoice. For example: Day-Month-Year or Day/Month/Year.','fakturo').'<br>'.__('Click on <b>"SAVE CHANGES"</b> to save your settings.','fakturo')
+			'tip' => __('Select the format for the date on the invoice. For example: Day-Month-Year or Day/Month/Year.','fakturo').'<br>'.__('Click on <b>"'.__('Save Changes').'"</b> to save your settings.','fakturo')
 		),
 	),
-	'PRINT FORMATS' => array( 
-		'item1' => array( 
-			'title' => __('Concept','fakturo'),
-			'tip' => __('In this field, you can generate the system report or reports assigned to a specific module by entering the template name, description and assigment module. ','fakturo'),
-		),
-
-	),	
-
 );
 
 ?>

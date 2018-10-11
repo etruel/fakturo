@@ -12,8 +12,9 @@
 
 $helptexts = array( 
 	'CUSTOMER' => array( 
+		'tabtitle' =>  __('Customers', 'fakturo' ),
 		'Item1' => array( 
-			'title' => __('Provider.','fakturo'),
+			'title' => __('Customers.','fakturo'),
 			'tip' => __('People who access products and services by paying. To register a new customer, you can click on the <b>"Add New"</b> button, which will take you to the corresponding form.','fakturo'))
 	),
 

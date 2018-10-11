@@ -12,11 +12,13 @@
 
 $helptexts = array( 
 	'SALE' => array( 
+		'tabtitle' =>  __('Sale', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Concept','fakturo'),
-			'tip' => __('Organized process aimed at enhancing the vendor/customer relationship through the purchase of products or services. To create a new sale, you can click the button <b>"ADD NEW SALE"</b> and fill in the appropriate form. You will also be able to see the list of completed sales in the displayed information table. An automatic code is generated, which identifies the sale to be made.','fakturo'))
+			'tip' => __('Organized process aimed at enhancing the vendor/customer relationship through the purchase of products or services. To create a new sale, you can click the button <b>"Add New"</b> and fill in the appropriate form. You will also be able to see the list of completed sales in the displayed information table. An automatic code is generated, which identifies the sale to be made.','fakturo'))
 	),
 	'INVOICE DETAILS' => array( 
+		'tabtitle' =>  __('Invoice Details', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Customer','fakturo'),
 			'tip' => __('Select who will receive the invoice from the customer list. If they are not found, then you must register the customer on the "customers" form. If the customer does exist and doesn’t appear, verify that the option "ACTIVE CUSTOMER" is selected in the customer form','fakturo')),
@@ -37,11 +39,13 @@ $helptexts = array(
 			'tip' => __('Person who manages the invoice','fakturo')),	
 	),
 	'INVOICE' => array( 
+		'tabtitle' =>  __('Invoice', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Concept','fakturo'),
 			'tip' => __('Proof that is acquired through a purchase or sale. Search for the product to sell, which automatically comes with its unit price, reference and brief description. When choosing the quantity to buy, the total and subtotal fields will automatically be filled in.','fakturo')),
 	),
 	'DISCOUNT' => array( 
+		'tabtitle' =>  __('Discount', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Concept','fakturo'),
 			'tip' => __('Amount of money to be discounted depending on the purchase.','fakturo')),

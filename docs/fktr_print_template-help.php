@@ -13,14 +13,12 @@
 
 $helptexts = array( 
 	'PRINT FORMATS' => array( 
+		'tabtitle' =>  __('Print Formats', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Print Template','fakturo'),
-			'tip' => __('In this field, you can generate the system report or reports assigned to a specific module by entering the template name, description and assigment module.','fakturo'),
+			'tip' => __('You can add the default print templates format by assigning it to a specific module by entering the name of the template and the description, these formats will be used when printing invoices or reports.','fakturo'),
 		),
 	),
 );
-
-
-
 
 ?>

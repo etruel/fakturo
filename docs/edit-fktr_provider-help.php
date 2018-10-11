@@ -12,14 +12,10 @@
 
 $helptexts = array( 
 	'SUPPLIERS' => array( 
+		'tabtitle' =>  __('Suppliers', 'fakturo' ),
 		'feeds' => array( 
 			'title' => __('Provider', 'fakturo' ),
-			'tip' => __('Those in charge of supplying products, items or tangent articles. ','fakturo'))
-	),
-	'Add New' => array( 
-		'feed_url' => array( 
-			'title' => __('Add New Provider','fakturo'),
-			'tip' => __('To register new providers, you can click on the "Add new" button, which will take you to the corresponding supplier registration form to fill in the fields','fakturo')
+			'tip' => __('Those in charge of supplying products, items or tangent articles, to register new providers, you can click on the "Add new" button, which will take you to the corresponding supplier registration form to fill in the fields.','fakturo')
 		),
 	),
 
