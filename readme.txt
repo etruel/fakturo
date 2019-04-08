@@ -3,7 +3,7 @@ Contributors: etruel, sniuk
 Donate link: 
 Tags: invoice, sales, purchases, billing, receipt, Tax Code, VAT, PDF invoices, bill, bill clients, merchantplus, SME, pyme, checkout, online payment, pay, recurring billing, send invoice, web invoice, wp-invoice, wp-sales, e-commerce, e-store, eshop, wp ecommerce
 Requires at least: 4.1
-Tested up to: 5.0
+Tested up to: 5.1.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -167,5 +167,5 @@ First Release
 
 == Upgrade Notice ==
 
-= 0.8 Beta =
-Many tweaks. This would be the RC2.
+= 0.9 Beta =
+Many tweaks. This would be the RC3.
