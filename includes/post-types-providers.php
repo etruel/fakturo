@@ -578,7 +578,7 @@ class fktrPostTypeProviders {
 			return false;
 		}
 
-		if ( ! current_user_can( 'manage_options', $post_id ) ) {
+		if ( ! current_user_can( 'fakturo_manager', $post_id ) ) {
 			return false;
 		}
 		if ( ( defined( 'FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION ) ) {

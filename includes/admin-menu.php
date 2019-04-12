@@ -25,7 +25,15 @@ class fktrAdminMenu {
 			'fakturo_dashboard', 
 			array( __CLASS__, 'fakturo_dashboard'),
 			'dashicons-tickets', 26  );
-		
+		$page = add_submenu_page(
+			'fakturo_dashboard',
+			__( 'Fakturo Dashboard', 'fakturo' ),
+			__( 'Dashboard', 'fakturo' ),
+			'edit_fakturo_dashboard',
+			'fakturo_dashboard',
+			array( __CLASS__, 'fakturo_dashboard')
+		);
+
 		$page = add_submenu_page(
 			'fakturo_dashboard',
 			__( 'Providers', 'fakturo' ),
@@ -147,12 +155,21 @@ class fktrAdminMenu {
 		}
 			
 		add_menu_page( 
-			__( 'Sales Invoices', 'fakturo' ), 
-			__( 'Sales Invoices', 'fakturo' ), 
+			__( 'Sales', 'fakturo' ), 
+			__( 'Sales', 'fakturo' ), 
 			'edit_fktr_sales', 
 			'edit.php?post_type=fktr_sale', 
 			'', 
 			'dashicons-tickets', 26  );
+		$page = add_submenu_page(
+			'edit.php?post_type=fktr_sale',
+			__( 'Sales Invoices', 'fakturo' ), 
+			__( 'Invoices', 'fakturo' ), 
+			'edit_fktr_sales',
+			'edit.php?post_type=fktr_sale', 
+			''
+		);
+
 		$page = add_submenu_page(
 			'edit.php?post_type=fktr_sale',
 			__( 'Add New', 'fakturo' ),

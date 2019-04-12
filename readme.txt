@@ -82,6 +82,10 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 
 == Changelog ==
+= 0.9.1 Beta =
+* Added suport to translate the sliderchecks options.
+* Fixes fakturo_manager as minimun role to save Clients, Products, Providers and Sales.
+
 = 0.9 Beta =
 * Added help tips for all screens
 * Added languages files and spanish language. 
