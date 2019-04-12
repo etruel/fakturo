@@ -85,6 +85,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 = 0.9.1 Beta =
 * Added suport to translate the sliderchecks options.
 * Fixes fakturo_manager as minimun role to save Clients, Products, Providers and Sales.
+* Adds datepicker in Start of activities of setting page.
 
 = 0.9 Beta =
 * Added help tips for all screens

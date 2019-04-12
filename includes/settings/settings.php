@@ -42,21 +42,29 @@ class fktrSettings {
 		return $submenu_file;
 	}
 	public static function scripts() {
-		global $current_screen;  
+		global $current_screen, $wp_locale, $locale;  
 		if ($current_screen->id == "admin_page_fakturo-settings-system" || $current_screen->id == "fakturo_page_fakturo-settings" ) {
 			wp_enqueue_script('media-upload');
 			wp_enqueue_script('thickbox');
 			wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'jquery-settings', FAKTURO_PLUGIN_URL . 'assets/js/settings.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_enqueue_script( 'jquery-datetimepicker', FAKTURO_PLUGIN_URL . 'assets/js/jquery.datetimepicker.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			
 			$setting_system = get_option('fakturo_system_options_group', false);
 			
-
+			$objectL10n = (object)array(
+				'lang'			=> substr($locale, 0, 2),
+				'UTC'			=> get_option( 'gmt_offset' ),
+				'timeFormat'    => get_option( 'time_format' ),
+				'dateFormat'    => self::date_format_php_to_js( $setting_system['dateformat'] ),
+				'printFormat'   => self::date_format_php_to_js( $setting_system['dateformat'] ),
+				'firstDay'      => get_option( 'start_of_week' ),
+			);
 			wp_localize_script('jquery-settings', 'setting_object',
 				array('ajax_url' => admin_url( 'admin-ajax.php' ),
 					'loading_states_text' => __('Loading states...', 'fakturo' ),
-					
+					'datetimepicker' => $objectL10n,
 
 			) );
 
@@ -78,7 +86,8 @@ class fktrSettings {
 		if ($current_screen->id == 'admin_page_fakturo-settings-system' || $current_screen->id == "fakturo_page_fakturo-settings" ) {
 			wp_enqueue_style('fktr-new-terms-popup',FAKTURO_PLUGIN_URL .'assets/css/new-terms-popup.css');	
 			wp_enqueue_style('style-settings',FAKTURO_PLUGIN_URL .'assets/css/settings-system.css');
-			
+			wp_enqueue_style('style-datetimepicker',FAKTURO_PLUGIN_URL .'assets/css/jquery.datetimepicker.css');	
+		
 		}
 		if ($current_screen->id == "fakturo_page_fakturo-settings" ) {
 			wp_enqueue_style('style-settings-company',FAKTURO_PLUGIN_URL .'assets/css/settings-company.css');

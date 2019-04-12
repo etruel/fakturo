@@ -10,6 +10,19 @@ jQuery(document).ready(function() {
 		jQuery(this).append(jelement);
 		jQuery(this).trigger("change");
 	});
+
+	jQuery.datetimepicker.setLocale(setting_object.datetimepicker.lang);
+	
+	jQuery('#start').datetimepicker({
+		lang: setting_object.datetimepicker.lang,
+		dayOfWeekStart:  setting_object.datetimepicker.firstDay,
+		formatTime: setting_object.datetimepicker.timeFormat,
+		format: setting_object.datetimepicker.printFormat,
+		formatDate: setting_object.datetimepicker.dateFormat,
+		maxDate: setting_object.datetimepicker.dateFormat, 
+		timepicker:false,
+	});
+
 	jQuery('#fakturo_system_options_group_currency').select2();
 	jQuery('#fakturo_system_options_group_invoice_type').select2();
 	jQuery('#fakturo_system_options_group_price_scale').select2();
