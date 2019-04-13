@@ -43,7 +43,7 @@ function fktr_print_widget($slug, $widget) {
 }         
 
 ?>
-	<h1 class="_title_dash">Dashboard</h1>
+	<h1 class="_title_dash"><?php _e( 'Dashboard', 'fakturo' ); ?></h1>
 	<!--html5 desing-->
 	<div>
 		

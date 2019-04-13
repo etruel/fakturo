@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Fakturo\n"
-"POT-Creation-Date: 2018-10-11 17:16-0400\n"
-"PO-Revision-Date: 2019-04-11 12:59-0400\n"
+"POT-Creation-Date: 2019-04-13 17:38-0300\n"
+"PO-Revision-Date: 2019-04-13 17:47-0300\n"
 "Last-Translator: manuelge <manuel@netmdp.com>\n"
 "Language-Team: NetMdP <dev@netmdp.com>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: __;_x;_e\n"
@@ -19,10 +19,10 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-1: *.js\n"
 
 #: docs/admin_page_fakturo-settings-system-help.php:15 includes/notices.php:90
-#: includes/notices.php:94 includes/settings/settings.php:738
-#: includes/settings/settings.php:1000
+#: includes/notices.php:94 includes/settings/settings.php:747
+#: includes/settings/settings.php:1009
 msgid "System Settings"
-msgstr "Configuración del sistema"
+msgstr "Sistema"
 
 #: docs/admin_page_fakturo-settings-system-help.php:17
 #: docs/edit-fktr_bank_entities-help.php:17 docs/edit-fktr_category-help.php:16
@@ -94,7 +94,7 @@ msgstr ""
 "número."
 
 #: docs/admin_page_fakturo-settings-system-help.php:30
-#: includes/settings/settings.php:767 includes/wizard_install.php:975
+#: includes/settings/settings.php:776 includes/wizard_install.php:973
 msgid "Thousands Separator"
 msgstr "Separador de miles"
 
@@ -107,7 +107,7 @@ msgstr ""
 "normalmente es una coma (,) o un punto (.)."
 
 #: docs/admin_page_fakturo-settings-system-help.php:34
-#: includes/settings/settings.php:779 includes/wizard_install.php:985
+#: includes/settings/settings.php:788 includes/wizard_install.php:983
 msgid "Decimal Separator"
 msgstr "Separador decimal"
 
@@ -132,7 +132,7 @@ msgstr ""
 "administrar."
 
 #: docs/admin_page_fakturo-settings-system-help.php:42 includes/notices.php:94
-#: includes/settings/settings.php:803 includes/wizard_install.php:1135
+#: includes/settings/settings.php:812 includes/wizard_install.php:1133
 msgid "Default Invoice Type"
 msgstr "Tipo de Factura Predeterminada"
 
@@ -217,7 +217,7 @@ msgstr "Afip configuraciones"
 
 #: docs/admin_page_fktr-afip-extension-page-help.php:17
 msgid "CUIT"
-msgstr ""
+msgstr "CUIT"
 
 #: docs/admin_page_fktr-afip-extension-page-help.php:18
 #: docs/fakturo_page_fakturo-settings-help.php:27
@@ -292,7 +292,7 @@ msgstr "Tasa de cambio"
 msgid "Exchange rate of currencies from AFIP web service."
 msgstr "Tasa de cambio de las monedas del servicio web de AFIP."
 
-#: docs/edit-fktr_bank_entities-help.php:15 includes/settings/settings.php:1005
+#: docs/edit-fktr_bank_entities-help.php:15 includes/settings/settings.php:1014
 #: includes/taxonomy/bank-entities.php:46
 #: includes/taxonomy/bank-entities.php:61
 msgid "Bank Entities"
@@ -317,7 +317,7 @@ msgstr ""
 #: docs/edit-fktr_price_scales-help.php:23
 #: docs/edit-fktr_product_type-help.php:24
 #: docs/edit-fktr_sale_points-help.php:26 docs/edit-fktr_tax-help.php:24
-#: docs/edit-fktr_tax_conditions-help.php:24 includes/settings/settings.php:320
+#: docs/edit-fktr_tax_conditions-help.php:24 includes/settings/settings.php:329
 #: includes/taxonomy/bank-entities.php:133 includes/taxonomy/checks.php:534
 #: includes/taxonomy/countries.php:133 includes/taxonomy/currencies.php:199
 #: includes/taxonomy/invoice-types.php:201 includes/taxonomy/locations.php:126
@@ -326,8 +326,8 @@ msgstr ""
 #: includes/taxonomy/price-scales.php:154
 #: includes/taxonomy/product-types.php:128
 #: includes/taxonomy/sale-points.php:154
-#: includes/taxonomy/tax-conditions.php:217 includes/taxonomy/taxes.php:164
-#: includes/wizard_install.php:659
+#: includes/taxonomy/tax-conditions.php:224 includes/taxonomy/taxes.php:164
+#: includes/wizard_install.php:657
 msgid "Name"
 msgstr "Nombre"
 
@@ -341,12 +341,12 @@ msgstr "Nombre"
 #: docs/edit-fktr_product_type-help.php:25
 #: docs/edit-fktr_sale_points-help.php:27 docs/edit-fktr_tax-help.php:25
 #: docs/edit-fktr_tax_conditions-help.php:25
-#: includes/libs/fktr_popup_taxonomy.php:169
+#: includes/libs/fktr_popup_taxonomy.php:175
 msgid "The name is how it appears on your site."
 msgstr "El nombre es como aparece en tu sitio."
 
 #: docs/edit-fktr_category-help.php:14 includes/post-types-products.php:98
-#: includes/post-types-products.php:113 includes/wizard_install.php:1536
+#: includes/post-types-products.php:113 includes/wizard_install.php:1534
 msgid "Categories"
 msgstr "Categorías"
 
@@ -366,8 +366,8 @@ msgstr ""
 "Para agregar una categoría, simplemente haga clic en el botón <b>\"Agregar "
 "nueva categoría\"</ b> para guardar su nombre y descripción."
 
-#: docs/edit-fktr_check-help.php:15 includes/admin-menu.php:179
-#: includes/admin-menu.php:180 includes/taxonomy/checks.php:50
+#: docs/edit-fktr_check-help.php:15 includes/admin-menu.php:196
+#: includes/admin-menu.php:197 includes/taxonomy/checks.php:50
 #: includes/taxonomy/checks.php:65
 msgid "Checks"
 msgstr "Cheques"
@@ -419,7 +419,7 @@ msgstr "Entidad bancaria a partir de la cual se emite el cheque. "
 #: docs/edit-fktr_check-help.php:32 docs/fktr_client-help.php:29
 #: docs/fktr_product-help.php:63 includes/post-types-clients.php:322
 #: includes/post-types-products.php:322 includes/post-types-receipts.php:698
-#: includes/settings/settings.php:744 includes/taxonomy/checks.php:281
+#: includes/settings/settings.php:753 includes/taxonomy/checks.php:281
 #: includes/taxonomy/checks.php:443 includes/taxonomy/currencies.php:42
 msgid "Currency"
 msgstr "Moneda"
@@ -479,7 +479,7 @@ msgstr ""
 "registrar un nuevo cliente, puede hacer clic en el botón <b>\"Agregar nuevo"
 "\"</b>, que lo llevará al formulario correspondiente."
 
-#: docs/edit-fktr_countries-help.php:15 includes/settings/settings.php:1006
+#: docs/edit-fktr_countries-help.php:15 includes/settings/settings.php:1015
 msgid "Countries and States"
 msgstr "Países y provincias"
 
@@ -500,8 +500,8 @@ msgstr ""
 #: docs/fakturo_page_fakturo-settings-help.php:38 docs/fktr_client-help.php:48
 #: docs/fktr_provider-help.php:25 includes/post-types-clients.php:421
 #: includes/post-types-providers.php:291 includes/post-types-sales.php:1025
-#: includes/settings/settings.php:359 includes/taxonomy/countries.php:42
-#: includes/taxonomy/countries.php:46 includes/wizard_install.php:696
+#: includes/settings/settings.php:368 includes/taxonomy/countries.php:42
+#: includes/taxonomy/countries.php:46 includes/wizard_install.php:694
 msgid "Country"
 msgstr "País"
 
@@ -515,7 +515,7 @@ msgstr ""
 
 #: docs/edit-fktr_currencies-help.php:16 includes/notices.php:70
 #: includes/post-types-receipts.php:467 includes/post-types-sales.php:575
-#: includes/settings/settings.php:1004 includes/taxonomy/currencies.php:41
+#: includes/settings/settings.php:1013 includes/taxonomy/currencies.php:41
 #: includes/taxonomy/currencies.php:56
 msgid "Currencies"
 msgstr "Monedas"
@@ -536,7 +536,7 @@ msgstr ""
 #: docs/edit-fktr_currencies-help.php:28 includes/taxonomy/currencies.php:127
 #: includes/taxonomy/currencies.php:158
 msgid "Plural"
-msgstr ""
+msgstr "Plural"
 
 #: docs/edit-fktr_currencies-help.php:29
 msgid "Plural name of the currency. "
@@ -568,10 +568,10 @@ msgstr "Tasa de cambio."
 #: includes/reports/client_account_movements.php:90
 #: includes/reports/client_account_movements.php:227
 #: includes/reports/client_account_movements.php:375
-#: includes/reports/client_summary.php:270 includes/settings/settings.php:668
-#: includes/settings/settings.php:683 includes/taxonomy/currencies.php:142
-#: includes/taxonomy/currencies.php:185 includes/wizard_install.php:1490
-#: includes/wizard_install.php:1504
+#: includes/reports/client_summary.php:270 includes/settings/settings.php:677
+#: includes/settings/settings.php:692 includes/taxonomy/currencies.php:142
+#: includes/taxonomy/currencies.php:185 includes/wizard_install.php:1488
+#: includes/wizard_install.php:1502
 msgid "Reference"
 msgstr "Referencia"
 
@@ -582,7 +582,7 @@ msgstr "Sitio web para encontrar la tasa de conversión."
 #: docs/edit-fktr_invoice_types-help.php:15 docs/fktr_sale-help.php:26
 #: docs/fktr_subscriptions-help.php:28 includes/post-types-sales.php:1073
 #: includes/taxonomy/invoice-types.php:62
-#: includes/taxonomy/tax-conditions.php:218
+#: includes/taxonomy/tax-conditions.php:225
 msgid "Invoice Type"
 msgstr "Tipo de factura"
 
@@ -615,9 +615,9 @@ msgstr "Nombre corto de los tipos de factura."
 msgid "Invoice type symbol. "
 msgstr "Símbolo del tipo de factura. "
 
-#: docs/edit-fktr_locations-help.php:15 includes/settings/settings.php:1012
+#: docs/edit-fktr_locations-help.php:15 includes/settings/settings.php:1021
 #: includes/taxonomy/locations.php:42 includes/taxonomy/locations.php:57
-#: includes/wizard_install.php:1655
+#: includes/wizard_install.php:1653
 msgid "Locations"
 msgstr "Ubicaciones"
 
@@ -634,9 +634,9 @@ msgstr ""
 "guardar sus cambios. Estos se agregarán a la lista que se encuentra en el "
 "lado derecho del formulario. "
 
-#: docs/edit-fktr_model-help.php:15 includes/admin-menu.php:132
-#: includes/admin-menu.php:133 includes/post-types-products.php:140
-#: includes/post-types-products.php:155 includes/wizard_install.php:1553
+#: docs/edit-fktr_model-help.php:15 includes/admin-menu.php:140
+#: includes/admin-menu.php:141 includes/post-types-products.php:140
+#: includes/post-types-products.php:155 includes/wizard_install.php:1551
 msgid "Models"
 msgstr "Modelos"
 
@@ -650,9 +650,9 @@ msgstr ""
 "mecanizados. Para agregar un nuevo modelo, simplemente haga clic en el botón "
 "<b>\"Agregar Nuevo Modelo\"</b> para guardar su nombre y descripción."
 
-#: docs/edit-fktr_origins-help.php:15 includes/settings/settings.php:1015
+#: docs/edit-fktr_origins-help.php:15 includes/settings/settings.php:1024
 #: includes/taxonomy/origins.php:41 includes/taxonomy/origins.php:56
-#: includes/wizard_install.php:1587
+#: includes/wizard_install.php:1585
 msgid "Origins"
 msgstr "Orígenes"
 
@@ -672,9 +672,9 @@ msgstr ""
 "al lado derecho del formulario. Tenga en cuenta que en esta lista puede "
 "hacer una búsqueda rápida de los orígenes informados a través de sus filtros."
 
-#: docs/edit-fktr_packaging-help.php:15 includes/settings/settings.php:1013
+#: docs/edit-fktr_packaging-help.php:15 includes/settings/settings.php:1022
 #: includes/taxonomy/packagings.php:43 includes/taxonomy/packagings.php:58
-#: includes/wizard_install.php:1637
+#: includes/wizard_install.php:1635
 msgid "Packagings"
 msgstr "Embalajes"
 
@@ -707,9 +707,9 @@ msgstr ""
 "\"</b>, al guardarlo, se encontrará en la lista que esta al lado derecho del "
 "formulario."
 
-#: docs/edit-fktr_price_scales-help.php:15 includes/settings/settings.php:1014
+#: docs/edit-fktr_price_scales-help.php:15 includes/settings/settings.php:1023
 #: includes/taxonomy/price-scales.php:50 includes/taxonomy/price-scales.php:65
-#: includes/wizard_install.php:1604
+#: includes/wizard_install.php:1602
 msgid "Price Scales"
 msgstr "Escalas de precios"
 
@@ -739,9 +739,9 @@ msgstr "Porcentaje"
 msgid "Percentage for price scales."
 msgstr "Porcentaje para escala de precios."
 
-#: docs/edit-fktr_product_type-help.php:15 includes/settings/settings.php:1011
+#: docs/edit-fktr_product_type-help.php:15 includes/settings/settings.php:1020
 #: includes/taxonomy/product-types.php:42
-#: includes/taxonomy/product-types.php:57 includes/wizard_install.php:1570
+#: includes/taxonomy/product-types.php:57 includes/wizard_install.php:1568
 msgid "Product Types"
 msgstr "Tipos de productos"
 
@@ -781,7 +781,7 @@ msgstr ""
 "del formulario."
 
 #: docs/edit-fktr_sale_points-help.php:16 includes/notices.php:82
-#: includes/settings/settings.php:989 includes/taxonomy/sale-points.php:46
+#: includes/settings/settings.php:998 includes/taxonomy/sale-points.php:46
 #: includes/taxonomy/sale-points.php:61
 msgid "Sale Points"
 msgstr "Puntos de Venta"
@@ -811,7 +811,7 @@ msgstr "Es el código que pertenece al punto de venta."
 #: docs/edit-fktr_stock-help.php:15 includes/taxonomy/stocks.php:50
 #: includes/taxonomy/stocks.php:65
 msgid "Stocks"
-msgstr ""
+msgstr "Stocks"
 
 #: docs/edit-fktr_stock-help.php:18
 msgid ""
@@ -831,9 +831,9 @@ msgstr ""
 "rentabilidad depende de la gestión del concepto que tenga la empresa, ya que "
 "obtendrán más o menos beneficios si su almacenamiento es óptimo."
 
-#: docs/edit-fktr_tax-help.php:15 includes/settings/settings.php:1020
-#: includes/settings/settings.php:1022 includes/taxonomy/taxes.php:41
-#: includes/taxonomy/taxes.php:56 includes/wizard_install.php:1621
+#: docs/edit-fktr_tax-help.php:15 includes/settings/settings.php:1029
+#: includes/settings/settings.php:1031 includes/taxonomy/taxes.php:41
+#: includes/taxonomy/taxes.php:56 includes/wizard_install.php:1619
 msgid "Taxes"
 msgstr "Impuestos"
 
@@ -865,7 +865,7 @@ msgid "Percentage for taxes."
 msgstr "Porcentaje para impuestos."
 
 #: docs/edit-fktr_tax_conditions-help.php:15
-#: includes/settings/settings.php:1021 includes/taxonomy/tax-conditions.php:41
+#: includes/settings/settings.php:1030 includes/taxonomy/tax-conditions.php:41
 #: includes/taxonomy/tax-conditions.php:56
 msgid "Tax Conditions"
 msgstr "Condiciones fiscales"
@@ -887,10 +887,10 @@ msgstr ""
 "esta al lado derecho del formulario."
 
 #: docs/edit-fktr_tax_conditions-help.php:27 includes/notices.php:76
-#: includes/settings/settings.php:988 includes/taxonomy/invoice-types.php:61
+#: includes/settings/settings.php:997 includes/taxonomy/invoice-types.php:61
 #: includes/taxonomy/invoice-types.php:76
 #: includes/taxonomy/tax-conditions.php:140
-#: includes/taxonomy/tax-conditions.php:185
+#: includes/taxonomy/tax-conditions.php:192
 msgid "Invoice Types"
 msgstr "Tipos de Facturas"
 
@@ -899,9 +899,9 @@ msgid "Default Invoice Type for this Tax Condition."
 msgstr "Tipo de factura predeterminado para esta condición fiscal."
 
 #: docs/fakturo_page_fakturo-settings-help.php:15
-#: includes/settings/settings.php:314 includes/settings/settings.php:987
-#: includes/wizard_install.php:33 includes/wizard_install.php:653
-#: includes/wizard_install.php:780
+#: includes/settings/settings.php:323 includes/settings/settings.php:996
+#: includes/wizard_install.php:33 includes/wizard_install.php:651
+#: includes/wizard_install.php:778
 msgid "Company Info"
 msgstr "Información de la empresa"
 
@@ -946,8 +946,8 @@ msgstr ""
 #: docs/fakturo_page_fakturo-settings-help.php:34 docs/fktr_client-help.php:44
 #: docs/fktr_provider-help.php:21 includes/post-types-clients.php:417
 #: includes/post-types-clients.php:513 includes/post-types-providers.php:287
-#: includes/post-types-providers.php:384 includes/settings/settings.php:344
-#: includes/users/users-list.php:232 includes/wizard_install.php:683
+#: includes/post-types-providers.php:384 includes/settings/settings.php:353
+#: includes/users/users-list.php:232 includes/wizard_install.php:681
 msgid "Address"
 msgstr "Dirección"
 
@@ -983,7 +983,7 @@ msgid "Telephone number of business or personal contact."
 msgstr "Número de teléfono de contacto comercial o personal."
 
 #: docs/fakturo_page_fakturo-settings-help.php:50
-#: includes/settings/settings.php:428 includes/wizard_install.php:765
+#: includes/settings/settings.php:437 includes/wizard_install.php:763
 msgid "Company Logo"
 msgstr "Logo de la empresa"
 
@@ -1093,7 +1093,7 @@ msgid "Contact email address. "
 msgstr "Correo electrónico de contacto. "
 
 #: docs/fktr_client-help.php:64 docs/fktr_provider-help.php:45
-#: includes/settings/settings.php:409 includes/wizard_install.php:746
+#: includes/settings/settings.php:418 includes/wizard_install.php:744
 msgid "Website"
 msgstr "Sitio Web"
 
@@ -1168,10 +1168,10 @@ msgstr ""
 "asignándolo a un módulo específico ingresando el nombre de la plantilla y la "
 "descripción, estos formatos se utilizarán al imprimir facturas o reportes."
 
-#: docs/fktr_product-help.php:15 includes/admin-menu.php:107
-#: includes/admin-menu.php:108 includes/post-types-products.php:43
+#: docs/fktr_product-help.php:15 includes/admin-menu.php:115
+#: includes/admin-menu.php:116 includes/post-types-products.php:43
 #: includes/post-types-products.php:54 includes/wizard_install.php:41
-#: includes/wizard_install.php:1530 includes/wizard_install.php:1729
+#: includes/wizard_install.php:1528 includes/wizard_install.php:1727
 msgid "Products"
 msgstr "Productos"
 
@@ -1230,13 +1230,13 @@ msgid "Enter business references about the product in this field."
 msgstr "Ingrese referencias comerciales sobre el producto en este campo."
 
 #: docs/fktr_product-help.php:40 includes/addons_page.php:179
-#: includes/libs/fktr_popup_taxonomy.php:223
+#: includes/libs/fktr_popup_taxonomy.php:229
 #: includes/post-types-clients.php:509
 #: includes/post-types-email-templates.php:610
 #: includes/post-types-print-templates.php:523
 #: includes/post-types-products.php:577 includes/post-types-providers.php:380
-#: includes/post-types-sales.php:233 includes/settings/settings.php:697
-#: includes/wizard_install.php:1518
+#: includes/post-types-sales.php:233 includes/settings/settings.php:706
+#: includes/wizard_install.php:1516
 msgid "Description"
 msgstr "Descripción"
 
@@ -1474,7 +1474,8 @@ msgstr ""
 "cliente, y podrá buscarlos a través del banco, la entidad bancaria. y el "
 "número de serie, para saber el monto, el tipo de moneda y la fecha de cobro."
 
-#: docs/fktr_receipt-help.php:38 includes/wizard_install.php:1282
+#: docs/fktr_receipt-help.php:38 includes/admin-menu.php:167
+#: includes/wizard_install.php:1280
 msgid "Invoices"
 msgstr "Facturas"
 
@@ -1700,7 +1701,7 @@ msgstr "Extensiones"
 msgid "Fakturo Add-ons"
 msgstr "Extensiones de Fakturo"
 
-#: includes/addons_page.php:56 includes/settings/settings.php:1026
+#: includes/addons_page.php:56 includes/settings/settings.php:1035
 msgid "Extensions"
 msgstr "Extensiones"
 
@@ -1754,15 +1755,23 @@ msgstr "Ir a comprar en la tienda de etruel"
 #: includes/admin-menu.php:22 includes/admin-menu.php:23
 #: includes/welcome.php:98
 msgid "Fakturo"
-msgstr ""
+msgstr "Fakturo"
 
-#: includes/admin-menu.php:31 includes/admin-menu.php:32
+#: includes/admin-menu.php:30
+msgid "Fakturo Dashboard"
+msgstr "Fakturo Dashboard"
+
+#: includes/admin-menu.php:31
+msgid "Dashboard"
+msgstr "Escritorio"
+
+#: includes/admin-menu.php:39 includes/admin-menu.php:40
 #: includes/post-types-providers.php:35 includes/post-types-providers.php:46
 msgid "Providers"
 msgstr "Proveedores"
 
-#: includes/admin-menu.php:38 includes/admin-menu.php:52
-#: includes/admin-menu.php:116 includes/admin-menu.php:158
+#: includes/admin-menu.php:46 includes/admin-menu.php:60
+#: includes/admin-menu.php:124 includes/admin-menu.php:175
 #: includes/post-types-clients.php:36
 #: includes/post-types-email-templates.php:307
 #: includes/post-types-print-templates.php:367
@@ -1771,60 +1780,67 @@ msgstr "Proveedores"
 msgid "Add New"
 msgstr "Agregar nuevo"
 
-#: includes/admin-menu.php:39
+#: includes/admin-menu.php:47
 msgid "Add Provider"
 msgstr "Agregar proveedor"
 
-#: includes/admin-menu.php:45 includes/admin-menu.php:46
+#: includes/admin-menu.php:53 includes/admin-menu.php:54
 #: includes/post-types-clients.php:34 includes/post-types-clients.php:45
 #: includes/reports.php:255
 msgid "Clients"
 msgstr "Clientes"
 
-#: includes/admin-menu.php:53
+#: includes/admin-menu.php:61
 msgid "Add Client"
 msgstr "Agregar Cliente"
 
-#: includes/admin-menu.php:59 includes/admin-menu.php:60
+#: includes/admin-menu.php:67 includes/admin-menu.php:68
 msgid "Reports"
 msgstr "Reportes"
 
-#: includes/admin-menu.php:68 includes/admin-menu.php:69
 #: includes/admin-menu.php:76 includes/admin-menu.php:77
-#: includes/admin-menu.php:86 includes/admin-menu.php:87
-#: includes/admin-menu.php:98 includes/admin-menu.php:99
+#: includes/admin-menu.php:84 includes/admin-menu.php:85
+#: includes/admin-menu.php:94 includes/admin-menu.php:95
+#: includes/admin-menu.php:106 includes/admin-menu.php:107
 #: includes/functions.php:260
 msgid "Settings"
-msgstr "Configuracion"
+msgstr "Configuración"
 
-#: includes/admin-menu.php:117
+#: includes/admin-menu.php:125
 msgid "Add Product"
 msgstr "Agregar producto"
 
-#: includes/admin-menu.php:124 includes/admin-menu.php:125
+#: includes/admin-menu.php:132 includes/admin-menu.php:133
 #: includes/post-types-products.php:99
 msgid "Category"
 msgstr "Categoría"
 
-#: includes/admin-menu.php:141 includes/admin-menu.php:142
+#: includes/admin-menu.php:149 includes/admin-menu.php:150
 #: includes/post-types-products.php:251 includes/taxonomy/stocks.php:51
 msgid "Stock"
 msgstr "Existencia"
 
-#: includes/admin-menu.php:150 includes/admin-menu.php:151
+#: includes/admin-menu.php:158 includes/admin-menu.php:159
+#: includes/dashboard-widget.php:161 includes/dashboard-widget.php:168
+#: includes/dashboard-widget.php:177 includes/dashboard-widget.php:184
+#: includes/post-types-sales.php:327 includes/post-types-sales.php:338
+msgid "Sales"
+msgstr "Ventas"
+
+#: includes/admin-menu.php:166
 msgid "Sales Invoices"
 msgstr "Facturas de venta"
 
-#: includes/admin-menu.php:159
+#: includes/admin-menu.php:176
 msgid "Add Invoice"
 msgstr "Agregar factura"
 
-#: includes/admin-menu.php:165 includes/admin-menu.php:166
+#: includes/admin-menu.php:182 includes/admin-menu.php:183
 #: includes/post-types-receipts.php:228 includes/post-types-receipts.php:239
 msgid "Receipts"
 msgstr "Recibos"
 
-#: includes/admin-menu.php:172 includes/admin-menu.php:173
+#: includes/admin-menu.php:189 includes/admin-menu.php:190
 #: includes/post-types-receipts.php:231
 msgid "Add New Receipt"
 msgstr "Agregar nuevo recibo"
@@ -1847,12 +1863,6 @@ msgstr "Mes Actual"
 #: includes/dashboard-widget.php:176 includes/dashboard-widget.php:183
 msgid "Earning"
 msgstr "Ganancias"
-
-#: includes/dashboard-widget.php:161 includes/dashboard-widget.php:168
-#: includes/dashboard-widget.php:177 includes/dashboard-widget.php:184
-#: includes/post-types-sales.php:327 includes/post-types-sales.php:338
-msgid "Sales"
-msgstr "Ventas"
 
 #: includes/dashboard-widget.php:165
 #: includes/reports/client_account_movements.php:469
@@ -2943,11 +2953,11 @@ msgstr "Lo sentimos, no está permitido crear términos en esta taxonomía."
 msgid "Sorry, you are not allowed to manage terms in this taxonomy."
 msgstr "Lo sentimos, no está permitido administrar términos en esta taxonomía."
 
-#: includes/libs/fktr_popup_taxonomy.php:173
+#: includes/libs/fktr_popup_taxonomy.php:179
 msgid "Slug"
-msgstr ""
+msgstr "Slug"
 
-#: includes/libs/fktr_popup_taxonomy.php:175
+#: includes/libs/fktr_popup_taxonomy.php:181
 msgid ""
 "The &#8220;slug&#8221; is the URL-friendly version of the name. It is "
 "usually all lowercase and contains only letters, numbers, and hyphens."
@@ -2955,11 +2965,11 @@ msgstr ""
 "El &#8220;slug&#8221; es la versión amigable de URL del nombre. Generalmente "
 "es todo en minúsculas y contiene solo letras, números y guiones."
 
-#: includes/libs/fktr_popup_taxonomy.php:189
+#: includes/libs/fktr_popup_taxonomy.php:195
 msgid "None"
 msgstr "Ninguna"
 
-#: includes/libs/fktr_popup_taxonomy.php:218
+#: includes/libs/fktr_popup_taxonomy.php:224
 msgid ""
 "Categories, unlike tags, can have a hierarchy. You might have a Jazz "
 "category, and under that have children categories for Bebop and Big Band. "
@@ -2969,7 +2979,7 @@ msgstr ""
 "Es posible que tengas una categoría de Jazz, y que tenga categorías "
 "infantiles para Bebop y Big Band. Totalmente opcional."
 
-#: includes/libs/fktr_popup_taxonomy.php:225
+#: includes/libs/fktr_popup_taxonomy.php:231
 msgid ""
 "The description is not prominent by default; however, some themes may show "
 "it."
@@ -3090,7 +3100,7 @@ msgstr "al menos un Tipo de Factura"
 msgid "at least one Sale Point"
 msgstr "al menos un Punto de Venta"
 
-#: includes/notices.php:90 includes/wizard_install.php:950
+#: includes/notices.php:90 includes/wizard_install.php:948
 msgid "Default Currency"
 msgstr "Moneda predeterminada"
 
@@ -3141,7 +3151,7 @@ msgid "Enter Client name here"
 msgstr "Ingrese el nombre del cliente aquí"
 
 #: includes/post-types-clients.php:106 includes/post-types-providers.php:458
-#: includes/settings/settings.php:58 includes/wizard_install.php:184
+#: includes/settings/settings.php:66 includes/wizard_install.php:184
 msgid "Loading states..."
 msgstr "Cargando estados..."
 
@@ -3200,8 +3210,8 @@ msgid "Active"
 msgstr "Activo"
 
 #: includes/post-types-clients.php:186 includes/post-types-receipts.php:538
-#: includes/post-types-sales.php:948 includes/settings/settings.php:606
-#: includes/wizard_install.php:1769
+#: includes/post-types-sales.php:948 includes/settings/settings.php:615
+#: includes/wizard_install.php:1767
 msgid "Choose a Payment Type"
 msgstr "Elija un tipo de pago"
 
@@ -3212,25 +3222,25 @@ msgid "Choose a Bank Entity"
 msgstr "Elija una entidad bancaria"
 
 #: includes/post-types-clients.php:230 includes/post-types-sales.php:920
-#: includes/settings/settings.php:226 includes/wizard_install.php:632
+#: includes/settings/settings.php:235 includes/wizard_install.php:630
 msgid "Choose a Tax Condition"
 msgstr "Elija una condición fiscal"
 
-#: includes/post-types-clients.php:250 includes/settings/settings.php:648
+#: includes/post-types-clients.php:250 includes/settings/settings.php:657
 msgid "Choose a Price Scale"
 msgstr "Elija una escala de precios"
 
 #: includes/post-types-clients.php:270 includes/post-types-products.php:295
 #: includes/post-types-receipts.php:403 includes/post-types-receipts.php:575
-#: includes/post-types-sales.php:851 includes/settings/settings.php:585
+#: includes/post-types-sales.php:851 includes/settings/settings.php:594
 #: includes/taxonomy/checks.php:207 includes/taxonomy/checks.php:371
-#: includes/wizard_install.php:921
+#: includes/wizard_install.php:919
 msgid "Choose a Currency"
 msgstr "Elija una moneda"
 
 #: includes/post-types-clients.php:294 includes/post-types-providers.php:279
-#: includes/post-types-sales.php:1033 includes/settings/settings.php:326
-#: includes/wizard_install.php:665
+#: includes/post-types-sales.php:1033 includes/settings/settings.php:335
+#: includes/wizard_install.php:663
 msgid "Taxpayer ID"
 msgstr "CUIT"
 
@@ -3265,22 +3275,22 @@ msgid "Credit Limit Interval"
 msgstr "Intervalo de límite de crédito"
 
 #: includes/post-types-clients.php:348 includes/post-types-providers.php:196
-#: includes/post-types-providers.php:217 includes/settings/settings.php:246
-#: includes/wizard_install.php:590
+#: includes/post-types-providers.php:217 includes/settings/settings.php:255
+#: includes/wizard_install.php:588
 msgid "Choose a country"
 msgstr "Elija un país"
 
 #: includes/post-types-clients.php:369 includes/post-types-clients.php:389
 #: includes/post-types-clients.php:543 includes/post-types-providers.php:222
-#: includes/post-types-providers.php:413 includes/settings/settings.php:267
-#: includes/settings/settings.php:287 includes/settings/settings.php:1099
-#: includes/wizard_install.php:611
+#: includes/post-types-providers.php:413 includes/settings/settings.php:276
+#: includes/settings/settings.php:296 includes/settings/settings.php:1108
+#: includes/wizard_install.php:609
 msgid "Choose a state"
 msgstr "Elija un estado"
 
 #: includes/post-types-clients.php:410 includes/post-types-clients.php:563
 #: includes/post-types-providers.php:244 includes/post-types-providers.php:434
-#: includes/settings/settings.php:309 includes/settings/settings.php:1120
+#: includes/settings/settings.php:318 includes/settings/settings.php:1129
 msgid "Choose a country before"
 msgstr "Elija un país antes"
 
@@ -3289,13 +3299,13 @@ msgid "States"
 msgstr "Estados"
 
 #: includes/post-types-clients.php:431 includes/post-types-providers.php:301
-#: includes/post-types-sales.php:1010 includes/settings/settings.php:397
-#: includes/wizard_install.php:734
+#: includes/post-types-sales.php:1010 includes/settings/settings.php:406
+#: includes/wizard_install.php:732
 msgid "City"
 msgstr "Ciudad"
 
 #: includes/post-types-clients.php:435 includes/post-types-providers.php:313
-#: includes/settings/settings.php:403 includes/wizard_install.php:740
+#: includes/settings/settings.php:412 includes/wizard_install.php:738
 msgid "Postcode"
 msgstr "Código postal"
 
@@ -3564,7 +3574,7 @@ msgstr ""
 
 #: includes/post-types-print-templates.php:365
 #: includes/post-types-print-templates.php:376
-#: includes/settings/settings.php:997
+#: includes/settings/settings.php:1006
 msgid "Print Templates"
 msgstr "Plantillas de impresión"
 
@@ -3803,7 +3813,7 @@ msgstr "Sugerido"
 
 #: includes/post-types-products.php:354
 msgid "Final"
-msgstr ""
+msgstr "Final"
 
 #: includes/post-types-products.php:393 includes/taxonomy/locations.php:43
 #: includes/taxonomy/stocks.php:256 includes/taxonomy/stocks.php:301
@@ -3832,7 +3842,7 @@ msgstr "Elija una categoría"
 msgid "Choose a Product Type"
 msgstr "Elija un tipo de producto"
 
-#: includes/post-types-products.php:489 includes/settings/settings.php:521
+#: includes/post-types-products.php:489 includes/settings/settings.php:530
 msgid "Choose a Tax"
 msgstr "Elija un impuesto"
 
@@ -3845,14 +3855,14 @@ msgid "Choose a Origin"
 msgstr "Elija un origen"
 
 #: includes/post-types-products.php:569 includes/post-types-sales.php:245
-#: includes/settings/settings.php:669 includes/settings/settings.php:684
-#: includes/wizard_install.php:1491 includes/wizard_install.php:1505
+#: includes/settings/settings.php:678 includes/settings/settings.php:693
+#: includes/wizard_install.php:1489 includes/wizard_install.php:1503
 msgid "Internal code"
 msgstr "Código interno"
 
 #: includes/post-types-products.php:573 includes/post-types-sales.php:248
-#: includes/settings/settings.php:670 includes/settings/settings.php:685
-#: includes/wizard_install.php:1492 includes/wizard_install.php:1506
+#: includes/settings/settings.php:679 includes/settings/settings.php:694
+#: includes/wizard_install.php:1490 includes/wizard_install.php:1504
 msgid "Manufacturers code"
 msgstr "Código de fabricante"
 
@@ -4102,7 +4112,7 @@ msgstr "Disponible para incluir"
 
 #: includes/post-types-receipts.php:714
 msgid "Nro"
-msgstr ""
+msgstr "Nro"
 
 #: includes/post-types-receipts.php:716 includes/taxonomy/checks.php:286
 #: includes/taxonomy/checks.php:452 includes/taxonomy/checks.php:536
@@ -4185,8 +4195,8 @@ msgstr "Eliminar este artículo permanentemente"
 msgid "Delete Permanently"
 msgstr "Eliminar permanentemente"
 
-#: includes/post-types-sales.php:230 includes/settings/settings.php:696
-#: includes/wizard_install.php:1517
+#: includes/post-types-sales.php:230 includes/settings/settings.php:705
+#: includes/wizard_install.php:1515
 msgid "Short Description"
 msgstr "Breve descripción"
 
@@ -4307,14 +4317,14 @@ msgstr "Precio unitario"
 msgid "Add product"
 msgstr "Agregar producto"
 
-#: includes/post-types-sales.php:788 includes/settings/settings.php:628
+#: includes/post-types-sales.php:788 includes/settings/settings.php:637
 #: includes/taxonomy/tax-conditions.php:117
-#: includes/taxonomy/tax-conditions.php:164 includes/wizard_install.php:1042
+#: includes/taxonomy/tax-conditions.php:171 includes/wizard_install.php:1040
 msgid "Choose a Invoice Type"
 msgstr "Elija un tipo de factura"
 
-#: includes/post-types-sales.php:817 includes/settings/settings.php:562
-#: includes/wizard_install.php:1062
+#: includes/post-types-sales.php:817 includes/settings/settings.php:571
+#: includes/wizard_install.php:1060
 msgid "Choose a Sale Point"
 msgstr "Elija un punto de venta"
 
@@ -4330,13 +4340,13 @@ msgstr "Nombre del cliente"
 msgid "Client address"
 msgstr "Dirección del cliente"
 
-#: includes/post-types-sales.php:1017 includes/settings/settings.php:372
-#: includes/wizard_install.php:709
+#: includes/post-types-sales.php:1017 includes/settings/settings.php:381
+#: includes/wizard_install.php:707
 msgid "State"
 msgstr "Provincia"
 
-#: includes/post-types-sales.php:1040 includes/settings/settings.php:415
-#: includes/wizard_install.php:752
+#: includes/post-types-sales.php:1040 includes/settings/settings.php:424
+#: includes/wizard_install.php:750
 msgid "Tax condition"
 msgstr "Condición fiscal"
 
@@ -4348,8 +4358,8 @@ msgstr "Escala de precios"
 msgid "Credit limit"
 msgstr "Limite de credito"
 
-#: includes/post-types-sales.php:1079 includes/settings/settings.php:846
-#: includes/taxonomy/sale-points.php:47 includes/wizard_install.php:1152
+#: includes/post-types-sales.php:1079 includes/settings/settings.php:855
+#: includes/taxonomy/sale-points.php:47 includes/wizard_install.php:1150
 msgid "Sale Point"
 msgstr "Punto de venta"
 
@@ -4515,7 +4525,7 @@ msgstr "CVS estadísticas"
 
 #: includes/reports/client_account_movements.php:501
 msgid "PDF"
-msgstr ""
+msgstr "PDF"
 
 #: includes/reports/client_summary.php:228
 msgid "Client Summary needs the default currency on system settings."
@@ -4540,252 +4550,252 @@ msgstr "Todos los clientes"
 msgid "Show details"
 msgstr "Mostrar  detalles"
 
-#: includes/settings/settings.php:67 includes/wizard_install.php:187
+#: includes/settings/settings.php:75 includes/wizard_install.php:187
 msgid "Loading..."
 msgstr "Cargando..."
 
-#: includes/settings/settings.php:202
+#: includes/settings/settings.php:211
 #, php-format
 msgid "Dialer %s"
 msgstr "Marcador %s"
 
-#: includes/settings/settings.php:332 includes/wizard_install.php:671
+#: includes/settings/settings.php:341 includes/wizard_install.php:669
 msgid "Gross income tax ID"
 msgstr "ID del impuesto sobre la renta bruta"
 
-#: includes/settings/settings.php:338 includes/wizard_install.php:677
+#: includes/settings/settings.php:347 includes/wizard_install.php:675
 msgid "Start of activities"
 msgstr "Inicio de actividades"
 
-#: includes/settings/settings.php:350 includes/users/users-list.php:233
-#: includes/wizard_install.php:689
+#: includes/settings/settings.php:359 includes/users/users-list.php:233
+#: includes/wizard_install.php:687
 msgid "Telephone"
 msgstr "Teléfono"
 
-#: includes/settings/settings.php:385 includes/wizard_install.php:722
+#: includes/settings/settings.php:394 includes/wizard_install.php:720
 msgid "Add New State"
 msgstr "Agregar nueva provincia"
 
-#: includes/settings/settings.php:432
+#: includes/settings/settings.php:441
 msgid "Upload Image"
 msgstr "Cargar imagen"
 
-#: includes/settings/settings.php:433 includes/wizard_install.php:770
+#: includes/settings/settings.php:442 includes/wizard_install.php:768
 msgid "Enter an URL or upload an image for the company logo."
 msgstr "Ingrese una URL o cargue una imagen para el logotipo de la empresa."
 
-#: includes/settings/settings.php:436 includes/wizard_install.php:773
+#: includes/settings/settings.php:445 includes/wizard_install.php:771
 msgid "This is your current logo"
 msgstr "Este es tu logo actual"
 
-#: includes/settings/settings.php:541
+#: includes/settings/settings.php:550
 msgid "Choose a Bank Entitie"
 msgstr "Elija una entidad bancaria"
 
-#: includes/settings/settings.php:707 includes/wizard_install.php:1114
+#: includes/settings/settings.php:716 includes/wizard_install.php:1112
 msgid "dd/mm/YYYY"
 msgstr "dd/mm/AAAA"
 
-#: includes/settings/settings.php:708 includes/wizard_install.php:1115
+#: includes/settings/settings.php:717 includes/wizard_install.php:1113
 msgid "mm/dd/YYYY"
 msgstr "mm/dd/AAAA"
 
-#: includes/settings/settings.php:718 includes/wizard_install.php:1082
+#: includes/settings/settings.php:727 includes/wizard_install.php:1080
 msgid "Sale point"
 msgstr "Punto de venta"
 
-#: includes/settings/settings.php:719 includes/wizard_install.php:1083
+#: includes/settings/settings.php:728 includes/wizard_install.php:1081
 msgid "Invoice number"
 msgstr "Numero de factura"
 
-#: includes/settings/settings.php:720 includes/wizard_install.php:1084
+#: includes/settings/settings.php:729 includes/wizard_install.php:1082
 msgid "Invoice Type name"
 msgstr "Nombre del tipo de factura"
 
-#: includes/settings/settings.php:721 includes/wizard_install.php:1085
+#: includes/settings/settings.php:730 includes/wizard_install.php:1083
 msgid "Invoice Type Short-name"
 msgstr "Nombre corto del tipo de factura"
 
-#: includes/settings/settings.php:722 includes/wizard_install.php:1086
+#: includes/settings/settings.php:731 includes/wizard_install.php:1084
 msgid "Invoice Type symbol"
 msgstr "Símbolo del tipo de factura"
 
-#: includes/settings/settings.php:748
+#: includes/settings/settings.php:757
 msgid "Choose your currency."
 msgstr "Elija su moneda."
 
-#: includes/settings/settings.php:753 includes/wizard_install.php:963
+#: includes/settings/settings.php:762 includes/wizard_install.php:961
 msgid "Currency Position"
 msgstr "Posición de la moneda"
 
-#: includes/settings/settings.php:760
+#: includes/settings/settings.php:769
 msgid "Choose the location of the currency sign."
 msgstr "Elija la ubicación del signo de moneda."
 
-#: includes/settings/settings.php:771
+#: includes/settings/settings.php:780
 msgid "The symbol (usually , or .) to separate thousands"
 msgstr "El símbolo (normalmente , o .) Para separar miles"
 
-#: includes/settings/settings.php:783
+#: includes/settings/settings.php:792
 msgid "The symbol (usually , or .) to separate decimal points"
 msgstr "El símbolo (normalmente , o .) Para separar puntos decimales"
 
-#: includes/settings/settings.php:791 includes/wizard_install.php:995
+#: includes/settings/settings.php:800 includes/wizard_install.php:993
 msgid "Decimal numbers"
 msgstr "Números decimales"
 
-#: includes/settings/settings.php:795
+#: includes/settings/settings.php:804
 msgid "Enter the number of numbers decimals"
 msgstr "Ingrese el número de números decimales"
 
-#: includes/settings/settings.php:807 includes/wizard_install.php:1146
+#: includes/settings/settings.php:816 includes/wizard_install.php:1144
 msgid "Choose the default Invoice Type used in the system"
 msgstr "Elija el tipo de factura predeterminado usado en el sistema"
 
-#: includes/settings/settings.php:815
+#: includes/settings/settings.php:824
 msgid "Default Price Scale"
 msgstr "Escala de precio predeterminada"
 
-#: includes/settings/settings.php:819
+#: includes/settings/settings.php:828
 msgid "Choose the default Price Scale used in the system"
 msgstr "Elija la escala de precios predeterminada utilizada en el sistema"
 
-#: includes/settings/settings.php:826 includes/wizard_install.php:1706
+#: includes/settings/settings.php:835 includes/wizard_install.php:1704
 msgid "Use stock for products"
 msgstr "Utilizar stock para productos"
 
-#: includes/settings/settings.php:829 includes/wizard_install.php:1710
+#: includes/settings/settings.php:838 includes/wizard_install.php:1708
 msgid "Activate for use stock for products"
 msgstr "Activar para uso de stock para productos"
 
-#: includes/settings/settings.php:835 includes/wizard_install.php:1715
+#: includes/settings/settings.php:844 includes/wizard_install.php:1713
 msgid "Allow negative stocks"
 msgstr "Permitir stocks negativos"
 
-#: includes/settings/settings.php:838 includes/wizard_install.php:1719
+#: includes/settings/settings.php:847 includes/wizard_install.php:1717
 msgid "Activate for use stock less than zero."
 msgstr "Activar para usar el stock menos de cero."
 
-#: includes/settings/settings.php:850 includes/wizard_install.php:1163
+#: includes/settings/settings.php:859 includes/wizard_install.php:1161
 msgid "Choose your sale point."
 msgstr "Elija su punto de venta."
 
-#: includes/settings/settings.php:855 includes/wizard_install.php:1230
+#: includes/settings/settings.php:864 includes/wizard_install.php:1228
 msgid "Number of digits of the receipt number"
 msgstr "Número de dígitos del número de recibo"
 
-#: includes/settings/settings.php:859 includes/wizard_install.php:1234
+#: includes/settings/settings.php:868 includes/wizard_install.php:1232
 msgid "Choose the default number of digits of the receipt number."
 msgstr "Elija el número predeterminado de dígitos del número de recibo."
 
-#: includes/settings/settings.php:866 includes/wizard_install.php:1169
+#: includes/settings/settings.php:875 includes/wizard_install.php:1167
 msgid "Number of digits of the invoice number"
 msgstr "Número de dígitos del número de factura"
 
-#: includes/settings/settings.php:870 includes/wizard_install.php:1173
+#: includes/settings/settings.php:879 includes/wizard_install.php:1171
 msgid "Choose the default number of digits of the invoice number."
 msgstr "Elija el número predeterminado de dígitos del número de factura."
 
-#: includes/settings/settings.php:877 includes/wizard_install.php:1180
+#: includes/settings/settings.php:886 includes/wizard_install.php:1178
 msgid "Format invoice numbers in lists and reports"
 msgstr "Formato de números de facturas en listas y reportes"
 
-#: includes/settings/settings.php:887 includes/wizard_install.php:1190
+#: includes/settings/settings.php:896 includes/wizard_install.php:1188
 msgid "Individual numeration by Invoice Type"
 msgstr "Numeración individual por tipo de factura"
 
-#: includes/settings/settings.php:890 includes/wizard_install.php:1195
+#: includes/settings/settings.php:899 includes/wizard_install.php:1193
 msgid "Activate for use individual numeration by Invoice Type"
 msgstr "Activar para usar la numeración individual por tipo de factura"
 
-#: includes/settings/settings.php:896 includes/wizard_install.php:1202
+#: includes/settings/settings.php:905 includes/wizard_install.php:1200
 msgid "Individual numeration by Sale Point"
 msgstr "Numeración individual por punto de venta"
 
-#: includes/settings/settings.php:899
+#: includes/settings/settings.php:908
 msgid "Activate for use individual numeration by Sale Point "
 msgstr "Activar para usar la numeración individual por punto de venta "
 
-#: includes/settings/settings.php:906 includes/wizard_install.php:1693
+#: includes/settings/settings.php:915 includes/wizard_install.php:1691
 msgid "Search code on invoices, budgets, etc.."
 msgstr "Código de búsqueda en las facturas, presupuestos, etc.."
 
-#: includes/settings/settings.php:916 includes/wizard_install.php:1675
+#: includes/settings/settings.php:925 includes/wizard_install.php:1673
 msgid "Default code for invoice"
 msgstr "Código predeterminado para la factura"
 
-#: includes/settings/settings.php:925 includes/wizard_install.php:1684
+#: includes/settings/settings.php:934 includes/wizard_install.php:1682
 msgid "Default description for invoice"
 msgstr "Descripción predeterminada para factura"
 
-#: includes/settings/settings.php:935 includes/wizard_install.php:1256
+#: includes/settings/settings.php:944 includes/wizard_install.php:1254
 msgid "Default date format"
 msgstr "Formato de fecha predeterminado"
 
-#: includes/settings/settings.php:945 includes/wizard_install.php:1798
+#: includes/settings/settings.php:954 includes/wizard_install.php:1796
 msgid "Default Payment Type"
 msgstr "Tipo de pago predeterminado"
 
-#: includes/settings/settings.php:949
+#: includes/settings/settings.php:958
 msgid "Choose your default Payment Type."
 msgstr "Elija su tipo de pago predeterminado."
 
-#: includes/settings/settings.php:955
+#: includes/settings/settings.php:964
 msgid "Default Bank Entity"
 msgstr "Entidad bancaria predeterminada"
 
-#: includes/settings/settings.php:959
+#: includes/settings/settings.php:968
 msgid "Choose your default Bank Entity."
 msgstr "Elija su entidad bancaria predeterminada."
 
-#: includes/settings/settings.php:964
+#: includes/settings/settings.php:973
 msgid "Default Tax"
 msgstr "Impuesto predeterminado"
 
-#: includes/settings/settings.php:968
+#: includes/settings/settings.php:977
 msgid "Choose your default Tax."
 msgstr "Elija su impuesto predeterminado."
 
-#: includes/settings/settings.php:990 includes/taxonomy/payment-types.php:43
+#: includes/settings/settings.php:999 includes/taxonomy/payment-types.php:43
 #: includes/taxonomy/payment-types.php:58
 msgid "Payment Types"
 msgstr "Tipos de pago"
 
-#: includes/settings/settings.php:991
+#: includes/settings/settings.php:1000
 msgid "Run Configurations Wizard"
-msgstr "Ejecutar asistente de configuraciones"
+msgstr "Asistente de Configuraciones"
 
-#: includes/settings/settings.php:992
+#: includes/settings/settings.php:1001
 msgid "​​Company Settings"
-msgstr "Configuración de la empresa"
+msgstr "Empresa"
 
-#: includes/settings/settings.php:996
+#: includes/settings/settings.php:1005
 msgid "General"
 msgstr "General"
 
-#: includes/settings/settings.php:998
+#: includes/settings/settings.php:1007
 msgid "E-mail Templates"
 msgstr "Plantillas de correo electrónico"
 
-#: includes/settings/settings.php:999
+#: includes/settings/settings.php:1008
 msgid "Dashboard Setup"
-msgstr "Configuración del panel"
+msgstr "Configurar Escritorio"
 
-#: includes/settings/settings.php:1007
+#: includes/settings/settings.php:1016
 msgid "Tables"
 msgstr "Tablas"
 
-#: includes/settings/settings.php:1016
+#: includes/settings/settings.php:1025
 msgid "​​Products"
 msgstr "Productos"
 
-#: includes/settings/settings.php:1030
+#: includes/settings/settings.php:1039
 msgid "Licenses"
-msgstr "Licensias"
+msgstr "Licencias"
 
-#: includes/settings/settings.php:1031
+#: includes/settings/settings.php:1040
 msgid "​​Licenses"
-msgstr "Licensias"
+msgstr "Licencias"
 
 #: includes/taxonomy/bank-entities.php:48
 msgid "Search Bank Entities"
@@ -5581,37 +5591,37 @@ msgstr "Elija entre las condiciones fiscales más utilizadas"
 msgid "No Tax Conditions found."
 msgstr "No se encontraron condiciones fiscales."
 
-#: includes/taxonomy/tax-conditions.php:142
-#: includes/taxonomy/tax-conditions.php:189
+#: includes/taxonomy/tax-conditions.php:149
+#: includes/taxonomy/tax-conditions.php:196
 msgid "Select default Invoice Type for this Tax Condition."
 msgstr ""
 "Seleccione el tipo de factura predeterminado para esta condición fiscal."
 
-#: includes/taxonomy/tax-conditions.php:147
-#: includes/taxonomy/tax-conditions.php:198
-#: includes/taxonomy/tax-conditions.php:219
+#: includes/taxonomy/tax-conditions.php:154
+#: includes/taxonomy/tax-conditions.php:205
+#: includes/taxonomy/tax-conditions.php:226
 msgid "Overwrite Taxes"
 msgstr "Sobreescribir impuestos"
 
-#: includes/taxonomy/tax-conditions.php:151
-#: includes/taxonomy/tax-conditions.php:203
+#: includes/taxonomy/tax-conditions.php:158
+#: includes/taxonomy/tax-conditions.php:210
 msgid "Tax Percentage"
 msgstr "Porcentaje de impuestos"
 
-#: includes/taxonomy/tax-conditions.php:153
-#: includes/taxonomy/tax-conditions.php:207
+#: includes/taxonomy/tax-conditions.php:160
+#: includes/taxonomy/tax-conditions.php:214
 msgid "Enter a tax percentage"
 msgstr "Ingrese un porcentaje de impuestos"
 
-#: includes/taxonomy/tax-conditions.php:229
+#: includes/taxonomy/tax-conditions.php:236
 msgid "No invoice type"
 msgstr "Sin tipo de factura"
 
-#: includes/taxonomy/tax-conditions.php:239
+#: includes/taxonomy/tax-conditions.php:246
 msgid "No"
-msgstr ""
+msgstr "No"
 
-#: includes/taxonomy/tax-conditions.php:242
+#: includes/taxonomy/tax-conditions.php:249
 msgid "Yes:"
 msgstr "Sí:"
 
@@ -5677,7 +5687,7 @@ msgstr "Noticias de Fakturo"
 
 #: includes/welcome.php:30 includes/welcome.php:31
 msgid "Fakturo Changelog"
-msgstr ""
+msgstr "Fakturo Registro de cambios"
 
 #: includes/welcome.php:39 includes/welcome.php:40
 msgid "Getting started with Fakturo"
@@ -5725,22 +5735,22 @@ msgstr "Ir a la configuración de Fakturo"
 msgid "Load Countries"
 msgstr "Cargar paises"
 
-#: includes/wizard_install.php:35 includes/wizard_install.php:808
-#: includes/wizard_install.php:842
+#: includes/wizard_install.php:35 includes/wizard_install.php:806
+#: includes/wizard_install.php:840
 msgid "Load Currencies"
 msgstr "Cargar monedas"
 
-#: includes/wizard_install.php:38 includes/wizard_install.php:942
-#: includes/wizard_install.php:1014
+#: includes/wizard_install.php:38 includes/wizard_install.php:940
+#: includes/wizard_install.php:1012
 msgid "Money Format"
 msgstr "Formato de dinero"
 
-#: includes/wizard_install.php:39 includes/wizard_install.php:1127
+#: includes/wizard_install.php:39 includes/wizard_install.php:1125
 msgid "Invoice Details and Formats"
 msgstr "Detalles de factura y formatos"
 
-#: includes/wizard_install.php:42 includes/wizard_install.php:1793
-#: includes/wizard_install.php:1819
+#: includes/wizard_install.php:42 includes/wizard_install.php:1791
+#: includes/wizard_install.php:1817
 msgid "Payments"
 msgstr "Pagos"
 
@@ -5764,142 +5774,142 @@ msgstr "Cargando países y estados..."
 msgid "Loading currencies..."
 msgstr "Cargando monedas..."
 
-#: includes/wizard_install.php:291
+#: includes/wizard_install.php:289
 msgid "A security problem occurred, Please contact the admin."
 msgstr ""
 "Se ha producido un problema de seguridad. Póngase en contacto con el "
 "administrador."
 
-#: includes/wizard_install.php:317
+#: includes/wizard_install.php:315
 msgid "Previous"
 msgstr "Anterior"
 
-#: includes/wizard_install.php:321
+#: includes/wizard_install.php:319
 msgid "Finish"
 msgstr "Finalizar"
 
-#: includes/wizard_install.php:323
+#: includes/wizard_install.php:321
 msgid "Next"
 msgstr "Siguiente"
 
-#: includes/wizard_install.php:327
+#: includes/wizard_install.php:325
 msgid "Skip"
 msgstr "Omitir"
 
-#: includes/wizard_install.php:329
+#: includes/wizard_install.php:327
 msgid "Skip and Finish"
 msgstr "Omitir y Finalizar"
 
-#: includes/wizard_install.php:353 includes/wizard_install.php:391
+#: includes/wizard_install.php:351 includes/wizard_install.php:389
 msgid "Load Countries and States"
 msgstr "Cargar países y provincias"
 
-#: includes/wizard_install.php:358
+#: includes/wizard_install.php:356
 msgid "Do you want load all countries and states by default?"
 msgstr "¿Desea cargar todos los países y provincias por defecto?"
 
-#: includes/wizard_install.php:364 includes/wizard_install.php:816
+#: includes/wizard_install.php:362 includes/wizard_install.php:814
 msgid "Yes"
 msgstr "Sí"
 
-#: includes/wizard_install.php:370
+#: includes/wizard_install.php:368
 msgid "Yes, but only some countries."
 msgstr "Sí, pero sólo algunos países."
 
-#: includes/wizard_install.php:376 includes/wizard_install.php:828
+#: includes/wizard_install.php:374 includes/wizard_install.php:826
 msgid "Add"
 msgstr "Agregar"
 
-#: includes/wizard_install.php:383 includes/wizard_install.php:835
+#: includes/wizard_install.php:381 includes/wizard_install.php:833
 msgid "No, you can add them later."
 msgstr "No, puedes agregarlos más tarde."
 
-#: includes/wizard_install.php:811
+#: includes/wizard_install.php:809
 msgid "Do you want load all currencies by default?"
 msgstr "¿Desea cargar todas las monedas por defecto?"
 
-#: includes/wizard_install.php:822
+#: includes/wizard_install.php:820
 msgid "Yes, but only some currencies."
 msgstr "Sí, pero sólo algunas monedas."
 
-#: includes/wizard_install.php:1207
+#: includes/wizard_install.php:1205
 msgid "Activate for use individual numeration by Sale Point"
 msgstr "Activar para usar la numeración individual por punto de venta"
 
-#: includes/wizard_install.php:1215
+#: includes/wizard_install.php:1213
 msgid "Example the current format to invoice numbers"
 msgstr "Ejemplo del formato actual de los números de la factura"
 
-#: includes/wizard_install.php:1242
+#: includes/wizard_install.php:1240
 msgid "Example the current format to receipt numbers"
 msgstr "Ejemplo del formato actual de los números del recibo"
 
-#: includes/wizard_install.php:1269
+#: includes/wizard_install.php:1267
 msgid "Example the current date format"
 msgstr "Ejemplo del formato actual de la fecha"
 
-#: includes/wizard_install.php:1325
+#: includes/wizard_install.php:1323
 msgid "Show categories"
 msgstr "Mostrar categorías"
 
-#: includes/wizard_install.php:1345
+#: includes/wizard_install.php:1343
 msgid "Show models"
 msgstr "Mostrar modelos"
 
-#: includes/wizard_install.php:1366
+#: includes/wizard_install.php:1364
 msgid "Show product types"
 msgstr "Mostrar tipos de producto"
 
-#: includes/wizard_install.php:1388
+#: includes/wizard_install.php:1386
 msgid "Show Packagings"
 msgstr "Mostrar embalajes"
 
-#: includes/wizard_install.php:1408
+#: includes/wizard_install.php:1406
 msgid "Show Origins"
 msgstr "Mostrar origenes"
 
-#: includes/wizard_install.php:1429
+#: includes/wizard_install.php:1427
 msgid "Show price scales"
 msgstr "Mostrar escala de precios"
 
-#: includes/wizard_install.php:1450
+#: includes/wizard_install.php:1448
 msgid "Show taxes"
 msgstr "Mostrar impuestos"
 
-#: includes/wizard_install.php:1471
+#: includes/wizard_install.php:1469
 msgid "Show locations"
 msgstr "Mostrar ubicaciones"
 
-#: includes/wizard_install.php:1547
+#: includes/wizard_install.php:1545
 msgid "Like Tools, electric tools, manual tools, etc."
 msgstr ""
 "Como herramientas, herramientas eléctricas, herramientas manuales, etc."
 
-#: includes/wizard_install.php:1564
+#: includes/wizard_install.php:1562
 msgid "As a tag of the products you want filter in the future."
 msgstr "Como una etiqueta de los productos que desea filtrar en el futuro."
 
-#: includes/wizard_install.php:1581
+#: includes/wizard_install.php:1579
 msgid "Like Service, spare, supplies, etc."
 msgstr "Como servicio, repuesto, suministros, etc."
 
-#: includes/wizard_install.php:1598
+#: includes/wizard_install.php:1596
 msgid "Select the origin of the product."
 msgstr "Seleccione el origen del producto."
 
-#: includes/wizard_install.php:1615
+#: includes/wizard_install.php:1613
 msgid "Like wholesaler and retailer."
 msgstr "Como mayorista y minorista."
 
-#: includes/wizard_install.php:1632
+#: includes/wizard_install.php:1630
 msgid "The name and percentage of taxes applied to the products."
 msgstr "El nombre y porcentaje de los impuestos aplicados a los productos."
 
-#: includes/wizard_install.php:1666
+#: includes/wizard_install.php:1664
 msgid "Where the products are physically."
 msgstr "Donde están los productos físicamente."
 
-#: includes/wizard_install.php:1809
+#: includes/wizard_install.php:1807
 msgid ""
 "Choose your default Payment Type, You can add more payment types to use in "
 "payments."
@@ -5907,13 +5917,17 @@ msgstr ""
 "Elija su tipo de pago predeterminado. Puede agregar más tipos de pago para "
 "usar en los pagos."
 
-#: includes/wizard_install.php:1876
+#: includes/wizard_install.php:1874
 msgid "&laquo; Back"
 msgstr "&laquo; Volver"
 
-#: includes/wizard_install.php:1888
+#: includes/wizard_install.php:1886
 msgid "WordPress &rsaquo; Error"
 msgstr "WordPress &rsaquo; Error"
+
+#: includes/wizard_install.php:2204
+msgid "Are you sure ? You will lost the current form data."
+msgstr "¿Está Seguro? Perderá los datos actuales."
 
 #~ msgid "CONFIGURATION OF THE COMPANY"
 #~ msgstr "CONFIGURACIÓN DE LA COMPAÑIA"

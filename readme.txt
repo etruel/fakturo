@@ -89,6 +89,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Added popups button to add Invoice types required by Tax Conditions fields.
 * Fixes fakturo_manager as minimun role to save Clients, Products, Providers and Sales.
 * Fixes some missed translations domains.
+* Updated Spanish Language.
 
 = 0.9 Beta =
 * Added help tips for all screens
