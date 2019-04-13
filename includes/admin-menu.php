@@ -19,7 +19,7 @@ class fktrAdminMenu {
 	
 	public static function add_fakturo_top_menu() {   ?>
             <div>
-                 <section class="_menu_items_metro">
+                 <section class="_fakturo_top_menu_items">
                      <ul>
                          <?php
                              fktrAdminMenu::print_fakturo_dashboard_items();

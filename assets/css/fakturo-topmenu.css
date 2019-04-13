@@ -19,70 +19,57 @@
 ._title_dash{
 	margin-left: 20px;
 }
-._menu_items_metro  a:hover {
+._fakturo_top_menu_items  a:hover {
 	opacity: 0.8;
 }
-._menu_items_metro:after{
+._fakturo_top_menu_items:after{
 	clear: both;
 }
-._menu_items_metro ul:after{
+._fakturo_top_menu_items ul:after{
 	clear: both;
 }
-._menu_items_metro ul li{
-	position: relative;
-	width: 150px; 
-	height: 150px;
-	display: inline-block;
-	background-color: #ccc;
+._fakturo_top_menu_items{
+	margin-top: 2.5rem;
+	margin-right: 15px;
+}
+._fakturo_top_menu_items ul{
+	display: flex;
+	max-width: 100%;
+	overflow-x: auto;
+}
+._fakturo_top_menu_items ul a{
+	display: block;
 	margin-left: 10px;
+	transition: all .4s ease;
+}
+._fakturo_top_menu_items ul li{
+	position: relative;
+	width: 110px; 
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #ccc;
 }
 ._menu_dashicon{
-    position: absolute; /* or absolute */
-  	top: 50%;
-  	left: 50%;
-  	transform: translate(-50%, -50%);
-  	width: 50px;
-  	height: 50px;
+  	width: 16px;
+  	height: 16px;
+	margin-right: 5px;
 }
 
 ._menu_dashicon span{
-	font-size: 50px;
+	font-size: 16px;
+  	width: 16px;
+  	height: 16px;
 	color: white;
 }
 ._descripcion_items_metro{
-	position: absolute;
 	bottom: 0;
-	width: 100%;
 	text-align: center;
 }
 ._descripcion_items_metro p{
 	color: white; 
-	font-size: 16px;
-}
-
-	/*section widgets Frontend*/
-.element_widget_dashboard:after{
-	clear: both;
-}
-.dashboard_widget {
-	display: inline-block;
-	width: 95%;
-	min-height: 200px;
-	height: auto;
-	margin-left: 2.5%;
-	float: left;
-}
-.clear_1 {
-	clear:both;
-}
-.clear_2 {
-	clear:both;
-}
-.clear_3 {
-	clear:both;
-}
-.clear_4 {
-	clear:both;
+	font-size: 14px;
+	margin: .35rem 0;
 }
 
 @media only screen and (min-width: 1024px) {
@@ -140,79 +127,8 @@
 		clear:both;
 	}
 }
-.seccion1 {
-	border: 1px solid #BEBEBE;
-}
-.seccion {
-	background-color: white !important;
-}
-.seccion h3{
-	padding: 10px 10px;
-	background-color: #D9D9D9 !important;
-	border:1px solid #BEBEBE !important;
-	color: #435156;
-	font-weight: bold;
-	margin-bottom: 0px;
-}
-		
-#sec_fktr_dashboard_widget_news ul{
-	background-color: white;
-	border:1px solid #CBD4DB;
-	margin-top: 0px !important;
-}
-		
-#sec_fktr_dashboard_widget_news ul li{
-	border-bottom: 1px solid #CBD4DB;
-	margin-top: 0px !important;
-	padding: 10px;
-}
-#sec_fktr_dashboard_widget_news ul li:last-child{
-	border-bottom: none;
-}
-#sec_fktr_dashboard_widget_news ul li span{
-	font-size: 20px;
-	padding: 5px;
-	background-color: #DBD3CA;
-	color: #515D60;
-	float: left;
-	width: 5%;
-	margin-top: 10px;	
-}
-#sec_fktr_dashboard_widget_news ul li p{
-	padding: 0px 10px;
-	float: left;
-	width: 85%;
-	padding-left: 10px;
-	margin-top: 5px;
-}
-		
-		
-#sec_fktr_dashboard_widget_sale_summary  table tr td{
-	padding:10px;
-}
-#sec_fktr_dashboard_widget_sale_summary  table tr td p{
-	margin-left: 10px;
-	font-weight: bold;
-	border-bottom: 1px solid #D7D7D7;
-}
-#sec_fktr_dashboard_widget_sale_summary  table tr td ol{
-	list-style: none;
-	margin-left: 10px;
-}
-#sec_fktr_dashboard_widget_sale_summary  table tr td ol li{
-	list-style: none;
-}
-#sec_fktr_dashboard_widget_sale_summary  table tr td ol li span{
-	display: inline-block;
-}
-#sec_fktr_dashboard_widget_sale_summary  table tr td ol li span.sp_left{
-	display: block;
-	float: left;
-}
-#sec_fktr_dashboard_widget_sale_summary  table tr td ol li span.sp_right{
-	display: block;
-	float: right;
-}
-#sec_fktr_dashboard_widget_sale_summary  table tr td ol li span.sp_right:after{
-	clear: both !important;
+@media (max-width: 782px) {
+	._fakturo_top_menu_items{
+		display: none;
+	}
 }
