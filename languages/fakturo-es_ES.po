@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Fakturo\n"
-"POT-Creation-Date: 2019-04-13 17:38-0300\n"
-"PO-Revision-Date: 2019-04-13 17:47-0300\n"
+"POT-Creation-Date: 2019-04-13 18:01-0300\n"
+"PO-Revision-Date: 2019-04-13 18:28-0300\n"
 "Last-Translator: manuelge <manuel@netmdp.com>\n"
 "Language-Team: NetMdP <dev@netmdp.com>\n"
 "Language: es\n"
@@ -1597,7 +1597,7 @@ msgid ""
 msgstr ""
 "Prueba que se adquiere a través de una compra o venta. Busque el producto "
 "para vender, que viene automáticamente con su precio unitario, referencia y "
-"breve descripción. Al elegir la cantidad a comprar, los campos total y "
+"Descripción Breve. Al elegir la cantidad a comprar, los campos total y "
 "subtotal se completarán automáticamente."
 
 #: docs/fktr_sale-help.php:48 docs/fktr_subscriptions-help.php:68
@@ -1761,7 +1761,7 @@ msgstr "Fakturo"
 msgid "Fakturo Dashboard"
 msgstr "Fakturo Dashboard"
 
-#: includes/admin-menu.php:31
+#: includes/admin-menu.php:31 includes/settings/dashboard.php:46
 msgid "Dashboard"
 msgstr "Escritorio"
 
@@ -4198,7 +4198,7 @@ msgstr "Eliminar permanentemente"
 #: includes/post-types-sales.php:230 includes/settings/settings.php:705
 #: includes/wizard_install.php:1515
 msgid "Short Description"
-msgstr "Breve descripción"
+msgstr "Descripción Breve"
 
 #: includes/post-types-sales.php:330
 msgid "Add New Sale"
