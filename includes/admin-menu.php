@@ -9,13 +9,63 @@ if ( ! class_exists( 'fktrAdminMenu' ) ) :
 
 class fktrAdminMenu {
 	
-	
 	function __construct() {
 		add_action( 'admin_menu', array('fktrAdminMenu','add_menu') );
 		add_action('admin_print_styles', array('fktrAdminMenu','styles'));
+                
+                /** call Fakturo Top Menu   since 9.1 */   
+                add_action( 'all_admin_notices', array('fktrAdminMenu', 'add_fakturo_top_menu'), 1, 0 );
 	}
 	
-	public static function add_menu() {
+	public static function add_fakturo_top_menu() {   ?>
+            <div>
+                 <section class="_menu_items_metro">
+                     <ul>
+                         <?php
+                             fktrAdminMenu::print_fakturo_dashboard_items();
+                         ?>
+                     </ul>
+                 </section>
+             </div><?php
+        }
+        
+        public static function print_fakturo_dashboard_items() {
+            $dashboard_options = get_option('fakturo_dashboard_options_group');
+            $dialer_options = fktr_get_dialer_options();
+            for ($d = 0; $d < 7; $d++) {
+                if (!empty($dashboard_options['dialer'][$d]) && !empty($dialer_options[$dashboard_options['dialer'][$d]])) {
+                    $item = $dialer_options[$dashboard_options['dialer'][$d]];
+
+                    if (!current_user_can($item->caps)) {
+                        continue;
+                    }
+                    $class_color = 'color' . ($d + 1);
+                    if ($d == 5) {
+                        $class_color = 'colordefault';
+                    }
+                    $menu_link = '';
+                    if ($item->type == 'post') {
+                        $menu_link = admin_url('edit.php?post_type=' . $dashboard_options['dialer'][$d]);
+                    } else if ($item->type == 'taxonomy') {
+                        $menu_link = admin_url('edit-tags.php?taxonomy=' . $dashboard_options['dialer'][$d]);
+                    } else if ($item->type == 'setting') {
+                        $menu_link = admin_url('admin.php?page=fakturo-settings');
+                    }
+
+                    echo '<a href="' . $menu_link . '">
+                        <li class="' . $class_color . '">
+                                <div class="_menu_dashicon">
+                                        <span class="dashicons ' . $item->icon . '"></span>
+                                </div>
+                                <div class="_descripcion_items_metro">
+                                        <p>' . $item->text . '</p>
+                                </div>
+                        </li>
+                        </a>';
+                }
+            }
+        }
+        public static function add_menu() {
 		global $submenu;
 		
 		add_menu_page( 
@@ -213,7 +263,10 @@ class fktrAdminMenu {
 			wp_enqueue_style('fktr_icons',FAKTURO_PLUGIN_URL .'assets/css/icons.css');	
 		}
 		if($current_screen->id == "toplevel_page_fakturo_dashboard" ) {
-			wp_enqueue_style('fktr_dashboard', FAKTURO_PLUGIN_URL .'assets/css/dashboard.css');	
+                    remove_action( 'all_admin_notices', array('fktrAdminMenu', 'add_fakturo_top_menu'), 1);
+                    wp_enqueue_style('fktr_dashboard', FAKTURO_PLUGIN_URL .'assets/css/dashboard.css');	
+		}else{
+                    wp_enqueue_style('fktr_dashboard', FAKTURO_PLUGIN_URL .'assets/css/fakturo-topmenu.css');
 		}
 		 
 		// hide some items that we don't want to show in WP menu
