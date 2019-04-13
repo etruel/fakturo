@@ -138,7 +138,14 @@ class fktr_tax_tax_conditions {
 		
 		<div class="form-field" id="rate_div">
 			<label for="term_meta[invoice_type]">'.__( 'Invoice Types', 'fakturo' ).'</label>
-			'.$selectInvoiceTypes.'
+			'.$selectInvoiceTypes.' '.fktr_popup_taxonomy::button(
+																array(
+																	'taxonomy' => 'fktr_invoice_types',
+																	'echo' => 0,
+																	'class' => 'button',
+																	'selector' => '#fakturo_info_options_group_invoice_types',
+																)
+															).'
 			<p class="description">'.__( 'Select default Invoice Type for this Tax Condition.', 'fakturo' ).'</p>
 		</div>
 		

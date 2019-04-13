@@ -272,8 +272,6 @@ class fktr_wizard {
 		if (self::$current_request['step'] == 2) {
 			wp_enqueue_style('thickbox');
 		}
-
-
 		
 	}
 	/**
@@ -1873,7 +1871,7 @@ class fktr_wizard {
 		}
 
 		if ( isset( $r['back_link'] ) && $r['back_link'] ) {
-			$back_text = $have_gettext? __('&laquo; Back') : '&laquo; Back';
+			$back_text = $have_gettext? __('&laquo; Back','fakturo') : '&laquo; Back';
 			$message .= "\n<p><a href='javascript:history.back()'>$back_text</a></p>";
 		}
 
@@ -1885,7 +1883,7 @@ class fktr_wizard {
 			}
 
 			if ( empty($title) )
-				$title = $have_gettext ? __('WordPress &rsaquo; Error') : 'WordPress &rsaquo; Error';
+				$title = $have_gettext ? __('WordPress &rsaquo; Error','fakturo') : 'WordPress &rsaquo; Error';
 
 			$text_direction = 'ltr';
 			if ( isset($r['text_direction']) && 'rtl' == $r['text_direction'] )
@@ -2202,7 +2200,13 @@ class fktr_wizard {
 	</head>
 	<body>
 
-	<?php endif; // ! did_action( 'admin_head' ) ?>
+	<?php endif; // ! did_action( 'admin_head' ) 
+		$confirmmsg = __('Are you sure ? You will lost the current form data.','fakturo');
+	?>
+		<a style="position: absolute;" class="button button-orange" href="<?php echo admin_url('admin.php?page=fakturo-settings'); ?>" onclick="return confirm('<?php echo $confirmmsg; ?>');" >
+			<strong>&lt;-</strong> 
+			Exit
+		</a>
 		<img id="icon-header" src="<?php echo FAKTURO_PLUGIN_URL.'assets/images/icon-256x256.png'; ?>"/>
 		<div class="stepwizard-row">
 			<div class="stepwizard-row-bar" style="width:<?php echo (self::$current_request['step']-1)*($porcent_per_steep+1); ?>%">

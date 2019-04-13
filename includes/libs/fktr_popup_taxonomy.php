@@ -148,7 +148,13 @@ class fktr_popup_taxonomy {
 		wp_print_scripts();
 		?>
 		<div class="form-wrap">
-		<h2><?php echo $tax->labels->add_new_item; ?></h2>
+		<h2><?php 
+			$add_new_item_text = $tax->labels->add_new_item;
+			if (!empty($r['opcional_add_new_item'])) {     //$r no existe en esta instancia
+				$add_new_item_text = $r['opcional_add_new_item'];
+			}
+			echo $add_new_item_text; ?>
+		</h2>
 		<form id="fktr_form_popup_taxonomy" method="post" action="<?php echo admin_url('admin-post.php'); ?>" class="validate"<?php
 		/**
 		 * Fires inside the Add Tag form tag.

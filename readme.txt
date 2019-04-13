@@ -84,8 +84,11 @@ You can either install it automatically from the WordPress admin, or do it manua
 == Changelog ==
 = 0.9.1 Beta =
 * Added suport to translate the sliderchecks options.
+* Added Date Picker in Start of activities of Setting page.
+* Added Exit button in all screens of Configurations wizard.
+* Added popups button to add Invoice types required by Tax Conditions fields.
 * Fixes fakturo_manager as minimun role to save Clients, Products, Providers and Sales.
-* Adds datepicker in Start of activities of setting page.
+* Fixes some missed translations domains.
 
 = 0.9 Beta =
 * Added help tips for all screens
