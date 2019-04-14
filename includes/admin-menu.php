@@ -10,14 +10,18 @@ if ( ! class_exists( 'fktrAdminMenu' ) ) :
 class fktrAdminMenu {
 	
 	function __construct() {
-		add_action( 'admin_menu', array('fktrAdminMenu','add_menu') );
-		add_action('admin_print_styles', array('fktrAdminMenu','styles'));
+            add_action( 'admin_menu', array('fktrAdminMenu','add_menu') );
+            add_action('admin_print_styles', array('fktrAdminMenu','styles'));
                 
-                /** call Fakturo Top Menu   since 9.1 */   
-                add_action( 'all_admin_notices', array('fktrAdminMenu', 'add_fakturo_top_menu'), 1, 0 );
+            /** call Fakturo Top Menu   since 9.1 */   
+            add_action( 'all_admin_notices', array('fktrAdminMenu', 'add_fakturo_top_menu'), 1, 0 );
+
 	}
 	
-	public static function add_fakturo_top_menu() {   ?>
+	public static function add_fakturo_top_menu() {   
+            global $current_screen;
+            if( (stristr($current_screen->id, "fakturo" )!== FALSE ) or (stristr($current_screen->id, "fktr" )!== FALSE ) ) {
+            ?>
             <div>
                  <section class="_fakturo_top_menu_items">
                      <ul>
@@ -27,6 +31,9 @@ class fktrAdminMenu {
                      </ul>
                  </section>
              </div><?php
+            }else{
+
+            }
         }
         
         public static function print_fakturo_dashboard_items() {

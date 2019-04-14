@@ -26,16 +26,14 @@
 	clear: both;
 }
 ._fakturo_top_menu_items ul:after{
-	clear: both;
 }
 ._fakturo_top_menu_items{
-	margin-top: 2.5rem;
-	margin-right: 15px;
 }
 ._fakturo_top_menu_items ul{
 	display: flex;
 	max-width: 100%;
 	overflow-x: auto;
+        margin: 0;
 }
 ._fakturo_top_menu_items ul a{
 	display: block;
@@ -44,11 +42,12 @@
 }
 ._fakturo_top_menu_items ul li{
 	position: relative;
-	width: 110px; 
 	display: inline-flex;
 	justify-content: center;
 	align-items: center;
 	background-color: #ccc;
+        padding: 0 7px;
+        width: max-content;
 }
 ._menu_dashicon{
   	width: 16px;
@@ -69,7 +68,7 @@
 ._descripcion_items_metro p{
 	color: white; 
 	font-size: 14px;
-	margin: .35rem 0;
+	margin: .25rem 0;
 }
 
 @media only screen and (min-width: 1024px) {
