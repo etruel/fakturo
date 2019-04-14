@@ -44,6 +44,7 @@ function default_validate(e) {
 	}
 }
 function open_popup_taxonomy(object_backend) {
+
 	create_popop_taxonomy(object_backend);
 	show_popup_taxonomy();
 	var ajax_url = backend_object.ajax_url+'?action=fktr_popup_taxonomy&taxonomy='+current_ajax_popup_taxonomy_object.taxonomy;
@@ -118,7 +119,7 @@ function events_popup_taxonomy() {
 			current_json_save = jQuery.parseJSON(data);
 			if (current_json_save.code == 1) {
 				jQuery(document).trigger('popup-new-term-sucess', [current_json_save.term.term_id]);
-				hide_popup_taxonomy();
+				
 				if (jQuery(current_ajax_popup_taxonomy_object.selector).length) {
 					jQuery(current_ajax_popup_taxonomy_object.selector).append(jQuery('<option>', {
 					    value: current_json_save.term.term_id,
@@ -127,6 +128,7 @@ function events_popup_taxonomy() {
 					jQuery(current_ajax_popup_taxonomy_object.selector).val(current_json_save.term.term_id);
 					jQuery(current_ajax_popup_taxonomy_object.selector).trigger('change');
 				}
+				hide_popup_taxonomy();
 				
 			} else {
 				jQuery(document).trigger('popup-new-term-fail');
