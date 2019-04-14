@@ -1,9 +1,15 @@
 var current_json_save = '';
 var current_ajax_popup_taxonomy_object = {taxonomy:'category', selector:'', selector_parent_select: ''};
+var fktr_parents_popup = new Array();
 jQuery(document).ready(function() {
-	
+	events_init_term_popup();
+});
 
-	jQuery('.fktr_btn_taxonomy').click(function(e) {
+function events_init_term_popup() {
+	jQuery('body').on('click', '.fktr_btn_taxonomy', function(e) {
+		if(jQuery('#fktr_background_popup_taxonomy').length) {
+			fktr_parents_popup.push({taxonomy: current_ajax_popup_taxonomy_object.taxonomy, selector: current_ajax_popup_taxonomy_object.selector, selector_parent_select: current_ajax_popup_taxonomy_object.selector_parent_select});
+		}
 		var cur_taxonomy = jQuery(this).data('taxonomy');
 		if(cur_taxonomy != '' && cur_taxonomy != null) {
 			current_ajax_popup_taxonomy_object.taxonomy = cur_taxonomy;
@@ -27,10 +33,8 @@ jQuery(document).ready(function() {
 		open_popup_taxonomy(backend_object);
 		e.preventDefault();
 	});
+}
 
-	
-
-});
 function default_validate(e) {
 	if (jQuery('#tag-name').val() == '') {
 		jQuery('#tag-name').addClass('form-invalid');
@@ -66,14 +70,19 @@ function show_popup_taxonomy() {
 	jQuery('#fktr_background_popup_taxonomy_background').fadeIn();
 }
 function hide_popup_taxonomy() {
-	jQuery('#fktr_background_popup_taxonomy').hide();
-	jQuery('#fktr_background_popup_taxonomy_background').fadeOut();
-	jQuery('#fktr_background_popup_taxonomy').html('<div id="popup_content">'+backend_object.loading_text+' <img src="'+backend_object.loading_image+'"/></div>');
+	jQuery('#fktr_background_popup_taxonomy').remove();
+	jQuery('#fktr_background_popup_taxonomy_background').remove();
+	//jQuery('#fktr_background_popup_taxonomy').html('<div id="popup_content">'+backend_object.loading_text+' <img src="'+backend_object.loading_image+'"/></div>');
+	if ( fktr_parents_popup.length > 0 ) {
+		current_ajax_popup_taxonomy_object = fktr_parents_popup.pop();
+		open_popup_taxonomy(backend_object);
+	}
 }
 
 function create_popop_taxonomy(object_backend) {
 	if(jQuery('#fktr_background_popup_taxonomy').length) {
 	    // exist the popup
+	    jQuery('#fktr_background_popup_taxonomy #popup_content').html(''+backend_object.loading_text+' <img src="'+backend_object.loading_image+'"/>');
 	} else {
 		// don't exist the popup
 		jQuery('body').append( '<div id="fktr_background_popup_taxonomy"><div id="popup_content">'+backend_object.loading_text+' <img src="'+backend_object.loading_image+'"/></div></div>');
@@ -82,6 +91,7 @@ function create_popop_taxonomy(object_backend) {
 	}
 }
 function events_popup_taxonomy() {
+
 	jQuery(document).on('popup-tax-validate', function(e){
 		default_validate(e);
 	});
