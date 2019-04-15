@@ -146,16 +146,21 @@ class fktr_tax_tax_conditions {
 		<style type="text/css">.form-field.term-parent-wrap,.form-field.term-slug-wrap, .form-field label[for="parent"], .form-field #parent {display: none;}  .form-field.term-description-wrap { display:none;} .inline.hide-if-no-js{ display:none;} .view{ display:none;}</style>
 		
 		<div class="form-field" id="rate_div">
-			<label for="term_meta[invoice_type]">'.__( 'Invoice Types', 'fakturo' ).'</label>
-			'.$selectInvoiceTypes.' '.fktr_popup_taxonomy::button(
-																array(
-																	'taxonomy' => 'fktr_invoice_types',
-																	'echo' => 0,
-																	'class' => 'button',
-																	'selector' => '#fakturo_info_options_group_invoice_types',
-																)
-															).'
-			<p class="description">'.__( 'Select default Invoice Type for this Tax Condition.', 'fakturo' ).'</p>
+			<label for="term_meta[invoice_type]">'.__( 'Invoice Types', 'fakturo' ).'</label>' . $selectInvoiceTypes . ' ';
+                if (wp_doing_ajax()) {
+                    $echoHtml .= fktr_popup_taxonomy::button(
+                        array(
+                            'taxonomy' => 'fktr_invoice_types',
+                            'echo' => 0,
+                            'class' => 'button',
+                            'selector' => '#fakturo_info_options_group_invoice_types'
+                        )
+                    );
+                }else{
+                    $echoHtml .= '<a class="button button-large" href="' . admin_url('edit-tags.php?taxonomy=fktr_invoice_types').'">'. __('Go to Invoice Types','fakturo').'</a>';
+                }
+
+            $echoHtml .= '<p class="description">'.__( 'Select default Invoice Type for this Tax Condition.', 'fakturo' ).'</p>
 		</div>
 		
 		<div class="form-field" id="overwrite_taxes_div">

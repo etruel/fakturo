@@ -2205,7 +2205,7 @@ class fktr_wizard {
 	?>
 		<a style="position: absolute;" class="button button-orange" href="<?php echo admin_url('admin.php?page=fakturo-settings'); ?>" onclick="return confirm('<?php echo $confirmmsg; ?>');" >
 			<strong>&lt;-</strong> 
-			Exit
+			<?php _e('Exit','fakturo'); ?>
 		</a>
 		<img id="icon-header" src="<?php echo FAKTURO_PLUGIN_URL.'assets/images/icon-256x256.png'; ?>"/>
 		<div class="stepwizard-row">
