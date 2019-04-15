@@ -107,6 +107,15 @@ class fktr_tax_tax_conditions {
 					'decimal' => $setting_system['decimal'],
 					'decimal_numbers' => $setting_system['decimal_numbers'],
 				));
+
+			wp_enqueue_script( 'jquery-fktr-new-terms-popup', FAKTURO_PLUGIN_URL . 'assets/js/new-terms-popup.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			wp_localize_script('jquery-fktr-new-terms-popup', 'backend_object',
+				array('ajax_url' => admin_url( 'admin-ajax.php' ),
+					'loading_image' => admin_url('images/spinner.gif'), 
+					'loading_text' => __('Loading...', 'fakturo' ),
+				)
+			);
+			wp_enqueue_style('fktr-new-terms-popup', FAKTURO_PLUGIN_URL .'assets/css/new-terms-popup.css');
 		}
 		
 		

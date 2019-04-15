@@ -106,6 +106,10 @@ class fktr_tax_nvoice_types {
 				$requerimient = array();
 			}
 		}
+		if ( wp_doing_ajax() ) {
+
+			return false;
+		}
 		if (isset($_GET['taxonomy']) && $_GET['taxonomy'] == self::$tax_name) {
 			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', $requerimient, WPE_FAKTURO_VERSION, true );
 			wp_enqueue_script( 'taxonomy-taxes', FAKTURO_PLUGIN_URL . 'assets/js/taxonomy-invoice-types.js', $requerimient, WPE_FAKTURO_VERSION, true );

@@ -11,8 +11,12 @@ jQuery(document).ready(function() {
 			jQuery('#tax_percentage_div').fadeOut();
 		}
 	});
-	validateForm = function(b){
+	validateForm = function(b) {
+		if(jQuery('#fktr_background_popup_taxonomy').length) {
+			return false;
+		}
 		if (jQuery('#tag-name').val() == '') {
+
 			jQuery('.term-name-wrap').addClass("form-invalid");
 			jQuery('#tag-name').focus();
 			jQuery('#tag-name').change(function(){
