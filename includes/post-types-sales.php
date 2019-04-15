@@ -71,42 +71,48 @@ class fktrPostTypeSales {
 		return array(
 	        'cb' => '<input type="checkbox" />',
 	        'title' => __('Title'),
+	        'client' =>__( 'Client', 'fakturo'),
 	        'payment_status' =>__( 'Payment Status', 'fakturo'),
 	        'date' => __('Date'),
 			
 	    );
 	}
-	public static function manage_columns( $column, $post_id) {
-		$sale_data = self::get_sale_data($post_id);
-		$setting_system = get_option('fakturo_system_options_group', false);
-		if (empty($sale_data['invoice_currency'])) {
-			$currencyDefault = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
-		} else {
-			$currencyDefault = get_fakturo_term($sale_data['invoice_currency'], 'fktr_currencies');		
-		}
-		switch ( $column ) {
-			case 'payment_status':
-				if (empty($sale_data['receipts'])) {
-					_e('Unpaid', 'fakturo');
-				} else {
-					_e('Receipts Numbers: Amount', 'fakturo');
-					echo '<br/>';
-					foreach ($sale_data['receipts'] as $receipt_id => $affected) {
-						if (is_wp_error($currencyDefault)) {
-							return false;
-						}
-						$receipt_data = fktrPostTypeReceipts::get_receipt_data($receipt_id);
-						echo $receipt_data['post_title'].': '.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($affected, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'';
-					}
-					
+	public static function manage_columns($column, $post_id) {
+            $sale_data = self::get_sale_data($post_id);
+            $setting_system = get_option('fakturo_system_options_group', false);
+            if (empty($sale_data['invoice_currency'])) {
+                $currencyDefault = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
+            } else {
+                $currencyDefault = get_fakturo_term($sale_data['invoice_currency'], 'fktr_currencies');
+            }
+            switch ($column) {
+                case 'payment_status':
+                    if (empty($sale_data['receipts'])) {
+                        _e('Unpaid', 'fakturo');
+                    } else {
+                        _e('Receipts Numbers: Amount', 'fakturo');
+                        echo '<br/>';
+                        foreach ($sale_data['receipts'] as $receipt_id => $affected) {
+                            if (is_wp_error($currencyDefault)) {
+                                return false;
+                            }
+                            $receipt_data = fktrPostTypeReceipts::get_receipt_data($receipt_id);
+                            echo $receipt_data['post_title'] . ': ' . (($setting_system['currency_position'] == 'before') ? $currencyDefault->symbol . ' ' : '') . '' . number_format($affected, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (($setting_system['currency_position'] == 'after') ? ' ' . $currencyDefault->symbol : '') . '';
+                        }
+                    }
+                    break;
+                    
+                case 'client':
+                    if ($sale_data['client_id']=="0") {
+                        _e('No Client', 'fakturo');
+                    } else {
+                        echo $sale_data['client_data']['name'];
+                    }
+                    break;
+            }
+        }
 
-				}
-				
-			break;
-		}
-	}
-
-	public static function print_invoice() {
+        public static function print_invoice() {
 		$object = new stdClass();
 		$object->type = 'post';
 		$object->id = $_REQUEST['id'];
