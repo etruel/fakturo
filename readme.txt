@@ -83,11 +83,13 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 == Changelog ==
 = 0.9.1 Beta =
+* Added Client Name in Sales list.
 * Added suport to translate the sliderchecks options.
 * Added Date Picker in Start of activities of Setting page.
 * Added Exit button in all screens of Configurations wizard.
 * Added popups button to add Invoice types required by Tax Conditions fields.
 * Added Fakturo Top Menu with the dashboard items.
+
 * Fixes fakturo_manager as minimun role to save Clients, Products, Providers and Sales.
 * Fixes some missed translations domains.
 * Updated Spanish Language.

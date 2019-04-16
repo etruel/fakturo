@@ -81,7 +81,7 @@ class fktrAdminMenu {
 			'edit_fakturo_dashboard', 
 			'fakturo_dashboard', 
 			array( __CLASS__, 'fakturo_dashboard'),
-			'dashicons-tickets', 26  );
+			'dashicons-tickets', 25  );
 		$page = add_submenu_page(
 			'fakturo_dashboard',
 			__( 'Fakturo Dashboard', 'fakturo' ),
