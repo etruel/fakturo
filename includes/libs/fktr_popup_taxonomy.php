@@ -91,7 +91,9 @@ class fktr_popup_taxonomy {
 		$taxonomy = get_taxonomy($r['taxonomy']);
 
 		$add_new_item_text = $taxonomy->labels->add_new_item;
+		$opcional_add_new_item = '';
 		if (!empty($r['opcional_add_new_item'])) {
+			$opcional_add_new_item = ' data-opcional_add_new_item="'.$r['opcional_add_new_item'].'"';
 			$add_new_item_text = $r['opcional_add_new_item'];
 		}
 		$parent_selector = '';
@@ -104,7 +106,7 @@ class fktr_popup_taxonomy {
 		}
 		
 		//print_r($taxonomy);
-		$button_html = '<input type="button" class="'.$r['class'].'" value="'.$add_new_item_text.'" data-taxonomy="'.$r['taxonomy'].'"'.$parent_selector.$data_selector.'/>';
+		$button_html = '<input type="button" class="'.$r['class'].'" value="'.$add_new_item_text.'" data-taxonomy="'.$r['taxonomy'].'"'.$parent_selector.$data_selector.$opcional_add_new_item.'/>';
 		if ($r['echo']) {
 			echo $button_html;
 		} else {
@@ -150,8 +152,8 @@ class fktr_popup_taxonomy {
 		<div class="form-wrap">
 		<h2><?php 
 			$add_new_item_text = $tax->labels->add_new_item;
-			if (!empty($r['opcional_add_new_item'])) {     //$r no existe en esta instancia
-				$add_new_item_text = $r['opcional_add_new_item'];
+			if (!empty($_REQUEST['opcional_add_new_item'])) {     //$r no existe en esta instancia
+				$add_new_item_text = $_REQUEST['opcional_add_new_item'];
 			}
 			echo $add_new_item_text; ?>
 		</h2>

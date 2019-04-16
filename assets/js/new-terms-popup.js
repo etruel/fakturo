@@ -1,5 +1,5 @@
 var current_json_save = '';
-var current_ajax_popup_taxonomy_object = {taxonomy:'category', selector:'', selector_parent_select: ''};
+var current_ajax_popup_taxonomy_object = {taxonomy:'category', selector:'', selector_parent_select: '', opcional_add_new_item: ''};
 var fktr_parents_popup = new Array();
 jQuery(document).ready(function() {
 	events_init_term_popup();
@@ -8,7 +8,7 @@ jQuery(document).ready(function() {
 function events_init_term_popup() {
 	jQuery('body').on('click', '.fktr_btn_taxonomy', function(e) {
 		if(jQuery('#fktr_background_popup_taxonomy').length) {
-			fktr_parents_popup.push({taxonomy: current_ajax_popup_taxonomy_object.taxonomy, selector: current_ajax_popup_taxonomy_object.selector, selector_parent_select: current_ajax_popup_taxonomy_object.selector_parent_select});
+			fktr_parents_popup.push({taxonomy: current_ajax_popup_taxonomy_object.taxonomy, selector: current_ajax_popup_taxonomy_object.selector, selector_parent_select: current_ajax_popup_taxonomy_object.selector_parent_select, opcional_add_new_item: current_ajax_popup_taxonomy_object.opcional_add_new_item });
 		}
 		var cur_taxonomy = jQuery(this).data('taxonomy');
 		if(cur_taxonomy != '' && cur_taxonomy != null) {
@@ -30,6 +30,14 @@ function events_init_term_popup() {
 		} else {
 			current_ajax_popup_taxonomy_object.selector_parent_select = '';
 		}
+
+		var cur_opcional_add_new_item = jQuery(this).data('opcional_add_new_item');
+		if(cur_opcional_add_new_item != '' && cur_opcional_add_new_item != null) {
+			current_ajax_popup_taxonomy_object.opcional_add_new_item = cur_opcional_add_new_item;
+		} else {
+			current_ajax_popup_taxonomy_object.opcional_add_new_item = '';
+		}
+
 		open_popup_taxonomy(backend_object);
 		e.preventDefault();
 	});
@@ -47,7 +55,7 @@ function open_popup_taxonomy(object_backend) {
 
 	create_popop_taxonomy(object_backend);
 	show_popup_taxonomy();
-	var ajax_url = backend_object.ajax_url+'?action=fktr_popup_taxonomy&taxonomy='+current_ajax_popup_taxonomy_object.taxonomy;
+	var ajax_url = backend_object.ajax_url+'?action=fktr_popup_taxonomy&taxonomy='+current_ajax_popup_taxonomy_object.taxonomy+'&opcional_add_new_item='+current_ajax_popup_taxonomy_object.opcional_add_new_item;
 	jQuery.ajax({
 		url: ajax_url,
 		type: 'get',
