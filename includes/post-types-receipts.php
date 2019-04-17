@@ -70,10 +70,15 @@ class fktrPostTypeReceipts {
 		
 		switch ( $column ) {
 			case 'invoices_affected':
-				foreach ($receipt_data['check_invs'] as $kc => $invoice_id) {
-					$data_inv = fktrPostTypeSales::get_sale_data($invoice_id);
-					echo '<a href="'.get_edit_post_link($invoice_id).'">'.$data_inv['post_title'].'</a><br/>';
+				if ( ! empty($receipt_data['check_invs']) )  {
+					foreach ($receipt_data['check_invs'] as $kc => $invoice_id) {
+						$data_inv = fktrPostTypeSales::get_sale_data($invoice_id);
+						echo '<a href="'.get_edit_post_link($invoice_id).'">'.$data_inv['post_title'].'</a><br/>';
+					}
+				} else {
+					echo '<p>' . __('No invoices affected.', 'fakturo') . '</p>';
 				}
+				
 			break;
 		}
 	}
