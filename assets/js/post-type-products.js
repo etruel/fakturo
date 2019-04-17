@@ -1,5 +1,19 @@
 var DefaultMaskNumbers = '';
-jQuery(document).ready(function() {
+jQuery(document).ready(function($) {
+
+
+	// This code prevents the URL from being filled with the wp-post-new-reload value
+	$('#publish').click(function(e) {
+		if ( $( '#original_post_status' ).val() === 'auto-draft' && window.history.replaceState ) {
+			var location;
+			location = window.location.href;
+			if ((location.split('wp-post-new-reload').length - 1) > 1 ) {
+				location = location.replace('?wp-post-new-reload=true', '');
+				location = location.replace('&wp-post-new-reload=true', '');
+				window.history.replaceState( null, null, location );
+			}
+		}
+	});
 	jQuery('#provider').select2();
 	jQuery('#model').select2();
 	jQuery('#category').select2();
