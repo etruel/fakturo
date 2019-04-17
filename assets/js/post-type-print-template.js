@@ -9,6 +9,7 @@ jQuery(document).ready(function() {
     };
     
     editor = CodeMirror.fromTextArea(document.getElementById("content"), config);
+    editor.setSize(null,700);
     editor.refresh();
 
     //jQuery('#publishing-action').prepend(print_template_object.pdf_button);

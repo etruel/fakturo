@@ -200,6 +200,7 @@ class fktr_tax_nvoice_types {
 			'cb' => '<input type="checkbox" />',
 			'name' => __('Name', 'fakturo'),
 			'short_name' => __('Short Name', 'fakturo'),
+			'symbol' => __('Symbol', 'fakturo'),
 			'discriminates_taxes' => __('Discriminates taxes', 'fakturo'),
 			'sum' => __('Sum', 'fakturo'),
 		);
@@ -213,6 +214,9 @@ class fktr_tax_nvoice_types {
 		switch ($column_name) {
 			case 'short_name': 
 				$out = esc_attr( $term->short_name);
+				break;
+			case 'symbol': 
+				$out = esc_attr( $term->symbol);
 				break;
 			case 'discriminates_taxes': 
 				$out = esc_attr( $term->discriminates_taxes);
@@ -236,6 +240,7 @@ class fktr_tax_nvoice_types {
 		if (isset( $_POST['term_meta'])) {
 			$_POST['term_meta']['discriminates_taxes'] = $_POST['term_meta_discriminates_taxes'];
 			$_POST['term_meta']['sum'] = $_POST['term_meta_sum'];
+			$_POST['term_meta']['symbol'] = $_POST['term_meta_symbol'];
 			set_fakturo_term($term_id, $tt_id, $_POST['term_meta']);
 		}
 	}

@@ -92,11 +92,13 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Added popups button to add Invoice types required by Tax Conditions fields.
 * Added new helps to Products Scale Prices.
 * Updates webcam snapshots libraries to take photos of articles/clients.
+* Tweaks the code height textarea in print templates screen.
 * Fixes title of Add New State Popup.
 * Fixes notice when getting data of the provider in the product.
 * Fixes the menu order broken for some cases.
 * Fixes fakturo_manager as minimun role to save Clients, Products, Providers and Sales.
 * Fixes autoclose window on print documents.
+* Fixes Symbol not saved in Invoice Types table.
 * Fixes some warnings in receipt list.
 * Fixes some warnings in extensions list.
 * Fixes some issues in URL after save a posts type.
