@@ -348,14 +348,15 @@ class fktrPostTypeProducts {
 					
 			
 			<tr class="tr_fktr">
-				<th></th>
+				<th style="text-align: center;">'.__('Scale', 'fakturo' ).'</th>
 				<th style="text-align: center;">'.__('Price', 'fakturo' ).'</th>
 				<th style="text-align: center;">'.__('Suggested', 'fakturo' ).'</th>
 				<th style="text-align: center;">'.__('Final', 'fakturo' ).'</th>
 			</tr>
 			';
 		$product_tax = get_fakturo_term($product_data['tax'], 'fktr_tax');
-		foreach ($terms as $t) {
+                if ( !empty($terms) )  {  // if no scale prices
+                    foreach ($terms as $t) {
 			if (empty($product_data['prices'][$t->term_id])) {
 				$product_data['prices'][$t->term_id] = ($product_data['cost']!= 0) ? ((($product_data['cost']/100)*$t->percentage)+$product_data['cost']) : 0;
 			}
@@ -375,7 +376,12 @@ class fktrPostTypeProducts {
 				<td style="text-align: center;" id="suggested_'.$t->term_id.'"></td>
 				<td style="text-align: center;"><input type="text" value="'.(isset($product_data['prices_final'][$t->term_id])?number_format($product_data['prices_final'][$t->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']):'').'" id="prices_final_'.$t->term_id.'" class="prices_final" name="prices_final['.$t->term_id.']"/></td>
 			</tr>';
-		}
+                    }
+                } else {
+                        $echoHtml .= '<tr><td colspan="4" style="text-align: center;font-size: large;" align="center">' . __('Scale prices missed. Go to Settings to add them: ', 'fakturo') . '';
+                        $echoHtml .= '<a href="' .admin_url('edit-tags.php?taxonomy=fktr_price_scales') . '">' . __('Scale prices', 'fakturo') . '</a></td></tr>';
+                }
+
 		$echoHtml .= '</table>';
 		$echoHtml = apply_filters('fktr_product_prices_box', $echoHtml);
 		echo $echoHtml;
@@ -414,19 +420,20 @@ class fktrPostTypeProducts {
 		global $post;
 		
 		$product_data = self::get_product_data($post->ID);
-		
+
 		$setting_system = get_option('fakturo_system_options_group', false);
 		
 		$selectProvider = fakturo_get_select_post(array(
-											'echo' => 0,
-											'post_type' => 'fktr_provider',
-											'show_option_none' => __('Choose a Provider', 'fakturo' ),
-											'name' => 'provider',
-											'id' => 'provider',
-											'selected' => $product_data['provider'],
-											'class' => ''
-										));
-		$selectModel = wp_dropdown_categories( array(
+                    'echo' => 0,
+                    'post_type' => 'fktr_provider',
+                    'show_option_none' => __('Choose a Provider', 'fakturo'),
+                    'name' => 'provider',
+                    'id' => 'provider',
+                    'selected' => $product_data['provider'],
+                    'class' => ''
+                ));
+                
+                $selectModel = wp_dropdown_categories( array(
 			'show_option_all'    => '',
 			'show_option_none'   => __('Choose a Model', 'fakturo' ),
 			'orderby'            => 'name', 
@@ -685,6 +692,10 @@ class fktrPostTypeProducts {
 			$fields['currency'] = 0;
 		}
 
+		if (!isset($fields['provider'])) {
+			$fields['provider'] = 0;
+		}
+
 		if (!isset($fields['model'])) {
 			$fields['model'] = 0;
 		}
@@ -811,7 +822,7 @@ class fktrPostTypeProducts {
 		
 		
 		
-		if ( ! current_user_can( 'fakturo_manager', $post_id ) ) {
+		if ( ! current_user_can( 'edit_fakturo_settings', $post_id ) ) {
 			return false;
 		}
 		if ( ( defined( 'FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION ) ) {

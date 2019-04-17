@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>WebcamJS Test Page</title>
+	<title>WebcamJS Test Page - Flash Disabled</title>
 	<style type="text/css">
 		body { font-family: Helvetica, sans-serif; }
 		h2, h3 { margin-top:0; }
@@ -16,7 +16,7 @@
 	<div id="results">Your captured image will appear here...</div>
 	
 	<h1>WebcamJS Test Page</h1>
-	<h3>Demonstrates 240x240 cropped capture &amp; display</h3>
+	<h3>Flash fallback is disabled in this demo</h3>
 	
 	<div id="my_camera"></div>
 	
@@ -26,23 +26,12 @@
 	<!-- Configure a few settings and attach camera -->
 	<script language="JavaScript">
 		Webcam.set({
-			// live preview size
 			width: 320,
 			height: 240,
-			
-			// device capture size
-			dest_width: 320,
-			dest_height: 240,
-			
-			// final cropped size
-			crop_width: 240,
-			crop_height: 240,
-			
-			// format and quality
 			image_format: 'jpeg',
-			jpeg_quality: 90
+			jpeg_quality: 90,
+			enable_flash: false
 		});
-		
 		Webcam.attach( '#my_camera' );
 	</script>
 	

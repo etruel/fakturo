@@ -65,7 +65,27 @@ $helptexts = array(
 		),
 		'item2' => array( 
 			'title' => __('Price','fakturo'),
-			'tip' => __('Price of the product according to the currency selected.','fakturo'),
+			'tip' => __('The Cost Price of the product according to the currency selected.','fakturo'),
+			'plustip' => __('When the Cost Price changes, the different <b>scale prices</b> also change their values depending on their percentages, also allowing each one to be manually adjusted.','fakturo'),
+		),
+	),
+	'SCALE PRICES' => array( 
+		'tabtitle' =>  __('Price Scales', 'fakturo' ),
+		'item1' => array( 
+			'title' => __('Scales','fakturo'),
+			'tip' => __('The name you gives to each scale in their table.','fakturo'),
+		),
+		'item2' => array( 
+			'title' => __('Price','fakturo'),
+			'tip' => __('If it was not changed manually it is the price of the product according to the selected scale (Cost plus its percentage).','fakturo'),
+		),
+		'item3' => array( 
+			'title' => __('Suggested','fakturo'),
+			'tip' => __('Price of the product according to the selected scale (Cost plus its percentage).','fakturo'),
+		),
+		'item4' => array( 
+			'title' => __('Final','fakturo'),
+			'tip' => __('Price of the selected scale plus the Tax filled in the field Product Data Tax.','fakturo'),
 		),
 	),
 	'PRODUCT IMAGE' => array( 

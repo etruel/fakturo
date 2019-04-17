@@ -143,10 +143,11 @@ class fktr_admin_page {
 				}
 			
 				$plugindirname = str_replace('-','_', strtolower( sanitize_file_name( $itemtitle )));
+				$buynowURI = (!empty($download_id)) ? 'https://etruel.com/checkout?edd_action=add_to_cart&download_id='.$download_id.'&edd_options[price_id]=1' : 'https://etruel.com/';
 				$addon[ $plugindirname ] = Array (
 					'Name'		  => $itemtitle,
 					'PluginURI'	  => $item->get_permalink(),
-					'buynowURI'	  => 'https://etruel.com/checkout?edd_action=add_to_cart&download_id='.$download_id.'&edd_options[price_id]=1',
+					'buynowURI'	  => $buynowURI,
 					'Version'	  => $version,	
 					'Description' => $item->get_description(),
 					'Author'	  => 'etruel', 

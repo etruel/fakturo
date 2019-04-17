@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class fktr_welcome {
 
 
-	public static $minimum_capability = 'fakturo_manager';
+	public static $minimum_capability = 'edit_fakturo_settings';
 	public function __construct() {
 		add_action( 'admin_menu', array($this, 'admin_menus') );
 		add_action( 'admin_head', array($this, 'admin_head' ) );

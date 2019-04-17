@@ -87,10 +87,19 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Added suport to translate the sliderchecks options.
 * Added Date Picker in Start of activities of Setting page.
 * Added Exit button in all screens of Configurations wizard.
-* Added popups button to add Invoice types required by Tax Conditions fields.
 * Added Fakturo Top Menu with the dashboard items.
-
+* Added some security tweaks on AJAX calls.
+* Added popups button to add Invoice types required by Tax Conditions fields.
+* Added new helps to Products Scale Prices.
+* Updates webcam snapshots libraries to take photos of articles/clients.
+* Fixes title of Add New State Popup.
+* Fixes notice when getting data of the provider in the product.
+* Fixes the menu order broken for some cases.
 * Fixes fakturo_manager as minimun role to save Clients, Products, Providers and Sales.
+* Fixes autoclose window on print documents.
+* Fixes some warnings in receipt list.
+* Fixes some warnings in extensions list.
+* Fixes some issues in URL after save a posts type.
 * Fixes some missed translations domains.
 * Updated Spanish Language.
 
@@ -179,5 +188,5 @@ First Release
 
 == Upgrade Notice ==
 
-= 0.9 Beta =
-Many tweaks. This would be the RC3.
+= 0.9.1 Beta =
+Many tweaks. 1.0 coming soon.

@@ -234,8 +234,8 @@ class fktrUserRoles {
 		if ($plugin != 'fakturo/fakturo.php') {
 			return true;
 		}
-		add_role( 'fakturo_manager', __( 'Manager', 'fakturo' ), self::get_fakturo_manager_caps());
-		add_role( 'fakturo_seller', __( 'Salesman', 'fakturo' ), self::get_fakturo_seller_caps());
+		add_role( 'fakturo_manager', __( 'Fakturo Manager', 'fakturo' ), self::get_fakturo_manager_caps());
+		add_role( 'fakturo_seller', __( 'Fakturo Salesman', 'fakturo' ), self::get_fakturo_seller_caps());
 		
 		update_option('fktr_last_mananger_caps', self::$fakturo_manager_caps);
 		update_option('fktr_last_seller_caps', self::$fakturo_seller_caps);
