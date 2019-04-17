@@ -21,7 +21,7 @@ class fktr_popup_taxonomy {
 
 		$request_tax = '';
 		if (!empty($_REQUEST['taxonomy'])) {
-			$request_tax = $_REQUEST['taxonomy'];
+			$request_tax = sanitize_text_field($_REQUEST['taxonomy']);
 		}
 		if (empty($_POST['tag-name'])) {
 			$return = new stdClass();
@@ -124,7 +124,7 @@ class fktr_popup_taxonomy {
 
 		$request_tax = '';
 		if (!empty($_REQUEST['taxonomy'])) {
-			$request_tax = $_REQUEST['taxonomy'];
+			$request_tax = sanitize_text_field($_REQUEST['taxonomy']);
 		}
 
 		$taxnow = $request_tax;
@@ -153,7 +153,7 @@ class fktr_popup_taxonomy {
 		<h2><?php 
 			$add_new_item_text = $tax->labels->add_new_item;
 			if (!empty($_REQUEST['opcional_add_new_item'])) {     //$r no existe en esta instancia
-				$add_new_item_text = $_REQUEST['opcional_add_new_item'];
+				$add_new_item_text = sanitize_text_field($_REQUEST['opcional_add_new_item']);
 			}
 			echo $add_new_item_text; ?>
 		</h2>
