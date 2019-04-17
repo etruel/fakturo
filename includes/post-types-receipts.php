@@ -85,7 +85,7 @@ class fktrPostTypeReceipts {
 	public static function print_receipt() {
 		$object = new stdClass();
 		$object->type = 'post';
-		$object->id = $_REQUEST['id'];
+		$object->id = intval($_REQUEST['id']);
 		$object->assgined = 'fktr_receipt';
 		if ($object->id) {
 			$id_print_template = fktrPostTypePrintTemplates::get_id_by_assigned($object->assgined);
