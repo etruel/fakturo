@@ -1,8 +1,8 @@
 === Fakturo ===
-Contributors: etruel, sniuk
+Contributors: etruel, sniuk, khaztiel
 Donate link: 
 Tags: invoice, sales, purchases, billing, receipt, Tax Code, VAT, PDF invoices, bill, bill clients, merchantplus, SME, pyme, checkout, online payment, pay, recurring billing, send invoice, web invoice, wp-invoice, wp-sales, e-commerce, e-store, eshop, wp ecommerce
-Requires at least: 4.1
+Requires at least: 5.0
 Tested up to: 5.1.1
 Stable tag: trunk
 License: GPLv2 or later
@@ -82,7 +82,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 
 == Changelog ==
-= 0.9.1 Beta =
+= 0.9.1 Beta (April 18, 2019) =
 * Added Client Name in Sales list.
 * Added order by Client and Date in Sales list.
 * Added suport to translate the sliderchecks options.
