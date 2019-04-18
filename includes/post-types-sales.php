@@ -62,22 +62,63 @@ class fktrPostTypeSales {
 		add_action('admin_post_print_invoice', array(__CLASS__, 'print_invoice'));
 		add_filter( 'bulk_actions-edit-fktr_sale', array(__CLASS__, 'bulk_actions') );
 		add_filter( 'handle_bulk_actions-edit-fktr_sale', array(__CLASS__, 'bulk_action_handler'), 10, 3 );
+                
 		add_filter('manage_fktr_sale_posts_columns' , array(__CLASS__, 'columns' ));
+                //add_filter('manage_edit-fktr_sale_columns', array( __CLASS__, 'columns'), 10);  // Nueva
 		add_filter('manage_fktr_sale_posts_custom_column' , array(__CLASS__, 'manage_columns' ), 10, 2 );
-		
+                
+		add_filter('manage_edit-fktr_sale_sortable_columns',  array(__CLASS__, 'sortable_columns'));
+                //add_action('pre_get_posts', array(__CLASS__, 'column_orderby') );
+                add_action('parse_query', array(__CLASS__, 'column_orderby') );
 	}
-	public static function columns($columns) {
-	    
-		return array(
-	        'cb' => '<input type="checkbox" />',
-	        'title' => __('Title'),
-	        'client' =>__( 'Client', 'fakturo'),
-	        'payment_status' =>__( 'Payment Status', 'fakturo'),
-	        'date' => __('Date'),
-			
-	    );
-	}
-	public static function manage_columns($column, $post_id) {
+
+        // Make these columns sortable
+        public static function sortable_columns($columns) {
+            $custom = array(
+                'client' 	=> 'client',
+                'saledate' 	=> 'saledate'
+            );
+            return wp_parse_args($custom, $columns);
+        }
+
+       	public static function column_orderby($query) {
+            global $pagenow, $post_type;
+            $orderby = $query->get('orderby');
+            if ('edit.php' != $pagenow || empty($orderby) || $post_type != 'fktr_sale')
+                return;
+            switch ($orderby) {
+                case 'client':
+                    $meta_group = array('key' => 'client_id', 'type' => 'numeric');
+                    $query->set('meta_query', array('sort_column' => 'client', $meta_group));
+                    $query->set('meta_key', 'client_id');
+                    $query->set('orderby', 'meta_value_num');
+
+                    break;
+                case 'saledate':
+                    $meta_group = array('key' => 'date', 'type' => 'numeric');
+                    $query->set('meta_query', array('sort_column' => 'saledate', $meta_group));
+                    $query->set('meta_key', 'date');
+                    $query->set('orderby', 'meta_value_num');
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        public static function columns($columns) {
+
+            return array(
+                'cb' => '<input type="checkbox" />',
+                'title' => __('Title'),
+                'client' => __('Client', 'fakturo'),
+                'payment_status' => __('Payment Status', 'fakturo'),
+                'saledate' => __('Date'),
+            );
+        }
+
+        public static function manage_columns($column, $post_id) {
             $sale_data = self::get_sale_data($post_id);
             $setting_system = get_option('fakturo_system_options_group', false);
             if (empty($sale_data['invoice_currency'])) {
@@ -107,6 +148,14 @@ class fktrPostTypeSales {
                         _e('No Client', 'fakturo');
                     } else {
                         echo $sale_data['client_data']['name'];
+                    }
+                    break;
+
+                case 'saledate':
+                    if(isset($sale_data['date']) && !is_numeric($sale_data['date'])) {
+                        echo $sale_data['date'];
+                    }else{
+                        echo date_i18n($setting_system['dateformat'], $sale_data['date'] );
                     }
                     break;
             }
@@ -383,7 +432,7 @@ class fktrPostTypeSales {
 
 		register_post_type( 'fktr_sale', $args );
 
-		
+		//Placeholder for the title field
 		add_filter('enter_title_here', array('fktrPostTypeSales', 'name_placeholder'),10,2);
 		
 		
@@ -463,120 +512,110 @@ class fktrPostTypeSales {
 		
 	}
 	public static function scripts() {
-		global $post_type, $post, $wp_locale, $locale;
-		if($post_type == 'fktr_sale') {
-			wp_dequeue_script( 'autosave' );
-			wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			wp_enqueue_script( 'jquery-datetimepicker', FAKTURO_PLUGIN_URL . 'assets/js/jquery.datetimepicker.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			wp_enqueue_script( 'jquery-vsort', FAKTURO_PLUGIN_URL . 'assets/js/jquery.vSort.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			wp_enqueue_script( 'jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			wp_enqueue_script( 'post-type-sales', FAKTURO_PLUGIN_URL . 'assets/js/post-type-sales.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			$sale_data = self::get_sale_data($post->ID);
-			$product_data = array();
-			if (!empty($sale_data['uc_id'])) {
-				foreach ($sale_data['uc_id'] as $key => $product_id) {
-					$newProduct = new stdClass();
-					$dataProduct = fktrPostTypeProducts::get_product_data($product_id);
-					$newProduct->id = $product_id;
-					$newProduct->title = $dataProduct['post_title'];
-					$newProduct->description = $dataProduct['description'];
-					$newProduct->img = FAKTURO_PLUGIN_URL . 'assets/images/default_product.png';
-					$newProduct->datacomplete = $dataProduct;
-					
-					if (isset($dataProduct['_thumbnail_id']) && $dataProduct['_thumbnail_id'] > 0) {
-						$newProduct->img = wp_get_attachment_url( get_post_thumbnail_id($product_id));
-					} 
-					$product_data[$product_id] = $newProduct;
-				}
-			}
-			$setting_system = get_option('fakturo_system_options_group', false);
-			
-			$objectL10n = (object)array(
-				'lang'			=> substr($locale, 0, 2),
-				'UTC'			=> get_option( 'gmt_offset' ),
-				'timeFormat'    => get_option( 'time_format' ),
-				'dateFormat'    => self::date_format_php_to_js( $setting_system['dateformat'] ),
-				'printFormat'   => self::date_format_php_to_js( $setting_system['dateformat'] ),
-				'firstDay'      => get_option( 'start_of_week' ),
-			);	
-			
-			$tax_coditions = get_fakturo_terms(array(
-							'taxonomy' => 'fktr_tax_conditions',
-							'hide_empty' => false,
-				));
-				
-			$currencies = get_fakturo_terms(array(
-							'taxonomy' => 'fktr_currencies',
-							'hide_empty' => false,
-				));
-			$taxes = get_fakturo_terms(array(
-							'taxonomy' => 'fktr_tax',
-							'hide_empty' => false,
-				));
-			$invoice_types = get_fakturo_terms(array(
-							'taxonomy' => 'fktr_invoice_types',
-							'hide_empty' => false,
-				));
-			$sale_points = get_fakturo_terms(array(
-							'taxonomy' => 'fktr_sale_points',
-							'hide_empty' => false,
-				));	
-			$locations = get_fakturo_terms(array(
-							'taxonomy' => 'fktr_locations',
-							'hide_empty' => false,
-				));	
-				
-			wp_localize_script('post-type-sales', 'sales_object',
-				array('ajax_url' => admin_url( 'admin-ajax.php' ),
-					'thousand' => $setting_system['thousand'],
-					'decimal' => $setting_system['decimal'],
-					'decimal_numbers' => $setting_system['decimal_numbers'],
-					'currency_position' => $setting_system['currency_position'],
-					'default_currency' => $setting_system['currency'],
-					'default_code' => $setting_system['default_code'],
-					'digits_invoice_number' => $setting_system['digits_invoice_number'],
-					'list_invoice_number' => $setting_system['list_invoice_number'],
-					'list_invoice_number_separator' => apply_filters('fktr_invoice_number_separator', $setting_system['list_invoice_number_separator']),
-					'use_stock_product' => $setting_system['use_stock_product'],
-					
-					
-					'post_status' => $post->post_status,
-					'product_data' => $product_data,
-					'datetimepicker' => $objectL10n,
-					
-					
-					
-					'code_meta_post_key' => apply_filters('fktr_meta_key_code_product_'.$setting_system['default_code'], 'internal'),
-					'description_meta_post_key' => apply_filters('fktr_meta_key_description_product_'.$setting_system['default_description'], 'title'),
-					'characters_to_search' => apply_filters('fktr_sales_characters_to_search_product', 3),
-					
-					'url_loading_image' => get_bloginfo('wpurl').'/wp-admin/images/wpspin_light.gif',
-					'txt_cost' => __('Cost', 'fakturo' ),
-					'txt_search_products' => __('Search products...', 'fakturo' ),
-					'txt_total_quantity' => __('Total quantity', 'fakturo' ),
-					'txt_remaining' => __('Remaining', 'fakturo' ),
-					'txt_loading' => __('Loading', 'fakturo' ),
-					'txt_no_stock' => __('Stock not available', 'fakturo' ),
-					'txt_exc_stock' => __('Stock exceeded', 'fakturo' ),
-					'txt_max' => __('Max', 'fakturo' ),
-					'txt_min' => __('Min', 'fakturo' ),
-					'txt_product_alert_min' => __('Alert of minimal stock', 'fakturo' ),
-					'txt_cancel' => __('Cancel', 'fakturo' ),
-					
-					'tax_coditions' => json_encode($tax_coditions),
-					'currencies' => json_encode($currencies),
-					'taxes' => json_encode($taxes),
-					'invoice_types' => json_encode($invoice_types),
-					'sale_points' => $sale_points,
-					'locations' => $locations,
-				));
-		
-		}
-		
-	}
-	
-	public static function meta_boxes() {
-		
+            global $post_type, $post, $wp_locale, $locale;
+            if ($post_type == 'fktr_sale') {
+                wp_dequeue_script('autosave');
+                wp_enqueue_script('jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array('jquery'), WPE_FAKTURO_VERSION, true);
+                wp_enqueue_script('jquery-datetimepicker', FAKTURO_PLUGIN_URL . 'assets/js/jquery.datetimepicker.js', array('jquery'), WPE_FAKTURO_VERSION, true);
+                wp_enqueue_script('jquery-vsort', FAKTURO_PLUGIN_URL . 'assets/js/jquery.vSort.js', array('jquery'), WPE_FAKTURO_VERSION, true);
+                wp_enqueue_script('jquery-mask', FAKTURO_PLUGIN_URL . 'assets/js/jquery.mask.min.js', array('jquery'), WPE_FAKTURO_VERSION, true);
+                wp_enqueue_script('post-type-sales', FAKTURO_PLUGIN_URL . 'assets/js/post-type-sales.js', array('jquery'), WPE_FAKTURO_VERSION, true);
+                $sale_data = self::get_sale_data($post->ID);
+                $product_data = array();
+                if (!empty($sale_data['uc_id'])) {
+                    foreach ($sale_data['uc_id'] as $key => $product_id) {
+                        $newProduct = new stdClass();
+                        $dataProduct = fktrPostTypeProducts::get_product_data($product_id);
+                        $newProduct->id = $product_id;
+                        $newProduct->title = $dataProduct['post_title'];
+                        $newProduct->description = $dataProduct['description'];
+                        $newProduct->img = FAKTURO_PLUGIN_URL . 'assets/images/default_product.png';
+                        $newProduct->datacomplete = $dataProduct;
+
+                        if (isset($dataProduct['_thumbnail_id']) && $dataProduct['_thumbnail_id'] > 0) {
+                            $newProduct->img = wp_get_attachment_url(get_post_thumbnail_id($product_id));
+                        }
+                        $product_data[$product_id] = $newProduct;
+                    }
+                }
+                $setting_system = get_option('fakturo_system_options_group', false);
+
+                $objectL10n = (object) array(
+                            'lang' => substr($locale, 0, 2),
+                            'UTC' => get_option('gmt_offset'),
+                            'timeFormat' => get_option('time_format'),
+                            'dateFormat' => self::date_format_php_to_js($setting_system['dateformat']),
+                            'printFormat' => self::date_format_php_to_js($setting_system['dateformat']),
+                            'firstDay' => get_option('start_of_week'),
+                );
+
+                $tax_coditions = get_fakturo_terms(array(
+                    'taxonomy' => 'fktr_tax_conditions',
+                    'hide_empty' => false,
+                ));
+
+                $currencies = get_fakturo_terms(array(
+                    'taxonomy' => 'fktr_currencies',
+                    'hide_empty' => false,
+                ));
+                $taxes = get_fakturo_terms(array(
+                    'taxonomy' => 'fktr_tax',
+                    'hide_empty' => false,
+                ));
+                $invoice_types = get_fakturo_terms(array(
+                    'taxonomy' => 'fktr_invoice_types',
+                    'hide_empty' => false,
+                ));
+                $sale_points = get_fakturo_terms(array(
+                    'taxonomy' => 'fktr_sale_points',
+                    'hide_empty' => false,
+                ));
+                $locations = get_fakturo_terms(array(
+                    'taxonomy' => 'fktr_locations',
+                    'hide_empty' => false,
+                ));
+
+                wp_localize_script('post-type-sales', 'sales_object',
+                        array('ajax_url' => admin_url('admin-ajax.php'),
+                            'thousand' => $setting_system['thousand'],
+                            'decimal' => $setting_system['decimal'],
+                            'decimal_numbers' => $setting_system['decimal_numbers'],
+                            'currency_position' => $setting_system['currency_position'],
+                            'default_currency' => $setting_system['currency'],
+                            'default_code' => $setting_system['default_code'],
+                            'digits_invoice_number' => $setting_system['digits_invoice_number'],
+                            'list_invoice_number' => $setting_system['list_invoice_number'],
+                            'list_invoice_number_separator' => apply_filters('fktr_invoice_number_separator', $setting_system['list_invoice_number_separator']),
+                            'use_stock_product' => $setting_system['use_stock_product'],
+                            'post_status' => $post->post_status,
+                            'product_data' => $product_data,
+                            'datetimepicker' => $objectL10n,
+                            'code_meta_post_key' => apply_filters('fktr_meta_key_code_product_' . $setting_system['default_code'], 'internal'),
+                            'description_meta_post_key' => apply_filters('fktr_meta_key_description_product_' . $setting_system['default_description'], 'title'),
+                            'characters_to_search' => apply_filters('fktr_sales_characters_to_search_product', 3),
+                            'url_loading_image' => get_bloginfo('wpurl') . '/wp-admin/images/wpspin_light.gif',
+                            'txt_cost' => __('Cost', 'fakturo'),
+                            'txt_search_products' => __('Search products...', 'fakturo'),
+                            'txt_total_quantity' => __('Total quantity', 'fakturo'),
+                            'txt_remaining' => __('Remaining', 'fakturo'),
+                            'txt_loading' => __('Loading', 'fakturo'),
+                            'txt_no_stock' => __('Stock not available', 'fakturo'),
+                            'txt_exc_stock' => __('Stock exceeded', 'fakturo'),
+                            'txt_max' => __('Max', 'fakturo'),
+                            'txt_min' => __('Min', 'fakturo'),
+                            'txt_product_alert_min' => __('Alert of minimal stock', 'fakturo'),
+                            'txt_cancel' => __('Cancel', 'fakturo'),
+                            'tax_coditions' => json_encode($tax_coditions),
+                            'currencies' => json_encode($currencies),
+                            'taxes' => json_encode($taxes),
+                            'invoice_types' => json_encode($invoice_types),
+                            'sale_points' => $sale_points,
+                            'locations' => $locations,
+                ));
+            }
+        }
+
+        public static function meta_boxes() {
 
 		add_meta_box('fakturo-currencies-box', __('Currencies', 'fakturo' ), array('fktrPostTypeSales', 'currencies_box'),'fktr_sale','side', 'high' );
 		add_meta_box('fakturo-discount-box', __('Discount', 'fakturo' ), array('fktrPostTypeSales', 'discount_box'),'fktr_sale','side', 'high' );
@@ -585,7 +624,8 @@ class fktrPostTypeSales {
 		add_meta_box('fakturo-invoice-box', __('Invoice', 'fakturo' ), array('fktrPostTypeSales', 'invoice_box'),'fktr_sale','normal', 'high' );
 		do_action('add_ftkr_sale_meta_boxes');
 	}
-	public static function invoice_box() {
+
+        public static function invoice_box() {
 		global $post;
 		$sale_data = self::get_sale_data($post->ID);
 		
@@ -1137,86 +1177,65 @@ class fktrPostTypeSales {
 	}
 	
 	public static function currencies_box() {
-		global $post;
-		
-	
-		$sale_data = self::get_sale_data($post->ID);
-		$setting_system = get_option('fakturo_system_options_group', false);
-		
-		$currencies = get_fakturo_terms(array(
-											'taxonomy' => 'fktr_currencies',
-											'hide_empty' => false,
-											'exclude' => $setting_system['currency']
-										));
-		
-		
-		
-		
-		$echoHtml = '<table>
-					<tbody>';
-		
-		foreach ($currencies as $cur) {
-			$echoHtml .= '<tr>
-							<td>'.((empty($cur->reference))?'':'<a href="'.$cur->reference.'" target="_blank">').''.$cur->name.''.((empty($cur->reference))?'':'</a>').'</td>'.(($setting_system['currency_position'] == 'before')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'<td>'.(($post->post_status != 'publish')?'<input type="text" style="text-align: right; width: 120px;" value="'.$cur->rate.'" name="invoice_currencies['.$cur->term_id.']" id="invoice_currencies_'.$cur->term_id.'" class="invoice_currencies"/> ':number_format($cur->rate, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand'])).''.(($setting_system['currency_position'] == 'after')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'</td>
-						</tr>';
-			
-		}
-			
-		$echoHtml .= '</tbody>
-				</table>';
-	
-		$echoHtml = apply_filters('fktr_sale_currencies_box', $echoHtml);
-		echo $echoHtml;
-		do_action('add_fktr_sale_currencies_box', $echoHtml);
-		
-		
-	}
-	
-	public static function discount_box() {
-		global $post;
-		$sale_data = self::get_sale_data($post->ID);
-		$echoHtml = '<table>
-					<tbody>
-						<td>%</td>
-						<td>
-							'.(($post->post_status != 'publish')?'<input type="text" name="invoice_discount" value="'.$sale_data['invoice_discount'].'" id="invoice_discount"/>':$sale_data['invoice_discount']).'
-						</td>
-					</tbody>
-				</table>';
-	
-		$echoHtml = apply_filters('fktr_sale_discount_box', $echoHtml);
-		echo $echoHtml;
-		do_action('add_fktr_sale_discount_box', $echoHtml);
-		
-	}
-	public static function date_format_php_to_js( $sFormat ) {
+            global $post;
+            $sale_data = self::get_sale_data($post->ID);
+            $setting_system = get_option('fakturo_system_options_group', false);
 
-		switch( $sFormat ) {
+            $currencies = get_fakturo_terms(array(
+                'taxonomy' => 'fktr_currencies',
+                'hide_empty' => false,
+                'exclude' => $setting_system['currency']
+            ));
 
-			//Predefined WP date formats
+            $echoHtml = '<table><tbody>';
 
-			case 'F j, Y':
+            foreach ($currencies as $cur) {
+                $echoHtml .= '<tr>
+                        <td>' . ((empty($cur->reference)) ? '' : '<a href="' . $cur->reference . '" target="_blank">') . '' . $cur->name . '' . ((empty($cur->reference)) ? '' : '</a>') . '</td>' . (($setting_system['currency_position'] == 'before') ? '<td><label for="invoice_currencies_' . $cur->term_id . '">' . $cur->symbol . '</label></td>' : '') . '<td>' . (($post->post_status != 'publish') ? '<input type="text" style="text-align: right; width: 120px;" value="' . $cur->rate . '" name="invoice_currencies[' . $cur->term_id . ']" id="invoice_currencies_' . $cur->term_id . '" class="invoice_currencies"/> ' : number_format($cur->rate, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand'])) . '' . (($setting_system['currency_position'] == 'after') ? '<td><label for="invoice_currencies_' . $cur->term_id . '">' . $cur->symbol . '</label></td>' : '') . '</td>
+                </tr>';
+            }
 
-			case 'Y/m/d':
+            $echoHtml .= '</tbody></table>';
 
-			case 'm/d/Y':
+            $echoHtml = apply_filters('fktr_sale_currencies_box', $echoHtml);
+            echo $echoHtml;
+            do_action('add_fktr_sale_currencies_box', $echoHtml);
+        }
 
-			case 'd/m/Y':
+        public static function discount_box() {
+            global $post;
+            $sale_data = self::get_sale_data($post->ID);
+            $echoHtml = '<table>
+                    <tbody>
+                            <td>%</td>
+                            <td>
+                                    ' . (($post->post_status != 'publish') ? '<input type="text" name="invoice_discount" value="' . $sale_data['invoice_discount'] . '" id="invoice_discount"/>' : $sale_data['invoice_discount']) . '
+                            </td>
+                    </tbody>
+            </table>';
 
-				return $sFormat;
+            $echoHtml = apply_filters('fktr_sale_discount_box', $echoHtml);
+            echo $echoHtml;
+            do_action('add_fktr_sale_discount_box', $echoHtml);
+        }
 
-				break;
+        public static function date_format_php_to_js($sFormat) {
+            switch ($sFormat) {
+                //Predefined WP date formats
+                case 'F j, Y':
+                case 'Y/m/d':
+                case 'm/d/Y':
+                case 'd/m/Y':
+                    return $sFormat;
+                    break;
 
-			default :
+                default :
+                    return( 'm/d/Y' );
+                    break;
+            }
+        }
 
-				return( 'm/d/Y' );
-
-				break;
-
-		 }
-
-	}
-	public static function updateReceiptsAffected($sale_id, $receipt_id, $affected, $currency_receipt) {
+        public static function updateReceiptsAffected($sale_id, $receipt_id, $affected, $currency_receipt) {
 		$sale_data = self::get_sale_data($sale_id);
 		$affected_standar = fakturo_mask_to_float($affected);
 		$affected_in_sale = fakturo_transform_money($currency_receipt, $sale_data['invoice_currency'], $affected_standar);
@@ -1251,101 +1270,99 @@ class fktrPostTypeSales {
 		return $stocks;
 	}
 	public static function ajax_validate_sale() {
-		$setting_system = get_option('fakturo_system_options_group', false);
-		$response = new WP_Ajax_Response;
-		$fields = array();
-		parse_str($_POST['inputs'], $fields);
-		$fields = apply_filters('fktr_clean_sale_fields',$fields);
-		
-		
-		$invoiceNumberExiste = self::exist_a_invoice_number($fields['invoice_number'], $fields['sale_point'], $fields['invoice_type']);
-		if ($invoiceNumberExiste) {
-			$response->add( array(
-				'data'	=> 'error',
-				'supplemental' => array(
-					'message' => __('This invoice number is already in use, Please try again.', 'fakturo' ),
-					'inputSelector' => '#invoice_number',
-					'function' => 'updateSuggestInvoiceNumber',
-				),
-			)); 
-			$response->send();
-		}
-		
-		$invoice_type = get_fakturo_term($fields['invoice_type'], 'fktr_invoice_types');
-		if(is_wp_error($invoice_type)) {
-			$response->add( array(
-				'data'	=> 'error',
-				'supplemental' => array(
-					'message' => __('This invoice type does not exist, try another.', 'fakturo' ),
-					'inputSelector' => '#invoice_type',
-					'function' => '',
-				),
-			)); 
-			$response->send();	
-		}
-		
-		if ($setting_system['use_stock_product'] && $invoice_type->sum == 0 && $setting_system['stock_less_zero'] == 0) {
-			$reserved = false;
-			if ($fields['original_post_status'] == 'draft') {
-				$reserved = true;
-			}
-			$error = 0;
-			$productStocks = array();
-			foreach ($fields['product_stock_location'] as $product_id => $arr_locations) {
-				foreach ($arr_locations as $location_id => $array_quantity) {
-					foreach ($array_quantity as $key => $quantity) {
-						if (!empty($quantity)) {
-							
-							if (empty($productStocks[$product_id])) {
-								
-								$productStocks[$product_id] = self::getProductStock($product_id, $fields['post_ID'], $reserved);
-							}
-							
-							$productStocks[$product_id][$location_id] = $productStocks[$product_id][$location_id]-$quantity;
-							if ($productStocks[$product_id][$location_id] < 0) {
-								$error = $product_id;
-								break 3;
-							}
-						}
-					}
-				}
-			}
-			
-			if ($error > 0) {
-				
-				$response->add( array(
-				'data'	=> 'error',
-					'supplemental' => array(
-						'message' => sprintf(__('The product (%s) does not have enough stock.', 'fakturo' ), $error),
-						'inputSelector' => '',
-						'function' => '',
-					),
-				)); 
-				$response->send();	
-				
-			}
-			
-		}
-		
-		do_action('fktr_validate_sale', $fields);
-		
-		// Everything fine, go to save invoice :D
-		$response->add( array(  
-				'data'	=> 'success',
-				'supplemental' => array(
-					'message' => '',
-					'inputSelector' => '',
-					'function' => '',
-				),
-			)); 
-		$response->send();//		wp_die();
-	}
-	public static function exist_a_invoice_number($invoice_number, $sale_point, $invoice_type) {
-		global $wpdb;
-		$return = false;
-		$setting_system = get_option('fakturo_system_options_group', false);
-		if ($setting_system['individual_numeration_by_invoice_type'] && $setting_system['individual_numeration_by_sale_point']) {
-			$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as invoice_number, sale.meta_value as sale_point, invoicet.meta_value as invoice_type FROM {$wpdb->posts} as p
+            $setting_system = get_option('fakturo_system_options_group', false);
+            $response = new WP_Ajax_Response;
+            $fields = array();
+            parse_str($_POST['inputs'], $fields);
+            $fields = apply_filters('fktr_clean_sale_fields', $fields);
+
+            $invoiceNumberExiste = self::exist_a_invoice_number($fields['invoice_number'], $fields['sale_point'], $fields['invoice_type']);
+            if ($invoiceNumberExiste) {
+                $response->add(array(
+                    'data' => 'error',
+                    'supplemental' => array(
+                        'message' => __('This invoice number is already in use, Please try again.', 'fakturo'),
+                        'inputSelector' => '#invoice_number',
+                        'function' => 'updateSuggestInvoiceNumber',
+                    ),
+                ));
+                $response->send();
+            }
+
+            $invoice_type = get_fakturo_term($fields['invoice_type'], 'fktr_invoice_types');
+            if (is_wp_error($invoice_type)) {
+                $response->add(array(
+                    'data' => 'error',
+                    'supplemental' => array(
+                        'message' => __('This invoice type does not exist, try another.', 'fakturo'),
+                        'inputSelector' => '#invoice_type',
+                        'function' => '',
+                    ),
+                ));
+                $response->send();
+            }
+
+            if ($setting_system['use_stock_product'] && $invoice_type->sum == 0 && $setting_system['stock_less_zero'] == 0) {
+                $reserved = false;
+                if ($fields['original_post_status'] == 'draft') {
+                    $reserved = true;
+                }
+                $error = 0;
+                $productStocks = array();
+                foreach ($fields['product_stock_location'] as $product_id => $arr_locations) {
+                    foreach ($arr_locations as $location_id => $array_quantity) {
+                        foreach ($array_quantity as $key => $quantity) {
+                            if (!empty($quantity)) {
+
+                                if (empty($productStocks[$product_id])) {
+
+                                    $productStocks[$product_id] = self::getProductStock($product_id, $fields['post_ID'], $reserved);
+                                }
+
+                                $productStocks[$product_id][$location_id] = $productStocks[$product_id][$location_id] - $quantity;
+                                if ($productStocks[$product_id][$location_id] < 0) {
+                                    $error = $product_id;
+                                    break 3;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if ($error > 0) {
+
+                    $response->add(array(
+                        'data' => 'error',
+                        'supplemental' => array(
+                            'message' => sprintf(__('The product (%s) does not have enough stock.', 'fakturo'), $error),
+                            'inputSelector' => '',
+                            'function' => '',
+                        ),
+                    ));
+                    $response->send();
+                }
+            }
+
+            do_action('fktr_validate_sale', $fields);
+
+            // Everything fine, go to save invoice :D
+            $response->add(array(
+                'data' => 'success',
+                'supplemental' => array(
+                    'message' => '',
+                    'inputSelector' => '',
+                    'function' => '',
+                ),
+            ));
+            $response->send(); //		wp_die();
+        }
+
+        public static function exist_a_invoice_number($invoice_number, $sale_point, $invoice_type) {
+            global $wpdb;
+            $return = false;
+            $setting_system = get_option('fakturo_system_options_group', false);
+            if ($setting_system['individual_numeration_by_invoice_type'] && $setting_system['individual_numeration_by_sale_point']) {
+                $sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as invoice_number, sale.meta_value as sale_point, invoicet.meta_value as invoice_type FROM {$wpdb->posts} as p
 				 LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
                  LEFT JOIN {$wpdb->postmeta} as sale ON p.ID = pm.post_id
                  LEFT JOIN {$wpdb->postmeta} as invoicet ON p.ID = pm.post_id
@@ -1363,8 +1380,8 @@ class fktrPostTypeSales {
                  GROUP BY p.ID 
 				 LIMIT 1
 			 ", $invoice_number, $sale_point, $invoice_type);
-		} else if ($setting_system['individual_numeration_by_sale_point']) {
-			$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as invoice_number, sale.meta_value as sale_point FROM {$wpdb->posts} as p
+            } else if ($setting_system['individual_numeration_by_sale_point']) {
+                $sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as invoice_number, sale.meta_value as sale_point FROM {$wpdb->posts} as p
 				 LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
                  LEFT JOIN {$wpdb->postmeta} as sale ON p.ID = pm.post_id
                  WHERE 
@@ -1378,8 +1395,8 @@ class fktrPostTypeSales {
                  GROUP BY p.ID 
 				 LIMIT 1
 			 ", $invoice_number, $sale_point);
-		} else if ($setting_system['individual_numeration_by_invoice_type']) {
-			$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as invoice_number, invoicet.meta_value as invoice_type FROM {$wpdb->posts} as p
+            } else if ($setting_system['individual_numeration_by_invoice_type']) {
+                $sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as invoice_number, invoicet.meta_value as invoice_type FROM {$wpdb->posts} as p
 				 LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
                  LEFT JOIN {$wpdb->postmeta} as invoicet ON p.ID = pm.post_id
                  WHERE 
@@ -1393,8 +1410,8 @@ class fktrPostTypeSales {
                  GROUP BY p.ID 
 				 LIMIT 1
 			 ", $invoice_number, $invoice_type);
-		} else {
-			$sql = sprintf("SELECT pm.meta_value FROM {$wpdb->postmeta} pm
+            } else {
+                $sql = sprintf("SELECT pm.meta_value FROM {$wpdb->postmeta} pm
 				 LEFT JOIN {$wpdb->posts} p ON p.ID = pm.post_id
 				 WHERE pm.meta_key = 'invoice_number'
 				 AND pm.meta_value = '%s'
@@ -1402,225 +1419,225 @@ class fktrPostTypeSales {
 				 AND p.post_type = 'fktr_sale'
 				 LIMIT 1
 			 ", $invoice_number);
-		}
-		
-		$r = $wpdb->get_results($sql);
-		if (!empty($r)) {
-			$return = true;
-		}
-		return $return;
-    }
+            }
 
-	public static function get_suggest_invoice_number() {
-		$setting_system = get_option('fakturo_system_options_group', false);
-		if (!isset($_POST['sale_point'])) {
-			$_POST['sale_point'] = $setting_system['sale_point'];
-		}
-		if (!isset($_POST['invoice_type'])) {
-			$_POST['invoice_type'] = $setting_system['invoice_type'];;
-		}
-		$suggested = self::suggestInvoiceNumber($_POST['sale_point'], $_POST['invoice_type']);
-		wp_die($suggested);
-	}
-	public static function suggestInvoiceNumber($sale_point = 0, $invoice_type = 0) {
-		$retorno = 0;
-		if ($sale_point < 0 ) {
-			$sale_point = 0;
-		}
-		if ($invoice_type < 0 ) {
-			$invoice_type = 0;
-		}
-		
-		$setting_system = get_option('fakturo_system_options_group', false);
-		$last_invoice_numbers = get_option('last_invoice_number', false);
-		if (!$last_invoice_numbers) {
-			$last_invoice_numbers = array();
-			$last_invoice_numbers[0] = array();
-			update_option('last_invoice_number', $last_invoice_numbers);
-		}
-		$keySale = 0;
-		$keyInvNum = 0;
-		if ($setting_system['individual_numeration_by_invoice_type'] && $setting_system['individual_numeration_by_sale_point']) {
-			$keySale = $sale_point;
-			$keyInvNum = $invoice_type;
-		}  else if ($setting_system['individual_numeration_by_sale_point']) {
-			$keySale = $sale_point;
-		} else if ($setting_system['individual_numeration_by_invoice_type']) {
-			$keyInvNum = $invoice_type;
-		}
-		
-		// 0 - 0 is the invoice number general
-		if (!empty($last_invoice_numbers[$keySale][$keyInvNum])) {
-			$retorno = $last_invoice_numbers[$keySale][$keyInvNum];
-		}
-		$retorno = $retorno+1;
-		return $retorno;
-	} 
-	public static function updateSuggestInvoiceNumber($sale_point = 0, $invoice_type = 0, $invoice_number = 0) {
-		
-		if ($sale_point < 0 ) {
-			$sale_point = 0;
-		}
-		if ($invoice_type < 0 ) {
-			$invoice_type = 0;
-		}
-		$setting_system = get_option('fakturo_system_options_group', false);
-		$last_invoice_numbers = get_option('last_invoice_number', false);
-		if (!$last_invoice_numbers) {
-			$last_invoice_numbers = array();
-			$last_invoice_numbers[0] = array();
-		}
-		$keySale = 0;
-		$keyInvNum = 0;
-		if ($setting_system['individual_numeration_by_invoice_type'] && $setting_system['individual_numeration_by_sale_point']) {
-			$keySale = $sale_point;
-			$keyInvNum = $invoice_type;
-		}  else if ($setting_system['individual_numeration_by_sale_point']) {
-			$keySale = $sale_point;
-		} else if ($setting_system['individual_numeration_by_invoice_type']) {
-			$keyInvNum = $invoice_type;
-		}
-		
-		if (empty($last_invoice_numbers[$keySale])) {
-			$last_invoice_numbers[$keySale] = array();
-		}
-		if (empty($last_invoice_numbers[$keySale][$keyInvNum])) {
-			$last_invoice_numbers[$keySale][$keyInvNum] = $invoice_number;
-		} else {
-			if ($last_invoice_numbers[$keySale][$keyInvNum] < $invoice_number) {
-				$last_invoice_numbers[$keySale][$keyInvNum] = $invoice_number;
-			}
-		}
-				
-		update_option('last_invoice_number', $last_invoice_numbers);
-		
-	}
-	public static function getTitleInvoiceNumber($id) {
-		$setting_system = get_option('fakturo_system_options_group', false);
-		$sale_data = self::get_sale_data($id);
+            $r = $wpdb->get_results($sql);
+            if (!empty($r)) {
+                $return = true;
+            }
+            return $return;
+        }
 
-		$invoice_type = get_fakturo_term($sale_data['invoice_type'], 'fktr_invoice_types');
-		$sale_point = get_fakturo_term($sale_data['sale_point'], 'fktr_sale_points');
+        public static function get_suggest_invoice_number() {
+            $setting_system = get_option('fakturo_system_options_group', false);
+            if (!isset($_POST['sale_point'])) {
+                $_POST['sale_point'] = $setting_system['sale_point'];
+            }
+            if (!isset($_POST['invoice_type'])) {
+                $_POST['invoice_type'] = $setting_system['invoice_type'];
+                ;
+            }
+            $suggested = self::suggestInvoiceNumber($_POST['sale_point'], $_POST['invoice_type']);
+            wp_die($suggested);
+        }
 
-		$newVal = '';
-		$setting_system['list_invoice_number_separator'] = apply_filters('fktr_invoice_number_separator', $setting_system['list_invoice_number_separator']);
-		$add_separator = true;
-		foreach($setting_system['list_invoice_number'] as $k => $invn) {
+        public static function suggestInvoiceNumber($sale_point = 0, $invoice_type = 0) {
+            $retorno = 0;
+            if ($sale_point < 0) {
+                $sale_point = 0;
+            }
+            if ($invoice_type < 0) {
+                $invoice_type = 0;
+            }
 
-			if (($k+1) == count($setting_system['list_invoice_number'])) {
-				$add_separator = false;
-			}
+            $setting_system = get_option('fakturo_system_options_group', false);
+            $last_invoice_numbers = get_option('last_invoice_number', false);
+            if (!$last_invoice_numbers) {
+                $last_invoice_numbers = array();
+                $last_invoice_numbers[0] = array();
+                update_option('last_invoice_number', $last_invoice_numbers);
+            }
+            $keySale = 0;
+            $keyInvNum = 0;
+            if ($setting_system['individual_numeration_by_invoice_type'] && $setting_system['individual_numeration_by_sale_point']) {
+                $keySale = $sale_point;
+                $keyInvNum = $invoice_type;
+            } else if ($setting_system['individual_numeration_by_sale_point']) {
+                $keySale = $sale_point;
+            } else if ($setting_system['individual_numeration_by_invoice_type']) {
+                $keyInvNum = $invoice_type;
+            }
 
-			if ($invn == 'sale_point') {
-				if(!is_wp_error($sale_point)) {
-					$newVal .= str_pad($sale_point->code, 4, '0', STR_PAD_LEFT).($add_separator?$setting_system['list_invoice_number_separator']:'');
-					
-				}
-			}
-			if ($invn == 'invoice_type_name') {
-				if(!is_wp_error($invoice_type)) {
-					$newVal .= $invoice_type->name.($add_separator?$setting_system['list_invoice_number_separator']:'');
-				}
-			}
-			if ($invn == 'invoice_type_short_name') {
-				if(!is_wp_error($invoice_type)) {
-					$newVal .= $invoice_type->short_name.($add_separator?$setting_system['list_invoice_number_separator']:'');
-				}
-			}
-			if ($invn == 'invoice_type_symbol') {
-				if(!is_wp_error($invoice_type)) {
-					$newVal .= $invoice_type->symbol.($add_separator?$setting_system['list_invoice_number_separator']:'');
-				}
-			}
-			if ($invn == 'invoice_number') {
-				$newVal .= str_pad($sale_data['invoice_number'], $setting_system['digits_invoice_number'], '0', STR_PAD_LEFT).($add_separator?$setting_system['list_invoice_number_separator']:'');
-			}
+            // 0 - 0 is the invoice number general
+            if (!empty($last_invoice_numbers[$keySale][$keyInvNum])) {
+                $retorno = $last_invoice_numbers[$keySale][$keyInvNum];
+            }
+            $retorno = $retorno + 1;
+            return $retorno;
+        }
 
-		}
-		
-		return $newVal;
-	}
-	public static function before_delete($post_id) {  // just permanent delete (when uses stock)
-		$post_type = get_post_type($post_id);
-		if ($post_type == 'fktr_sale') {
-			$setting_system = get_option('fakturo_system_options_group', false);
-			if ($setting_system['use_stock_product']) {
-				$sale_data = self::get_sale_data($post_id);
-		
-				$invoice_type = get_fakturo_term($sale_data['invoice_type'], 'fktr_invoice_types');
-				if(!is_wp_error($invoice_type)) {
-					if ($invoice_type->sum == 0) {
-						foreach ($sale_data['product_stock_location'] as $product_id => $arr_locations) {
-							foreach ($arr_locations as $location_id => $array_quantity) {
-								foreach ($array_quantity as $key => $quantity) {
-									if (!empty($quantity)) {
-										fktrPostTypeProducts::addStock($product_id, $quantity, $location_id);
-									}		
-								}
-							}	
-						} 
-					}
-				}
-			}
-		}
-	}
-	
-	public static function updateStock($fields, $post) {
-		$setting_system = get_option('fakturo_system_options_group', false);
-		if (!$setting_system['use_stock_product']) {
-			return false;
-		}
-		$old_fields = self::get_sale_data($post->ID);
-		
-		$invoice_type = get_fakturo_term($fields['invoice_type'], 'fktr_invoice_types');
-		if(!is_wp_error($invoice_type)) {
-			if ($invoice_type->sum) {
-				if ($post->post_status == 'publish') {
-				    foreach ($fields['product_stock_location'] as $product_id => $arr_locations) {
-						foreach ($arr_locations as $location_id => $array_quantity) {
-							foreach ($array_quantity as $key => $quantity) {
-								if (!empty($quantity)) {
-									fktrPostTypeProducts::addStock($product_id, $quantity, $location_id);
-								}
-							}
-						}
-					} 
-				}
-			} else {
-				
-				$locations = get_fakturo_terms(array(
-								'taxonomy' => 'fktr_locations',
-								'hide_empty' => false,
-							));
-				
-				foreach ($old_fields['product_stock_location'] as $product_id => $arr_locations) {
-					foreach ($arr_locations as $location_id => $array_quantity) {
-						foreach ($array_quantity as $key => $quantity) {
-							if (!empty($quantity)) {
-								fktrPostTypeProducts::addStock($product_id, $quantity, $location_id);
-							}
-							
-						}
-					}
-					
-				} 
-				foreach ($fields['product_stock_location'] as $product_id => $arr_locations) {
-					foreach ($arr_locations as $location_id => $array_quantity) {
-						foreach ($array_quantity as $key => $quantity) {
-							if (!empty($quantity)) {
-								fktrPostTypeProducts::removeStock($product_id, $quantity, $location_id);
-							}
-						}
-					}
-				} 
-				
-			}
-		} else {
-			return false;
-		}
-		return true;
-	}
-	public static function clean_fields($fields) {
+        public static function updateSuggestInvoiceNumber($sale_point = 0, $invoice_type = 0, $invoice_number = 0) {
+
+            if ($sale_point < 0) {
+                $sale_point = 0;
+            }
+            if ($invoice_type < 0) {
+                $invoice_type = 0;
+            }
+            $setting_system = get_option('fakturo_system_options_group', false);
+            $last_invoice_numbers = get_option('last_invoice_number', false);
+            if (!$last_invoice_numbers) {
+                $last_invoice_numbers = array();
+                $last_invoice_numbers[0] = array();
+            }
+            $keySale = 0;
+            $keyInvNum = 0;
+            if ($setting_system['individual_numeration_by_invoice_type'] && $setting_system['individual_numeration_by_sale_point']) {
+                $keySale = $sale_point;
+                $keyInvNum = $invoice_type;
+            } else if ($setting_system['individual_numeration_by_sale_point']) {
+                $keySale = $sale_point;
+            } else if ($setting_system['individual_numeration_by_invoice_type']) {
+                $keyInvNum = $invoice_type;
+            }
+
+            if (empty($last_invoice_numbers[$keySale])) {
+                $last_invoice_numbers[$keySale] = array();
+            }
+            if (empty($last_invoice_numbers[$keySale][$keyInvNum])) {
+                $last_invoice_numbers[$keySale][$keyInvNum] = $invoice_number;
+            } else {
+                if ($last_invoice_numbers[$keySale][$keyInvNum] < $invoice_number) {
+                    $last_invoice_numbers[$keySale][$keyInvNum] = $invoice_number;
+                }
+            }
+
+            update_option('last_invoice_number', $last_invoice_numbers);
+        }
+
+        public static function getTitleInvoiceNumber($id) {
+            $setting_system = get_option('fakturo_system_options_group', false);
+            $sale_data = self::get_sale_data($id);
+
+            $invoice_type = get_fakturo_term($sale_data['invoice_type'], 'fktr_invoice_types');
+            $sale_point = get_fakturo_term($sale_data['sale_point'], 'fktr_sale_points');
+
+            $newVal = '';
+            $setting_system['list_invoice_number_separator'] = apply_filters('fktr_invoice_number_separator', $setting_system['list_invoice_number_separator']);
+            $add_separator = true;
+            foreach ($setting_system['list_invoice_number'] as $k => $invn) {
+
+                if (($k + 1) == count($setting_system['list_invoice_number'])) {
+                    $add_separator = false;
+                }
+
+                if ($invn == 'sale_point') {
+                    if (!is_wp_error($sale_point)) {
+                        $newVal .= str_pad($sale_point->code, 4, '0', STR_PAD_LEFT) . ($add_separator ? $setting_system['list_invoice_number_separator'] : '');
+                    }
+                }
+                if ($invn == 'invoice_type_name') {
+                    if (!is_wp_error($invoice_type)) {
+                        $newVal .= $invoice_type->name . ($add_separator ? $setting_system['list_invoice_number_separator'] : '');
+                    }
+                }
+                if ($invn == 'invoice_type_short_name') {
+                    if (!is_wp_error($invoice_type)) {
+                        $newVal .= $invoice_type->short_name . ($add_separator ? $setting_system['list_invoice_number_separator'] : '');
+                    }
+                }
+                if ($invn == 'invoice_type_symbol') {
+                    if (!is_wp_error($invoice_type)) {
+                        $newVal .= $invoice_type->symbol . ($add_separator ? $setting_system['list_invoice_number_separator'] : '');
+                    }
+                }
+                if ($invn == 'invoice_number') {
+                    $newVal .= str_pad($sale_data['invoice_number'], $setting_system['digits_invoice_number'], '0', STR_PAD_LEFT) . ($add_separator ? $setting_system['list_invoice_number_separator'] : '');
+                }
+            }
+
+            return $newVal;
+        }
+
+        public static function before_delete($post_id) {  // just permanent delete (when uses stock)
+            $post_type = get_post_type($post_id);
+            if ($post_type == 'fktr_sale') {
+                $setting_system = get_option('fakturo_system_options_group', false);
+                if ($setting_system['use_stock_product']) {
+                    $sale_data = self::get_sale_data($post_id);
+
+                    $invoice_type = get_fakturo_term($sale_data['invoice_type'], 'fktr_invoice_types');
+                    if (!is_wp_error($invoice_type)) {
+                        if ($invoice_type->sum == 0) {
+                            foreach ($sale_data['product_stock_location'] as $product_id => $arr_locations) {
+                                foreach ($arr_locations as $location_id => $array_quantity) {
+                                    foreach ($array_quantity as $key => $quantity) {
+                                        if (!empty($quantity)) {
+                                            fktrPostTypeProducts::addStock($product_id, $quantity, $location_id);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public static function updateStock($fields, $post) {
+            $setting_system = get_option('fakturo_system_options_group', false);
+            if (!$setting_system['use_stock_product']) {
+                return false;
+            }
+            $old_fields = self::get_sale_data($post->ID);
+
+            $invoice_type = get_fakturo_term($fields['invoice_type'], 'fktr_invoice_types');
+            if (!is_wp_error($invoice_type)) {
+                if ($invoice_type->sum) {
+                    if ($post->post_status == 'publish') {
+                        foreach ($fields['product_stock_location'] as $product_id => $arr_locations) {
+                            foreach ($arr_locations as $location_id => $array_quantity) {
+                                foreach ($array_quantity as $key => $quantity) {
+                                    if (!empty($quantity)) {
+                                        fktrPostTypeProducts::addStock($product_id, $quantity, $location_id);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+
+                    $locations = get_fakturo_terms(array(
+                        'taxonomy' => 'fktr_locations',
+                        'hide_empty' => false,
+                    ));
+
+                    foreach ($old_fields['product_stock_location'] as $product_id => $arr_locations) {
+                        foreach ($arr_locations as $location_id => $array_quantity) {
+                            foreach ($array_quantity as $key => $quantity) {
+                                if (!empty($quantity)) {
+                                    fktrPostTypeProducts::addStock($product_id, $quantity, $location_id);
+                                }
+                            }
+                        }
+                    }
+                    foreach ($fields['product_stock_location'] as $product_id => $arr_locations) {
+                        foreach ($arr_locations as $location_id => $array_quantity) {
+                            foreach ($array_quantity as $key => $quantity) {
+                                if (!empty($quantity)) {
+                                    fktrPostTypeProducts::removeStock($product_id, $quantity, $location_id);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                return false;
+            }
+            return true;
+        }
+
+        public static function clean_fields($fields) {
 		$setting_system = get_option('fakturo_system_options_group', false);
 		if (!isset($fields['client_id'])) {
 			$fields['client_id'] = 0;

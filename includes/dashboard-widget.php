@@ -7,10 +7,10 @@ if (!defined('ABSPATH'))  {
 
 add_action('admin_print_styles', 'styles_dashboard');
 function styles_dashboard() {
-	$screen = get_current_screen();
-	if ($screen->id == 'dashboard') {
-		wp_enqueue_style('fktr_dashboard_widget',FAKTURO_PLUGIN_URL .'assets/css/dashboard-widget.css');	
-	}
+    global $current_screen;
+    if($current_screen->id == "dashboard" ) {          
+        wp_enqueue_style('fktr_dashboard_widget',FAKTURO_PLUGIN_URL .'assets/css/dashboard-widget.css');	
+    }
 }
 
 function fktr_add_dashboard_widgets() {

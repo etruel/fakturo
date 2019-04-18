@@ -191,53 +191,55 @@ class fktrSettings {
 		       
         return $new_input;
     }	
-	public static function fakturo_settings_dashboard() {  
-		global $current_screen;
-		$options = get_option('fakturo_dashboard_options_group');
-		$select_options = fktr_get_dialer_options();
-		$options['show_dialer'] = (! empty($options['show_dialer']) ? $options['show_dialer'] : false);
-		$options['show_dialer_wp'] = (! empty($options['show_dialer_wp']) ? $options['show_dialer_wp'] : false);
+	public static function fakturo_settings_dashboard() {
+            global $current_screen;
+            $options = get_option('fakturo_dashboard_options_group');
+            $select_options = fktr_get_dialer_options();
+            $options['show_dialer'] = (!empty($options['show_dialer']) ? $options['show_dialer'] : false);
+            $options['show_dialer_wp'] = (!empty($options['show_dialer_wp']) ? $options['show_dialer_wp'] : false);
 
-		echo '<div id="tab_container">
+            echo '<div id="tab_container">
 			<br/><h1>Dashboard Setup</h1>
 			<form method="post" action="options.php">';
-			settings_fields('fakturo-settings-dashboard');
-			do_settings_sections('fakturo-settings-dashboard');
-			echo '<table class="form-table">';
-			echo '<tr valign="top">
-				<th scope="row"><label for="show_dialer">'. __( 'Show dashboard menu', 'fakturo' ) .'</label></th>
-				<td>
-					<input id="show_dialer" type="checkbox" name="fakturo_dashboard_options_group[show_dialer]" value="1" '. checked(true, $options['show_dialer'], false) .'>
-                </td>
-            </tr>';
+            settings_fields('fakturo-settings-dashboard');
+            do_settings_sections('fakturo-settings-dashboard');
+            echo '<table class="form-table">';
+            echo '<tr valign="top">
+                        <th scope="row"><label>' . __('Show dashboard menu', 'fakturo') . '</label></th>
+                        <td>
+                            <input class="slidercheck" id="show_dialer" type="checkbox" name="fakturo_dashboard_options_group[show_dialer]" value="1" ' . checked(true, $options['show_dialer'], false) . '>
+                            <label for="show_dialer"><span class="ui"></span></label>
+                        </td>
+                      </tr>';
 
             echo '<tr valign="top">
-				<th scope="row"><label for="show_dialer_wp">'. __( 'Show dashboard menu in all WordPress admin screens', 'fakturo' ) .'</label></th>
-				<td>
-					<input id="show_dialer_wp" type="checkbox" name="fakturo_dashboard_options_group[show_dialer_wp]" value="1" '. checked(true, $options['show_dialer_wp'], false) .'>
-                </td>
-            </tr>';
-				for ($d = 0; $d < 7; $d++) {
-					$selectHtml = '<select name="fakturo_dashboard_options_group[dialer][]" id="dialer_'.$d.'">';
-					foreach ($select_options as $key => $value) {
-						$selectHtml .= '<option value="'.$key.'" '.selected($key, $options['dialer'][$d], false).'> '.$value->text .' </option>';
-					}
-					$selectHtml .= '</select>';
-					echo '<tr valign="top">
-						<th scope="row">'.sprintf( __( 'Dialer %s', 'fakturo' ), $d+1) .'</th>
-						<td>
-							'.$selectHtml.'
+			<th scope="row"><label>' . __('Show dashboard menu in all WordPress admin screens', 'fakturo') . '</label></th>
+			<td>
+                            <input class="slidercheck" id="show_dialer_wp" type="checkbox" name="fakturo_dashboard_options_group[show_dialer_wp]" value="1" ' . checked(true, $options['show_dialer_wp'], false) . '>
+                            <label for="show_dialer_wp"><span class="ui"></span></label>
                         </td>
                     </tr>';
-				}
-				
-			echo '</table>';
-			submit_button();
-			echo '</form>
-		</div><!-- #tab_container-->';
+            for ($d = 0; $d < 7; $d++) {
+                $selectHtml = '<select name="fakturo_dashboard_options_group[dialer][]" id="dialer_' . $d . '">';
+                foreach ($select_options as $key => $value) {
+                    $selectHtml .= '<option value="' . $key . '" ' . selected($key, $options['dialer'][$d], false) . '> ' . $value->text . ' </option>';
+                }
+                $selectHtml .= '</select>';
+                echo '<tr valign="top">
+						<th scope="row">' . sprintf(__('Dialer %s', 'fakturo'), $d + 1) . '</th>
+						<td>
+							' . $selectHtml . '
+                        </td>
+                    </tr>';
+            }
 
-	}
-	public static function fakturo_settings() {  
+            echo '</table>';
+            submit_button();
+            echo '</form>
+		</div><!-- #tab_container-->';
+        }
+
+        public static function fakturo_settings() {  
 		global $current_screen;
 		
 		$options = self::sanitize_info_option( get_option('fakturo_info_options_group', array()) );

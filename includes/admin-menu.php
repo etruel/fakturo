@@ -20,7 +20,12 @@ class fktrAdminMenu {
 	
 	public static function add_fakturo_top_menu() {   
             global $current_screen;
-            if( (stristr($current_screen->id, "fakturo" )!== FALSE ) or (stristr($current_screen->id, "fktr" )!== FALSE ) ) {
+            $value_dashboard = get_option('fakturo_dashboard_options_group', array());
+            $value_dashboard['show_dialer'] = isset($value_dashboard['show_dialer'])? $value_dashboard['show_dialer'] : false;
+            $value_dashboard['show_dialer_wp'] = isset($value_dashboard['show_dialer_wp'])? $value_dashboard['show_dialer_wp'] : false;
+            $show_dialer_fkt = ($value_dashboard['show_dialer']) && ((stristr($current_screen->id, "fakturo" )!== FALSE ) or (stristr($current_screen->id, "fktr" )!== FALSE ));
+            $show_dialer_wp = $value_dashboard['show_dialer'] && $value_dashboard['show_dialer_wp'];
+            if( $show_dialer_fkt or $show_dialer_wp ) {
             ?>
             <div>
                  <section class="_fakturo_top_menu_items">

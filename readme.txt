@@ -84,10 +84,12 @@ You can either install it automatically from the WordPress admin, or do it manua
 == Changelog ==
 = 0.9.1 Beta =
 * Added Client Name in Sales list.
+* Added order by Client and Date in Sales list.
 * Added suport to translate the sliderchecks options.
 * Added Date Picker in Start of activities of Setting page.
 * Added Exit button in all screens of Configurations wizard.
 * Added Fakturo Top Menu with the dashboard items.
+* Added Dashboard Options to show or not Fakturo Top Menu.
 * Added some security tweaks on AJAX calls.
 * Added popups button to add Invoice types required by Tax Conditions fields.
 * Added new helps to Products Scale Prices.
@@ -95,6 +97,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Tweaks the code height textarea in print templates screen.
 * Fixes title of Add New State Popup.
 * Fixes notice when getting data of the provider in the product.
+* Fixes css in wordpress dashboard widget.
 * Fixes the menu order broken for some cases.
 * Fixes fakturo_manager as minimun role to save Clients, Products, Providers and Sales.
 * Fixes autoclose window on print documents.
