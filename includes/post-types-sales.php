@@ -976,7 +976,12 @@ class fktrPostTypeSales {
 			}
 		}
 		
-		$date = strtotime($sale_data['date']);
+         	
+                if(isset($sale_data['date']) && !is_numeric($sale_data['date'])) {
+                    $date = strtotime($sale_data['date']);
+                }else{
+                    $date = $sale_data['date'];
+                }
 		$sale_data['invoice_number'] = (($post->post_status != 'publish')? str_pad(self::suggestInvoiceNumber($sale_data['sale_point'], $sale_data['invoice_type']), $setting_system['digits_invoice_number'], '0', STR_PAD_LEFT) : $sale_data['invoice_number'] );
 		$echoHtml = '<table>
 					<tbody>
@@ -1792,7 +1797,7 @@ class fktrPostTypeSales {
 		
 		self::updateStock($fields, $post);
 		
-		if(isset($fields['date']) && is_string($fields['date'])) {
+		if(isset($fields['date']) && !is_numeric($fields['date'])) {
 
 			$fields['date'] = fakturo_date2time($fields['date'], $setting_system['dateformat'] );
 		}
