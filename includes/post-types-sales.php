@@ -948,6 +948,8 @@ class fktrPostTypeSales {
 			}
 		}
 		$selectPaymentTypes = 'No payment type';
+		$payment_type = ( ! empty($sale_data['client_data']['payment_type']) ? $sale_data['client_data']['payment_type'] : -1 );
+		
 		if ($post->post_status != 'publish') {
 			$selectPaymentTypes = wp_dropdown_categories( array(
 				'show_option_all'    => '',
@@ -959,7 +961,7 @@ class fktrPostTypeSales {
 				'child_of'           => 0,
 				'exclude'            => '',
 				'echo'               => 0,
-				'selected'           => $sale_data['client_data']['payment_type'],
+				'selected'           => $payment_type,
 				'hierarchical'       => 1, 
 				'name'               => 'client_data[payment_type]',
 				'class'              => 'form-no-clear',

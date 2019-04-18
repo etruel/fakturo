@@ -570,8 +570,11 @@ class fktrPostTypeClients {
 	
 	public static function clean_fields($fields) {
 		
-		if (!isset($fields['active'])) {
+		//error_log(var_export($fields['active'], true));
+		if (!empty($fields['active'])) {
 			$fields['active'] = 1;
+		} else {
+			$fields['active'] = 0;
 		}
 		if (!isset($fields['balance'])) {
 			$fields['balance'] = 0;
