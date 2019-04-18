@@ -58,6 +58,9 @@ class fktrAdminMenu {
                     } else if ($item->type == 'setting') {
                         $menu_link = admin_url('admin.php?page=fakturo-settings');
                     }
+                    else if ($item->type == 'reports') {
+                        $menu_link = admin_url('admin.php?page=fakturo_reports');
+                    }
 
                     echo '<a href="' . $menu_link . '">
                         <li class="' . $class_color . '">

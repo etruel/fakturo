@@ -307,6 +307,13 @@ function fktr_get_dialer_options() {
 			}
 		}
 	}
+	$new_option = new stdClass();
+	$new_option->text = __( 'Reports', 'fakturo');
+	$new_option->icon = 'dashicons-chart-line';
+	$new_option->type = 'reports';
+	$new_option->caps = 'fakturo_reports';
+	$select_options['fktr_reports'] = $new_option;
+
 	$select_options = apply_filters('fktr_get_dialer_options', $select_options);
 	return $select_options;
 }

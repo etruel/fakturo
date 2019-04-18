@@ -166,6 +166,8 @@ class fktrSettings {
 		$value_dashboard = get_option('fakturo_dashboard_options_group', array());
 		if (empty($value_dashboard)) {
 			$value_dashboard['dialer'] = array('fktr_sale', 'fktr_receipt', 'fktr_client', 'fktr_price_scales', 'fktr_product', 'fktr_check', 'fktr_settings');
+			$value_dashboard['show_dialer'] = true;
+			$value_dashboard['show_dialer_wp'] = false;
 			update_option('fakturo_dashboard_options_group' , $value_dashboard);
 		}
 
@@ -193,7 +195,8 @@ class fktrSettings {
 		global $current_screen;
 		$options = get_option('fakturo_dashboard_options_group');
 		$select_options = fktr_get_dialer_options();
-		
+		$options['show_dialer'] = (! empty($options['show_dialer']) ? $options['show_dialer'] : false);
+		$options['show_dialer_wp'] = (! empty($options['show_dialer_wp']) ? $options['show_dialer_wp'] : false);
 
 		echo '<div id="tab_container">
 			<br/><h1>Dashboard Setup</h1>
@@ -201,6 +204,19 @@ class fktrSettings {
 			settings_fields('fakturo-settings-dashboard');
 			do_settings_sections('fakturo-settings-dashboard');
 			echo '<table class="form-table">';
+			echo '<tr valign="top">
+				<th scope="row"><label for="show_dialer">'. __( 'Show dashboard menu', 'fakturo' ) .'</label></th>
+				<td>
+					<input id="show_dialer" type="checkbox" name="fakturo_dashboard_options_group[show_dialer]" value="1" '. checked(true, $options['show_dialer'], false) .'>
+                </td>
+            </tr>';
+
+            echo '<tr valign="top">
+				<th scope="row"><label for="show_dialer_wp">'. __( 'Show dashboard menu in all WordPress admin screens', 'fakturo' ) .'</label></th>
+				<td>
+					<input id="show_dialer_wp" type="checkbox" name="fakturo_dashboard_options_group[show_dialer_wp]" value="1" '. checked(true, $options['show_dialer_wp'], false) .'>
+                </td>
+            </tr>';
 				for ($d = 0; $d < 7; $d++) {
 					$selectHtml = '<select name="fakturo_dashboard_options_group[dialer][]" id="dialer_'.$d.'">';
 					foreach ($select_options as $key => $value) {
