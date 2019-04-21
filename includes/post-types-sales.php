@@ -60,6 +60,7 @@ class fktrPostTypeSales {
 		add_filter('attribute_escape', array('fktrPostTypeSales', 'change_button_texts'), 10, 2);
 		add_action('before_delete_post', array('fktrPostTypeSales', 'before_delete'), 10, 1);
 		add_action('admin_post_print_invoice', array(__CLASS__, 'print_invoice'));
+		add_action('admin_post_print_demo_invoice', array(__CLASS__, 'print_demo_invoice'));
 		add_filter( 'bulk_actions-edit-fktr_sale', array(__CLASS__, 'bulk_actions') );
 		add_filter( 'handle_bulk_actions-edit-fktr_sale', array(__CLASS__, 'bulk_action_handler'), 10, 3 );
                 
@@ -190,6 +191,48 @@ class fktrPostTypeSales {
 			exit();
 		}
 	}
+	public static function print_demo_invoice() {
+		$object = new stdClass();
+		$object->type = 'post';
+		$object->id = $_REQUEST['id'];
+		$object->assgined = 'fktr_sale';
+		if ($object->id) {
+			$id_print_template = fktrPostTypePrintTemplates::get_id_by_assigned($object->assgined);
+			if ($id_print_template) {
+				$print_template = fktrPostTypePrintTemplates::get_print_template_data($id_print_template);
+			} else {
+				wp_die(__('No print template assigned to sales invoices', 'fakturo' ));
+			}
+			$tpl = new fktr_tpl;
+			$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, false);
+			$html = $tpl->fromString($print_template['content']);
+			$html .= '<style>
+			#demo {
+				position:absolute;
+				left:235px;
+				top:220px;
+				width:290px;
+				opacity: 0.5;
+				text-align:center;
+			}
+			</style>
+			<img id="demo" src="'. FAKTURO_PLUGIN_URL . 'assets/images/demo.png">
+			';
+
+			if (isset($_REQUEST['pdf'])) {
+				$pdf = fktr_pdf::getInstance();
+				$pdf ->set_paper("A4", "portrait");
+				$pdf ->load_html(utf8_decode($html));
+				$pdf ->render();
+				$pdf ->stream('pdf.pdf', array('Attachment'=>0));
+
+			} else {
+				echo $html;
+			}
+			
+			exit();
+		}
+	}
 	public static function change_button_texts($safe_text, $text ){
 		global $post, $current_screen, $screen;
 		
@@ -273,6 +316,11 @@ class fktrPostTypeSales {
 
 
 				
+			}
+
+			if ($post->post_status == 'draft') {
+				
+				$actions['invoice_demo'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_demo_invoice').'" class="btn_print_demo_invoice" target="_new">'.__( 'View Demo Invoice', 'fakturo' ).'</a>';
 			}
 			
 			
