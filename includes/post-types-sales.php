@@ -163,35 +163,42 @@ class fktrPostTypeSales {
         }
 
         public static function print_invoice() {
-		$object = new stdClass();
-		$object->type = 'post';
-		$object->id = $_REQUEST['id'];
-		$object->assgined = 'fktr_sale';
-		if ($object->id) {
-			$id_print_template = fktrPostTypePrintTemplates::get_id_by_assigned($object->assgined);
-			if ($id_print_template) {
-				$print_template = fktrPostTypePrintTemplates::get_print_template_data($id_print_template);
-			} else {
-				wp_die(__('No print template assigned to sales invoices', 'fakturo' ));
+        	if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'fktr_sale_action_nonce')) {
+				wp_die('A security issue has occurred.');
 			}
-			$tpl = new fktr_tpl;
-			$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, false);
-			$html = $tpl->fromString($print_template['content']);
-			if (isset($_REQUEST['pdf'])) {
-				$pdf = fktr_pdf::getInstance();
-				$pdf ->set_paper("A4", "portrait");
-				$pdf ->load_html(utf8_decode($html));
-				$pdf ->render();
-				$pdf ->stream('pdf.pdf', array('Attachment'=>0));
+			$object = new stdClass();
+			$object->type = 'post';
+			$object->id = $_REQUEST['id'];
+			$object->assgined = 'fktr_sale';
+			if ($object->id) {
+				$id_print_template = fktrPostTypePrintTemplates::get_id_by_assigned($object->assgined);
+				if ($id_print_template) {
+					$print_template = fktrPostTypePrintTemplates::get_print_template_data($id_print_template);
+				} else {
+					wp_die(__('No print template assigned to sales invoices', 'fakturo' ));
+				}
+				$tpl = new fktr_tpl;
+				$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, false);
+				$html = $tpl->fromString($print_template['content']);
+				if (isset($_REQUEST['pdf'])) {
+					$pdf = fktr_pdf::getInstance();
+					$pdf ->set_paper("A4", "portrait");
+					$pdf ->load_html(utf8_decode($html));
+					$pdf ->render();
+					$pdf ->stream('pdf.pdf', array('Attachment'=>0));
 
-			} else {
-				echo $html;
+				} else {
+					echo $html;
+				}
+				
+				exit();
 			}
-			
-			exit();
-		}
 	}
 	public static function print_demo_invoice() {
+
+		if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'fktr_sale_action_nonce')) {
+			wp_die('A security issue has occurred.');
+		}
 		$object = new stdClass();
 		$object->type = 'post';
 		$object->id = $_REQUEST['id'];
@@ -292,10 +299,13 @@ class fktrPostTypeSales {
 	}
 	public static function action_row($actions, $post){	
 		if ($post->post_type == 'fktr_sale') {
+			$action_nonce = wp_create_nonce('fktr_sale_action_nonce');
+
 			$setting_system = get_option('fakturo_system_options_group', false);
 			if ($post->post_status == 'publish') {
 				unset($actions['trash']);
-				$actions['print_invoice'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_invoice').'" class="btn_print_invoice" target="_new">'.__( 'Print Invoice', 'fakturo' ).'</a>';
+
+				$actions['print_invoice'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_invoice&nonce='.$action_nonce).'" class="btn_print_invoice" target="_new">'.__( 'Print Invoice', 'fakturo' ).'</a>';
 
 				if (empty($actions['send_invoice_to_client'])) {
 					$sale_data = self::get_sale_data($post->ID);
@@ -320,7 +330,7 @@ class fktrPostTypeSales {
 
 			if ($post->post_status == 'draft') {
 				
-				$actions['invoice_demo'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_demo_invoice').'" class="btn_print_demo_invoice" target="_new">'.__( 'View Demo Invoice', 'fakturo' ).'</a>';
+				$actions['invoice_demo'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_demo_invoice&nonce='.$action_nonce).'" class="btn_print_demo_invoice" target="_new">'.__( 'Preview Demo Invoice', 'fakturo' ).'</a>';
 			}
 			
 			

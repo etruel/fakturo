@@ -83,6 +83,9 @@ class fktrPostTypeReceipts {
 		}
 	}
 	public static function print_receipt() {
+		if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'fktr_receipts_action_nonce')) {
+			wp_die('A security issue has occurred.');
+		}
 		$object = new stdClass();
 		$object->type = 'post';
 		$object->id = intval($_REQUEST['id']);
@@ -136,8 +139,9 @@ class fktrPostTypeReceipts {
 	}
 	public static function row_actions($actions, $post) {
 		if ($post->post_type == 'fktr_receipt' && ($post->post_status != 'cancelled' && $post->post_status != 'trash')) {
-			$actions['cancelled'] = '<a class="submit_cancel_receipt" href="'.admin_url('admin-post.php?post='.$post->ID.'&action=cancel_receipt').'" onclick="return confirm(\''.__('Do you want cancel this receipt?', 'fakturo' ).'\');">Cancel this receipt</a>';
-			$actions['print_receipt'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_receipt').'" class="btn_print_receipt" target="_new">'.__( 'Print Receipt', 'fakturo' ).'</a>';
+			$action_nonce = wp_create_nonce('fktr_receipts_action_nonce');
+			$actions['cancelled'] = '<a class="submit_cancel_receipt" href="'.admin_url('admin-post.php?post='.$post->ID.'&action=cancel_receipt&nonce='.$action_nonce).'" onclick="return confirm(\''.__('Do you want cancel this receipt?', 'fakturo' ).'\');">Cancel this receipt</a>';
+			$actions['print_receipt'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_receipt&nonce='.$action_nonce).'" class="btn_print_receipt" target="_new">'.__( 'Print Receipt', 'fakturo' ).'</a>';
 
 
 			if (empty($actions['send_invoice_to_client'])) {
@@ -154,6 +158,9 @@ class fktrPostTypeReceipts {
 		return $actions;
 	}
 	public static function cancel_receipt() {
+		if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'fktr_receipts_action_nonce')) {
+			wp_die('A security issue has occurred.');
+		}
 		if (is_numeric($_REQUEST['post'])) {
 			$my_post = array(
 				'ID'           => $_REQUEST['post'],
