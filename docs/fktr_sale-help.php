@@ -15,7 +15,9 @@ $helptexts = array(
 		'tabtitle' =>  __('Sale', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Concept','fakturo'),
-			'tip' => __('Organized process aimed at enhancing the vendor/customer relationship through the purchase of products or services. To create a new sale, you can click the button <b>"Add New"</b> and fill in the appropriate form. You will also be able to see the list of completed sales in the displayed information table. An automatic code is generated, which identifies the sale to be made.','fakturo'))
+			'tip' => __('Organized process aimed at enhancing the vendor/customer relationship through the purchase of products or services. ','fakturo'),
+                        'plustip' =>  __('To create a new sale, you can click the button <b>"Add New"</b> and fill in the appropriate form. You will also be able to see the list of completed sales in the displayed information table. An automatic code is generated, which identifies the sale to be made.','fakturo')
+                )
 	),
 	'INVOICE DETAILS' => array( 
 		'tabtitle' =>  __('Invoice Details', 'fakturo' ),

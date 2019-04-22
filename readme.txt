@@ -82,6 +82,11 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 
 == Changelog ==
+= 0.9.2 Beta (April , 2019) =
+* Tweaks on Quick Actions texts on sales.
+* Improved security nonces on Quick actions.
+* Improved Helps.
+
 = 0.9.1 Beta (April 18, 2019) =
 * Added Client Name in Sales list.
 * Added order by Client and Date in Sales list.

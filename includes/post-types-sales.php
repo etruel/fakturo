@@ -300,12 +300,12 @@ class fktrPostTypeSales {
 	public static function action_row($actions, $post){	
 		if ($post->post_type == 'fktr_sale') {
 			$action_nonce = wp_create_nonce('fktr_sale_action_nonce');
-
 			$setting_system = get_option('fakturo_system_options_group', false);
 			if ($post->post_status == 'publish') {
 				unset($actions['trash']);
-
-				$actions['print_invoice'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_invoice&nonce='.$action_nonce).'" class="btn_print_invoice" target="_new">'.__( 'Print Invoice', 'fakturo' ).'</a>';
+                                // Replace the original but translated WP text: 'Edit' by 'View' also translated
+				$actions['edit'] = str_replace( __('Edit'), __('View','fakturo'), $actions['edit']);
+				$actions['print_invoice'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_invoice&nonce='.$action_nonce).'" class="btn_print_invoice" target="_new">'.__( 'Print', 'fakturo' ).'</a>';
 
 				if (empty($actions['send_invoice_to_client'])) {
 					$sale_data = self::get_sale_data($post->ID);
@@ -313,26 +313,20 @@ class fktrPostTypeSales {
 					if (!empty($client_data['email'])) {
 						$url = admin_url('admin-post.php?id='.$post->ID.'&action=send_invoice_to_client');
 						$url = wp_nonce_url($url, 'send_invoice_to_client', '_wpnonce');
-						$actions['send_invoice_to_client'] = '<a href="'.$url.'" class="btn_send_invoice">'.__( 'Send PDF to Client', 'fakturo' ).'</a>';
+						$actions['send_invoice_to_client'] = '<a href="'.$url.'" class="btn_send_invoice">'.__( 'email to Client', 'fakturo' ).'</a>';
 					}
 				}
 			}
 			if ($post->post_status != 'trash') {
 				if ($setting_system['use_stock_product'] && $post->post_status == 'draft') {
 					unset($actions['trash']);
-					$actions['delete'] = '<a class="submitdelete" title="'.esc_attr( __( 'Delete this item permanently', 'fakturo' )).'" href="'.get_delete_post_link( $post->ID, '', true).'">'. __( 'Delete Permanently' ).'</a>';
+					$actions['delete'] = '<a class="submitdelete" title="'.esc_attr( __( 'Delete this item permanently', 'fakturo' )).'" href="'.get_delete_post_link( $post->ID, '', true).'">'. __( 'Delete', 'fakturo' ).'</a>';
 				}
-				
-
-
-				
 			}
 
 			if ($post->post_status == 'draft') {
-				
-				$actions['invoice_demo'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_demo_invoice&nonce='.$action_nonce).'" class="btn_print_demo_invoice" target="_new">'.__( 'Preview Demo Invoice', 'fakturo' ).'</a>';
+				$actions['invoice_demo'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_demo_invoice&nonce='.$action_nonce).'" class="btn_print_demo_invoice" target="_new">'.__( 'Preview', 'fakturo' ).'</a>';
 			}
-			
 			
 			unset( $actions['inline hide-if-no-js'] );
 			$actions = apply_filters('fktr_sales_quick_actions',$actions, $post);
