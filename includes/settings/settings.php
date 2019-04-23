@@ -364,7 +364,8 @@ class fktrSettings {
 					<tr valign="top">
 						<th scope="row">'. __( 'Start of activities', 'fakturo' ) .'</th>
 						<td>
-							<input type="text" size="36" name="fakturo_info_options_group[start]" id="start" value="'.$options['start'].'"/>
+							<input type="text" size="36" autocomplete="off" name="fakturo_info_options_group[start]" id="start" value="'.$options['start'].'"/>
+                        	<button class="button" type="button" id="btn_active_calendar"><span class="dashicons dashicons-calendar-alt"></span></button>
                         </td>
                     </tr>
 					<tr valign="top">

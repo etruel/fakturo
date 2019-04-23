@@ -12,16 +12,42 @@ jQuery(document).ready(function() {
 	});
 
 	jQuery.datetimepicker.setLocale(setting_object.datetimepicker.lang);
-	
-	jQuery('#start').datetimepicker({
-		lang: setting_object.datetimepicker.lang,
-		dayOfWeekStart:  setting_object.datetimepicker.firstDay,
-		formatTime: setting_object.datetimepicker.timeFormat,
-		format: setting_object.datetimepicker.printFormat,
-		formatDate: setting_object.datetimepicker.dateFormat,
-		maxDate: setting_object.datetimepicker.dateFormat, 
-		timepicker:false,
+	jQuery('#btn_active_calendar').click(function(e) {
+		if ( jQuery(this).data('opened_calendar') ) {
+			jQuery(this).removeClass('active');
+			jQuery('#start').datetimepicker('hide');
+			
+			var input = jQuery('#start');
+			var datetimepicker = input.data('xdsoft_datetimepicker');
+			if (datetimepicker) {
+				datetimepicker.data('xdsoft_datetime', null);
+				datetimepicker.remove();
+				input
+					.data('xdsoft_datetimepicker', null)
+					.off('.xdsoft');
+				
+				if (input.unmousewheel) {
+					input.unmousewheel();
+				}
+			}
+			jQuery(this).data('opened_calendar', null);
+		} else {
+			jQuery(this).addClass('active');
+			jQuery('#start').datetimepicker({
+				lang: setting_object.datetimepicker.lang,
+				dayOfWeekStart:  setting_object.datetimepicker.firstDay,
+				formatTime: setting_object.datetimepicker.timeFormat,
+				format: setting_object.datetimepicker.printFormat,
+				formatDate: setting_object.datetimepicker.dateFormat,
+				maxDate: setting_object.datetimepicker.dateFormat, 
+				timepicker:false,
+			});
+			jQuery('#start').datetimepicker('show');
+			jQuery(this).data('opened_calendar', true);
+		}
+		
 	});
+	
 
 	jQuery('#fakturo_system_options_group_currency').select2();
 	jQuery('#fakturo_system_options_group_invoice_type').select2();
