@@ -23,7 +23,7 @@ $helptexts = array(
         'tabtitle' => __('Quick Actions', 'fakturo'),
         'item1' => array(
             'title' => __('Quick actions to each invoice', 'fakturo'),
-            'tip' => __('When you hover the mouse over each invoice number, it will show below several actions that can be done by clicking on each one.', 'fakturo'),
+            'tip' => __('When you hover the mouse over each invoice row, it will show below several actions that can be done by clicking on each one.', 'fakturo'),
             'plustip' => __('The actions available will change depending on whether the invoice is in Finished or Pending status.', 'fakturo')
         ),
         'item2' => array(
@@ -33,14 +33,14 @@ $helptexts = array(
                          'Preview | Opens a pop-up and shows a Demo of the pending invoice as it will look when finished.', 'fakturo')
         ),
         'item3' => array(
-            'title' => __('Finished', 'fakturo'),
+            'title' => __('Finished status', 'fakturo'),
             'tip' => __('View | Open invoice editing screen to see the data used in the invoice.'.'<br />'.
                          'Print | Opens a popup with a Print dialog box to send the invoice to the printer. Cancel the Print dialog to view the invoice on screen.'.'<br />'.
                          'email to Client | Send the email to the customer in "Sales Email Template" format with the invoice attached as a PDF.', 'fakturo'),
             'plustip' => __('The finished invoices can\'t be deleted or modified.  To null one a credit invoice should be created.', 'fakturo')
         ),
     ),
-    'INVOICE' => array(
+    'BulkActions' => array(
         'tabtitle' => __('Bulk Actions', 'fakturo'),
         'item1' => array(
             'title' => __('Editing in bulk', 'fakturo'),

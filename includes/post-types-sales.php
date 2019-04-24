@@ -15,6 +15,10 @@ class fktrPostTypeSales {
 		add_action( 'fakturo_activation', array('fktrPostTypeSales', 'setup'), 1 );
 		
 		add_action('transition_post_status', array('fktrPostTypeSales', 'default_fields'), 10, 3);
+                
+                add_filter('display_post_states',  array('fktrPostTypeSales', 'display_fktr_sale_state'), 10, 1 );
+                add_filter('views_edit-fktr_sale',  array('fktrPostTypeSales', 'custom_draft_translation'), 10, 1 );
+
 		add_action('save_post', array('fktrPostTypeSales', 'save'), 99, 2 );
 		
 		add_action( 'admin_print_scripts-post-new.php', array('fktrPostTypeSales','scripts'), 11 );
@@ -163,57 +167,57 @@ class fktrPostTypeSales {
         }
 
         public static function print_invoice() {
-        	if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'fktr_sale_action_nonce')) {
-				wp_die('A security issue has occurred.');
-			}
-			$object = new stdClass();
-			$object->type = 'post';
-			$object->id = $_REQUEST['id'];
-			$object->assgined = 'fktr_sale';
-			if ($object->id) {
-				$id_print_template = fktrPostTypePrintTemplates::get_id_by_assigned($object->assgined);
-				if ($id_print_template) {
-					$print_template = fktrPostTypePrintTemplates::get_print_template_data($id_print_template);
-				} else {
-					wp_die(__('No print template assigned to sales invoices', 'fakturo' ));
-				}
-				$tpl = new fktr_tpl;
-				$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, false);
-				$html = $tpl->fromString($print_template['content']);
-				if (isset($_REQUEST['pdf'])) {
-					$pdf = fktr_pdf::getInstance();
-					$pdf ->set_paper("A4", "portrait");
-					$pdf ->load_html(utf8_decode($html));
-					$pdf ->render();
-					$pdf ->stream('pdf.pdf', array('Attachment'=>0));
+            if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'fktr_sale_action_nonce')) {
+                wp_die('A security issue has occurred.');
+            }
+            $object = new stdClass();
+            $object->type = 'post';
+            $object->id = $_REQUEST['id'];
+            $object->assgined = 'fktr_sale';
+            if ($object->id) {
+                $id_print_template = fktrPostTypePrintTemplates::get_id_by_assigned($object->assgined);
+                if ($id_print_template) {
+                    $print_template = fktrPostTypePrintTemplates::get_print_template_data($id_print_template);
+                } else {
+                    wp_die(__('No print template assigned to sales invoices', 'fakturo'));
+                }
+                $tpl = new fktr_tpl;
+                $tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, false);
+                $html = $tpl->fromString($print_template['content']);
+                if (isset($_REQUEST['pdf'])) {
+                    $pdf = fktr_pdf::getInstance();
+                    $pdf->set_paper("A4", "portrait");
+                    $pdf->load_html(utf8_decode($html));
+                    $pdf->render();
+                    $pdf->stream('pdf.pdf', array('Attachment' => 0));
+                } else {
+                    echo $html;
+                }
 
-				} else {
-					echo $html;
-				}
-				
-				exit();
-			}
-	}
-	public static function print_demo_invoice() {
+                exit();
+            }
+        }
 
-		if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'fktr_sale_action_nonce')) {
-			wp_die('A security issue has occurred.');
-		}
-		$object = new stdClass();
-		$object->type = 'post';
-		$object->id = $_REQUEST['id'];
-		$object->assgined = 'fktr_sale';
-		if ($object->id) {
-			$id_print_template = fktrPostTypePrintTemplates::get_id_by_assigned($object->assgined);
-			if ($id_print_template) {
-				$print_template = fktrPostTypePrintTemplates::get_print_template_data($id_print_template);
-			} else {
-				wp_die(__('No print template assigned to sales invoices', 'fakturo' ));
-			}
-			$tpl = new fktr_tpl;
-			$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, false);
-			$html = $tpl->fromString($print_template['content']);
-			$html .= '<style>
+        public static function print_demo_invoice() {
+
+            if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'fktr_sale_action_nonce')) {
+                wp_die('A security issue has occurred.');
+            }
+            $object = new stdClass();
+            $object->type = 'post';
+            $object->id = $_REQUEST['id'];
+            $object->assgined = 'fktr_sale';
+            if ($object->id) {
+                $id_print_template = fktrPostTypePrintTemplates::get_id_by_assigned($object->assgined);
+                if ($id_print_template) {
+                    $print_template = fktrPostTypePrintTemplates::get_print_template_data($id_print_template);
+                } else {
+                    wp_die(__('No print template assigned to sales invoices', 'fakturo'));
+                }
+                $tpl = new fktr_tpl;
+                $tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, false);
+                $html = $tpl->fromString($print_template['content']);
+                $html .= '<style>
 			#demo {
 				position:absolute;
 				left:235px;
@@ -223,117 +227,142 @@ class fktrPostTypeSales {
 				text-align:center;
 			}
 			</style>
-			<img id="demo" src="'. FAKTURO_PLUGIN_URL . 'assets/images/demo.png">
+			<img id="demo" src="' . FAKTURO_PLUGIN_URL . 'assets/images/demo.png">
 			';
 
-			if (isset($_REQUEST['pdf'])) {
-				$pdf = fktr_pdf::getInstance();
-				$pdf ->set_paper("A4", "portrait");
-				$pdf ->load_html(utf8_decode($html));
-				$pdf ->render();
-				$pdf ->stream('pdf.pdf', array('Attachment'=>0));
+                if (isset($_REQUEST['pdf'])) {
+                    $pdf = fktr_pdf::getInstance();
+                    $pdf->set_paper("A4", "portrait");
+                    $pdf->load_html(utf8_decode($html));
+                    $pdf->render();
+                    $pdf->stream('pdf.pdf', array('Attachment' => 0));
+                } else {
+                    echo $html;
+                }
 
-			} else {
-				echo $html;
-			}
-			
-			exit();
-		}
-	}
-	public static function change_button_texts($safe_text, $text ){
-		global $post, $current_screen, $screen;
-		
-		if (isset($post) && $post->post_type == 'fktr_sale') {
-			switch( $safe_text ) {
-				case __('Save Draft');
-					$safe_text = __('Save as Pendient', 'fakturo' );
-					break;
+                exit();
+            }
+        }
 
-				case __('Publish');
-					$safe_text = __('Finish Invoice', 'fakturo' );
-					break;
+        public static function change_button_texts($safe_text, $text) {
+            global $post, $current_screen, $screen;
 
-				default:
-					break;
-			}
-		}
-		return $safe_text;
-	}
-	
-	public static function set_delete_post_link( $delink, $post_id, $force_delete){
-		global $post;
-		if ($post->post_type == 'fktr_sale') {
-			$setting_system = get_option('fakturo_system_options_group', false);
-			if ($post->post_status == 'publish') { // don't allow delete
-				$delink = "javascript:alert('".__('Cannot delete finished Invoices', 'fakturo' )."');";
-			}
-			if ($setting_system['use_stock_product'] && $post->post_status == 'draft') {
-				//$delink = str_replace('trash', 'delete', $delink);
-				$action = 'delete';
-				$post_type_object = get_post_type_object( $post->post_type );
-				$delete_link = add_query_arg( 'action', $action, admin_url( sprintf( $post_type_object->_edit_link, $post_id ) ) );
-				$delete_link = wp_nonce_url( $delete_link, "$action-post_{$post->ID}" );
-				
-				$delink = "$delete_link\" onclick=\"return confirm('".__('Delete this item permanently ?', 'fakturo' )."')";
-			}
-		}
-		return $delink;
-	}
-	   
-    public static function bulk_actions($actions){
+            if (isset($post) && $post->post_type == 'fktr_sale') {
+                switch ($safe_text) {
+                    case __('Save Draft');
+                        $safe_text = __('Save as Pendient', 'fakturo');
+                        break;
 
-        $actions['send_pdf_client'] = __( 'Send pdf to clients', 'fakturo');
+                    case __('Publish');
+                        $safe_text = __('Finish Invoice', 'fakturo');
+                        break;
 
-        return $actions;
-    }
-    public static function bulk_action_handler( $redirect_to, $doaction, $post_ids ) {
-		if ($doaction !== 'send_pdf_client' ) {
-		    return $redirect_to;
-		}
-		foreach ($post_ids as $post_id) {
-			fktr_mail::send_sale_invoice_pdf_to_client($post_id, false);
-		    // Perform action for each post.
-		}
-		$redirect_to = add_query_arg( 'bulk_emailed_posts', count( $post_ids ), $redirect_to );
-		return $redirect_to;
-	}
-	public static function action_row($actions, $post){	
-		if ($post->post_type == 'fktr_sale') {
-			$action_nonce = wp_create_nonce('fktr_sale_action_nonce');
-			$setting_system = get_option('fakturo_system_options_group', false);
-			if ($post->post_status == 'publish') {
-				unset($actions['trash']);
-                                // Replace the original but translated WP text: 'Edit' by 'View' also translated
-				$actions['edit'] = str_replace( __('Edit'), __('View','fakturo'), $actions['edit']);
-				$actions['print_invoice'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_invoice&nonce='.$action_nonce).'" class="btn_print_invoice" target="_new">'.__( 'Print', 'fakturo' ).'</a>';
+                    default:
+                        $safe_text = str_replace(__('Drafts'), __('Pendings', 'fakturo'), $safe_text);
+                        $safe_text = str_replace(__('Draft'), __('Pending', 'fakturo'), $safe_text);
+                        break;
+                }
+            }
+            return $safe_text;
+        }
 
-				if (empty($actions['send_invoice_to_client'])) {
-					$sale_data = self::get_sale_data($post->ID);
-					$client_data = fktrPostTypeClients::get_client_data($sale_data['client_id']);
-					if (!empty($client_data['email'])) {
-						$url = admin_url('admin-post.php?id='.$post->ID.'&action=send_invoice_to_client');
-						$url = wp_nonce_url($url, 'send_invoice_to_client', '_wpnonce');
-						$actions['send_invoice_to_client'] = '<a href="'.$url.'" class="btn_send_invoice">'.__( 'email to Client', 'fakturo' ).'</a>';
-					}
-				}
-			}
-			if ($post->post_status != 'trash') {
-				if ($setting_system['use_stock_product'] && $post->post_status == 'draft') {
-					unset($actions['trash']);
-					$actions['delete'] = '<a class="submitdelete" title="'.esc_attr( __( 'Delete this item permanently', 'fakturo' )).'" href="'.get_delete_post_link( $post->ID, '', true).'">'. __( 'Delete', 'fakturo' ).'</a>';
-				}
-			}
+        /**
+         * Change Draft by Pending status texts.
+         *
+         */
+        public static function display_fktr_sale_state($states) {
+            global $post;
+            if( isset($states['draft'])) {
+                //PS: first replace plurals Drafts by Pendings as if found, then singular will not be found later.
+                $states['draft']= str_replace(__('Drafts'), __('Pendings', 'fakturo'), $states['draft']); 
+                $states['draft']= str_replace(__('Draft'), __('Pending', 'fakturo'), $states['draft']);
+            }        
+            return $states;
+        }
+        
+        public static function custom_draft_translation( $views ) {
+            $views['draft'] = str_replace(__('Draft'), __('Pending', 'fakturo'), $views['draft']);
+            return $views;
+        }
 
-			if ($post->post_status == 'draft') {
-				$actions['invoice_demo'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_demo_invoice&nonce='.$action_nonce).'" class="btn_print_demo_invoice" target="_new">'.__( 'Preview', 'fakturo' ).'</a>';
-			}
-			
-			unset( $actions['inline hide-if-no-js'] );
-			$actions = apply_filters('fktr_sales_quick_actions',$actions, $post);
-		}
-		return $actions;
-	}
-	public static function text_description_product_short_description($txt) {
+
+        public static function set_delete_post_link($delink, $post_id, $force_delete) {
+            global $post;
+            if ($post->post_type == 'fktr_sale') {
+                $setting_system = get_option('fakturo_system_options_group', false);
+                if ($post->post_status == 'publish') { // don't allow delete
+                    $delink = "javascript:alert('" . __('Cannot delete finished Invoices', 'fakturo') . "');";
+                }
+                if ($setting_system['use_stock_product'] && $post->post_status == 'draft') {
+                    //$delink = str_replace('trash', 'delete', $delink);
+                    $action = 'delete';
+                    $post_type_object = get_post_type_object($post->post_type);
+                    $delete_link = add_query_arg('action', $action, admin_url(sprintf($post_type_object->_edit_link, $post_id)));
+                    $delete_link = wp_nonce_url($delete_link, "$action-post_{$post->ID}");
+
+                    $delink = "$delete_link\" onclick=\"return confirm('" . __('Delete this item permanently ?', 'fakturo') . "')";
+                }
+            }
+            return $delink;
+        }
+
+        public static function bulk_actions($actions){
+            $actions['send_pdf_client'] = __( 'Send PDF to Clients', 'fakturo');
+            unset($actions['edit']);
+            unset($actions['trash']);
+
+            return $actions;
+        }
+        public static function bulk_action_handler($redirect_to, $doaction, $post_ids) {
+            if ($doaction !== 'send_pdf_client') {
+                return $redirect_to;
+            }
+            foreach ($post_ids as $post_id) {
+                fktr_mail::send_sale_invoice_pdf_to_client($post_id, false);
+                // Perform action for each post.
+            }
+            $redirect_to = add_query_arg('bulk_emailed_posts', count($post_ids), $redirect_to);
+            return $redirect_to;
+        }
+
+        public static function action_row($actions, $post) {
+            if ($post->post_type == 'fktr_sale') {
+                $action_nonce = wp_create_nonce('fktr_sale_action_nonce');
+                $setting_system = get_option('fakturo_system_options_group', false);
+                if ($post->post_status == 'publish') {
+                    unset($actions['trash']);
+                    // Replace the original but translated WP text: 'Edit' by 'View' also translated
+                    $actions['edit'] = str_replace(__('Edit'), __('View', 'fakturo'), $actions['edit']);
+                    $actions['print_invoice'] = '<a href="' . admin_url('admin-post.php?id=' . $post->ID . '&action=print_invoice&nonce=' . $action_nonce) . '" class="btn_print_invoice" target="_new">' . __('Print', 'fakturo') . '</a>';
+
+                    if (empty($actions['send_invoice_to_client'])) {
+                        $sale_data = self::get_sale_data($post->ID);
+                        $client_data = fktrPostTypeClients::get_client_data($sale_data['client_id']);
+                        if (!empty($client_data['email'])) {
+                            $url = admin_url('admin-post.php?id=' . $post->ID . '&action=send_invoice_to_client');
+                            $url = wp_nonce_url($url, 'send_invoice_to_client', '_wpnonce');
+                            $actions['send_invoice_to_client'] = '<a href="' . $url . '" class="btn_send_invoice">' . __('email to Client', 'fakturo') . '</a>';
+                        }
+                    }
+                }
+                if ($post->post_status != 'trash') {
+                    if ($setting_system['use_stock_product'] && $post->post_status == 'draft') {
+                        unset($actions['trash']);
+                        $actions['delete'] = '<a class="submitdelete" title="' . esc_attr(__('Delete this item permanently', 'fakturo')) . '" href="' . get_delete_post_link($post->ID, '', true) . '">' . __('Delete', 'fakturo') . '</a>';
+                    }
+                }
+
+                if ($post->post_status == 'draft') {
+                    $actions['invoice_demo'] = '<a href="' . admin_url('admin-post.php?id=' . $post->ID . '&action=print_demo_invoice&nonce=' . $action_nonce) . '" class="btn_print_demo_invoice" target="_new">' . __('Preview', 'fakturo') . '</a>';
+                }
+
+                unset($actions['inline hide-if-no-js']);
+                $actions = apply_filters('fktr_sales_quick_actions', $actions, $post);
+            }
+            return $actions;
+        }
+
+        public static function text_description_product_short_description($txt) {
 		return __( 'Short Description', 'fakturo' );
 	}
 	public static function text_description_product_description($txt) {
@@ -428,7 +457,8 @@ class fktrPostTypeSales {
 		echo json_encode($return);
 		wp_die();
 	}
-	public static function setup() {
+
+        public static function setup() {
 		
 		$labels = array( 
 			'name' => __( 'Sales', 'fakturo' ),
@@ -487,13 +517,10 @@ class fktrPostTypeSales {
 		//Placeholder for the title field
 		add_filter('enter_title_here', array('fktrPostTypeSales', 'name_placeholder'),10,2);
 		
-		
-		
 	}
 	
-
-	public static function updated_messages( $messages ) {
-		global $post, $post_ID;
+        public static function updated_messages($messages) {
+            global $post, $post_ID;
 		$messages['fktr_sale'] = array(
 			 0 => '', 
 			 1 => __('Sale invoice updated.', 'fakturo' ),
