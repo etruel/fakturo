@@ -37,36 +37,46 @@ $helptexts = array(
             'tip' => __('View | Open invoice editing screen to see the data used in the invoice.'.'<br />'.
                          'Print | Opens a popup with a Print dialog box to send the invoice to the printer. Cancel the Print dialog to view the invoice on screen.'.'<br />'.
                          'email to Client | Send the email to the customer in "Sales Email Template" format with the invoice attached as a PDF.', 'fakturo'),
-            'plustip' => __('The finished invoices can\'t be deleted or modified.  To null one a credit invoice should be created.', 'fakturo')
+            'plustip' => __('The finished invoices can\'t be deleted or modified.  To null one should be create a credit invoice.', 'fakturo')
         ),
     ),
     'BulkActions' => array(
         'tabtitle' => __('Bulk Actions', 'fakturo'),
         'item1' => array(
-            'title' => __('Editing in bulk', 'fakturo'),
-            'tip' => __('Select who will receive the invoice from the customer list. If they are not found, then you must register the customer on the "customers" form. If the customer does exist and doesn’t appear, verify that the option "ACTIVE CUSTOMER" is selected in the customer form', 'fakturo')
+            'title' => __('Doing in bulk', 'fakturo'),
+            'tip' => __('Bulk actions are performed on the items selected by checking the first column of each row.', 'fakturo')
+        ),
+        'item2' => array(
+            'title' => __('Send PDF to clients', 'fakturo'),
+            'tip' => __('Send all the invoices at once attached as PDF by email to each client.', 'fakturo'),
+            'plustip' => __('1. Select the (finished) invoices you want to send to each respective client.', 'fakturo').'<br />'.
+                        __('2. Select "Send PDF to clients" in the "Bulk Actions" select field.', 'fakturo').'<br />'.
+                        __('3. Click "Apply" button to send each invoice as PDF attached to emails sent to each client.', 'fakturo')
         ),
     ),
     'INVOICE' => array(
         'tabtitle' => __('Columns', 'fakturo'),
+        'item0' => array(
+            'title' => __('Columns Tips', 'fakturo'),
+            'tip' => __('The columns can be hidden or showed in "Screen Options" Tab.', 'fakturo').'<br />'.
+                     __('The list can be ordered by clicking in each column title available to order.', 'fakturo')
+            ),
         'item1' => array(
-            'title' => __('Customer', 'fakturo'),
-            'tip' => __('Select who will receive the invoice from the customer list. If they are not found, then you must register the customer on the "customers" form. If the customer does exist and doesn’t appear, verify that the option "ACTIVE CUSTOMER" is selected in the customer form', 'fakturo')),
+            'title' => __('Title', 'fakturo'),
+            'tip' => __('The invoice number created with the invoice fields with the format selected in System Settings.', 'fakturo')
+            ),
         'item2' => array(
-            'title' => __('Invoice Type', 'fakturo'),
-            'tip' => __('Select the type of invoice to be made from the list; it can be INVOICE A, B, C or credit note.', 'fakturo')),
+            'title' => __('Client', 'fakturo'),
+            'tip' => __('The client of the invoice.', 'fakturo')
+            ),
         'item3' => array(
-            'title' => __('Invoice Number', 'fakturo'),
-            'tip' => __('Invoice identifier which is randomly generated and is read-only. ', 'fakturo')),
+            'title' => __('Payment Status', 'fakturo'),
+            'tip' => __('Shows the receipts numbers with the amounts imputed to the invoices or only Unpaid if there are none.', 'fakturo')
+            ),
         'item4' => array(
             'title' => __('Date', 'fakturo'),
-            'tip' => __('This is according the date when the product was bought or sold', 'fakturo')),
-        'item5' => array(
-            'title' => __('Invoice Currency', 'fakturo'),
-            'tip' => __('Currency which will be displayed on the invoice. It can be Argentinian peso, dollars or Euros', 'fakturo')),
-        'item7' => array(
-            'title' => __('Vendor', 'fakturo'),
-            'tip' => __('Person who manages the invoice', 'fakturo')),
+            'tip' => __('This is the date when the invoice was created.', 'fakturo')
+            ),
     ),
 );
 ?>

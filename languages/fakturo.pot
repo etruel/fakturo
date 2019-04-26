@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Fakturo\n"
-"POT-Creation-Date: 2019-04-17 17:46-0300\n"
+"POT-Creation-Date: 2019-04-25 23:09-0300\n"
 "PO-Revision-Date: 2018-02-16 21:59-0300\n"
 "Language-Team: NetMdP <dev@netmdp.com>\n"
 "MIME-Version: 1.0\n"
@@ -20,8 +20,8 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-1: *.js\n"
 
 #: docs/admin_page_fakturo-settings-system-help.php:15 includes/notices.php:90
-#: includes/notices.php:94 includes/settings/settings.php:747
-#: includes/settings/settings.php:1009
+#: includes/notices.php:94 includes/settings/settings.php:766
+#: includes/settings/settings.php:1028
 msgid "System Settings"
 msgstr ""
 
@@ -35,8 +35,8 @@ msgstr ""
 #: docs/edit-fktr_product_type-help.php:17 docs/edit-fktr_sale_points-help.php:18
 #: docs/edit-fktr_stock-help.php:17 docs/edit-fktr_tax-help.php:17
 #: docs/edit-fktr_tax_conditions-help.php:17 docs/fktr_product-help.php:17
-#: docs/fktr_product-help.php:94 docs/fktr_sale-help.php:17 docs/fktr_sale-help.php:44
-#: docs/fktr_sale-help.php:50 docs/fktr_subscriptions-help.php:17
+#: docs/fktr_product-help.php:94 docs/fktr_sale-help.php:17 docs/fktr_sale-help.php:46
+#: docs/fktr_sale-help.php:52 docs/fktr_subscriptions-help.php:17
 #: docs/fktr_subscriptions-help.php:46 docs/fktr_subscriptions-help.php:52
 #: docs/fktr_subscriptions-help.php:70
 msgid "Concept"
@@ -77,7 +77,7 @@ msgid ""
 "Select the location of the currency symbol to either before or after the number value."
 msgstr ""
 
-#: docs/admin_page_fakturo-settings-system-help.php:30 includes/settings/settings.php:776
+#: docs/admin_page_fakturo-settings-system-help.php:30 includes/settings/settings.php:795
 #: includes/wizard_install.php:973
 msgid "Thousands Separator"
 msgstr ""
@@ -88,7 +88,7 @@ msgid ""
 "either a comma (,) or a period (.)."
 msgstr ""
 
-#: docs/admin_page_fakturo-settings-system-help.php:34 includes/settings/settings.php:788
+#: docs/admin_page_fakturo-settings-system-help.php:34 includes/settings/settings.php:807
 #: includes/wizard_install.php:983
 msgid "Decimal Separator"
 msgstr ""
@@ -106,7 +106,7 @@ msgid "Maximum number of decimal places that the money value to be managed will 
 msgstr ""
 
 #: docs/admin_page_fakturo-settings-system-help.php:42 includes/notices.php:94
-#: includes/settings/settings.php:812 includes/wizard_install.php:1133
+#: includes/settings/settings.php:831 includes/wizard_install.php:1133
 msgid "Default Invoice Type"
 msgstr ""
 
@@ -242,7 +242,7 @@ msgstr ""
 msgid "Exchange rate of currencies from AFIP web service."
 msgstr ""
 
-#: docs/edit-fktr_bank_entities-help.php:15 includes/settings/settings.php:1014
+#: docs/edit-fktr_bank_entities-help.php:15 includes/settings/settings.php:1033
 #: includes/taxonomy/bank-entities.php:46 includes/taxonomy/bank-entities.php:61
 msgid "Bank Entities"
 msgstr ""
@@ -259,7 +259,7 @@ msgstr ""
 #: docs/edit-fktr_packaging-help.php:23 docs/edit-fktr_payment_types-help.php:25
 #: docs/edit-fktr_price_scales-help.php:23 docs/edit-fktr_product_type-help.php:24
 #: docs/edit-fktr_sale_points-help.php:26 docs/edit-fktr_tax-help.php:24
-#: docs/edit-fktr_tax_conditions-help.php:24 includes/settings/settings.php:329
+#: docs/edit-fktr_tax_conditions-help.php:24 includes/settings/settings.php:347
 #: includes/taxonomy/bank-entities.php:133 includes/taxonomy/checks.php:534
 #: includes/taxonomy/countries.php:133 includes/taxonomy/currencies.php:199
 #: includes/taxonomy/invoice-types.php:201 includes/taxonomy/locations.php:126
@@ -297,7 +297,7 @@ msgid ""
 "its name and description."
 msgstr ""
 
-#: docs/edit-fktr_check-help.php:15 includes/admin-menu.php:253 includes/admin-menu.php:254
+#: docs/edit-fktr_check-help.php:15 includes/admin-menu.php:213 includes/admin-menu.php:214
 #: includes/taxonomy/checks.php:50 includes/taxonomy/checks.php:65
 msgid "Checks"
 msgstr ""
@@ -317,7 +317,7 @@ msgstr ""
 msgid "Combination of numbers with which the check is identified."
 msgstr ""
 
-#: docs/edit-fktr_check-help.php:26 docs/fktr_receipt-help.php:18 docs/fktr_sale-help.php:23
+#: docs/edit-fktr_check-help.php:26 docs/fktr_receipt-help.php:18 docs/fktr_sale-help.php:25
 #: docs/fktr_subscriptions-help.php:25
 msgid "Customer"
 msgstr ""
@@ -328,7 +328,7 @@ msgid ""
 "them in the customers form. "
 msgstr ""
 
-#: docs/edit-fktr_check-help.php:29 includes/post-types-receipts.php:720
+#: docs/edit-fktr_check-help.php:29 includes/post-types-receipts.php:727
 #: includes/taxonomy/bank-entities.php:51 includes/taxonomy/checks.php:55
 #: includes/taxonomy/checks.php:275 includes/taxonomy/checks.php:434
 #: includes/taxonomy/currencies.php:46 includes/taxonomy/payment-types.php:48
@@ -343,8 +343,8 @@ msgstr ""
 
 #: docs/edit-fktr_check-help.php:32 docs/fktr_client-help.php:29
 #: docs/fktr_product-help.php:63 includes/post-types-clients.php:322
-#: includes/post-types-products.php:322 includes/post-types-receipts.php:703
-#: includes/settings/settings.php:753 includes/taxonomy/checks.php:281
+#: includes/post-types-products.php:322 includes/post-types-receipts.php:710
+#: includes/settings/settings.php:772 includes/taxonomy/checks.php:281
 #: includes/taxonomy/checks.php:443 includes/taxonomy/currencies.php:42
 msgid "Currency"
 msgstr ""
@@ -353,7 +353,7 @@ msgstr ""
 msgid "Type of currency of the check. It can be Argentinian peso, dollars or Euros."
 msgstr ""
 
-#: docs/edit-fktr_check-help.php:35 includes/post-types-sales.php:737
+#: docs/edit-fktr_check-help.php:35 includes/post-types-sales.php:856
 msgid "Amount"
 msgstr ""
 
@@ -396,7 +396,7 @@ msgid ""
 "click on the <b>\"Add New\"</b> button, which will take you to the corresponding form."
 msgstr ""
 
-#: docs/edit-fktr_countries-help.php:15 includes/settings/settings.php:1015
+#: docs/edit-fktr_countries-help.php:15 includes/settings/settings.php:1034
 msgid "Countries and States"
 msgstr ""
 
@@ -410,7 +410,7 @@ msgstr ""
 #: docs/edit-fktr_countries-help.php:27 docs/fakturo_page_fakturo-settings-help.php:38
 #: docs/fktr_client-help.php:48 docs/fktr_provider-help.php:25
 #: includes/post-types-clients.php:421 includes/post-types-providers.php:291
-#: includes/post-types-sales.php:1031 includes/settings/settings.php:368
+#: includes/post-types-sales.php:1157 includes/settings/settings.php:387
 #: includes/taxonomy/countries.php:42 includes/taxonomy/countries.php:46
 #: includes/wizard_install.php:694
 msgid "Country"
@@ -423,8 +423,8 @@ msgid ""
 msgstr ""
 
 #: docs/edit-fktr_currencies-help.php:16 includes/notices.php:70
-#: includes/post-types-receipts.php:472 includes/post-types-sales.php:581
-#: includes/settings/settings.php:1013 includes/taxonomy/currencies.php:41
+#: includes/post-types-receipts.php:479 includes/post-types-sales.php:699
+#: includes/settings/settings.php:1032 includes/taxonomy/currencies.php:41
 #: includes/taxonomy/currencies.php:56
 msgid "Currencies"
 msgstr ""
@@ -449,7 +449,7 @@ msgstr ""
 #: docs/edit-fktr_currencies-help.php:31 docs/edit-fktr_invoice_types-help.php:30
 #: includes/taxonomy/currencies.php:132 includes/taxonomy/currencies.php:167
 #: includes/taxonomy/currencies.php:200 includes/taxonomy/invoice-types.php:128
-#: includes/taxonomy/invoice-types.php:166
+#: includes/taxonomy/invoice-types.php:166 includes/taxonomy/invoice-types.php:203
 msgid "Symbol"
 msgstr ""
 
@@ -467,10 +467,10 @@ msgid "Currency rate."
 msgstr ""
 
 #: docs/edit-fktr_currencies-help.php:37 includes/post-types-products.php:572
-#: includes/post-types-sales.php:248 includes/reports/client_account_movements.php:90
+#: includes/post-types-sales.php:378 includes/reports/client_account_movements.php:90
 #: includes/reports/client_account_movements.php:227
 #: includes/reports/client_account_movements.php:375 includes/reports/client_summary.php:270
-#: includes/settings/settings.php:677 includes/settings/settings.php:692
+#: includes/settings/settings.php:696 includes/settings/settings.php:711
 #: includes/taxonomy/currencies.php:142 includes/taxonomy/currencies.php:185
 #: includes/wizard_install.php:1488 includes/wizard_install.php:1502
 msgid "Reference"
@@ -480,8 +480,8 @@ msgstr ""
 msgid "Website to find the conversion rate."
 msgstr ""
 
-#: docs/edit-fktr_invoice_types-help.php:15 docs/fktr_sale-help.php:26
-#: docs/fktr_subscriptions-help.php:28 includes/post-types-sales.php:1079
+#: docs/edit-fktr_invoice_types-help.php:15 docs/fktr_sale-help.php:28
+#: docs/fktr_subscriptions-help.php:28 includes/post-types-sales.php:1205
 #: includes/taxonomy/invoice-types.php:62 includes/taxonomy/tax-conditions.php:230
 msgid "Invoice Type"
 msgstr ""
@@ -507,7 +507,7 @@ msgstr ""
 msgid "Invoice type symbol. "
 msgstr ""
 
-#: docs/edit-fktr_locations-help.php:15 includes/settings/settings.php:1021
+#: docs/edit-fktr_locations-help.php:15 includes/settings/settings.php:1040
 #: includes/taxonomy/locations.php:42 includes/taxonomy/locations.php:57
 #: includes/wizard_install.php:1653
 msgid "Locations"
@@ -521,7 +521,7 @@ msgid ""
 "side of the form. "
 msgstr ""
 
-#: docs/edit-fktr_model-help.php:15 includes/admin-menu.php:197 includes/admin-menu.php:198
+#: docs/edit-fktr_model-help.php:15 includes/admin-menu.php:248 includes/admin-menu.php:249
 #: includes/post-types-products.php:140 includes/post-types-products.php:155
 #: includes/wizard_install.php:1551
 msgid "Models"
@@ -534,7 +534,7 @@ msgid ""
 "description."
 msgstr ""
 
-#: docs/edit-fktr_origins-help.php:15 includes/settings/settings.php:1024
+#: docs/edit-fktr_origins-help.php:15 includes/settings/settings.php:1043
 #: includes/taxonomy/origins.php:41 includes/taxonomy/origins.php:56
 #: includes/wizard_install.php:1585
 msgid "Origins"
@@ -549,7 +549,7 @@ msgid ""
 "the origins reported through their filters fast."
 msgstr ""
 
-#: docs/edit-fktr_packaging-help.php:15 includes/settings/settings.php:1022
+#: docs/edit-fktr_packaging-help.php:15 includes/settings/settings.php:1041
 #: includes/taxonomy/packagings.php:43 includes/taxonomy/packagings.php:58
 #: includes/wizard_install.php:1635
 msgid "Packagings"
@@ -576,7 +576,7 @@ msgid ""
 msgstr ""
 
 #: docs/edit-fktr_price_scales-help.php:15 docs/fktr_product-help.php:73
-#: includes/settings/settings.php:1023 includes/taxonomy/price-scales.php:50
+#: includes/settings/settings.php:1042 includes/taxonomy/price-scales.php:50
 #: includes/taxonomy/price-scales.php:65 includes/wizard_install.php:1602
 msgid "Price Scales"
 msgstr ""
@@ -600,7 +600,7 @@ msgstr ""
 msgid "Percentage for price scales."
 msgstr ""
 
-#: docs/edit-fktr_product_type-help.php:15 includes/settings/settings.php:1020
+#: docs/edit-fktr_product_type-help.php:15 includes/settings/settings.php:1039
 #: includes/taxonomy/product-types.php:42 includes/taxonomy/product-types.php:57
 #: includes/wizard_install.php:1568
 msgid "Product Types"
@@ -630,8 +630,178 @@ msgid ""
 "corresponding supplier registration form to fill in the fields."
 msgstr ""
 
+#: docs/edit-fktr_sale-help.php:15
+msgid "Sales screen"
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:17
+msgid "Invoices List"
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:18
+msgid "This screen displays the list of credit and debit invoices related to sales."
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:19
+msgid ""
+"To create a new sale, you can click the button <b>\"Add New\"</b> and fill in the "
+"appropriate form. "
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:23
+msgid "Quick Actions"
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:25
+msgid "Quick actions to each invoice"
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:26
+msgid ""
+"When you hover the mouse over each invoice row, it will show below several actions that "
+"can be done by clicking on each one."
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:27
+msgid ""
+"The actions available will change depending on whether the invoice is in Finished or "
+"Pending status."
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:30
+msgid "Pending or Draft status"
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:31
+msgid ""
+"Edit | Open invoice editing screen to make the necessary changes to finish the invoice."
+"<br />Delete | Remove the invoice from database permanently.  This action has no reverse."
+"<br />Preview | Opens a pop-up and shows a Demo of the pending invoice as it will look "
+"when finished."
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:36
+msgid "Finished status"
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:37
+msgid ""
+"View | Open invoice editing screen to see the data used in the invoice.<br />Print | "
+"Opens a popup with a Print dialog box to send the invoice to the printer. Cancel the "
+"Print dialog to view the invoice on screen.<br />email to Client | Send the email to the "
+"customer in \"Sales Email Template\" format with the invoice attached as a PDF."
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:40
+msgid ""
+"The finished invoices can't be deleted or modified.  To null one should be create a "
+"credit invoice."
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:44
+msgid "Bulk Actions"
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:46
+msgid "Doing in bulk"
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:47
+msgid ""
+"Bulk actions are performed on the items selected by checking the first column of each row."
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:50
+msgid "Send PDF to clients"
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:51
+msgid "Send all the invoices at once attached as PDF by email to each client."
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:52
+msgid "1. Select the (finished) invoices you want to send to each respective client."
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:53
+msgid "2. Select \"Send PDF to clients\" in the \"Bulk Actions\" select field."
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:54
+msgid ""
+"3. Click \"Apply\" button to send each invoice as PDF attached to emails sent to each "
+"client."
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:58
+msgid "Columns"
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:60
+msgid "Columns Tips"
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:61
+msgid "The columns can be hidden or showed in \"Screen Options\" Tab."
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:62
+msgid "The list can be ordered by clicking in each column title available to order."
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:65 includes/post-types-receipts.php:61
+#: includes/post-types-sales.php:119
+msgid "Title"
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:66
+msgid ""
+"The invoice number created with the invoice fields with the format selected in System "
+"Settings."
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:69 includes/post-types-clients.php:35
+#: includes/post-types-receipts.php:694 includes/post-types-sales.php:120
+#: includes/post-types-sales.php:1115 includes/post-types-sales.php:1865
+#: includes/reports/client_account_movements.php:71
+#: includes/reports/client_account_movements.php:203
+#: includes/reports/client_account_movements.php:352 includes/reports/client_summary.php:254
+#: includes/taxonomy/checks.php:269 includes/taxonomy/checks.php:425
+msgid "Client"
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:70
+msgid "The client of the invoice."
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:73 includes/post-types-sales.php:121
+msgid "Payment Status"
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:74
+msgid ""
+"Shows the receipts numbers with the amounts imputed to the invoices or only Unpaid if "
+"there are none."
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:77 docs/fktr_sale-help.php:34
+#: docs/fktr_subscriptions-help.php:34 includes/post-types-receipts.php:63
+#: includes/post-types-receipts.php:745 includes/post-types-sales.php:122
+#: includes/post-types-sales.php:1225 includes/reports/client_account_movements.php:88
+#: includes/reports/client_account_movements.php:221
+#: includes/reports/client_account_movements.php:369 includes/reports/client_summary.php:264
+#: includes/taxonomy/checks.php:292 includes/taxonomy/checks.php:308
+#: includes/taxonomy/checks.php:461 includes/taxonomy/checks.php:488
+#: includes/taxonomy/checks.php:535 includes/taxonomy/stocks.php:251
+msgid "Date"
+msgstr ""
+
+#: docs/edit-fktr_sale-help.php:78
+msgid "This is the date when the invoice was created."
+msgstr ""
+
 #: docs/edit-fktr_sale_points-help.php:16 includes/notices.php:82
-#: includes/settings/settings.php:998 includes/taxonomy/sale-points.php:46
+#: includes/settings/settings.php:1017 includes/taxonomy/sale-points.php:46
 #: includes/taxonomy/sale-points.php:61
 msgid "Sale Points"
 msgstr ""
@@ -671,8 +841,8 @@ msgid ""
 "benefits if their storage is optimal."
 msgstr ""
 
-#: docs/edit-fktr_tax-help.php:15 includes/settings/settings.php:1029
-#: includes/settings/settings.php:1031 includes/taxonomy/taxes.php:41
+#: docs/edit-fktr_tax-help.php:15 includes/settings/settings.php:1048
+#: includes/settings/settings.php:1050 includes/taxonomy/taxes.php:41
 #: includes/taxonomy/taxes.php:56 includes/wizard_install.php:1619
 msgid "Taxes"
 msgstr ""
@@ -695,7 +865,7 @@ msgstr ""
 msgid "Percentage for taxes."
 msgstr ""
 
-#: docs/edit-fktr_tax_conditions-help.php:15 includes/settings/settings.php:1030
+#: docs/edit-fktr_tax_conditions-help.php:15 includes/settings/settings.php:1049
 #: includes/taxonomy/tax-conditions.php:41 includes/taxonomy/tax-conditions.php:56
 msgid "Tax Conditions"
 msgstr ""
@@ -710,7 +880,7 @@ msgid ""
 msgstr ""
 
 #: docs/edit-fktr_tax_conditions-help.php:27 includes/notices.php:76
-#: includes/settings/settings.php:997 includes/taxonomy/invoice-types.php:61
+#: includes/settings/settings.php:1016 includes/taxonomy/invoice-types.php:61
 #: includes/taxonomy/invoice-types.php:76 includes/taxonomy/tax-conditions.php:140
 #: includes/taxonomy/tax-conditions.php:197
 msgid "Invoice Types"
@@ -720,8 +890,8 @@ msgstr ""
 msgid "Default Invoice Type for this Tax Condition."
 msgstr ""
 
-#: docs/fakturo_page_fakturo-settings-help.php:15 includes/settings/settings.php:323
-#: includes/settings/settings.php:996 includes/wizard_install.php:33
+#: docs/fakturo_page_fakturo-settings-help.php:15 includes/settings/settings.php:341
+#: includes/settings/settings.php:1015 includes/wizard_install.php:33
 #: includes/wizard_install.php:651 includes/wizard_install.php:778
 msgid "Company Info"
 msgstr ""
@@ -755,7 +925,7 @@ msgstr ""
 #: docs/fakturo_page_fakturo-settings-help.php:34 docs/fktr_client-help.php:44
 #: docs/fktr_provider-help.php:21 includes/post-types-clients.php:417
 #: includes/post-types-clients.php:513 includes/post-types-providers.php:287
-#: includes/post-types-providers.php:384 includes/settings/settings.php:353
+#: includes/post-types-providers.php:384 includes/settings/settings.php:372
 #: includes/users/users-list.php:232 includes/wizard_install.php:681
 msgid "Address"
 msgstr ""
@@ -789,7 +959,7 @@ msgstr ""
 msgid "Telephone number of business or personal contact."
 msgstr ""
 
-#: docs/fakturo_page_fakturo-settings-help.php:50 includes/settings/settings.php:437
+#: docs/fakturo_page_fakturo-settings-help.php:50 includes/settings/settings.php:456
 #: includes/wizard_install.php:763
 msgid "Company Logo"
 msgstr ""
@@ -882,7 +1052,7 @@ msgid "Contact email address. "
 msgstr ""
 
 #: docs/fktr_client-help.php:64 docs/fktr_provider-help.php:45
-#: includes/settings/settings.php:418 includes/wizard_install.php:744
+#: includes/settings/settings.php:437 includes/wizard_install.php:744
 msgid "Website"
 msgstr ""
 
@@ -944,7 +1114,7 @@ msgid ""
 "printing invoices or reports."
 msgstr ""
 
-#: docs/fktr_product-help.php:15 includes/admin-menu.php:172 includes/admin-menu.php:173
+#: docs/fktr_product-help.php:15 includes/admin-menu.php:223 includes/admin-menu.php:224
 #: includes/post-types-products.php:43 includes/post-types-products.php:54
 #: includes/wizard_install.php:41 includes/wizard_install.php:1528
 #: includes/wizard_install.php:1727
@@ -976,7 +1146,7 @@ msgid "Select the type of product; it can be supply, final product, component or
 msgstr ""
 
 #: docs/fktr_product-help.php:32 includes/post-types-products.php:567
-#: includes/post-types-sales.php:736 includes/reports/client_summary.php:276
+#: includes/post-types-sales.php:855 includes/reports/client_summary.php:276
 #: includes/taxonomy/taxes.php:42
 msgid "Tax"
 msgstr ""
@@ -999,7 +1169,7 @@ msgstr ""
 #: includes/libs/fktr_popup_taxonomy.php:231 includes/post-types-clients.php:509
 #: includes/post-types-email-templates.php:610 includes/post-types-print-templates.php:523
 #: includes/post-types-products.php:584 includes/post-types-providers.php:380
-#: includes/post-types-sales.php:239 includes/settings/settings.php:706
+#: includes/post-types-sales.php:369 includes/settings/settings.php:725
 #: includes/wizard_install.php:1516
 msgid "Description"
 msgstr ""
@@ -1173,7 +1343,7 @@ msgid ""
 "selection."
 msgstr ""
 
-#: docs/fktr_provider-help.php:71 docs/fktr_sale-help.php:38
+#: docs/fktr_provider-help.php:71 docs/fktr_sale-help.php:40
 #: docs/fktr_subscriptions-help.php:40
 msgid "Vendor"
 msgstr ""
@@ -1212,7 +1382,7 @@ msgid ""
 "Euros."
 msgstr ""
 
-#: docs/fktr_receipt-help.php:30 includes/post-types-receipts.php:707
+#: docs/fktr_receipt-help.php:30 includes/post-types-receipts.php:714
 msgid "Cash"
 msgstr ""
 
@@ -1233,7 +1403,7 @@ msgid ""
 "of currency and the date of collection."
 msgstr ""
 
-#: docs/fktr_receipt-help.php:38 includes/admin-menu.php:224
+#: docs/fktr_receipt-help.php:38 includes/admin-menu.php:185
 #: includes/wizard_install.php:1280
 msgid "Invoices"
 msgstr ""
@@ -1245,24 +1415,29 @@ msgid ""
 "invoice number must be created first)."
 msgstr ""
 
-#: docs/fktr_sale-help.php:15 includes/post-types-sales.php:334
+#: docs/fktr_sale-help.php:15 includes/post-types-sales.php:465
 msgid "Sale"
 msgstr ""
 
 #: docs/fktr_sale-help.php:18
 msgid ""
 "Organized process aimed at enhancing the vendor/customer relationship through the "
-"purchase of products or services. To create a new sale, you can click the button <b>\"Add "
-"New\"</b> and fill in the appropriate form. You will also be able to see the list of "
-"completed sales in the displayed information table. An automatic code is generated, which "
-"identifies the sale to be made."
+"purchase of products or services. "
 msgstr ""
 
-#: docs/fktr_sale-help.php:21 docs/fktr_subscriptions-help.php:23
+#: docs/fktr_sale-help.php:19
+msgid ""
+"To create a new sale, you can click the button <b>\"Add New\"</b> and fill in the "
+"appropriate form. You will also be able to see the list of completed sales in the "
+"displayed information table. An automatic code is generated, which identifies the sale to "
+"be made."
+msgstr ""
+
+#: docs/fktr_sale-help.php:23 docs/fktr_subscriptions-help.php:23
 msgid "Invoice Details"
 msgstr ""
 
-#: docs/fktr_sale-help.php:24 docs/fktr_subscriptions-help.php:26
+#: docs/fktr_sale-help.php:26 docs/fktr_subscriptions-help.php:26
 msgid ""
 "Select who will receive the invoice from the customer list. If they are not found, then "
 "you must register the customer on the \"customers\" form. If the customer does exist and "
@@ -1270,61 +1445,49 @@ msgid ""
 "form"
 msgstr ""
 
-#: docs/fktr_sale-help.php:27 docs/fktr_subscriptions-help.php:29
+#: docs/fktr_sale-help.php:29 docs/fktr_subscriptions-help.php:29
 msgid ""
 "Select the type of invoice to be made from the list; it can be INVOICE A, B, C or credit "
 "note."
 msgstr ""
 
-#: docs/fktr_sale-help.php:29 includes/post-types-receipts.php:739
-#: includes/post-types-sales.php:1092
+#: docs/fktr_sale-help.php:31 includes/post-types-receipts.php:746
+#: includes/post-types-sales.php:1218
 msgid "Invoice Number"
 msgstr ""
 
-#: docs/fktr_sale-help.php:30
+#: docs/fktr_sale-help.php:32
 msgid "Invoice identifier which is randomly generated and is read-only. "
 msgstr ""
 
-#: docs/fktr_sale-help.php:32 docs/fktr_subscriptions-help.php:34
-#: includes/post-types-receipts.php:63 includes/post-types-receipts.php:738
-#: includes/post-types-sales.php:76 includes/post-types-sales.php:1099
-#: includes/reports/client_account_movements.php:88
-#: includes/reports/client_account_movements.php:221
-#: includes/reports/client_account_movements.php:369 includes/reports/client_summary.php:264
-#: includes/taxonomy/checks.php:292 includes/taxonomy/checks.php:308
-#: includes/taxonomy/checks.php:461 includes/taxonomy/checks.php:488
-#: includes/taxonomy/checks.php:535 includes/taxonomy/stocks.php:251
-msgid "Date"
-msgstr ""
-
-#: docs/fktr_sale-help.php:33 docs/fktr_subscriptions-help.php:35
+#: docs/fktr_sale-help.php:35 docs/fktr_subscriptions-help.php:35
 msgid "This is according the date when the product was bought or sold"
 msgstr ""
 
-#: docs/fktr_sale-help.php:35 docs/fktr_subscriptions-help.php:37
-#: includes/post-types-sales.php:1105
+#: docs/fktr_sale-help.php:37 docs/fktr_subscriptions-help.php:37
+#: includes/post-types-sales.php:1231
 msgid "Invoice Currency"
 msgstr ""
 
-#: docs/fktr_sale-help.php:36 docs/fktr_subscriptions-help.php:38
+#: docs/fktr_sale-help.php:38 docs/fktr_subscriptions-help.php:38
 msgid ""
 "Currency which will be displayed on the invoice. It can be Argentinian peso, dollars or "
 "Euros"
 msgstr ""
 
-#: docs/fktr_sale-help.php:39 docs/fktr_subscriptions-help.php:41
+#: docs/fktr_sale-help.php:41 docs/fktr_subscriptions-help.php:41
 msgid "Person who manages the invoice"
 msgstr ""
 
-#: docs/fktr_sale-help.php:42 docs/fktr_subscriptions-help.php:44
-#: includes/post-types-sales.php:585 includes/reports/client_account_movements.php:104
+#: docs/fktr_sale-help.php:44 docs/fktr_subscriptions-help.php:44
+#: includes/post-types-sales.php:703 includes/reports/client_account_movements.php:104
 #: includes/reports/client_account_movements.php:248
 #: includes/reports/client_account_movements.php:396 includes/reports/client_summary.php:149
 #: includes/reports/client_summary.php:293
 msgid "Invoice"
 msgstr ""
 
-#: docs/fktr_sale-help.php:45 docs/fktr_subscriptions-help.php:47
+#: docs/fktr_sale-help.php:47 docs/fktr_subscriptions-help.php:47
 #: docs/fktr_subscriptions-help.php:53
 msgid ""
 "Proof that is acquired through a purchase or sale. Search for the product to sell, which "
@@ -1332,12 +1495,12 @@ msgid ""
 "the quantity to buy, the total and subtotal fields will automatically be filled in."
 msgstr ""
 
-#: docs/fktr_sale-help.php:48 docs/fktr_subscriptions-help.php:68
-#: includes/post-types-sales.php:582
+#: docs/fktr_sale-help.php:50 docs/fktr_subscriptions-help.php:68
+#: includes/post-types-sales.php:700
 msgid "Discount"
 msgstr ""
 
-#: docs/fktr_sale-help.php:51 docs/fktr_subscriptions-help.php:71
+#: docs/fktr_sale-help.php:53 docs/fktr_subscriptions-help.php:71
 msgid "Amount of money to be discounted depending on the purchase."
 msgstr ""
 
@@ -1413,7 +1576,7 @@ msgstr ""
 msgid "Fakturo Add-ons"
 msgstr ""
 
-#: includes/addons_page.php:56 includes/settings/settings.php:1035
+#: includes/addons_page.php:56 includes/settings/settings.php:1054
 msgid "Extensions"
 msgstr ""
 
@@ -1463,92 +1626,92 @@ msgstr ""
 msgid "Go to purchase on the etruel's store"
 msgstr ""
 
-#: includes/admin-menu.php:79 includes/admin-menu.php:80 includes/welcome.php:98
+#: includes/admin-menu.php:87 includes/admin-menu.php:88 includes/welcome.php:98
 msgid "Fakturo"
 msgstr ""
 
-#: includes/admin-menu.php:87
+#: includes/admin-menu.php:95
 msgid "Fakturo Dashboard"
 msgstr ""
 
-#: includes/admin-menu.php:88 includes/settings/dashboard.php:46
+#: includes/admin-menu.php:96 includes/settings/dashboard.php:46
 msgid "Dashboard"
 msgstr ""
 
-#: includes/admin-menu.php:96 includes/admin-menu.php:97
+#: includes/admin-menu.php:103 includes/admin-menu.php:104
 #: includes/post-types-providers.php:35 includes/post-types-providers.php:46
 msgid "Providers"
 msgstr ""
 
-#: includes/admin-menu.php:103 includes/admin-menu.php:117 includes/admin-menu.php:181
+#: includes/admin-menu.php:110 includes/admin-menu.php:124 includes/admin-menu.php:192
 #: includes/admin-menu.php:232 includes/post-types-clients.php:36
 #: includes/post-types-email-templates.php:307 includes/post-types-print-templates.php:367
 #: includes/post-types-products.php:45 includes/post-types-providers.php:37
-#: includes/post-types-receipts.php:235 includes/post-types-sales.php:335
+#: includes/post-types-receipts.php:242 includes/post-types-sales.php:466
 msgid "Add New"
 msgstr ""
 
-#: includes/admin-menu.php:104
+#: includes/admin-menu.php:111
 msgid "Add Provider"
 msgstr ""
 
-#: includes/admin-menu.php:110 includes/admin-menu.php:111
+#: includes/admin-menu.php:117 includes/admin-menu.php:118
 #: includes/post-types-clients.php:34 includes/post-types-clients.php:45
 #: includes/reports.php:255
 msgid "Clients"
 msgstr ""
 
-#: includes/admin-menu.php:118
+#: includes/admin-menu.php:125
 msgid "Add Client"
 msgstr ""
 
-#: includes/admin-menu.php:124 includes/admin-menu.php:125
+#: includes/admin-menu.php:131 includes/admin-menu.php:132 includes/functions.php:311
 msgid "Reports"
 msgstr ""
 
-#: includes/admin-menu.php:133 includes/admin-menu.php:134 includes/admin-menu.php:141
-#: includes/admin-menu.php:142 includes/admin-menu.php:151 includes/admin-menu.php:152
-#: includes/admin-menu.php:163 includes/admin-menu.php:164 includes/functions.php:260
+#: includes/admin-menu.php:140 includes/admin-menu.php:141 includes/admin-menu.php:148
+#: includes/admin-menu.php:149 includes/admin-menu.php:156 includes/admin-menu.php:157
+#: includes/admin-menu.php:164 includes/admin-menu.php:165 includes/functions.php:260
 msgid "Settings"
 msgstr ""
 
-#: includes/admin-menu.php:182
+#: includes/admin-menu.php:175 includes/admin-menu.php:176 includes/dashboard-widget.php:161
+#: includes/dashboard-widget.php:168 includes/dashboard-widget.php:177
+#: includes/dashboard-widget.php:184 includes/post-types-sales.php:464
+#: includes/post-types-sales.php:475
+msgid "Sales"
+msgstr ""
+
+#: includes/admin-menu.php:184
+msgid "Sales Invoices"
+msgstr ""
+
+#: includes/admin-menu.php:193
+msgid "Add Invoice"
+msgstr ""
+
+#: includes/admin-menu.php:199 includes/admin-menu.php:200
+#: includes/post-types-receipts.php:240 includes/post-types-receipts.php:251
+msgid "Receipts"
+msgstr ""
+
+#: includes/admin-menu.php:206 includes/admin-menu.php:207
+#: includes/post-types-receipts.php:243
+msgid "Add New Receipt"
+msgstr ""
+
+#: includes/admin-menu.php:233
 msgid "Add Product"
 msgstr ""
 
-#: includes/admin-menu.php:189 includes/admin-menu.php:190
+#: includes/admin-menu.php:240 includes/admin-menu.php:241
 #: includes/post-types-products.php:99
 msgid "Category"
 msgstr ""
 
-#: includes/admin-menu.php:206 includes/admin-menu.php:207
+#: includes/admin-menu.php:257 includes/admin-menu.php:258
 #: includes/post-types-products.php:251 includes/taxonomy/stocks.php:51
 msgid "Stock"
-msgstr ""
-
-#: includes/admin-menu.php:215 includes/admin-menu.php:216 includes/dashboard-widget.php:161
-#: includes/dashboard-widget.php:168 includes/dashboard-widget.php:177
-#: includes/dashboard-widget.php:184 includes/post-types-sales.php:333
-#: includes/post-types-sales.php:344
-msgid "Sales"
-msgstr ""
-
-#: includes/admin-menu.php:223
-msgid "Sales Invoices"
-msgstr ""
-
-#: includes/admin-menu.php:233
-msgid "Add Invoice"
-msgstr ""
-
-#: includes/admin-menu.php:239 includes/admin-menu.php:240
-#: includes/post-types-receipts.php:233 includes/post-types-receipts.php:244
-msgid "Receipts"
-msgstr ""
-
-#: includes/admin-menu.php:246 includes/admin-menu.php:247
-#: includes/post-types-receipts.php:236
-msgid "Add New Receipt"
 msgstr ""
 
 #: includes/dashboard-widget.php:20 includes/dashboard-widget.php:40
@@ -1579,7 +1742,7 @@ msgid "Last Month"
 msgstr ""
 
 #: includes/dashboard-widget.php:181 includes/post-types-products.php:411
-#: includes/post-types-sales.php:1764 includes/reports/client_summary.php:279
+#: includes/post-types-sales.php:1867 includes/reports/client_summary.php:279
 #: includes/reports/client_summary.php:359
 msgid "Total"
 msgstr ""
@@ -1592,7 +1755,7 @@ msgstr ""
 msgid "Select a option"
 msgstr ""
 
-#: includes/functions.php:805
+#: includes/functions.php:812
 msgid "Could not insert term into the database."
 msgstr ""
 
@@ -2597,7 +2760,8 @@ msgstr ""
 msgid "No email template assigned to sales invoices"
 msgstr ""
 
-#: includes/libs/fktr_mail.php:101 includes/post-types-sales.php:125
+#: includes/libs/fktr_mail.php:101 includes/post-types-sales.php:182
+#: includes/post-types-sales.php:215
 msgid "No print template assigned to sales invoices"
 msgstr ""
 
@@ -2619,7 +2783,7 @@ msgstr ""
 msgid "No email template assigned to receipts"
 msgstr ""
 
-#: includes/libs/fktr_mail.php:229 includes/post-types-receipts.php:95
+#: includes/libs/fktr_mail.php:229 includes/post-types-receipts.php:98
 msgid "No print template assigned to receipts"
 msgstr ""
 
@@ -2768,15 +2932,6 @@ msgstr ""
 msgid "Default Currency"
 msgstr ""
 
-#: includes/post-types-clients.php:35 includes/post-types-receipts.php:687
-#: includes/post-types-sales.php:74 includes/post-types-sales.php:989
-#: includes/post-types-sales.php:1762 includes/reports/client_account_movements.php:71
-#: includes/reports/client_account_movements.php:203
-#: includes/reports/client_account_movements.php:352 includes/reports/client_summary.php:254
-#: includes/taxonomy/checks.php:269 includes/taxonomy/checks.php:425
-msgid "Client"
-msgstr ""
-
 #: includes/post-types-clients.php:37
 msgid "Add New Client"
 msgstr ""
@@ -2863,8 +3018,8 @@ msgid "Reset"
 msgstr ""
 
 #: includes/post-types-clients.php:147 includes/post-types-products.php:269
-#: includes/post-types-providers.php:144 includes/post-types-receipts.php:453
-#: includes/post-types-sales.php:564
+#: includes/post-types-providers.php:144 includes/post-types-receipts.php:460
+#: includes/post-types-sales.php:686
 msgid "Cancel"
 msgstr ""
 
@@ -2872,37 +3027,37 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: includes/post-types-clients.php:186 includes/post-types-receipts.php:543
-#: includes/post-types-sales.php:954 includes/settings/settings.php:615
+#: includes/post-types-clients.php:186 includes/post-types-receipts.php:550
+#: includes/post-types-sales.php:1075 includes/settings/settings.php:634
 #: includes/wizard_install.php:1767
 msgid "Choose a Payment Type"
 msgstr ""
 
 #: includes/post-types-clients.php:208 includes/post-types-providers.php:250
-#: includes/post-types-providers.php:271 includes/post-types-receipts.php:388
+#: includes/post-types-providers.php:271 includes/post-types-receipts.php:395
 #: includes/taxonomy/checks.php:187 includes/taxonomy/checks.php:351
 msgid "Choose a Bank Entity"
 msgstr ""
 
-#: includes/post-types-clients.php:230 includes/post-types-sales.php:926
-#: includes/settings/settings.php:235 includes/wizard_install.php:630
+#: includes/post-types-clients.php:230 includes/post-types-sales.php:1045
+#: includes/settings/settings.php:253 includes/wizard_install.php:630
 msgid "Choose a Tax Condition"
 msgstr ""
 
-#: includes/post-types-clients.php:250 includes/settings/settings.php:657
+#: includes/post-types-clients.php:250 includes/settings/settings.php:676
 msgid "Choose a Price Scale"
 msgstr ""
 
 #: includes/post-types-clients.php:270 includes/post-types-products.php:295
-#: includes/post-types-receipts.php:408 includes/post-types-receipts.php:580
-#: includes/post-types-sales.php:857 includes/settings/settings.php:594
+#: includes/post-types-receipts.php:415 includes/post-types-receipts.php:587
+#: includes/post-types-sales.php:976 includes/settings/settings.php:613
 #: includes/taxonomy/checks.php:207 includes/taxonomy/checks.php:371
 #: includes/wizard_install.php:919
 msgid "Choose a Currency"
 msgstr ""
 
 #: includes/post-types-clients.php:294 includes/post-types-providers.php:279
-#: includes/post-types-sales.php:1039 includes/settings/settings.php:335
+#: includes/post-types-sales.php:1165 includes/settings/settings.php:353
 #: includes/wizard_install.php:663
 msgid "Taxpayer ID"
 msgstr ""
@@ -2911,8 +3066,8 @@ msgstr ""
 msgid "Cuit number's validation only. Check www.afip.gov.ar"
 msgstr ""
 
-#: includes/post-types-clients.php:302 includes/post-types-receipts.php:699
-#: includes/post-types-sales.php:1052 includes/taxonomy/payment-types.php:44
+#: includes/post-types-clients.php:302 includes/post-types-receipts.php:706
+#: includes/post-types-sales.php:1178 includes/taxonomy/payment-types.php:44
 msgid "Payment Type"
 msgstr ""
 
@@ -2938,22 +3093,22 @@ msgid "Credit Limit Interval"
 msgstr ""
 
 #: includes/post-types-clients.php:348 includes/post-types-providers.php:196
-#: includes/post-types-providers.php:217 includes/settings/settings.php:255
+#: includes/post-types-providers.php:217 includes/settings/settings.php:273
 #: includes/wizard_install.php:588
 msgid "Choose a country"
 msgstr ""
 
 #: includes/post-types-clients.php:369 includes/post-types-clients.php:389
 #: includes/post-types-clients.php:543 includes/post-types-providers.php:222
-#: includes/post-types-providers.php:413 includes/settings/settings.php:276
-#: includes/settings/settings.php:296 includes/settings/settings.php:1108
+#: includes/post-types-providers.php:413 includes/settings/settings.php:294
+#: includes/settings/settings.php:314 includes/settings/settings.php:1127
 #: includes/wizard_install.php:609
 msgid "Choose a state"
 msgstr ""
 
 #: includes/post-types-clients.php:410 includes/post-types-clients.php:563
 #: includes/post-types-providers.php:244 includes/post-types-providers.php:434
-#: includes/settings/settings.php:318 includes/settings/settings.php:1129
+#: includes/settings/settings.php:336 includes/settings/settings.php:1148
 msgid "Choose a country before"
 msgstr ""
 
@@ -2962,13 +3117,13 @@ msgid "States"
 msgstr ""
 
 #: includes/post-types-clients.php:431 includes/post-types-providers.php:301
-#: includes/post-types-sales.php:1016 includes/settings/settings.php:406
+#: includes/post-types-sales.php:1142 includes/settings/settings.php:425
 #: includes/wizard_install.php:732
 msgid "City"
 msgstr ""
 
 #: includes/post-types-clients.php:435 includes/post-types-providers.php:313
-#: includes/settings/settings.php:412 includes/wizard_install.php:738
+#: includes/settings/settings.php:431 includes/wizard_install.php:738
 msgid "Postcode"
 msgstr ""
 
@@ -3021,6 +3176,7 @@ msgstr ""
 #: includes/post-types-email-templates.php:89 includes/post-types-email-templates.php:393
 #: includes/post-types-email-templates.php:482 includes/post-types-print-templates.php:86
 #: includes/post-types-print-templates.php:477 includes/post-types-print-templates.php:663
+#: includes/post-types-sales.php:356
 msgid "Preview"
 msgstr ""
 
@@ -3102,7 +3258,7 @@ msgid "Email template scheduled for: <strong>%1$s</strong>."
 msgstr ""
 
 #: includes/post-types-email-templates.php:375 includes/post-types-print-templates.php:439
-#: includes/post-types-receipts.php:314 includes/post-types-sales.php:406
+#: includes/post-types-receipts.php:321 includes/post-types-sales.php:534
 msgid "M j, Y @ G:i"
 msgstr ""
 
@@ -3202,7 +3358,7 @@ msgid "Could not find any object related to this print template"
 msgstr ""
 
 #: includes/post-types-print-templates.php:365 includes/post-types-print-templates.php:376
-#: includes/settings/settings.php:1006
+#: includes/settings/settings.php:1025
 msgid "Print Templates"
 msgstr ""
 
@@ -3428,7 +3584,7 @@ msgstr ""
 msgid "Complete Product Data"
 msgstr ""
 
-#: includes/post-types-products.php:318 includes/post-types-sales.php:554
+#: includes/post-types-products.php:318 includes/post-types-sales.php:676
 #: includes/taxonomy/stocks.php:268
 msgid "Cost"
 msgstr ""
@@ -3450,7 +3606,7 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
-#: includes/post-types-products.php:400 includes/post-types-sales.php:734
+#: includes/post-types-products.php:400 includes/post-types-sales.php:853
 #: includes/taxonomy/stocks.php:273 includes/taxonomy/stocks.php:302
 msgid "Quantity"
 msgstr ""
@@ -3472,7 +3628,7 @@ msgstr ""
 msgid "Choose a Product Type"
 msgstr ""
 
-#: includes/post-types-products.php:496 includes/settings/settings.php:530
+#: includes/post-types-products.php:496 includes/settings/settings.php:549
 msgid "Choose a Tax"
 msgstr ""
 
@@ -3484,14 +3640,14 @@ msgstr ""
 msgid "Choose a Origin"
 msgstr ""
 
-#: includes/post-types-products.php:576 includes/post-types-sales.php:251
-#: includes/settings/settings.php:678 includes/settings/settings.php:693
+#: includes/post-types-products.php:576 includes/post-types-sales.php:381
+#: includes/settings/settings.php:697 includes/settings/settings.php:712
 #: includes/wizard_install.php:1489 includes/wizard_install.php:1503
 msgid "Internal code"
 msgstr ""
 
-#: includes/post-types-products.php:580 includes/post-types-sales.php:254
-#: includes/settings/settings.php:679 includes/settings/settings.php:694
+#: includes/post-types-products.php:580 includes/post-types-sales.php:384
+#: includes/settings/settings.php:698 includes/settings/settings.php:713
 #: includes/wizard_install.php:1490 includes/wizard_install.php:1504
 msgid "Manufacturers code"
 msgstr ""
@@ -3552,7 +3708,7 @@ msgstr ""
 msgid "Provider Contacts"
 msgstr ""
 
-#: includes/post-types-providers.php:167 includes/post-types-sales.php:888
+#: includes/post-types-providers.php:167 includes/post-types-sales.php:1007
 msgid "Choose a Salesman"
 msgstr ""
 
@@ -3564,10 +3720,6 @@ msgstr ""
 msgid "Update Provider to save changes."
 msgstr ""
 
-#: includes/post-types-receipts.php:61 includes/post-types-sales.php:73
-msgid "Title"
-msgstr ""
-
 #: includes/post-types-receipts.php:62
 msgid "Invoices affected"
 msgstr ""
@@ -3576,463 +3728,493 @@ msgstr ""
 msgid "No invoices affected."
 msgstr ""
 
-#: includes/post-types-receipts.php:122 includes/post-types-sales.php:186
+#: includes/post-types-receipts.php:125
 msgid "Send pdf to clients"
 msgstr ""
 
-#: includes/post-types-receipts.php:139 includes/post-types-receipts.php:481
+#: includes/post-types-receipts.php:143 includes/post-types-receipts.php:488
 msgid "Do you want cancel this receipt?"
 msgstr ""
 
-#: includes/post-types-receipts.php:140
+#: includes/post-types-receipts.php:144
 msgid "Print Receipt"
 msgstr ""
 
-#: includes/post-types-receipts.php:149 includes/post-types-sales.php:214
+#: includes/post-types-receipts.php:153
 msgid "Send PDF to Client"
 msgstr ""
 
-#: includes/post-types-receipts.php:194 includes/post-types-sales.php:149
+#: includes/post-types-receipts.php:201 includes/post-types-sales.php:252
 msgid "Save Draft"
 msgstr ""
 
-#: includes/post-types-receipts.php:195 includes/post-types-sales.php:150
+#: includes/post-types-receipts.php:202 includes/post-types-sales.php:253
 msgid "Save as Pendient"
 msgstr ""
 
-#: includes/post-types-receipts.php:198 includes/post-types-sales.php:153
+#: includes/post-types-receipts.php:205 includes/post-types-sales.php:256
 msgid "Publish"
 msgstr ""
 
-#: includes/post-types-receipts.php:199 includes/post-types-receipts.php:202
+#: includes/post-types-receipts.php:206 includes/post-types-receipts.php:209
 msgid "Save"
 msgstr ""
 
-#: includes/post-types-receipts.php:201
+#: includes/post-types-receipts.php:208
 msgid "Update"
 msgstr ""
 
-#: includes/post-types-receipts.php:223 includes/post-types-sales.php:178
+#: includes/post-types-receipts.php:230 includes/post-types-sales.php:303
 msgid "Delete this item permanently ?"
 msgstr ""
 
-#: includes/post-types-receipts.php:234 includes/reports/client_account_movements.php:107
+#: includes/post-types-receipts.php:241 includes/reports/client_account_movements.php:107
 #: includes/reports/client_account_movements.php:251
 #: includes/reports/client_account_movements.php:399 includes/reports/client_summary.php:199
 #: includes/reports/client_summary.php:297
 msgid "Receipt"
 msgstr ""
 
-#: includes/post-types-receipts.php:237
+#: includes/post-types-receipts.php:244
 msgid "Edit Receipt"
 msgstr ""
 
-#: includes/post-types-receipts.php:238
+#: includes/post-types-receipts.php:245
 msgid "New Receipt"
 msgstr ""
 
-#: includes/post-types-receipts.php:239
+#: includes/post-types-receipts.php:246
 msgid "View Receipt"
 msgstr ""
 
-#: includes/post-types-receipts.php:240
+#: includes/post-types-receipts.php:247
 msgid "Search Receipts"
 msgstr ""
 
-#: includes/post-types-receipts.php:241
+#: includes/post-types-receipts.php:248
 msgid "No Receipts found"
 msgstr ""
 
-#: includes/post-types-receipts.php:242
+#: includes/post-types-receipts.php:249
 msgid "No Receipts found in Trash"
 msgstr ""
 
-#: includes/post-types-receipts.php:243
+#: includes/post-types-receipts.php:250
 msgid "Parent Receipt:"
 msgstr ""
 
-#: includes/post-types-receipts.php:287
+#: includes/post-types-receipts.php:294
 msgid "Cancelled"
 msgstr ""
 
-#: includes/post-types-receipts.php:306 includes/post-types-receipts.php:309
+#: includes/post-types-receipts.php:313 includes/post-types-receipts.php:316
 msgid "Receipt updated."
 msgstr ""
 
-#: includes/post-types-receipts.php:311
+#: includes/post-types-receipts.php:318
 msgid "Receipt published."
 msgstr ""
 
-#: includes/post-types-receipts.php:312
+#: includes/post-types-receipts.php:319
 msgid "Receipt saved."
 msgstr ""
 
-#: includes/post-types-receipts.php:313
+#: includes/post-types-receipts.php:320
 msgid "Receipt submitted."
 msgstr ""
 
-#: includes/post-types-receipts.php:314
+#: includes/post-types-receipts.php:321
 #, php-format
 msgid "Receipt scheduled for: <strong>%1$s</strong>."
 msgstr ""
 
-#: includes/post-types-receipts.php:315
+#: includes/post-types-receipts.php:322
 msgid "Pending updated."
 msgstr ""
 
-#: includes/post-types-receipts.php:321 includes/post-types-sales.php:413
+#: includes/post-types-receipts.php:328 includes/post-types-sales.php:541
 msgid "Your invoice number"
 msgstr ""
 
-#: includes/post-types-receipts.php:452 includes/post-types-sales.php:558
+#: includes/post-types-receipts.php:459 includes/post-types-sales.php:680
 msgid "Loading"
 msgstr ""
 
-#: includes/post-types-receipts.php:474
+#: includes/post-types-receipts.php:481
 msgid "Cancel receipt"
 msgstr ""
 
-#: includes/post-types-receipts.php:476
+#: includes/post-types-receipts.php:483
 msgid "Receipt data"
 msgstr ""
 
-#: includes/post-types-receipts.php:532 includes/post-types-sales.php:905
+#: includes/post-types-receipts.php:539 includes/post-types-sales.php:1024
 #: includes/taxonomy/checks.php:169 includes/taxonomy/checks.php:334
 msgid "Choose a Client"
 msgstr ""
 
-#: includes/post-types-receipts.php:539
+#: includes/post-types-receipts.php:546
 msgid "No payment type"
 msgstr ""
 
-#: includes/post-types-receipts.php:568 includes/post-types-receipts.php:623
-#: includes/post-types-receipts.php:658
+#: includes/post-types-receipts.php:575 includes/post-types-receipts.php:630
+#: includes/post-types-receipts.php:665
 msgid "No Symbol"
 msgstr ""
 
-#: includes/post-types-receipts.php:576
+#: includes/post-types-receipts.php:583
 msgid "No currency, used the default currency."
 msgstr ""
 
-#: includes/post-types-receipts.php:608
+#: includes/post-types-receipts.php:615
 msgid "No checks in receipt, You can add a check."
 msgstr ""
 
-#: includes/post-types-receipts.php:618
+#: includes/post-types-receipts.php:625
 msgid "No bank"
 msgstr ""
 
-#: includes/post-types-receipts.php:640
+#: includes/post-types-receipts.php:647
 msgid "No checks in receipt."
 msgstr ""
 
-#: includes/post-types-receipts.php:647
+#: includes/post-types-receipts.php:654
 msgid "No invoice available, please select a cliente."
 msgstr ""
 
-#: includes/post-types-receipts.php:675
+#: includes/post-types-receipts.php:682
 msgid "No invoice available."
 msgstr ""
 
-#: includes/post-types-receipts.php:691
+#: includes/post-types-receipts.php:698
 msgid "Receipt Number"
 msgstr ""
 
-#: includes/post-types-receipts.php:695 includes/post-types-receipts.php:766
+#: includes/post-types-receipts.php:702 includes/post-types-receipts.php:773
 msgid "Available to include"
 msgstr ""
 
-#: includes/post-types-receipts.php:719
+#: includes/post-types-receipts.php:726
 msgid "Nro"
 msgstr ""
 
-#: includes/post-types-receipts.php:721 includes/taxonomy/checks.php:286
+#: includes/post-types-receipts.php:728 includes/taxonomy/checks.php:286
 #: includes/taxonomy/checks.php:452 includes/taxonomy/checks.php:536
 msgid "Value"
 msgstr ""
 
-#: includes/post-types-receipts.php:722
+#: includes/post-types-receipts.php:729
 msgid "Actions"
 msgstr ""
 
-#: includes/post-types-receipts.php:729
+#: includes/post-types-receipts.php:736
 msgid "Add ckeck"
 msgstr ""
 
-#: includes/post-types-receipts.php:740
+#: includes/post-types-receipts.php:747
 msgid "Value Original"
 msgstr ""
 
-#: includes/post-types-receipts.php:741
+#: includes/post-types-receipts.php:748
 msgid "In current currecy"
 msgstr ""
 
-#: includes/post-types-receipts.php:742
+#: includes/post-types-receipts.php:749
 msgid "To Pay"
 msgstr ""
 
-#: includes/post-types-receipts.php:754
+#: includes/post-types-receipts.php:761
 msgid "Current account balance"
 msgstr ""
 
-#: includes/post-types-receipts.php:758
+#: includes/post-types-receipts.php:765
 msgid "Total to impute"
 msgstr ""
 
-#: includes/post-types-receipts.php:762
+#: includes/post-types-receipts.php:769
 msgid "Total to pay"
 msgstr ""
 
-#: includes/post-types-receipts.php:770
+#: includes/post-types-receipts.php:777
 msgid "Positive balance"
 msgstr ""
 
-#: includes/post-types-receipts.php:775
+#: includes/post-types-receipts.php:782
 msgid "Future account balance"
 msgstr ""
 
-#: includes/post-types-receipts.php:828
+#: includes/post-types-receipts.php:835
 msgid "This receipt number is already in use, Please try again."
 msgstr ""
 
-#: includes/post-types-sales.php:75
-msgid "Payment Status"
-msgstr ""
-
-#: includes/post-types-sales.php:91
+#: includes/post-types-sales.php:137
 msgid "Unpaid"
 msgstr ""
 
-#: includes/post-types-sales.php:93
+#: includes/post-types-sales.php:139
 msgid "Receipts Numbers: Amount"
 msgstr ""
 
-#: includes/post-types-sales.php:107
+#: includes/post-types-sales.php:153
 msgid "No Client"
 msgstr ""
 
-#: includes/post-types-sales.php:154
+#: includes/post-types-sales.php:257
 msgid "Finish Invoice"
 msgstr ""
 
-#: includes/post-types-sales.php:169
+#: includes/post-types-sales.php:261 includes/post-types-sales.php:277
+msgid "Drafts"
+msgstr ""
+
+#: includes/post-types-sales.php:261 includes/post-types-sales.php:277
+msgid "Pendings"
+msgstr ""
+
+#: includes/post-types-sales.php:262 includes/post-types-sales.php:278
+#: includes/post-types-sales.php:284
+msgid "Draft"
+msgstr ""
+
+#: includes/post-types-sales.php:262 includes/post-types-sales.php:278
+#: includes/post-types-sales.php:284
+msgid "Pending"
+msgstr ""
+
+#: includes/post-types-sales.php:294
 msgid "Cannot delete finished Invoices"
 msgstr ""
 
-#: includes/post-types-sales.php:206
-msgid "Print Invoice"
+#: includes/post-types-sales.php:310
+msgid "Send PDF to Clients"
 msgstr ""
 
-#: includes/post-types-sales.php:221
+#: includes/post-types-sales.php:335
+msgid "Edit"
+msgstr ""
+
+#: includes/post-types-sales.php:335
+msgid "View"
+msgstr ""
+
+#: includes/post-types-sales.php:336
+msgid "Print"
+msgstr ""
+
+#: includes/post-types-sales.php:344
+msgid "email to Client"
+msgstr ""
+
+#: includes/post-types-sales.php:351
 msgid "Delete this item permanently"
 msgstr ""
 
-#: includes/post-types-sales.php:221
-msgid "Delete Permanently"
+#: includes/post-types-sales.php:351
+msgid "Delete"
 msgstr ""
 
-#: includes/post-types-sales.php:236 includes/settings/settings.php:705
+#: includes/post-types-sales.php:366 includes/settings/settings.php:724
 #: includes/wizard_install.php:1515
 msgid "Short Description"
 msgstr ""
 
-#: includes/post-types-sales.php:336
+#: includes/post-types-sales.php:467
 msgid "Add New Sale"
 msgstr ""
 
-#: includes/post-types-sales.php:337
+#: includes/post-types-sales.php:468
 msgid "Edit Sale"
 msgstr ""
 
-#: includes/post-types-sales.php:338
+#: includes/post-types-sales.php:469
 msgid "New Sale"
 msgstr ""
 
-#: includes/post-types-sales.php:339
+#: includes/post-types-sales.php:470
 msgid "View Sale"
 msgstr ""
 
-#: includes/post-types-sales.php:340
+#: includes/post-types-sales.php:471
 msgid "Search Sales"
 msgstr ""
 
-#: includes/post-types-sales.php:341
+#: includes/post-types-sales.php:472
 msgid "No Sales found"
 msgstr ""
 
-#: includes/post-types-sales.php:342
+#: includes/post-types-sales.php:473
 msgid "No Sales found in Trash"
 msgstr ""
 
-#: includes/post-types-sales.php:343
+#: includes/post-types-sales.php:474
 msgid "Parent Sale:"
 msgstr ""
 
-#: includes/post-types-sales.php:398 includes/post-types-sales.php:401
+#: includes/post-types-sales.php:526 includes/post-types-sales.php:529
 msgid "Sale invoice updated."
 msgstr ""
 
-#: includes/post-types-sales.php:403
+#: includes/post-types-sales.php:531
 msgid "Sale invoice published."
 msgstr ""
 
-#: includes/post-types-sales.php:404
+#: includes/post-types-sales.php:532
 msgid "Sale invoice saved."
 msgstr ""
 
-#: includes/post-types-sales.php:405
+#: includes/post-types-sales.php:533
 msgid "Sale invoice submitted."
 msgstr ""
 
-#: includes/post-types-sales.php:406
+#: includes/post-types-sales.php:534
 #, php-format
 msgid "Sale scheduled for: <strong>%1$s</strong>."
 msgstr ""
 
-#: includes/post-types-sales.php:407
+#: includes/post-types-sales.php:535
 msgid "Pending invoice updated."
 msgstr ""
 
-#: includes/post-types-sales.php:426 includes/post-types-sales.php:1631
-#: includes/post-types-sales.php:1711 includes/reports/client_summary.php:240
+#: includes/post-types-sales.php:554 includes/post-types-sales.php:1734
+#: includes/post-types-sales.php:1814 includes/reports/client_summary.php:240
 msgid "No country"
 msgstr ""
 
-#: includes/post-types-sales.php:433 includes/post-types-sales.php:1628
-#: includes/post-types-sales.php:1708 includes/reports/client_summary.php:246
+#: includes/post-types-sales.php:561 includes/post-types-sales.php:1731
+#: includes/post-types-sales.php:1811 includes/reports/client_summary.php:246
 msgid "No state"
 msgstr ""
 
-#: includes/post-types-sales.php:440 includes/post-types-sales.php:1637
-#: includes/post-types-sales.php:1717
+#: includes/post-types-sales.php:568 includes/post-types-sales.php:1740
+#: includes/post-types-sales.php:1820
 msgid "No price scale"
 msgstr ""
 
-#: includes/post-types-sales.php:555 includes/taxonomy/checks.php:152
+#: includes/post-types-sales.php:677 includes/taxonomy/checks.php:152
 #: includes/taxonomy/stocks.php:152
 msgid "Search products..."
 msgstr ""
 
-#: includes/post-types-sales.php:556
+#: includes/post-types-sales.php:678
 msgid "Total quantity"
 msgstr ""
 
-#: includes/post-types-sales.php:557
+#: includes/post-types-sales.php:679
 msgid "Remaining"
 msgstr ""
 
-#: includes/post-types-sales.php:559
+#: includes/post-types-sales.php:681
 msgid "Stock not available"
 msgstr ""
 
-#: includes/post-types-sales.php:560
+#: includes/post-types-sales.php:682
 msgid "Stock exceeded"
 msgstr ""
 
-#: includes/post-types-sales.php:561
+#: includes/post-types-sales.php:683
 msgid "Max"
 msgstr ""
 
-#: includes/post-types-sales.php:562
+#: includes/post-types-sales.php:684
 msgid "Min"
 msgstr ""
 
-#: includes/post-types-sales.php:563
+#: includes/post-types-sales.php:685
 msgid "Alert of minimal stock"
 msgstr ""
 
-#: includes/post-types-sales.php:584
+#: includes/post-types-sales.php:702
 msgid "Invoice Data"
 msgstr ""
 
-#: includes/post-types-sales.php:735
+#: includes/post-types-sales.php:854
 msgid "Unit price"
 msgstr ""
 
-#: includes/post-types-sales.php:747
+#: includes/post-types-sales.php:866
 msgid "Add product"
 msgstr ""
 
-#: includes/post-types-sales.php:794 includes/settings/settings.php:637
+#: includes/post-types-sales.php:913 includes/settings/settings.php:656
 #: includes/taxonomy/tax-conditions.php:117 includes/taxonomy/tax-conditions.php:176
 #: includes/wizard_install.php:1040
 msgid "Choose a Invoice Type"
 msgstr ""
 
-#: includes/post-types-sales.php:823 includes/settings/settings.php:571
+#: includes/post-types-sales.php:942 includes/settings/settings.php:590
 #: includes/wizard_install.php:1060
 msgid "Choose a Sale Point"
 msgstr ""
 
-#: includes/post-types-sales.php:996
+#: includes/post-types-sales.php:1122
 msgid "Client ID"
 msgstr ""
 
-#: includes/post-types-sales.php:1002
+#: includes/post-types-sales.php:1128
 msgid "Client name"
 msgstr ""
 
-#: includes/post-types-sales.php:1009
+#: includes/post-types-sales.php:1135
 msgid "Client address"
 msgstr ""
 
-#: includes/post-types-sales.php:1023 includes/settings/settings.php:381
+#: includes/post-types-sales.php:1149 includes/settings/settings.php:400
 #: includes/wizard_install.php:707
 msgid "State"
 msgstr ""
 
-#: includes/post-types-sales.php:1046 includes/settings/settings.php:424
+#: includes/post-types-sales.php:1172 includes/settings/settings.php:443
 #: includes/wizard_install.php:750
 msgid "Tax condition"
 msgstr ""
 
-#: includes/post-types-sales.php:1058
+#: includes/post-types-sales.php:1184
 msgid "Price scale"
 msgstr ""
 
-#: includes/post-types-sales.php:1066
+#: includes/post-types-sales.php:1192
 msgid "Credit limit"
 msgstr ""
 
-#: includes/post-types-sales.php:1085 includes/settings/settings.php:855
+#: includes/post-types-sales.php:1211 includes/settings/settings.php:874
 #: includes/taxonomy/sale-points.php:47 includes/wizard_install.php:1150
 msgid "Sale Point"
 msgstr ""
 
-#: includes/post-types-sales.php:1111
+#: includes/post-types-sales.php:1237
 msgid "Salesman"
 msgstr ""
 
-#: includes/post-types-sales.php:1259
+#: includes/post-types-sales.php:1363
 msgid "This invoice number is already in use, Please try again."
 msgstr ""
 
-#: includes/post-types-sales.php:1272
+#: includes/post-types-sales.php:1376
 msgid "This invoice type does not exist, try another."
 msgstr ""
 
-#: includes/post-types-sales.php:1312
+#: includes/post-types-sales.php:1416
 #, php-format
 msgid "The product (%s) does not have enough stock."
 msgstr ""
 
-#: includes/post-types-sales.php:1623 includes/post-types-sales.php:1703
+#: includes/post-types-sales.php:1726 includes/post-types-sales.php:1806
 msgid "No name"
 msgstr ""
 
-#: includes/post-types-sales.php:1624 includes/post-types-sales.php:1704
+#: includes/post-types-sales.php:1727 includes/post-types-sales.php:1807
 msgid "No address"
 msgstr ""
 
-#: includes/post-types-sales.php:1625 includes/post-types-sales.php:1705
+#: includes/post-types-sales.php:1728 includes/post-types-sales.php:1808
 msgid "No city"
 msgstr ""
 
-#: includes/post-types-sales.php:1632 includes/post-types-sales.php:1712
+#: includes/post-types-sales.php:1735 includes/post-types-sales.php:1815
 msgid "No Taxpayer"
 msgstr ""
 
-#: includes/post-types-sales.php:1763
+#: includes/post-types-sales.php:1866
 msgid "SubTotal"
 msgstr ""
 
@@ -4184,246 +4366,254 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
-#: includes/settings/settings.php:211
+#: includes/settings/settings.php:208
+msgid "Show dashboard menu"
+msgstr ""
+
+#: includes/settings/settings.php:216
+msgid "Show dashboard menu in all WordPress admin screens"
+msgstr ""
+
+#: includes/settings/settings.php:229
 #, php-format
 msgid "Dialer %s"
 msgstr ""
 
-#: includes/settings/settings.php:341 includes/wizard_install.php:669
+#: includes/settings/settings.php:359 includes/wizard_install.php:669
 msgid "Gross income tax ID"
 msgstr ""
 
-#: includes/settings/settings.php:347 includes/wizard_install.php:675
+#: includes/settings/settings.php:365 includes/wizard_install.php:675
 msgid "Start of activities"
 msgstr ""
 
-#: includes/settings/settings.php:359 includes/users/users-list.php:233
+#: includes/settings/settings.php:378 includes/users/users-list.php:233
 #: includes/wizard_install.php:687
 msgid "Telephone"
 msgstr ""
 
-#: includes/settings/settings.php:394 includes/wizard_install.php:720
+#: includes/settings/settings.php:413 includes/wizard_install.php:720
 msgid "Add New State"
 msgstr ""
 
-#: includes/settings/settings.php:441
+#: includes/settings/settings.php:460
 msgid "Upload Image"
 msgstr ""
 
-#: includes/settings/settings.php:442 includes/wizard_install.php:768
+#: includes/settings/settings.php:461 includes/wizard_install.php:768
 msgid "Enter an URL or upload an image for the company logo."
 msgstr ""
 
-#: includes/settings/settings.php:445 includes/wizard_install.php:771
+#: includes/settings/settings.php:464 includes/wizard_install.php:771
 msgid "This is your current logo"
 msgstr ""
 
-#: includes/settings/settings.php:550
+#: includes/settings/settings.php:569
 msgid "Choose a Bank Entitie"
 msgstr ""
 
-#: includes/settings/settings.php:716 includes/wizard_install.php:1112
+#: includes/settings/settings.php:735 includes/wizard_install.php:1112
 msgid "dd/mm/YYYY"
 msgstr ""
 
-#: includes/settings/settings.php:717 includes/wizard_install.php:1113
+#: includes/settings/settings.php:736 includes/wizard_install.php:1113
 msgid "mm/dd/YYYY"
 msgstr ""
 
-#: includes/settings/settings.php:727 includes/wizard_install.php:1080
+#: includes/settings/settings.php:746 includes/wizard_install.php:1080
 msgid "Sale point"
 msgstr ""
 
-#: includes/settings/settings.php:728 includes/wizard_install.php:1081
+#: includes/settings/settings.php:747 includes/wizard_install.php:1081
 msgid "Invoice number"
 msgstr ""
 
-#: includes/settings/settings.php:729 includes/wizard_install.php:1082
+#: includes/settings/settings.php:748 includes/wizard_install.php:1082
 msgid "Invoice Type name"
 msgstr ""
 
-#: includes/settings/settings.php:730 includes/wizard_install.php:1083
+#: includes/settings/settings.php:749 includes/wizard_install.php:1083
 msgid "Invoice Type Short-name"
 msgstr ""
 
-#: includes/settings/settings.php:731 includes/wizard_install.php:1084
+#: includes/settings/settings.php:750 includes/wizard_install.php:1084
 msgid "Invoice Type symbol"
 msgstr ""
 
-#: includes/settings/settings.php:757
+#: includes/settings/settings.php:776
 msgid "Choose your currency."
 msgstr ""
 
-#: includes/settings/settings.php:762 includes/wizard_install.php:961
+#: includes/settings/settings.php:781 includes/wizard_install.php:961
 msgid "Currency Position"
 msgstr ""
 
-#: includes/settings/settings.php:769
+#: includes/settings/settings.php:788
 msgid "Choose the location of the currency sign."
 msgstr ""
 
-#: includes/settings/settings.php:780
+#: includes/settings/settings.php:799
 msgid "The symbol (usually , or .) to separate thousands"
 msgstr ""
 
-#: includes/settings/settings.php:792
+#: includes/settings/settings.php:811
 msgid "The symbol (usually , or .) to separate decimal points"
 msgstr ""
 
-#: includes/settings/settings.php:800 includes/wizard_install.php:993
+#: includes/settings/settings.php:819 includes/wizard_install.php:993
 msgid "Decimal numbers"
 msgstr ""
 
-#: includes/settings/settings.php:804
+#: includes/settings/settings.php:823
 msgid "Enter the number of numbers decimals"
 msgstr ""
 
-#: includes/settings/settings.php:816 includes/wizard_install.php:1144
+#: includes/settings/settings.php:835 includes/wizard_install.php:1144
 msgid "Choose the default Invoice Type used in the system"
 msgstr ""
 
-#: includes/settings/settings.php:824
+#: includes/settings/settings.php:843
 msgid "Default Price Scale"
 msgstr ""
 
-#: includes/settings/settings.php:828
+#: includes/settings/settings.php:847
 msgid "Choose the default Price Scale used in the system"
 msgstr ""
 
-#: includes/settings/settings.php:835 includes/wizard_install.php:1704
+#: includes/settings/settings.php:854 includes/wizard_install.php:1704
 msgid "Use stock for products"
 msgstr ""
 
-#: includes/settings/settings.php:838 includes/wizard_install.php:1708
+#: includes/settings/settings.php:857 includes/wizard_install.php:1708
 msgid "Activate for use stock for products"
 msgstr ""
 
-#: includes/settings/settings.php:844 includes/wizard_install.php:1713
+#: includes/settings/settings.php:863 includes/wizard_install.php:1713
 msgid "Allow negative stocks"
 msgstr ""
 
-#: includes/settings/settings.php:847 includes/wizard_install.php:1717
+#: includes/settings/settings.php:866 includes/wizard_install.php:1717
 msgid "Activate for use stock less than zero."
 msgstr ""
 
-#: includes/settings/settings.php:859 includes/wizard_install.php:1161
+#: includes/settings/settings.php:878 includes/wizard_install.php:1161
 msgid "Choose your sale point."
 msgstr ""
 
-#: includes/settings/settings.php:864 includes/wizard_install.php:1228
+#: includes/settings/settings.php:883 includes/wizard_install.php:1228
 msgid "Number of digits of the receipt number"
 msgstr ""
 
-#: includes/settings/settings.php:868 includes/wizard_install.php:1232
+#: includes/settings/settings.php:887 includes/wizard_install.php:1232
 msgid "Choose the default number of digits of the receipt number."
 msgstr ""
 
-#: includes/settings/settings.php:875 includes/wizard_install.php:1167
+#: includes/settings/settings.php:894 includes/wizard_install.php:1167
 msgid "Number of digits of the invoice number"
 msgstr ""
 
-#: includes/settings/settings.php:879 includes/wizard_install.php:1171
+#: includes/settings/settings.php:898 includes/wizard_install.php:1171
 msgid "Choose the default number of digits of the invoice number."
 msgstr ""
 
-#: includes/settings/settings.php:886 includes/wizard_install.php:1178
+#: includes/settings/settings.php:905 includes/wizard_install.php:1178
 msgid "Format invoice numbers in lists and reports"
 msgstr ""
 
-#: includes/settings/settings.php:896 includes/wizard_install.php:1188
+#: includes/settings/settings.php:915 includes/wizard_install.php:1188
 msgid "Individual numeration by Invoice Type"
 msgstr ""
 
-#: includes/settings/settings.php:899 includes/wizard_install.php:1193
+#: includes/settings/settings.php:918 includes/wizard_install.php:1193
 msgid "Activate for use individual numeration by Invoice Type"
 msgstr ""
 
-#: includes/settings/settings.php:905 includes/wizard_install.php:1200
+#: includes/settings/settings.php:924 includes/wizard_install.php:1200
 msgid "Individual numeration by Sale Point"
 msgstr ""
 
-#: includes/settings/settings.php:908
+#: includes/settings/settings.php:927
 msgid "Activate for use individual numeration by Sale Point "
 msgstr ""
 
-#: includes/settings/settings.php:915 includes/wizard_install.php:1691
+#: includes/settings/settings.php:934 includes/wizard_install.php:1691
 msgid "Search code on invoices, budgets, etc.."
 msgstr ""
 
-#: includes/settings/settings.php:925 includes/wizard_install.php:1673
+#: includes/settings/settings.php:944 includes/wizard_install.php:1673
 msgid "Default code for invoice"
 msgstr ""
 
-#: includes/settings/settings.php:934 includes/wizard_install.php:1682
+#: includes/settings/settings.php:953 includes/wizard_install.php:1682
 msgid "Default description for invoice"
 msgstr ""
 
-#: includes/settings/settings.php:944 includes/wizard_install.php:1254
+#: includes/settings/settings.php:963 includes/wizard_install.php:1254
 msgid "Default date format"
 msgstr ""
 
-#: includes/settings/settings.php:954 includes/wizard_install.php:1796
+#: includes/settings/settings.php:973 includes/wizard_install.php:1796
 msgid "Default Payment Type"
 msgstr ""
 
-#: includes/settings/settings.php:958
+#: includes/settings/settings.php:977
 msgid "Choose your default Payment Type."
 msgstr ""
 
-#: includes/settings/settings.php:964
+#: includes/settings/settings.php:983
 msgid "Default Bank Entity"
 msgstr ""
 
-#: includes/settings/settings.php:968
+#: includes/settings/settings.php:987
 msgid "Choose your default Bank Entity."
 msgstr ""
 
-#: includes/settings/settings.php:973
+#: includes/settings/settings.php:992
 msgid "Default Tax"
 msgstr ""
 
-#: includes/settings/settings.php:977
+#: includes/settings/settings.php:996
 msgid "Choose your default Tax."
 msgstr ""
 
-#: includes/settings/settings.php:999 includes/taxonomy/payment-types.php:43
+#: includes/settings/settings.php:1018 includes/taxonomy/payment-types.php:43
 #: includes/taxonomy/payment-types.php:58
 msgid "Payment Types"
 msgstr ""
 
-#: includes/settings/settings.php:1000
+#: includes/settings/settings.php:1019
 msgid "Run Configurations Wizard"
 msgstr ""
 
-#: includes/settings/settings.php:1001
+#: includes/settings/settings.php:1020
 msgid "​​Company Settings"
 msgstr ""
 
-#: includes/settings/settings.php:1005
+#: includes/settings/settings.php:1024
 msgid "General"
 msgstr ""
 
-#: includes/settings/settings.php:1007
+#: includes/settings/settings.php:1026
 msgid "E-mail Templates"
 msgstr ""
 
-#: includes/settings/settings.php:1008
+#: includes/settings/settings.php:1027
 msgid "Dashboard Setup"
 msgstr ""
 
-#: includes/settings/settings.php:1016
+#: includes/settings/settings.php:1035
 msgid "Tables"
 msgstr ""
 
-#: includes/settings/settings.php:1025
+#: includes/settings/settings.php:1044
 msgid "​​Products"
 msgstr ""
 
-#: includes/settings/settings.php:1039
+#: includes/settings/settings.php:1058
 msgid "Licenses"
 msgstr ""
 
-#: includes/settings/settings.php:1040
+#: includes/settings/settings.php:1059
 msgid "​​Licenses"
 msgstr ""
 
@@ -4765,12 +4955,12 @@ msgid "Enter a symbol"
 msgstr ""
 
 #: includes/taxonomy/invoice-types.php:135 includes/taxonomy/invoice-types.php:180
-#: includes/taxonomy/invoice-types.php:203
+#: includes/taxonomy/invoice-types.php:204
 msgid "Discriminates taxes"
 msgstr ""
 
 #: includes/taxonomy/invoice-types.php:141 includes/taxonomy/invoice-types.php:190
-#: includes/taxonomy/invoice-types.php:204
+#: includes/taxonomy/invoice-types.php:205
 msgid "Sum"
 msgstr ""
 
