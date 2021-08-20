@@ -166,3 +166,26 @@ label {
 .fak-viewless{
 	display: none;
 }
+.mw-50{
+	width: 100%;
+	box-sizing: border-box;
+}
+@media (min-width: 783px){
+	.mw-50{
+		max-width: 50%;
+	}
+}
+@media (min-width: 851px) and (max-width: 1080px){
+	.select2-container,
+	.postbox table.form-table input[type="text"]{
+		max-width: 120px;
+	}
+}
+@media (max-width: 782px){
+	.mw-50{
+		display: block;
+	}
+	.w-sm-100{
+		width: 100%;
+	}
+}

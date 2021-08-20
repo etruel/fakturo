@@ -166,7 +166,7 @@ class fktr_tax_nvoice_types {
 				<label for="term_meta[symbol]">'.__( 'Symbol', 'fakturo' ).'</label>
 			</th>
 			<td>
-				<input style="width: 60px;text-align: center; padding-right: 0px; " maxlength="1" type="text" name="term_meta_symbol" id="term_meta_symbol" value="'.$term_meta->symbol.'">
+				<input style="width: 60px;text-align: center; padding-right: 0px; " maxlength="1" type="text" name="term_meta[symbol]" id="term_meta_symbol" value="'.$term_meta->symbol.'">
 				<p class="description">'.__( 'Enter a symbol', 'fakturo' ).'</p>
 			</td>
 		</tr>
@@ -240,7 +240,7 @@ class fktr_tax_nvoice_types {
 		if (isset( $_POST['term_meta'])) {
 			$_POST['term_meta']['discriminates_taxes'] = $_POST['term_meta_discriminates_taxes'];
 			$_POST['term_meta']['sum'] = $_POST['term_meta_sum'];
-			$_POST['term_meta']['symbol'] = $_POST['term_meta_symbol'];
+			//$_POST['term_meta']['symbol'] = $_POST['term_meta_symbol'];
 			set_fakturo_term($term_id, $tt_id, $_POST['term_meta']);
 		}
 	}

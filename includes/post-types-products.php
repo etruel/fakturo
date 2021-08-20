@@ -583,7 +583,7 @@ class fktrPostTypeProducts {
 			<tr class="user-address-wrap">
 				<th><label for="description">'.__('Description', 'fakturo' ).'</label></th>
 				<td>
-					<textarea style="width:95%;" rows="4" name="description" id="description">'.$product_data['description'].'</textarea>
+					<textarea class="mw-95" rows="4" name="description" id="description">'.$product_data['description'].'</textarea>
 				</td>
 			</tr>';
 		
@@ -611,7 +611,7 @@ class fktrPostTypeProducts {
 			</tr>
 			<tr class="user-address-wrap">
 				<th><label for="note">'.__('Notes', 'fakturo' ).'</label></th>
-				<td><textarea style="width:95%;" rows="4" name="note" id="note">'.$product_data['note'].'</textarea></td>
+				<td><textarea class="mw-95" rows="4" name="note" id="note">'.$product_data['note'].'</textarea></td>
 			</tr>
 			<tr class="user-address-wrap">
 				<th><label for="origin">'.__('Origin', 'fakturo' ).'</label></th>

@@ -35,19 +35,20 @@
 	overflow-x: auto;
         margin: 0;
 }
-._fakturo_top_menu_items ul a{
-	display: block;
-	margin-left: 10px;
-	transition: all .4s ease;
-}
 ._fakturo_top_menu_items ul li{
+	display: inline-flex;
+	margin-left: 10px;
+}
+._fakturo_top_menu_items ul li a{
 	position: relative;
 	display: inline-flex;
 	justify-content: center;
 	align-items: center;
 	background-color: #ccc;
-        padding: 0 7px;
-        width: max-content;
+    padding: 0 7px;
+    width: max-content;
+    text-decoration: none;
+	transition: all .4s ease;
 }
 ._menu_dashicon{
   	width: 16px;

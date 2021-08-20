@@ -19,7 +19,7 @@
 ._title_dash{
 	margin-left: 20px;
 }
-._menu_items_metro  a:hover {
+._menu_items_metro a:hover {
 	opacity: 0.8;
 }
 ._menu_items_metro:after{
@@ -29,12 +29,16 @@
 	clear: both;
 }
 ._menu_items_metro ul li{
+	display: inline-block;
+	margin-left: 10px;
+}
+._menu_items_metro ul li a{
+	display: block;
 	position: relative;
 	width: 150px; 
 	height: 150px;
-	display: inline-block;
 	background-color: #ccc;
-	margin-left: 10px;
+	text-decoration: none;
 }
 ._menu_dashicon{
     position: absolute; /* or absolute */
