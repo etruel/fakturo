@@ -1104,12 +1104,11 @@ class fktrPostTypeSales {
                     $date = $sale_data['date'];
                 }
 		$sale_data['invoice_number'] = (($post->post_status != 'publish')? str_pad(self::suggestInvoiceNumber($sale_data['sale_point'], $sale_data['invoice_type']), $setting_system['digits_invoice_number'], '0', STR_PAD_LEFT) : $sale_data['invoice_number'] );
-		$echoHtml = '<table>
+		$echoHtml = '<table class="w-sm-100">
 					<tbody>
 						<tr>
-							<td style="width:50%;" valign="top">
-								
-								<table style="width: 90%;">
+							<td class="mw-50" valign="top">
+								<table>
 									<tbody>
 									<tr class="user-address-wrap"'.(($selectClients == '')?'style="display:none;"':'').'>
 										<th style="text-align:left;"><label for="client">'.__('Client', 'fakturo' ).'</label></th>
@@ -1198,7 +1197,7 @@ class fktrPostTypeSales {
 									</tbody>
 								</table>
 							</td>
-							<td>
+							<td class="mw-50">
 								<table class="form-table">
 									<tbody>
 										<tr>

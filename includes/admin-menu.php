@@ -67,16 +67,17 @@ class fktrAdminMenu {
                         $menu_link = admin_url('admin.php?page=fakturo_reports');
                     }
 
-                    echo '<a href="' . $menu_link . '">
-                        <li class="' . $class_color . '">
+                    echo '
+                        <li>
+                        	<a href="' . $menu_link . '" class="' . $class_color . '">
                                 <div class="_menu_dashicon">
                                         <span class="dashicons ' . $item->icon . '"></span>
                                 </div>
                                 <div class="_descripcion_items_metro">
                                         <p>' . $item->text . '</p>
                                 </div>
-                        </li>
-                        </a>';
+                        	</a>
+                        </li>';
                 }
             }
         }

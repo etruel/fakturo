@@ -323,7 +323,7 @@ class fktr_tax_stock {
 				break;
 			case 'product': 
 				$product_name = __( 'No product', 'fakturo' );
-				if ($term->product > 0) {
+				if ( ! empty($term->product) &&  $term->product > 0) {
 					$product_data = fktrPostTypeProducts::get_product_data($term->product);
 					
 					if(isset($product_data['post_title'])) {
