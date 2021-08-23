@@ -96,7 +96,7 @@ class fktr_welcome {
 		?>
 		<div id="fakturo-header">
 			<img class="fakturo-badge" src="<?php echo FAKTURO_PLUGIN_URL . '/assets/images/icon-256x256.png'; ?>" alt="<?php _e( 'Fakturo', 'fakturo' ); ?>" / >
-			<h1><?php printf( __( 'Welcome to Fakturo %s', 'fakturo' ), $display_version ); ?> Beta</h1>
+			<h1><?php printf( __( 'Welcome to Fakturo %s', 'fakturo' ), $display_version ); ?></h1>
 			<p class="about-text">
 				<?php printf( __( 'Thank you for updating to the latest version! Fakturo %s is ready to make your money management faster, safer, and better!', 'fakturo' ), $display_version ); ?>
 			</p>

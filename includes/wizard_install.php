@@ -1897,12 +1897,8 @@ class fktr_wizard {
 	<html xmlns="http://www.w3.org/1999/xhtml" <?php if ( function_exists( 'language_attributes' ) && function_exists( 'is_rtl' ) ) language_attributes(); else echo "dir='$text_direction'"; ?>>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<meta name="viewport" content="width=device-width">
-		<?php
-		if ( function_exists( 'wp_no_robots' ) ) {
-			wp_no_robots();
-		}
-		?>
+		<meta name="viewport" content="width=device-width" />
+		<meta name='robots' content='noindex,nofollow' />
 		<title><?php echo $title ?></title>
 		<style type="text/css">
 			html {

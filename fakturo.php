@@ -3,15 +3,17 @@
  Plugin Name: Fakturo
  Plugin URI: http://www.fakturo.org
  Description: Make invoices with products and clients.  If you like it, please rate it 5 stars.
- Version: 0.9.1 Beta
- Author: etruel <esteban@netmdp.com>
- Author URI: http://www.netmdp.com
+ Version: 1.0.0
+ Author: Etruel Developments LLC
+ Author URI: https://etruel.com
+ Text Domain: fakturo
+ Domain Path: /lang/
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Plugin version
-if ( ! defined('WPE_FAKTURO_VERSION' ) ) define('WPE_FAKTURO_VERSION', '0.9.1' ); 
+if ( ! defined('WPE_FAKTURO_VERSION' ) ) define('WPE_FAKTURO_VERSION', '1.0.0' ); 
 
 if ( ! class_exists( 'fakturo' ) ) :
 

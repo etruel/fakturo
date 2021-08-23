@@ -2,9 +2,10 @@
 Contributors: etruel, sniuk, khaztiel
 Donate link: 
 Tags: invoice, sales, purchases, billing, receipt, Tax Code, VAT, PDF invoices, bill, bill clients, merchantplus, SME, pyme, checkout, online payment, pay, recurring billing, send invoice, web invoice, wp-invoice, wp-sales, e-commerce, e-store, eshop, wp ecommerce
-Requires at least: 5.0
-Tested up to: 5.1.1
+Requires at least: 4.7
+Tested up to: 5.8
 Stable tag: trunk
+Requires PHP: 7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,13 +83,14 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 
 == Changelog ==
-= 0.9.2 Beta (April , 2019) =
+= 1.0.0 August 25, 2021) =
 * Tweaks on Quick Actions texts on sales.
 * Changed Draft by Pending status texts in sales.
 * Improved security nonces on Quick actions.
 * Improved many Help contents.
 * Fixes available Bulk Actions on sales.
 * Fixes Date Picker in Start of activities of Setting page to allow strings.
+* Fixes deprecated call to wp_no_robots on wizard.
 
 = 0.9.1 Beta (April 18, 2019) =
 * Added Client Name in Sales list.
@@ -201,5 +203,5 @@ First Release
 
 == Upgrade Notice ==
 
-= 0.9.1 Beta =
-Many tweaks. 1.0 coming soon.
+= 1.0.0 =
+First official release.
