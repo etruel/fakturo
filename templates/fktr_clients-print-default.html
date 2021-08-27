@@ -261,22 +261,18 @@
 </style>
 </head>
 <body>
-	<div><img src='http://localhost/wordpress/wp-content/uploads/2021/08/receipt_background.jpg' width='700' height='800'></div>
+	<div><img src='http://localhost/wordpress/wp-content/uploads/2021/08/clients_background.jpg' width='700' height='800'></div>
   <div id='razon_social'>{$company.name}</div>
 	<div id='direccion'>{$company.address} </div>
 	<div id='localidad'>{$company.city} - {$company.state}</div>
 	<div id='url'>{$company.website}</div>
 	<div id='condicion_iva'>{$company.tax_condition.name}</div>
 
-	<div id='nro_recibo'>RECIBO: {$receipt.post_title}</div>
-  <div id='fecha'>FECHA: {function="date_i18n('d-m-Y', $receipt.date)"}</div>
 
 	<div id='cuit'>C.U.I.T</div><div id='cuitval'>{$company.taxpayer}</div>
 	<div id='iibb'>Ing.Brutos</div><div id='iibbval'>{$company.tax}</div>
 	<div id='inact'>Inicio de Act.</div><div id='inactval'>{$company.start}</div>
 	
 
-	<div id='rec_efectivo'>{$receipt.cash}</div>
-	<div id='rec_total'>{$receipt.total_to_pay}</div>
 </body>
 </html>
