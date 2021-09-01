@@ -329,6 +329,8 @@ class fktrPostTypeSales {
             if ($post->post_type == 'fktr_sale') {
                 $action_nonce = wp_create_nonce('fktr_sale_action_nonce');
                 $setting_system = get_option('fakturo_system_options_group', false);
+                
+                $sale_data = self::get_sale_data($post->ID);
                 if ($post->post_status == 'publish') {
                     unset($actions['trash']);
                     // Replace the original but translated WP text: 'Edit' by 'View' also translated
@@ -336,7 +338,7 @@ class fktrPostTypeSales {
                     $actions['print_invoice'] = '<a href="' . admin_url('admin-post.php?id=' . $post->ID . '&action=print_invoice&nonce=' . $action_nonce) . '" class="btn_print_invoice" target="_new">' . __('Print', 'fakturo') . '</a>';
 
                     if (empty($actions['send_invoice_to_client'])) {
-                        $sale_data = self::get_sale_data($post->ID);
+                        
                         $client_data = fktrPostTypeClients::get_client_data($sale_data['client_id']);
                         if (!empty($client_data['email'])) {
                             $url = admin_url('admin-post.php?id=' . $post->ID . '&action=send_invoice_to_client');
@@ -353,6 +355,20 @@ class fktrPostTypeSales {
                 }
 
                 if ($post->post_status == 'draft') {
+                	
+                	if ( ! empty( $sale_data['invoice_type'] ) ) {
+                		
+                		$invoice_type = get_fakturo_term($sale_data['invoice_type'], 'fktr_invoice_types');
+			            if ( ! is_wp_error($invoice_type)) {
+			                if ( ! empty( $invoice_type->print_on_draft ) ) {
+			                	$actions['print_invoice'] = '<a href="' . admin_url('admin-post.php?id=' . $post->ID . '&action=print_invoice&nonce=' . $action_nonce) . '" class="btn_print_invoice" target="_new">' . __('Print', 'fakturo') . '</a>';
+
+			                	
+			                }
+			            }
+                		
+                	}
+                	
                     $actions['invoice_demo'] = '<a href="' . admin_url('admin-post.php?id=' . $post->ID . '&action=print_demo_invoice&nonce=' . $action_nonce) . '" class="btn_print_demo_invoice" target="_new">' . __('Preview', 'fakturo') . '</a>';
                 }
 
