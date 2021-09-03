@@ -142,6 +142,12 @@ class fktr_tax_nvoice_types {
 			
 		</div>
 		
+		<div class="form-field" id="sum_div">
+			<input type="checkbox" class="slidercheck" value="1" name="term_meta[print_on_draft]" id="print_on_draft">
+			<label for="print_on_draft"><span class="ui"></span>'.__('Print on draft', 'fakturo' ).'	</label>
+			
+		</div>
+		
 		
 		';
 		echo $echoHtml;
@@ -191,6 +197,17 @@ class fktr_tax_nvoice_types {
 			</td>
 		</tr>
 		
+		
+		<tr class="form-field">
+			<th scope="row" valign="top">
+				
+			</th>
+			<td>
+				<input type="checkbox" class="slidercheck" value="1" name="term_meta[print_on_draft]" id="print_on_draft" '.( ! empty( $term_meta->print_on_draft ) ?'checked="checked"' : '').'>
+				<label for="print_on_draft"><span class="ui"></span>'.__('Print on draft', 'fakturo' ).'	</label>
+			</td>
+		</tr>
+		
 		';
 		echo $echoHtml;
 		
@@ -203,6 +220,7 @@ class fktr_tax_nvoice_types {
 			'symbol' => __('Symbol', 'fakturo'),
 			'discriminates_taxes' => __('Discriminates taxes', 'fakturo'),
 			'sum' => __('Sum', 'fakturo'),
+			'print_on_draft' => __('Print on draft', 'fakturo'),
 		);
 		return $new_columns;
 	}
@@ -224,6 +242,11 @@ class fktr_tax_nvoice_types {
 			case 'sum': 
 				$out = esc_attr( $term->sum);
 				break;
+			
+			case 'print_on_draft': 
+				$print = ( ! empty( $term->print_on_draft) ? 1 : 0);
+				$out = esc_attr( $print );
+				break;	
 
 			default:
 				break;
