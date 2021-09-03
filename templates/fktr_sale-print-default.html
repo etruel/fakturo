@@ -281,7 +281,7 @@
 	
     <div id='tipo_factura'>{$invoice.invoice_type.symbol}</div>
 	<div id='nro_factura'>{$invoice.post_title}</div>
-    <div id='top_fecha'>{$invoice.date}</div>
+    <div id='top_fecha'>{function="date_i18n('d-m-Y', $invoice.date)"}</div>
 
     <div id='nombre_cliente'>{$invoice.client_data.name}</div>
     <div id='cuit_cliente'>{$invoice.client_id}</div>
