@@ -1422,6 +1422,8 @@ class fktrPostTypeSales {
                         }
                     }
                 }
+                
+               
 
                 if ($error > 0) {
 
