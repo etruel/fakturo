@@ -1459,8 +1459,39 @@ function formatRepo(repo) {
 		"<div class='select2-result-product__meta'>" +
 		"<div class='select2-result-product__title'>" + repo.title + "</div>";
 
+	var code_search = '';
+
+
+
+	if (sales_object.default_code == 'internal_code' && repo.id) {
+		code_search = '<strong>(' + repo.id + ')</strong> ';
+	}
+	if (repo.datacomplete) {
+
+		if (sales_object.default_code == 'reference' && repo.datacomplete.reference) {
+			code_search = '<strong>(' + repo.datacomplete.reference + ')</strong> ';
+		}
+		if (sales_object.default_code == 'manufacturers_code' && repo.datacomplete.manufacturers) {
+			code_search = '<strong>(' + repo.datacomplete.manufacturers + ')</strong> ';
+		}
+
+		if (code_search == '' && repo.datacomplete.reference) {
+			code_search = '<strong>(' + repo.datacomplete.reference + ')</strong> ';
+		}
+
+	}
+
+
+
+
+
+
 	if (repo.description) {
-		markup += "<div class='select2-result-product__description'>" + repo.description + "</div>";
+
+		markup += "<div class='select2-result-product__description'>" + code_search + '' + repo.description + " </div>";
+	}
+	else {
+		markup += "<div class='select2-result-product__description'>" + code_search + " </div>";
 	}
 	repo.datacomplete.cost = parseFloat(repo.datacomplete.cost);
 	markup += "<div class='select2-result-product__statistics'>" +
