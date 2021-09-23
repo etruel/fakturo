@@ -1464,19 +1464,19 @@ function formatRepo(repo) {
 
 
 	if (sales_object.default_code == 'internal_code' && repo.id) {
-		code_search = '<strong>(' + repo.id + ')</strong>';
+		code_search = '<strong>(' + repo.id + ')</strong> ';
 	}
 	if (repo.datacomplete) {
 
 		if (sales_object.default_code == 'reference' && repo.datacomplete.reference) {
-			code_search = '<strong>(' + repo.datacomplete.reference + ')</strong>';
+			code_search = '<strong>(' + repo.datacomplete.reference + ')</strong> ';
 		}
 		if (sales_object.default_code == 'manufacturers_code' && repo.datacomplete.manufacturers) {
-			code_search = '<strong>(' + repo.datacomplete.manufacturers + ')</strong>';
+			code_search = '<strong>(' + repo.datacomplete.manufacturers + ')</strong> ';
 		}
 
 		if (code_search == '' && repo.datacomplete.reference) {
-			code_search = '<strong>(' + repo.datacomplete.reference + ')</strong>';
+			code_search = '<strong>(' + repo.datacomplete.reference + ')</strong> ';
 		}
 
 	}
@@ -1488,7 +1488,7 @@ function formatRepo(repo) {
 
 	if (repo.description) {
 
-		markup += "<div class='select2-result-product__description'>" + code_search + repo.description + " </div>";
+		markup += "<div class='select2-result-product__description'>" + code_search + '' + repo.description + " </div>";
 	}
 	else {
 		markup += "<div class='select2-result-product__description'>" + code_search + " </div>";
