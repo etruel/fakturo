@@ -178,6 +178,7 @@ class fktrPostTypePrintTemplates {
 		if ($object->assgined == 'fktr_sale') {
 			// assign vars to print template assgined to fktr_sale.
 			$tpl->assign( "fktr_invoice_background_image", FAKTURO_PLUGIN_URL . 'assets/images/invoice_background.jpg');
+			$tpl->assign( "fktr_invoice_demo_image", FAKTURO_PLUGIN_URL . 'assets/images/demo.png');
 
 			$sale_invoice = fktrPostTypeSales::get_sale_data($object->id);
 			$client_data = fktrPostTypeClients::get_client_data($sale_invoice['client_id']);
@@ -611,6 +612,8 @@ class fktrPostTypePrintTemplates {
 					self::$array_sended[] = '{$'.$key.'}';
 				}
 			}
+		}else{
+			$echoHtml .= __('There must be at least one document saved to show here all the list of variables available for printing in the template.', 'fakturo' );
 		}
 
 		foreach (self::$array_sended as $v)  {
