@@ -419,7 +419,58 @@ if (!class_exists('fktrPostTypeSales')) :
 			$where = $where . " OR (meta_value LIKE '%" . $search . "%' AND meta_key = 'manufacturers')";
 			return array($innerJoin, $where);
 		}
-
+		
+		public static function apply_prices_scales($product_data) {
+			
+			$terms = get_fakturo_terms(array(
+							'taxonomy' => 'fktr_price_scales',
+							'hide_empty' => false,
+				));
+			$product_tax = get_fakturo_term($product_data['tax'], 'fktr_tax');	
+			
+			if ( !empty($terms) )  {  // if no scale prices
+                foreach ($terms as $t) {
+					if (empty($product_data['prices'][$t->term_id])) {
+						$product_data['prices'][$t->term_id] = ($product_data['cost']!= 0) ? ((($product_data['cost']/100)*$t->percentage)+$product_data['cost']) : 0;
+					}
+					if (empty($product_data['prices_final'][$t->term_id])) {
+						
+						$tax_porcent = 0;
+						if(!is_wp_error($product_tax)) {
+							$tax_porcent = $product_tax->percentage;
+						}
+		
+						$product_data['prices_final'][$t->term_id] = ($product_data['prices'][$t->term_id]!= 0) ? ((($product_data['prices'][$t->term_id]/100)*$tax_porcent)+$product_data['prices'][$t->term_id]) : 0;
+					}
+			
+                }
+            }	
+            $product_data = self::get_default_location_product($product_data);
+            return $product_data;
+				
+		}
+		
+		public static function get_default_location_product($product_data) {
+			
+			if (!isset($product_data['stocks'])) {
+				$product_data['stocks'] = array();
+			}
+			if (!is_array($product_data['stocks'])) {
+				$product_data['stocks'] = array();
+			}
+			$locations = get_fakturo_terms(array(
+								'taxonomy' => 'fktr_locations',
+								'hide_empty' => false,
+							));
+			foreach ($locations as $location) {
+				if (!empty($product_data['stocks'][$location->term_id])) {
+					
+				} else {
+					$product_data['stocks'][$location->term_id] = 0;
+				}
+			}
+			return $product_data;
+		}
 		public static function get_products() {
 			global $wpdb;
 			$search = addslashes($_GET['s']);
@@ -457,6 +508,8 @@ if (!class_exists('fktrPostTypeSales')) :
 				$newProduct->title = $post->post_title;
 				$newProduct->description = $dataProduct['description'];
 				$newProduct->img = FAKTURO_PLUGIN_URL . 'assets/images/default_product.png';
+				$dataProduct = self::apply_prices_scales($dataProduct);
+				
 				$newProduct->datacomplete = $dataProduct;
 
 				if (isset($dataProduct['_thumbnail_id']) && $dataProduct['_thumbnail_id'] > 0) {
@@ -621,6 +674,7 @@ if (!class_exists('fktrPostTypeSales')) :
 						$newProduct->title = $dataProduct['post_title'];
 						$newProduct->description = $dataProduct['description'];
 						$newProduct->img = FAKTURO_PLUGIN_URL . 'assets/images/default_product.png';
+						$dataProduct = self::apply_prices_scales($dataProduct);
 						$newProduct->datacomplete = $dataProduct;
 
 						if (isset($dataProduct['_thumbnail_id']) && $dataProduct['_thumbnail_id'] > 0) {

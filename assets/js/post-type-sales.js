@@ -535,7 +535,7 @@ function openPopPupStockProduct(identifier) {
 	var invoice_type = getCurrentInvoiceType();
 	if (invoice_type) {
 		if (invoice_type.sum == 1) {
-			length_stocks_locations = 0;
+			//length_stocks_locations = 0;
 			first_location = 0;
 			var stocksHtml = '<table class="stock_table">';
 			var locations = sales_object.locations;
@@ -544,50 +544,53 @@ function openPopPupStockProduct(identifier) {
 					first_location = locations[i].term_id;
 				}
 				var valStock = jQuery('#product_stock_' + identifier + '_' + locations[i].term_id).val();
-				length_stocks_locations++;
+				//length_stocks_locations++;
 				stocksHtml += '<tr><td class="stock_td_name">' + locations[i].name + ' (max:0): </td><td class="stock_td_input"><input type="text" name="product_stock_location_popup[]" value="' + valStock + '" id="product_stock_input_popup_' + locations[i].term_id + '" class="product_stock_input_popup"/> </td></tr>';
 			}
 			stocksHtml += '</table>';
 
 		}
 	}
-	if (length_stocks_locations <= 1) {
-		if (length_stocks_locations == 1) {
-			jQuery('#product_stock_' + identifier + '_' + first_location).val(quantity_total);
-			updateStockMessages();
-			jQuery('#unit_price_' + identifier).focus(function(e) {
-				var save_this = jQuery(this);
-				window.setTimeout(function() {
-					save_this.select();
-				}, 100);
-			});
-			jQuery('#unit_price_' + identifier).focus();
-			return false;
-		}
-		else {
-			length_stocks_locations = 0;
-			first_location = 0;
-			var stocksHtml = '<table class="stock_table">';
-			var locations = sales_object.locations;
-			for (var i = 0; i < locations.length; i++) {
-				if (first_location == 0) {
-					first_location = locations[i].term_id;
-				}
-				var valStock = jQuery('#product_stock_' + identifier + '_' + locations[i].term_id).val();
-				length_stocks_locations++;
-				stocksHtml += '<tr><td class="stock_td_name">' + locations[i].name + ' (max:0): </td><td class="stock_td_input"><input type="text" name="product_stock_location_popup[]" value="' + valStock + '" id="product_stock_input_popup_' + locations[i].term_id + '" class="product_stock_input_popup"/> </td></tr>';
-			}
-			stocksHtml += '</table>';
-		}
+	//console.log("0 length_stocks_locations", length_stocks_locations);
 
+	if (length_stocks_locations == 1 || length_stocks_locations == 0) {
+		jQuery('#product_stock_' + identifier + '_' + first_location).val(quantity_total);
+		updateStockMessages();
+		jQuery('#unit_price_' + identifier).focus(function(e) {
+			var save_this = jQuery(this);
+			window.setTimeout(function() {
+				save_this.select();
+			}, 100);
+		});
+		jQuery('#unit_price_' + identifier).focus();
+		return false;
 	}
+	else {
+		length_stocks_locations = 0;
+		first_location = 0;
+		var stocksHtml = '<table class="stock_table">';
+		var locations = sales_object.locations;
+		for (var i = 0; i < locations.length; i++) {
+			if (first_location == 0) {
+				first_location = locations[i].term_id;
+			}
+			var valStock = jQuery('#product_stock_' + identifier + '_' + locations[i].term_id).val();
+			length_stocks_locations++;
+			stocksHtml += '<tr><td class="stock_td_name">' + locations[i].name + ' (max:0): </td><td class="stock_td_input"><input type="text" name="product_stock_location_popup[]" value="' + valStock + '" id="product_stock_input_popup_' + locations[i].term_id + '" class="product_stock_input_popup"/> </td></tr>';
+		}
+		stocksHtml += '</table>';
+	}
+
+
 
 	var newHtml = '<div id="content_popup_stock"><div style="text-align:center">' + sales_object.txt_total_quantity + ': <strong id="stock_quantity_total">' + quantity_total + '</strong></div><div style="text-align:center">' + sales_object.txt_remaining + ': <strong id="stock_remaining" class="remaining_stock_red">' + quantity_total + '</strong></div>' + stocksHtml + '</div><div id="buttons_stock_popup"><a href="#" class="button" id="btn_cancel_stock_popup" style="margin:3px;">Cancelar</a></div>';
 	jQuery('#product_stock_popup').html(newHtml);
 
 
-	jQuery('#product_stock_popup').fadeIn();
-	jQuery('#popup_stock_background').fadeIn();
+	jQuery('#product_stock_popup').show();
+	jQuery('#popup_stock_background').show();
+
+	//console.log("1 length_stocks_locations", length_stocks_locations);
 	jQuery('#product_stock_input_popup_' + first_location).focus(function(e) {
 		var save_this = jQuery(this);
 		window.setTimeout(function() {
@@ -598,8 +601,8 @@ function openPopPupStockProduct(identifier) {
 	jQuery('#btn_cancel_stock_popup').click(function(e) {
 		first_time_focus = 0;
 		total_remaining = 0;
-		jQuery('#product_stock_popup').fadeOut();
-		jQuery('#popup_stock_background').fadeOut();
+		jQuery('#product_stock_popup').hide();
+		jQuery('#popup_stock_background').hide();
 		jQuery('#quality_' + identifier).focus();
 
 		e.preventDefault();
@@ -618,8 +621,8 @@ function openPopPupStockProduct(identifier) {
 			if (parseInt(jQuery('#stock_remaining').html()) == 0) {
 				first_time_focus = 0;
 				total_remaining = 0;
-				jQuery('#product_stock_popup').fadeOut();
-				jQuery('#popup_stock_background').fadeOut();
+				jQuery('#product_stock_popup').hide();
+				jQuery('#popup_stock_background').hide();
 				jQuery('#unit_price_' + identifier).focus(function(e) {
 					var save_this = jQuery(this);
 					window.setTimeout(function() {
@@ -749,6 +752,7 @@ function loadProductData() {
 var fist_time = false;
 
 function productQuantityEvent(element) {
+	console.log("jQuery(element).data('focused') !== undefined", jQuery(element).data('focused') !== undefined);
 	if (jQuery(element).data('focused') !== undefined) {
 		var identifier = element.id.replace('quality_', '');
 		if (sales_object.use_stock_product == 1) {
@@ -1341,7 +1345,7 @@ function getCurrentTaxConditions() {
 function getPriceProduct(current_product) {
 	var retorno = current_product.datacomplete.cost;
 	var discriminates_taxes = getDescriminateTaxes();
-
+	console.log("current_product", current_product);
 	if (current_product.datacomplete.prices[parseInt(jQuery("#client_data_price_scale_id").val())] != undefined) {
 		retorno = current_product.datacomplete.prices[parseInt(jQuery("#client_data_price_scale_id").val())];
 	}
@@ -1349,22 +1353,23 @@ function getPriceProduct(current_product) {
 	var productCurrency = current_product.datacomplete.currency;
 
 	retorno = parseFloat(retorno);
+	console.log('1', retorno)
 	if (productCurrency != sales_object.default_currency) {
 		var rate = getCurrentRateFromCurrencies(current_product.datacomplete.currency);
 		retorno = retorno * rate;
 		productCurrency = sales_object.default_currency;
 	}
-
+	console.log('2', retorno)
 	if (productCurrency != jQuery("#invoice_currency").val()) {
 		var rate = getCurrentRateFromCurrencies(jQuery("#invoice_currency").val());
 		retorno = retorno / rate;
 	}
-
+	console.log('3', retorno)
 	if (discriminates_taxes == 0) {
 		var porcent_tax = getPorcentTaxProduct(current_product);
 		retorno = retorno + ((retorno / 100) * porcent_tax);
 	}
-
+	console.log('4', retorno)
 	return retorno;
 }
 
