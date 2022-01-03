@@ -147,7 +147,13 @@ class fktr_tax_stock {
 					'decimal' => $setting_system['decimal'],
 					'decimal_numbers' => $setting_system['decimal_numbers'],
 					
+					'currency_position' => $setting_system['currency_position'],
+					'default_code' => $setting_system['default_code'],
+					'txt_cost' => __('Cost', 'fakturo'),
+					
 					'datetimepicker' => json_encode($objectL10n),
+					
+					'currencies' => json_encode($currencies),
 					
 					'txt_search_products' => __('Search products...', 'fakturo' ),
 					'characters_to_search' => apply_filters('fktr_sales_characters_to_search_product', 3),

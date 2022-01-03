@@ -112,6 +112,7 @@ function fktr_widget_dashboard_sale_summary() {
 		}
 		$money_format_today = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($earning_today, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
 		$sales_current_month = get_sales_on_range(strtotime('first day of this month', time()), time());
+		
 		$earning_current_month = 0;
 		$count_sales_current_month = 0;
 		foreach ($sales_current_month as $id_sale_current_month) {
@@ -149,7 +150,7 @@ function fktr_widget_dashboard_sale_summary() {
 
 		$money_format_total = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($earning_total, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
 		
-		
+		//var_export($earning_today);
 			
 		echo '<div class="seccion1" class="white">
 				<table  width="100%" cellspacing="0">

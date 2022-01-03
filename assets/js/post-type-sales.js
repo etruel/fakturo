@@ -1266,9 +1266,7 @@ function activate_search_products() {
 		maximumSelectionLength: 1,
 		placeholder: sales_object.txt_search_products,
 	});
-
 }
-
 
 function getInvoiceTypeFromTaxCondition() {
 	var r = 0;
@@ -1345,7 +1343,7 @@ function getCurrentTaxConditions() {
 function getPriceProduct(current_product) {
 	var retorno = current_product.datacomplete.cost;
 	var discriminates_taxes = getDescriminateTaxes();
-	console.log("current_product", current_product);
+	//console.log("current_product", current_product);
 	if (current_product.datacomplete.prices[parseInt(jQuery("#client_data_price_scale_id").val())] != undefined) {
 		retorno = current_product.datacomplete.prices[parseInt(jQuery("#client_data_price_scale_id").val())];
 	}
@@ -1353,23 +1351,23 @@ function getPriceProduct(current_product) {
 	var productCurrency = current_product.datacomplete.currency;
 
 	retorno = parseFloat(retorno);
-	console.log('1', retorno)
+	//console.log('1', retorno)
 	if (productCurrency != sales_object.default_currency) {
 		var rate = getCurrentRateFromCurrencies(current_product.datacomplete.currency);
 		retorno = retorno * rate;
 		productCurrency = sales_object.default_currency;
 	}
-	console.log('2', retorno)
+	//console.log('2', retorno)
 	if (productCurrency != jQuery("#invoice_currency").val()) {
 		var rate = getCurrentRateFromCurrencies(jQuery("#invoice_currency").val());
 		retorno = retorno / rate;
 	}
-	console.log('3', retorno)
+	//console.log('3', retorno)
 	if (discriminates_taxes == 0) {
 		var porcent_tax = getPorcentTaxProduct(current_product);
 		retorno = retorno + ((retorno / 100) * porcent_tax);
 	}
-	console.log('4', retorno)
+	//console.log('4', retorno)
 	return retorno;
 }
 
@@ -1415,8 +1413,6 @@ function getCurrentCurrencyId() {
 	return sales_object.default_currency;
 }
 
-
-
 function delete_product(row_id) {
 	jQuery(row_id).fadeOut();
 	jQuery(row_id).remove();
@@ -1436,6 +1432,7 @@ function converMaskToStandar(valueMasked, maskObject) {
 	}
 	return valueMasked;
 }
+
 Number.prototype.formatMoney = function(c, d, t) {
 	var n = this,
 		c = isNaN(c = Math.abs(c)) ? 2 : c,
@@ -1466,7 +1463,7 @@ function formatRepo(repo) {
 
 	var code_search = '';
 
-
+	console.log(repo);
 
 	if (sales_object.default_code == 'internal_code' && repo.id) {
 		code_search = '<strong>(' + repo.id + ')</strong> ';
