@@ -27,11 +27,13 @@ class fakturo {
         }
         return self::$instance;
 	}
+	
 	function __construct() {
 		$this->setupGlobals();
 		$this->includes();
 		$this->loadTextDomain();
 	}
+	
 	private function includes() {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/redirects.php';
 		require_once FAKTURO_PLUGIN_DIR . 'includes/notices.php'; 
@@ -84,6 +86,7 @@ class fakturo {
 		do_action('fakturo_include_files');
 		
 	}
+	
 	private function setupGlobals() {
 
 		// Plugin Folder Path
@@ -107,7 +110,9 @@ class fakturo {
 		}
 
 	}
+	
 	public function loadTextDomain() {
+		
 		// Set filter for plugin's languages directory
 		$lang_dir = dirname( plugin_basename( __FILE__ ) ) . '/languages/';
 		$lang_dir = apply_filters('fakturo_languages_directory', $lang_dir );
@@ -132,6 +137,7 @@ class fakturo {
 		}
 		
 	}
+	
 }
 
 endif; // End if class_exists check

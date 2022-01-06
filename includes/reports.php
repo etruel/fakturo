@@ -32,6 +32,7 @@ class reports {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/sales.php';
 		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/client_summary.php';
 		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/client_account_movements.php';
+		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/stock_products.php';
 		
 	}
 	/**
@@ -43,6 +44,8 @@ class reports {
 		$ranges = array();
 		$ranges['from'] = 0;
 		$ranges['to'] = 0;
+		
+		
 		/*
 		* This filter can be used to create or update timestamp ranges.
 		* $ranges will be used by get_object_chart()
@@ -59,6 +62,7 @@ class reports {
 		do_action('report_page_before_content_'.$request['sec'], $request, $ranges);
 		
 		echo '<div class="postbox" style="margin-top:10px;">';
+		//var_export('report_page_content_'.$request['sec']);
 			/*
 			* Executing hook to add content on report page. 
 			*/
@@ -107,8 +111,10 @@ class reports {
 	* FALSE if user does not have access.
 	*/
 	public static function access_tab($request) {
+		
 		$current_tab = self::get_tabs($request['sec']);
 		$user_access = true;
+		
 		if (!$current_tab) {
 			$user_access = false;
 		} else {
@@ -255,6 +261,12 @@ class reports {
 				'default' =>  array('text' => __( 'Clients', 'fakturo' ), 'sec' => 'client_summary', 'cap' => 'fktr_report_client_summary')				
 				)
 			),
+			
+			'stock_products' => apply_filters('ftkr_report_stok_products_sections', array(
+				//'default' =>  array('text' => __( 'Stok Produts', 'fakturo' ), 'sec' => 'stock_products', 'cap' => 'fktr_report_stock_products')				
+				'default' =>  array('text' => __( 'Inventory', 'fakturo' ), 'sec' => 'stock_products', 'cap' => 'fktr_report_client_summary')				
+				)
+			),
 		);
 		/* 
 		* These filters can be used to add or update tab values.
@@ -277,11 +289,14 @@ class reports {
 			}
 		}
 	}
+	
+	
 	/**
 	* Print the HTML of tabs, fired by all_admin_notices hook.
 	* @global $current_screen to get the screen obect.
 	*/
 	public static function tabs() {
+	//var_export(get_tabs());
 		global $current_screen;  
 		if ($current_screen->id != "fakturo_page_fakturo_reports") {
 			return true;
@@ -293,11 +308,14 @@ class reports {
 		foreach ($all_tabs as $key => $value) {
 			$sections_tabs[$key] = array();
 			foreach ($value as $keys => $values) {
+		//var_export($all_tabs[$key][$keys]['cap']);
 				if (current_user_can($all_tabs[$key][$keys]['cap'])) {
 					$sections_tabs[$key][$keys] = $values;
 				}
 			}
 		}
+		
+		
 		$print_tabs = false;
 		foreach ($sections_tabs as $tabs_mains) {
 			foreach ($tabs_mains as $sections) {
