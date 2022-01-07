@@ -83,7 +83,7 @@ class fakturo {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/wizard_install.php'; 
 
 		
-		do_action('fakturo_include_files');
+		//do_action('fakturo_include_files');
 		
 	}
 	
