@@ -73,70 +73,70 @@ class fktr_welcome {
 		<style type="text/css" media="screen">
 				/*<![CDATA[*/
 				[class*="dashboard_page_"] #wpcontent { /*background: #fff;*/ padding: 0 24px; }
-				.wpe-flex{ display: flex; }
-				.about__section { background: #fff; font-size: 1.2em; margin: 0;}
-				.about__section.mb-0{ margin-bottom: 0; }
-				.about__section h2, .about__section h3, .about__section h4, .about__section h5 { margin: 1em 0; }
-				.about__section a{ color: #222; }
-				.about__section a:hover{ color: #f7b63e; }
-				.about__header { background-image: <?php echo 'url('.FAKTURO_PLUGIN_URL . 'assets/images/about-header.png)'; ?>; background-size: 80%; background-position: bottom right; padding-top: 3rem; background-color: #f7b63e; }
-				.about__header-title{ margin: 5rem 2rem 0;padding: 1em 0; }
-				.about__header-title p { margin: 0; padding: 80px 0 0; font-size: 4em; color: #222; line-height: 1; font-weight: 900; text-transform: uppercase; }
-				.about__header-title p span { color: #333; }
-				.about__header-text { max-width: 25em; margin: 0 2rem 3rem; padding: 0; font-size: 1.5em; line-height: 1.4;}
-				.about__header-text p { color: #222; margin-top: 0; }
-				.about__header-navigation { display: flex; justify-content: flex-start; background: #fff; color: #222; border-color: #222; padding-top: 0;}
-				.about__header-navigation .nav-tab{color: #222 ; margin: 0; padding: 24px 32px; float: none; font-size: 1.4em; line-height: 1; border-style: solid; background: 0 0; border-width: 0 0 3px; border-color: transparent;}
-				.about__header-navigation .nav-tab-active { margin-bottom: -3px; }
-				.about__header-navigation .nav-tab-active:active, .about__header-navigation .nav-tab-active:hover, .about__header-navigation .nav-tab-active { color: #f7b63e; border-color: #f7b63e;}
-				.about__header-navigation .nav-tab:active, .about__header-navigation .nav-tab:hover{ background: #f5f5f5; color: #f7b63e; }
-				.about__container .has-accent-background-color { background: #f7b63e; }
-				.about__container .has-subtle-background-color { background: #f9f9f9; }
-				.about__container .text{ font-size: 14px; }
-				.about__header-title .fakturo-badge { align-self: flex-end; margin-bottom: 10px; max-height: 80px; width: auto; }
-				.about__section.about__section_height { min-height: 560px; }
-				.about__section.about__section_height-2 { min-height: 400px; }
-				.about__section.is-feature { font-size: 1.4em; }
-				.about__container h1, .about__container h2, .about__container h3.is-larger-heading{
+				[class*="dashboard_page_fakturo-"] .wpe-flex{ display: flex; }
+				[class*="dashboard_page_fakturo-"] .about__section { background: #fff; font-size: 1.2em; margin: 0;}
+				[class*="dashboard_page_fakturo-"] .about__section.mb-0{ margin-bottom: 0; }
+				[class*="dashboard_page_fakturo-"] .about__section h2, .about__section h3, .about__section h4, .about__section h5 { margin: 1em 0; }
+				[class*="dashboard_page_fakturo-"] .about__section a{ color: #222; }
+				[class*="dashboard_page_fakturo-"] .about__section a:hover{ color: #f7b63e; }
+				[class*="dashboard_page_fakturo-"] .about__header { background-image: <?php echo 'url('.FAKTURO_PLUGIN_URL . 'assets/images/about-header.png)'; ?>; background-size: 80%; background-position: bottom right; padding-top: 3rem; background-color: #f7b63e; }
+				[class*="dashboard_page_fakturo-"] .about__header-title{ margin: 5rem 2rem 0;padding: 1em 0; }
+				[class*="dashboard_page_fakturo-"] .about__header-title p { margin: 0; padding: 80px 0 0; font-size: 4em; color: #222; line-height: 1; font-weight: 900; text-transform: uppercase; }
+				[class*="dashboard_page_fakturo-"] .about__header-title p span { color: #333; }
+				[class*="dashboard_page_fakturo-"] .about__header-text { max-width: 25em; margin: 0 2rem 3rem; padding: 0; font-size: 1.5em; line-height: 1.4;}
+				[class*="dashboard_page_fakturo-"] .about__header-text p { color: #222; margin-top: 0; }
+				[class*="dashboard_page_fakturo-"] .about__header-navigation { display: flex; justify-content: flex-start; background: #fff; color: #222; border-color: #222; padding-top: 0;}
+				[class*="dashboard_page_fakturo-"] .about__header-navigation .nav-tab{color: #222 ; margin: 0; padding: 24px 32px; float: none; font-size: 1.4em; line-height: 1; border-style: solid; background: 0 0; border-width: 0 0 3px; border-color: transparent;}
+				[class*="dashboard_page_fakturo-"] .about__header-navigation .nav-tab-active { margin-bottom: -3px; }
+				[class*="dashboard_page_fakturo-"] .about__header-navigation .nav-tab-active:active, [class*="dashboard_page_fakturo-"] .about__header-navigation .nav-tab-active:hover, [class*="dashboard_page_fakturo-"] .about__header-navigation .nav-tab-active { color: #f7b63e; border-color: #f7b63e;}
+				[class*="dashboard_page_fakturo-"] .about__header-navigation .nav-tab:active, [class*="dashboard_page_fakturo-"] .about__header-navigation .nav-tab:hover{ background: #f5f5f5; color: #f7b63e; }
+				[class*="dashboard_page_fakturo-"] .about__container .has-accent-background-color { background: #f7b63e; }
+				[class*="dashboard_page_fakturo-"] .about__container .has-subtle-background-color { background: #f9f9f9; }
+				[class*="dashboard_page_fakturo-"] .about__container .text{ font-size: 14px; }
+				[class*="dashboard_page_fakturo-"] .about__header-title .fakturo-badge { align-self: flex-end; margin-bottom: 10px; max-height: 80px; width: auto; }
+				[class*="dashboard_page_fakturo-"] .about__section.about__section_height { min-height: 560px; }
+				[class*="dashboard_page_fakturo-"] .about__section.about__section_height-2 { min-height: 400px; }
+				[class*="dashboard_page_fakturo-"] .about__section.is-feature { font-size: 1.4em; }
+				[class*="dashboard_page_fakturo-"] .about__container h1, .about__container h2, .about__container h3.is-larger-heading{
 					    margin-top: 0; margin-bottom: .5em; font-size: 1.75em; line-height: 1.2; font-weight: 600; }
-				.about__container h1.is-smaller-heading, .about__container h2.is-smaller-heading, .about__container h3 { margin-top: 0; font-size: 1.25em; font-weight: 700; }
-				.about__container .about__image { padding: 0 32px; }
-				.about__container .about__image.mx-auto { margin-left: auto; margin-right: auto; }
-				.about__section .span-text { font-size: .9em; }
-				.feature-section a, .about__section p a { font-weight: 600; }
-				.addon_block { display: flex; margin-bottom: 1em;}
-				.addon_block .addon_img img { display:block; max-width: 120px; height: auto; margin-right: 10px; }
-				.addon_block .addon_text { text-align: right;}
-				.addon_block .addon_text p { margin: 0; font-size: 13px; }
-				.about__section.has-2-columns, .about__section.has-3-columns, .about__section.has-4-columns, .about__section.has-overlap-style { display: grid; }
-				.about__section.has-2-columns{ -ms-grid-columns: 1fr 1fr; grid-template-columns: 1fr 1fr; }
-				.about__section.has-2-columns .column:nth-of-type(2n+1) { -ms-grid-column: 1; grid-column-start: 1; }
-				.about__section.has-2-columns .column:nth-of-type(2n) { -ms-grid-column: 2; grid-column-start: 2; }
-				.about__section .column.is-edge-to-edge{ color: #fff; padding: 0; }
-				.about__section + .about__section .column{ padding-top: 32px; }
-				.about__container .is-vertically-aligned-center{ align-self: center; }
+				[class*="dashboard_page_fakturo-"] .about__container h1.is-smaller-heading, .about__container h2.is-smaller-heading, .about__container h3 { margin-top: 0; font-size: 1.25em; font-weight: 700; }
+				[class*="dashboard_page_fakturo-"] .about__container .about__image { padding: 0 32px; }
+				[class*="dashboard_page_fakturo-"] .about__container .about__image.mx-auto { margin-left: auto; margin-right: auto; }
+				[class*="dashboard_page_fakturo-"] .about__section .span-text { font-size: .9em; }
+				[class*="dashboard_page_fakturo-"] .feature-section a, .about__section p a { font-weight: 600; }
+				[class*="dashboard_page_fakturo-"] .addon_block { display: flex; margin-bottom: 1em;}
+				[class*="dashboard_page_fakturo-"] .addon_block .addon_img img { display:block; max-width: 120px; height: auto; margin-right: 10px; }
+				[class*="dashboard_page_fakturo-"] .addon_block .addon_text { text-align: right;}
+				[class*="dashboard_page_fakturo-"] .addon_block .addon_text p { margin: 0; font-size: 13px; }
+				[class*="dashboard_page_fakturo-"] .about__section.has-2-columns, .about__section.has-3-columns, .about__section.has-4-columns, .about__section.has-overlap-style { display: grid; }
+				[class*="dashboard_page_fakturo-"] .about__section.has-2-columns{ -ms-grid-columns: 1fr 1fr; grid-template-columns: 1fr 1fr; }
+				[class*="dashboard_page_fakturo-"] .about__section.has-2-columns .column:nth-of-type(2n+1) { -ms-grid-column: 1; grid-column-start: 1; }
+				[class*="dashboard_page_fakturo-"] .about__section.has-2-columns .column:nth-of-type(2n) { -ms-grid-column: 2; grid-column-start: 2; }
+				[class*="dashboard_page_fakturo-"] .about__section .column.is-edge-to-edge{ color: #fff; padding: 0; }
+				[class*="dashboard_page_fakturo-"] .about__section + .about__section .column{ padding-top: 32px; }
+				[class*="dashboard_page_fakturo-"] .about__container .is-vertically-aligned-center{ align-self: center; }
 				@media all and ( max-width: 1035px ) {
-					.about__header { background-size: 95%; }
+					[class*="dashboard_page_fakturo-"] .about__header { background-size: 95%; }
 				}
 				@media all and ( max-width: 782px ) {
-					.about__header{	background-image: none; }
-					.about__header-title{ margin-top: 0; padding-top: 0;}
-					.about__header-title p{ font-size: 3em; }
+					[class*="dashboard_page_fakturo-"] .about__header{	background-image: none; }
+					[class*="dashboard_page_fakturo-"] .about__header-title{ margin-top: 0; padding-top: 0;}
+					[class*="dashboard_page_fakturo-"] .about__header-title p{ font-size: 3em; }
 				}
 				@media all and ( max-width: 782px ) and (min-width: 481px) {
-					.about__header-navigation .nav-tab{ padding: 24px 16px; }
+					[class*="dashboard_page_fakturo-"] .about__header-navigation .nav-tab{ padding: 24px 16px; }
 				}
 				@media all and ( max-width: 600px ) and (min-width: 481px) {
-					.about__header-navigation .nav-tab{ font-size: 1.1em; }
+					[class*="dashboard_page_fakturo-"] .about__header-navigation .nav-tab{ font-size: 1.1em; }
 				}
 				@media all and ( max-width: 600px ) {
-					.about__header-title p{ font-size: 2.25em; }
-					.about__section.has-2-columns, .about__section.has-2-columns.is-wider-left, .about__section.has-2-columns.is-wider-right, .about__section.has-3-columns{ display: block; padding-bottom: 16px; }
-					.about__section + .about__section .column{ padding-top: 16px; }
-					.about__section.has-2-columns .column:nth-of-type(n){ padding-top: 16px; padding-bottom: 16px; }
-					.about__header-navigation{ flex-direction: column; }
-					.about__header-navigation .nav-tab { float: none; display: block; margin-bottom: 0; padding: 16px 16px; border-left-width: 6px; border-bottom: none; }
-					.about__header-navigation .nav-tab-active { border-bottom: none; border-left-width: 6px; }
+					[class*="dashboard_page_fakturo-"] .about__header-title p{ font-size: 2.25em; }
+					[class*="dashboard_page_fakturo-"] .about__section.has-2-columns, .about__section.has-2-columns.is-wider-left, .about__section.has-2-columns.is-wider-right, .about__section.has-3-columns{ display: block; padding-bottom: 16px; }
+					[class*="dashboard_page_fakturo-"] .about__section + .about__section .column{ padding-top: 16px; }
+					[class*="dashboard_page_fakturo-"] .about__section.has-2-columns .column:nth-of-type(n){ padding-top: 16px; padding-bottom: 16px; }
+					[class*="dashboard_page_fakturo-"] .about__header-navigation{ flex-direction: column; }
+					[class*="dashboard_page_fakturo-"] .about__header-navigation .nav-tab { float: none; display: block; margin-bottom: 0; padding: 16px 16px; border-left-width: 6px; border-bottom: none; }
+					[class*="dashboard_page_fakturo-"] .about__header-navigation .nav-tab-active { border-bottom: none; border-left-width: 6px; }
 				}
 				/*]]>*/
 			</style>
