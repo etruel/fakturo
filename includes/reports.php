@@ -78,13 +78,19 @@ class reports {
 		global $current_screen;  
 		if ($current_screen->id == "fakturo_page_fakturo_reports") {
 			wp_enqueue_script('fakturo_chartjs', FAKTURO_PLUGIN_URL . 'assets/js/chartjs/Chart.bundle.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+			
+		
 		}
 	}
+	
+	
+	
 	/**
-	* Enqueue all styles elements on reports page.
-	*/
+	 * Enqueue all styles elements on reports page.
+	 */
+										   
 	public static function styles() {
-		
+	
 	}
 	/**
 	* Get the object ids by sec request.
@@ -264,8 +270,8 @@ class reports {
 			),
 			
 			'stock_products' => apply_filters('ftkr_report_stok_products_sections', array(
-				//'default' =>  array('text' => __( 'Stok Produts', 'fakturo' ), 'sec' => 'stock_products', 'cap' => 'fktr_report_stock_products')				
-				'default' =>  array('text' => __( 'Inventory', 'fakturo' ), 'sec' => 'stock_products', 'cap' => 'fktr_report_client_summary')				
+				'stock_products' =>  array('text' => __( 'Summary', 'fakturo' ), 'sec' => 'stock_products', 'cap' => 'fktr_report_client_summary'),
+				'default' =>  array('text' => __( 'Products', 'fakturo' ), 'sec' => 'stock_products', 'cap' => 'fktr_report_client_summary')				
 				)
 			),
 		);
