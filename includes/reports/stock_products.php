@@ -82,36 +82,50 @@ class stock_products_report {
 
 			$new_array[0] = __('ID', 'fakturo');
 			$new_array[1] = __('Name', 'fakturo');
-			$new_array[2] = __('Stock', 'fakturo');
-			$new_array[3] = __('Price', 'fakturo');
+			$new_array[2] = __('Inventory', 'fakturo');
+			$new_array[3] = __('Scale', 'fakturo');
+			$new_array[4] = __('Cost', 'fakturo');
+			$new_array[6] = __('Price', 'fakturo');
 			$array_data[] = $new_array;
 			$new_array = $default_array_data;
+
 
 			if (is_numeric($request['product_id']) && $request['product_id'] > 0) {
 					
 					$product_data = fktrPostTypeProducts::get_product_data($request['product_id']);
+					// Get Stock
+					$total_stock = self::get_stock_product_report($product_data);
+					
+					// Get Prices
+					$product_prices = self::get_prices_product_report($product_data);
 					
 					$new_array[0] = $product_data['post_ID'];
 					$new_array[1] = $product_data['post_title'];
-					$new_array[2] = $product_data['stocks']['180'];
-					$new_array[3] = (!empty($product_data['prices']['52']) ? $product_data['prices']['52'] : 'Precio no registrado');
+					$new_array[2] = $total_stock;
+					$new_array[3] = $product_prices['scale'];
+					$new_array[4] = $product_prices['price_initial'];
+					$new_array[6] = $product_prices['price_finally'];
 					$array_data[] = $new_array;
 					$new_array = $default_array_data;
-					
-					
 					
 				}else{
 					foreach ($objects_client as $obj => $testval) {
-				
-	
-					$product_data = fktrPostTypeProducts::get_product_data($testval->ID);
+						
+						$product_data = fktrPostTypeProducts::get_product_data($testval->ID);
+						// Get Stock
+						$total_stock = self::get_stock_product_report($product_data);
+										
+						// Get Prices
+						$product_prices = self::get_prices_product_report($product_data);
 			 
-			 		$new_array[0] = $testval->ID;
-					$new_array[1] = $testval->timestamp_value;
-					$new_array[2] = $product_data['stocks']['180'];
-					$new_array[3] = (!empty($product_data['prices']['52']) ? $product_data['prices']['52'] : 'Precio no registrado');
-					$array_data[] = $new_array;
-					$new_array = $default_array_data;
+						$new_array[0] = $testval->ID;
+						$new_array[1] = $testval->timestamp_value;
+						$new_array[2] = $total_stock;
+						$new_array[3] = $product_prices['scale'];
+						$new_array[4] = $product_prices['price_initial'];
+						$new_array[6] = $product_prices['price_finally'];
+						$array_data[] = $new_array;
+						$new_array = $default_array_data;
 					
 				
 				}
@@ -174,7 +188,7 @@ class stock_products_report {
 		$html_client_data = '';
 		
 		if (is_numeric($request['product_id']) ) {
-			$product_data = fktrPostTypeProducts::get_product_data($request['product_id']);
+			//$product_data = fktrPostTypeProducts::get_product_data($request['product_id']);
 		
 			$html_client_data = '<div style="width:50%; text-align: left; display: inline-block;"><h3>'.__('Inventory', 'fakturo' ).'</h3></div>';
 		}
@@ -190,16 +204,22 @@ class stock_products_report {
 			$html_objects = '<table class="wp-list-table widefat fixed striped posts" style="width: 100%;">
 				<thead>
 					<tr>
-						<td>
+						<td width="5%">
 							'.__('ID', 'fakturo').'
 						</td>
-						<td>
+						<td width="10%">
 							'.__('Name', 'fakturo').'
 						</td>
-						<td>
-							'.__('Stock', 'fakturo').'
+						<td width="10%">
+							'.__('Inventory', 'fakturo').'
 						</td>
-						<td>
+						<td width="15%">
+							'.__('Scale', 'fakturo' ).'
+						</td>
+						<td width="10%">
+							'.__('Cost', 'fakturo' ).'
+						</td>
+						<td width="10%">
 							'.__('Price', 'fakturo').'
 						</td>
 					</tr>
@@ -207,9 +227,15 @@ class stock_products_report {
 				<tbody id="the-list">';
 				
 				if (is_numeric($request['product_id']) && $request['product_id'] > 0) {
-					
 					$product_data = fktrPostTypeProducts::get_product_data($request['product_id']);
+
+					// Get Stock
+					$total_stock = self::get_stock_product_report($product_data);
 					
+					// Get Prices
+					$product_prices = self::get_prices_product_report($product_data);
+			
+						$obj_link = admin_url('post.php?post='.$request['product_id'].'&action=edit');
 					
 						$html_objects .= '<tr>
 							<td>
@@ -219,50 +245,59 @@ class stock_products_report {
 								<a href="'.$obj_link.'" target="_blank">'.$product_data['post_title'].'</a>
 							</td>
 							<td>
-								'.$product_data['stocks']['180'].'
+								'. $total_stock .'
 							</td>
 							<td>
-								'.(!empty($product_data['prices']['52']) ? $product_data['prices']['52'] : 'Precio no registrado').'
+								'.$product_prices['scale'].'
+							</td>
+							<td>
+								'.$product_prices['price_initial'].'
+							</td>
+							<td>
+								'.$product_prices['price_finally'].'
 							</td>
 						</tr>';
 					$html_objects .= '</tbody>
 					</table>';
-					//	print_r($product_data);
-					
 				}else{
 					foreach ($objects_client as $obj => $testval) {
-				
-	
-					$product_data = fktrPostTypeProducts::get_product_data($testval->ID);
-			 
 					
-					//var_export($product_data);
-					
-					//maybe_unserialize('a:2:{i:50;i:20;i:180;i:48;}')
+						$product_data = fktrPostTypeProducts::get_product_data($testval->ID);
+						
+						// Get Stock
+						$total_stock = self::get_stock_product_report($product_data);
+						
+						// Get Prices
+						$product_prices = self::get_prices_product_report($product_data);
+						
 	
-					$obj_type = '';
-					$obj_link = admin_url('post.php?post='.$testval->ID.'&action=edit');
-				
-					$html_objects .= '<tr>
-						<td>
-							'.$testval->ID.'
-						</td>
-						<td>'
-							.$testval->timestamp_value.'
-						</td>
-						<td>
-							'.$product_data['stocks']['180'].'
-						</td>
-						<td>
-							'.(!empty($product_data['prices']['52']) ? $product_data['prices']['52'] : 'Precio no registrado').'
-						</td>
-					</tr>';
-				}
+						$obj_link = admin_url('post.php?post='.$testval->ID.'&action=edit');
+					
+						$html_objects .= '<tr>
+							<td>
+								'.$testval->ID.'
+							</td>
+							<td>
+								<a href="'.$obj_link.'" target="_blank">'.$testval->timestamp_value.'</a>
+							</td>
+							<td>
+								'. $total_stock .'
+							</td>
+							<td>
+								'.$product_prices['scale'].'
+							</td>
+							<td>
+								'.$product_prices['price_initial'].'
+							</td>
+							<td>
+								'.$product_prices['price_finally'].'
+							</td>
+						</tr>';
+					}
 			}
 				
 			$html_objects .= '</tbody>
 			</table>
-			<div style="width:100%; text-align: right;"><h3>'.$balance_print.'</h3></div>
 			<div class="clear"></div>';
 		}
 		
@@ -310,15 +345,9 @@ class stock_products_report {
 		//load select 2
 		self::get_form_filters($request);
 		
-		//get stok products
-		
-		
-		
 		//load data query sql
 		$objects_client = reports::get_objects($request, $ranges);
 		
-		
-		$documents_values = $objects_client['documents_values'];
 		$total_documents = array('subtotal' => 0, 'total' => 0);
 		$html_client_data = '';
 		
@@ -331,30 +360,28 @@ class stock_products_report {
 		
 		echo $html_client_data;
 		echo '<br>';
-	/*	echo '<div style="float:right; margin-right:15px;">
-				<h3>'.sprintf(
-							__('Date: since %s til %s', 'fakturo' ), 
-							date_i18n($setting_system['dateformat'].' '.get_option( 'time_format' ), $ranges['from']), 
-							date_i18n($setting_system['dateformat'].' '.get_option( 'time_format' ), $ranges['to']
-						)
-					).'</h3>
-				</div>';
-				*/
+
 		$html_objects = '<div style="clear: both;"><h2>No results with this filters</h2></div>';
 		if (!empty($objects_client)) {
-			$html_objects = '<table class="wp-list-table widefat fixed striped posts">
+			$html_objects = '<table class="wp-list-table widefat fixed striped posts" id="table_report_product">
 				<thead>
 				<tr>
-					<td>
+					<td width="5%">
 						'.__('ID', 'fakturo').'
 					</td>
-					<td>
+					<td width="40%">
 						'.__('Name', 'fakturo').'
 					</td>
-					<td>
-						'.__('Stock', 'fakturo').'
+					<td width="10%">
+						'.__('Inventory', 'fakturo').'
 					</td>
-					<td>
+					<td width="15%">
+						'.__('Scale', 'fakturo' ).'
+					</td>
+					<td width="10%">
+						'.__('Cost', 'fakturo' ).'
+					</td>
+					<td width="10%">
 						'.__('Price', 'fakturo').'
 					</td>
 				</tr>
@@ -362,66 +389,133 @@ class stock_products_report {
 				<tbody id="the-list">';
 
 
-		if (is_numeric($request['product_id']) && $request['product_id'] > 0) {
-			
-			$product_data = fktrPostTypeProducts::get_product_data($request['product_id']);
-			
-			
-				$html_objects .= '<tr>
-					<td>
-						'.$product_data['post_ID'].'
-					</td>
-					<td>
-						<a href="'.$obj_link.'" target="_blank">'.$product_data['post_title'].'</a>
-					</td>
-					<td>
-						'.$product_data['stocks']['180'].'
-					</td>
-					<td>
-						'.(!empty($product_data['prices']['52']) ? $product_data['prices']['52'] : 'Precio no registrado').'
-					</td>
-				</tr>';
-			$html_objects .= '</tbody>
-			</table>';
-			//	print_r($product_data);
-			
-		}else{
-			
-		
-
-			foreach ($objects_client as $obj => $testval) {
+			if (is_numeric($request['product_id']) && $request['product_id'] > 0) {
 				
+				$product_data = fktrPostTypeProducts::get_product_data($request['product_id']);
 
-		$product_data = fktrPostTypeProducts::get_product_data($testval->ID);
+				// Get Stock
+				$total_stock = self::get_stock_product_report($product_data);
+				
+				// Get Prices
+				$product_prices = self::get_prices_product_report($product_data);
 		
-		//var_export($product_data);
-		
-		//maybe_unserialize('a:2:{i:50;i:20;i:180;i:48;}')
+					$obj_link = admin_url('post.php?post='.$request['product_id'].'&action=edit');
+				
+					$html_objects .= '<tr>
+						<td>
+							'.$product_data['post_ID'].'
+						</td>
+						<td>
+							<a href="'.$obj_link.'" target="_blank">'.$product_data['post_title'].'</a>
+						</td>
+						<td>
+							'. $total_stock .'
+						</td>
+						<td>
+							'.$product_prices['scale'].'
+						</td>
+						<td>
+							'.$product_prices['price_initial'].'
+						</td>
+						<td>
+							'.$product_prices['price_finally'].'
+						</td>
+					</tr>';
+				$html_objects .= '</tbody>
+				</table>';
 
-				$obj_type = '';
-				$obj_link = admin_url('post.php?post='.$testval->ID.'&action=edit');
-			
-				$html_objects .= '<tr>
-					<td>
-						'.$testval->ID.'
-					</td>
-					<td>
-						<a href="'.$obj_link.'" target="_blank">'.$testval->timestamp_value.'</a>
-					</td>
-					<td>
-						'.$product_data['stocks']['180'].'
-					</td>
-					<td>
-						'.(!empty($product_data['prices']['52']) ? $product_data['prices']['52'] : 'Precio no registrado').'
-					</td>
-				</tr>';
+			}else{
+				
+				foreach ($objects_client as $obj => $testval) {
+					
+					$product_data = fktrPostTypeProducts::get_product_data($testval->ID);
+					
+					// Get Stock
+					$total_stock = self::get_stock_product_report($product_data);
+					
+					// Get Prices
+					$product_prices = self::get_prices_product_report($product_data);
+					
+
+					$obj_link = admin_url('post.php?post='.$testval->ID.'&action=edit');
+				
+					$html_objects .= '<tr>
+						<td>
+							'.$testval->ID.'
+						</td>
+						<td>
+							<a href="'.$obj_link.'" target="_blank">'.$testval->timestamp_value.'</a>
+						</td>
+						<td>
+							'. $total_stock .'
+						</td>
+						<td>
+							'.$product_prices['scale'].'
+						</td>
+						<td>
+							'.$product_prices['price_initial'].'
+						</td>
+						<td>
+							'.$product_prices['price_finally'].'
+						</td>
+					</tr>';
+				}
+				$html_objects .= '</tbody>
+				</table>';
 			}
-			$html_objects .= '</tbody>
-			</table>';
-		}
 		}
 		
-		echo '<div style="width: 100%;">' . $html_objects . ' ' . $html_totals_data . '</div>';
+		echo '<div style="width: 100%;">' . $html_objects . '</div>';
+	}
+
+	public static function get_stock_product_report($product_data){
+		// Get Stock
+		$terms_stock = get_fakturo_terms(array(
+			'taxonomy' => 'fktr_locations',
+			'hide_empty' => false,
+		));
+		
+		$total_stock = 0;
+		foreach ($terms_stock as $stock) {
+			$total_stock = $total_stock + (isset($product_data['stocks'][$stock->term_id]) ? $product_data['stocks'][$stock->term_id] : 0 );
+		}
+		return $total_stock;
+	}
+
+	public static function get_prices_product_report($product_data){
+		$setting_system = get_option('fakturo_system_options_group', false);
+		
+		$terms_prices = get_fakturo_terms(array(
+			'taxonomy' => 'fktr_price_scales',
+			'hide_empty' => false,
+		));
+
+		$scale = '';
+		$price_initial = 0;
+		$price_finally = 0;
+		$product_tax = get_fakturo_term($product_data['tax'], 'fktr_tax');
+	
+		foreach ($terms_prices as $price) {
+			
+			if (empty($product_data['prices'][$price->term_id])) {
+				$product_data['prices'][$price->term_id] = ($product_data['cost']!= 0) ? ((($product_data['cost']/100)*$price->percentage)+$product_data['cost']) : 0;
+			}
+			if (empty($product_data['prices_final'][$price->term_id])) {
+				
+				$tax_porcent = 0;
+				if(!is_wp_error($product_tax)) {
+					$tax_porcent = $product_tax->percentage;
+				}
+				
+				$product_data['prices_final'][$price->term_id] = ($product_data['prices'][$price->term_id]!= 0) ? ((($product_data['prices'][$price->term_id]/100)*$tax_porcent)+$product_data['prices'][$price->term_id]) : 0;
+			}
+
+			$scale = $price->name . ' ('.$price->percentage.'%)';
+			$price_initial = (isset($product_data['prices'][$price->term_id]) ? number_format($product_data['prices'][$price->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) : '' );
+			$price_finally = (isset($product_data['prices_final'][$price->term_id]) ? number_format($product_data['prices_final'][$price->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) : '' );
+		}
+		return array('scale'=>$scale, 'price_initial'=> $price_initial, 'price_finally' => $price_finally );
+
 	}
 
 	public static function get_form_filters($request) {
@@ -435,47 +529,41 @@ class stock_products_report {
 											'selected' => $request['product_id']
 										));
 
-		$array_range = array();
-		$array_range['today'] = __( 'Today', 'fakturo' );
-		$array_range['yesterday'] = __( 'Yesterday', 'fakturo' );
-		$array_range['this_week'] = __( 'This Week', 'fakturo' );
-		$array_range['last_week'] = __( 'Last Week', 'fakturo' );
-		$array_range['this_month'] = __( 'This Month', 'fakturo' );
-		$array_range['last_month'] = __( 'Last Month', 'fakturo' );
-		$array_range['this_quarter'] = __( 'This Quarter', 'fakturo' );
-		$array_range['last_quarter'] = __( 'Last Quarter', 'fakturo' );
-		$array_range['this_year'] = __( 'This Year', 'fakturo' );
-		$array_range['last_year'] = __( 'Last Year', 'fakturo' );
-		$array_range['other'] = __( 'Custom', 'fakturo' );
-		
-		/*
-		* These filters can be used to add or update range values on select html.
-		*/
-		$array_range = apply_filters('report_filters_range', $array_range, $request);
-
-		$select_range_html = '<select name="range" id="range">';
-		foreach ($array_range as $key => $value) {
-			$select_range_html .= '<option value="'.$key.'" '.selected($key, $request['range'], false).'>'.$value.'</option>';
-		}
-		$select_range_html .= '</select>';
-
-		$return_html = '<div id="div_filter_form" style="padding:5px;">
-			<form name="filter_form" method="get" action="'.admin_url('admin.php').'">
+  
+?>
+		<div id="div_filter_form" style="padding:5px;">
+			<form name="filter_form" method="get" action="<?php echo admin_url('admin.php') ?>">
 				<input type="hidden" name="page" value="fakturo_reports"/>
-				<input type="hidden" name="sec" value="'.$request['sec'].'"/>
-				'.// $select_range_html. <label style="margin-left:10px;margin-right:10px;"><input type="checkbox" name="show_details" id="show_details" value="1" '.checked($request['show_details'], 1, false).'/>'.__( 'Show details', 'fakturo' ).'</label>
-				'
-				'.$selectClients.'
-				<input type="submit" class="button-secondary" value="'.__( 'Filter', 'fakturo' ).'"/>
+				<input type="hidden" name="sec" value="<?php echo $request['sec'] ?>"/>
+				<?php echo $selectClients ?>
 				
-				<a class="button-secondary right" href="'.admin_url('admin-post.php?action=stock_products_download_csv&'.http_build_query($request)).'">'.__( 'CSV', 'fakturo' ).'</a>
-				<a class="button-secondary right" style="margin-right:10px;" href="'.admin_url('admin-post.php?action=stock_products_print_pdf&'.http_build_query($request)).'">'.__( 'PDF', 'fakturo' ).'</a>
+				<select name="letter_from" id="letter_from">
+					<?php
+						for($i=65; $i<=90; $i++) {  
+							$letter = chr($i);  
+							echo '<option value="'. $letter .'" '. (( $letter == $request['letter_from'])? 'selected' : '' ) .'>'. $letter .'</option>';
+						} 
+					?>
+				</select>
 				
+				<select name="letter_to" id="letter_to">
+					<?php
+						for($i=65; $i<=90; $i++) {
+							$letter = chr($i);  
+							echo '<option value="'. $letter .'" '. (( $letter == $request['letter_to'])? 'selected' : '' ) .'>'. $letter .'</option>';
+						} 
+					?>
+				</select>
+				<input type="submit" class="button-secondary" value="<?php echo __( 'Filter', 'fakturo' ) ?>"/>
+				
+				<a class="button-secondary right" href="<?php echo admin_url('admin-post.php?action=stock_products_download_csv&'.http_build_query($request) ) ?>" ><?php echo __( 'CSV', 'fakturo' ) ?></a>
+				<a class="button-secondary right" style="margin-right:10px;" href="<?php echo admin_url('admin-post.php?action=stock_products_print_pdf&'.http_build_query($request)) ?>"><?php echo __( 'PDF', 'fakturo' )?> </a>
 				
 			</form>
-		</div>';
+		</div>
+		<?php 
 
-		echo $return_html;
+		
 	}
 	/**
 	* Print HTML on report page content.
@@ -486,18 +574,29 @@ class stock_products_report {
 	* @return Array of objects.
 	*/
 	public static function get_objects($return, $request, $ranges) {
-		//die(var_export($ranges));
-		global $wpdb;
-		$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as timestamp_value, p.post_type as post_type FROM {$wpdb->posts} as p
-		LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
-        WHERE 
-        pm.meta_key = 'post_title'
-		AND p.post_status = 'publish'
-		AND (p.post_type = 'fktr_product' OR p.post_type = 'fktr_receipt')
-	
 
-		", $ranges['from'], $ranges['to']);
-		
+		global $wpdb;
+		$sql = "SELECT p.ID, pm.meta_key, pm.meta_value as timestamp_value, p.post_type as post_type FROM {$wpdb->posts} as p
+				LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
+		        WHERE 
+		        pm.meta_key = 'post_title'
+				AND p.post_status = 'publish'
+				AND (p.post_type = 'fktr_product' OR p.post_type = 'fktr_receipt')
+				
+				AND pm.meta_value Between '".$request['letter_from']."' AND 
+				 (
+					 SELECT pm.meta_value FROM {$wpdb->posts} as p
+					LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
+			        WHERE 
+			        pm.meta_key = 'post_title'
+					AND p.post_status = 'publish'
+					AND (p.post_type = 'fktr_product' OR p.post_type = 'fktr_receipt')
+					AND pm.meta_value LIKE '".$request['letter_to']."_%'  ORDER BY pm.meta_value desc limit 1
+				 )
+				
+				or p.ID = '".$request['product_id']."'
+
+		";
 		
 		$results = $wpdb->get_results($sql, OBJECT);
 		if (!empty($results)) {

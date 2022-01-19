@@ -357,25 +357,25 @@ class fktrPostTypeProducts {
 		$product_tax = get_fakturo_term($product_data['tax'], 'fktr_tax');
                 if ( !empty($terms) )  {  // if no scale prices
                     foreach ($terms as $t) {
-			if (empty($product_data['prices'][$t->term_id])) {
-				$product_data['prices'][$t->term_id] = ($product_data['cost']!= 0) ? ((($product_data['cost']/100)*$t->percentage)+$product_data['cost']) : 0;
-			}
-			if (empty($product_data['prices_final'][$t->term_id])) {
-				
-				$tax_porcent = 0;
-				if(!is_wp_error($product_tax)) {
-					$tax_porcent = $product_tax->percentage;
-				}
+						if (empty($product_data['prices'][$t->term_id])) {
+							$product_data['prices'][$t->term_id] = ($product_data['cost']!= 0) ? ((($product_data['cost']/100)*$t->percentage)+$product_data['cost']) : 0;
+						}
+						if (empty($product_data['prices_final'][$t->term_id])) {
+							
+							$tax_porcent = 0;
+							if(!is_wp_error($product_tax)) {
+								$tax_porcent = $product_tax->percentage;
+							}
 
-				$product_data['prices_final'][$t->term_id] = ($product_data['prices'][$t->term_id]!= 0) ? ((($product_data['prices'][$t->term_id]/100)*$tax_porcent)+$product_data['prices'][$t->term_id]) : 0;
-			}
-			
-			$echoHtml .= '<tr class="pricestr" data-id="'.$t->term_id.'" data-porcentage="'.$t->percentage.'">
-				<td style="text-align: center;">'.$t->name.' ('.$t->percentage.'%)</td>
-				<td style="text-align: center;"><input type="text" value="'.(isset($product_data['prices'][$t->term_id])?number_format($product_data['prices'][$t->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']):'').'"  id="prices_'.$t->term_id.'" class="prices" name="prices['.$t->term_id.']"/></td>
-				<td style="text-align: center;" id="suggested_'.$t->term_id.'"></td>
-				<td style="text-align: center;"><input type="text" value="'.(isset($product_data['prices_final'][$t->term_id])?number_format($product_data['prices_final'][$t->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']):'').'" id="prices_final_'.$t->term_id.'" class="prices_final" name="prices_final['.$t->term_id.']"/></td>
-			</tr>';
+							$product_data['prices_final'][$t->term_id] = ($product_data['prices'][$t->term_id]!= 0) ? ((($product_data['prices'][$t->term_id]/100)*$tax_porcent)+$product_data['prices'][$t->term_id]) : 0;
+						}
+						
+						$echoHtml .= '<tr class="pricestr" data-id="'.$t->term_id.'" data-porcentage="'.$t->percentage.'">
+							<td style="text-align: center;">'.$t->name.' ('.$t->percentage.'%)</td>
+							<td style="text-align: center;"><input type="text" value="'.(isset($product_data['prices'][$t->term_id])?number_format($product_data['prices'][$t->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']):'').'"  id="prices_'.$t->term_id.'" class="prices" name="prices['.$t->term_id.']"/></td>
+							<td style="text-align: center;" id="suggested_'.$t->term_id.'"></td>
+							<td style="text-align: center;"><input type="text" value="'.(isset($product_data['prices_final'][$t->term_id])?number_format($product_data['prices_final'][$t->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']):'').'" id="prices_final_'.$t->term_id.'" class="prices_final" name="prices_final['.$t->term_id.']"/></td>
+						</tr>';
                     }
                 } else {
                         $echoHtml .= '<tr><td colspan="4" style="text-align: center;font-size: large;" align="center">' . __('Scale prices missed. Go to Settings to add them: ', 'fakturo') . '';
@@ -803,6 +803,9 @@ class fktrPostTypeProducts {
 	}
 	public static function get_product_data($product_id) {
 		$custom_field_keys = get_post_custom($product_id);
+
+		$custom_field_keys = is_array($custom_field_keys) ? $custom_field_keys : array($custom_field_keys);
+
 		foreach ( $custom_field_keys as $key => $value ) {
 			$custom_field_keys[$key] = maybe_unserialize($value[0]);
 		}

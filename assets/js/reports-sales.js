@@ -12,7 +12,10 @@ jQuery(document).ready(function() {
 			            yAxes: [{
 			                stacked: true
 			            }]
-			        }
+			        },
+					layout: {
+						padding: 20
+					}
                 };
     var ctx = document.getElementById("canvas").getContext("2d");
 	var myLineChart = Chart.Line(ctx, {
