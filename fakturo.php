@@ -3,7 +3,7 @@
  Plugin Name: Fakturo
  Plugin URI: http://www.fakturo.org
  Description: Make invoices with products and clients.  If you like it, please rate it 5 stars.
- Version: 1.0.1
+ Version: 1.0.0
  Author: Etruel Developments LLC
  Author URI: https://etruel.com
  Text Domain: fakturo
@@ -150,5 +150,5 @@ function getClassFakturo() {
 	}
 	return $fakturo;
 }
+
 getClassFakturo();
-?>
