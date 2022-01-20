@@ -1,9 +1,9 @@
 <?php
-
 // Exit if accessed directly
 if (!defined('ABSPATH')) {
 	exit;
 }
+
 if (!class_exists('fktrPostTypeProducts')) :
 
 	class fktrPostTypeProducts {
@@ -75,9 +75,9 @@ if (!class_exists('fktrPostTypeProducts')) :
 					$query->set('meta_query', array('sort_column' => 'reference', $meta_group));
 					$query->set('meta_key', 'reference');
 					$query->set('orderby', 'meta_value');
-					
+
 					break;
-				
+
 				default:
 					break;
 			}
@@ -167,31 +167,31 @@ if (!class_exists('fktrPostTypeProducts')) :
 			register_post_type('fktr_product', $args);
 			// category taxonomy
 			$labels_model = array(
-			'name'                       => _x( 'Categories', 'Categories', 'fakturo' ),
-			'singular_name'              => _x( 'Category', 'Category', 'fakturo' ),
-			'search_items'               => __( 'Search Categories', 'fakturo' ),
-			'popular_items'              => __( 'Popular Categories', 'fakturo' ),
-			'all_items'                  => __( 'All Categories', 'fakturo' ),
-			'parent_item'                => __( 'Parent Category', 'fakturo' ),
-			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Category', 'fakturo' ),
-			'update_item'                => __( 'Update Category', 'fakturo' ),
-			'add_new_item'               => __( 'Add New Category', 'fakturo' ),
-			'new_item_name'              => __( 'New Category Name', 'fakturo' ),
-			'separate_items_with_commas' => __( 'Separate categories with commas', 'fakturo' ),
-			'add_or_remove_items'        => __( 'Add or remove categories', 'fakturo' ),
-			'choose_from_most_used'      => __( 'Choose from the most used categories', 'fakturo' ),
-			'not_found'                  => __( 'No categories found.', 'fakturo' ),
-			'menu_name'                  => __( 'Categories', 'fakturo' ),
+				'name' => _x('Categories', 'Categories', 'fakturo'),
+				'singular_name' => _x('Category', 'Category', 'fakturo'),
+				'search_items' => __('Search Categories', 'fakturo'),
+				'popular_items' => __('Popular Categories', 'fakturo'),
+				'all_items' => __('All Categories', 'fakturo'),
+				'parent_item' => __('Parent Category', 'fakturo'),
+				'parent_item_colon' => null,
+				'edit_item' => __('Edit Category', 'fakturo'),
+				'update_item' => __('Update Category', 'fakturo'),
+				'add_new_item' => __('Add New Category', 'fakturo'),
+				'new_item_name' => __('New Category Name', 'fakturo'),
+				'separate_items_with_commas' => __('Separate categories with commas', 'fakturo'),
+				'add_or_remove_items' => __('Add or remove categories', 'fakturo'),
+				'choose_from_most_used' => __('Choose from the most used categories', 'fakturo'),
+				'not_found' => __('No categories found.', 'fakturo'),
+				'menu_name' => __('Categories', 'fakturo'),
 			);
 			$args_model = array(
-			'public'				=> false,
-			'hierarchical'          => true,
-			'labels'                => $labels_model,
-			'show_ui'               => true,
-			'show_admin_column'     => true,
-			'query_var'             => true,
-			'rewrite'               => array( 'slug' => 'fktr-category' ),
+				'public' => false,
+				'hierarchical' => true,
+				'labels' => $labels_model,
+				'show_ui' => true,
+				'show_admin_column' => true,
+				'query_var' => true,
+				'rewrite' => array('slug' => 'fktr-category'),
 				'capabilities' => array(
 					'manage_terms' => 'manage_fktr_category',
 					'edit_terms' => 'edit_fktr_category',
@@ -204,34 +204,34 @@ if (!class_exists('fktrPostTypeProducts')) :
 					'fktr_product',
 					$args_model
 			);
-			
+
 			// model taxonomy
 			$labels_model = array(
-			'name'                       => _x( 'Models', 'Models', 'fakturo' ),
-			'singular_name'              => _x( 'Model', 'Model', 'fakturo' ),
-			'search_items'               => __( 'Search Models', 'fakturo' ),
-			'popular_items'              => __( 'Popular Models', 'fakturo' ),
-			'all_items'                  => __( 'All Models', 'fakturo' ),
-			'parent_item'                => null,
-			'parent_item_colon'          => null,
-			'edit_item'                  => __( 'Edit Model', 'fakturo' ),
-			'update_item'                => __( 'Update Model', 'fakturo' ),
-			'add_new_item'               => __( 'Add New Model', 'fakturo' ),
-			'new_item_name'              => __( 'New Model Name', 'fakturo' ),
-			'separate_items_with_commas' => __( 'Separate models with commas', 'fakturo' ),
-			'add_or_remove_items'        => __( 'Add or remove models', 'fakturo' ),
-			'choose_from_most_used'      => __( 'Choose from the most used models', 'fakturo' ),
-			'not_found'                  => __( 'No models found.', 'fakturo' ),
-			'menu_name'                  => __( 'Models', 'fakturo' ),
+				'name' => _x('Models', 'Models', 'fakturo'),
+				'singular_name' => _x('Model', 'Model', 'fakturo'),
+				'search_items' => __('Search Models', 'fakturo'),
+				'popular_items' => __('Popular Models', 'fakturo'),
+				'all_items' => __('All Models', 'fakturo'),
+				'parent_item' => null,
+				'parent_item_colon' => null,
+				'edit_item' => __('Edit Model', 'fakturo'),
+				'update_item' => __('Update Model', 'fakturo'),
+				'add_new_item' => __('Add New Model', 'fakturo'),
+				'new_item_name' => __('New Model Name', 'fakturo'),
+				'separate_items_with_commas' => __('Separate models with commas', 'fakturo'),
+				'add_or_remove_items' => __('Add or remove models', 'fakturo'),
+				'choose_from_most_used' => __('Choose from the most used models', 'fakturo'),
+				'not_found' => __('No models found.', 'fakturo'),
+				'menu_name' => __('Models', 'fakturo'),
 			);
 			$args_model = array(
-			'public'				=> false,
-			'hierarchical'          => false,
-			'labels'                => $labels_model,
-			'show_ui'               => true,
-			'show_admin_column'     => true,
-			'query_var'             => true,
-			'rewrite'               => array( 'slug' => 'fktr-model' ),
+				'public' => false,
+				'hierarchical' => false,
+				'labels' => $labels_model,
+				'show_ui' => true,
+				'show_admin_column' => true,
+				'query_var' => true,
+				'rewrite' => array('slug' => 'fktr-model'),
 				'capabilities' => array(
 					'manage_terms' => 'manage_fktr_model',
 					'edit_terms' => 'edit_fktr_model',
@@ -239,13 +239,13 @@ if (!class_exists('fktrPostTypeProducts')) :
 					'assign_terms' => 'assign_fktr_model'
 				)
 			);
-			
+
 			register_taxonomy(
 					'fktr_model',
 					'fktr_product',
 					$args_model
 			);
-			
+
 			add_filter('enter_title_here', array('fktrPostTypeProducts', 'name_placeholder'), 10, 2);
 		}
 
@@ -302,14 +302,13 @@ if (!class_exists('fktrPostTypeProducts')) :
 			// Remove Custom Fields Metabox
 			add_meta_box('fakturo-price-box', __('Price', 'fakturo'), array('fktrPostTypeProducts', 'price_box'), 'fktr_product', 'side', 'high');
 			add_meta_box('fakturo-prices', __('Prices', 'fakturo'), array('fktrPostTypeProducts', 'prices_box'), 'fktr_product', 'normal', 'default');
-			
+
 			remove_meta_box('postimagediv', 'fakturo_product', 'side');
 			add_meta_box('postimagediv', __('Product Image', 'fakturo'), array('fktrPostTypeProducts', 'thumbnail_meta_box'), 'fktr_product', 'side', 'high');
 			add_meta_box('fakturo-data-box', __('Complete Product Data', 'fakturo'), array('fktrPostTypeProducts', 'data_box'), 'fktr_product', 'normal', 'default');
 			add_meta_box('fakturo-stock-box', __('Stock', 'fakturo'), array('fktrPostTypeProducts', 'stock_box'), 'fktr_product', 'side', 'high');
 
 			do_action('add_ftkr_product_meta_boxes');
-
 		}
 
 		public static function thumbnail_meta_box() {
@@ -335,9 +334,8 @@ if (!class_exists('fktrPostTypeProducts')) :
 
 			$echoHtml = apply_filters('fktr_product_thumbnail_box', $echoHtml);
 			echo $echoHtml;
-			
+
 			do_action('add_fktr_product_thumbnail_box', $echoHtml);
-			
 		}
 
 		public static function price_box() {
@@ -348,25 +346,25 @@ if (!class_exists('fktrPostTypeProducts')) :
 
 			$currency = (isset($product_data['currency']) && !empty($product_data['currency']) ) ? $product_data['currency'] : $setting_system['currency'];
 
-		$selectCurrencies = wp_dropdown_categories( array(
-			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Currency', 'fakturo' ),
-			'orderby'            => 'name', 
-			'order'              => 'ASC',
-			'show_count'         => 0,
-			'hide_empty'         => 0, 
-			'child_of'           => 0,
-			'exclude'            => '',
-			'echo'               => 0,
-			'selected'           => $currency,
-			'hierarchical'       => 1, 
-			'name'               => 'currency',
-			'id'				 => 'currency',
-			'class'              => '',
-			'depth'              => 1,
-			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_currencies',
-			'hide_if_empty'      => false
+			$selectCurrencies = wp_dropdown_categories(array(
+				'show_option_all' => '',
+				'show_option_none' => __('Choose a Currency', 'fakturo'),
+				'orderby' => 'name',
+				'order' => 'ASC',
+				'show_count' => 0,
+				'hide_empty' => 0,
+				'child_of' => 0,
+				'exclude' => '',
+				'echo' => 0,
+				'selected' => $currency,
+				'hierarchical' => 1,
+				'name' => 'currency',
+				'id' => 'currency',
+				'class' => '',
+				'depth' => 1,
+				'tab_index' => 0,
+				'taxonomy' => 'fktr_currencies',
+				'hide_if_empty' => false
 			));
 			$echoHtml = '<table class="form-table">
 				<tbody>
@@ -413,15 +411,15 @@ if (!class_exists('fktrPostTypeProducts')) :
 						$product_data['prices'][$t->term_id] = ($product_data['cost'] != 0) ? ((($product_data['cost'] / 100) * $t->percentage) + $product_data['cost']) : 0;
 					}
 					if (empty($product_data['prices_final'][$t->term_id])) {
-						
+
 						$tax_porcent = 0;
 						if (!is_wp_error($product_tax)) {
 							$tax_porcent = $product_tax->percentage;
 						}
-						
+
 						$product_data['prices_final'][$t->term_id] = ($product_data['prices'][$t->term_id] != 0) ? ((($product_data['prices'][$t->term_id] / 100) * $tax_porcent) + $product_data['prices'][$t->term_id]) : 0;
 					}
-					
+
 					$echoHtml .= '<tr class="pricestr" data-id="' . $t->term_id . '" data-porcentage="' . $t->percentage . '">
 						<td style="text-align: center;">' . $t->name . ' (' . $t->percentage . '%)</td>
 						<td style="text-align: center;"><input type="text" value="' . (isset($product_data['prices'][$t->term_id]) ? number_format($product_data['prices'][$t->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) : '') . '"  id="prices_' . $t->term_id . '" class="prices" name="prices[' . $t->term_id . ']"/></td>
@@ -433,12 +431,12 @@ if (!class_exists('fktrPostTypeProducts')) :
 				$echoHtml .= '<tr><td colspan="4" style="text-align: center;font-size: large;" align="center">' . __('Scale prices missed. Go to Settings to add them: ', 'fakturo') . '';
 				$echoHtml .= '<a href="' . admin_url('edit-tags.php?taxonomy=fktr_price_scales') . '">' . __('Scale prices', 'fakturo') . '</a></td></tr>';
 			}
-			
+
 			$echoHtml .= '</table>';
-			
+
 			$echoHtml = apply_filters('fktr_product_prices_box', $echoHtml);
 			echo $echoHtml;
-			
+
 			do_action('add_fktr_product_prices_box', $echoHtml);
 		}
 
@@ -476,11 +474,11 @@ if (!class_exists('fktrPostTypeProducts')) :
 
 		public static function data_box() {
 			global $post;
-			
+
 			$product_data = self::get_product_data($post->ID);
-			
+
 			$setting_system = get_option('fakturo_system_options_group', false);
-			
+
 			$selectProvider = fakturo_get_select_post(array(
 				'echo' => 0,
 				'post_type' => 'fktr_provider',
@@ -490,124 +488,124 @@ if (!class_exists('fktrPostTypeProducts')) :
 				'selected' => $product_data['provider'],
 				'class' => ''
 			));
-                
-                $selectModel = wp_dropdown_categories( array(
-			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Model', 'fakturo' ),
-			'orderby'            => 'name', 
-			'order'              => 'ASC',
-			'show_count'         => 0,
-			'hide_empty'         => 0, 
-			'child_of'           => 0,
-			'exclude'            => '',
-			'echo'               => 0,
-			'selected'           => $product_data['model'],
-			'hierarchical'       => 1, 
-			'name'               => 'model',
-			'class'              => 'form-no-clear',
-			'depth'              => 1,
-			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_model',
-			'hide_if_empty'      => false
+
+			$selectModel = wp_dropdown_categories(array(
+				'show_option_all' => '',
+				'show_option_none' => __('Choose a Model', 'fakturo'),
+				'orderby' => 'name',
+				'order' => 'ASC',
+				'show_count' => 0,
+				'hide_empty' => 0,
+				'child_of' => 0,
+				'exclude' => '',
+				'echo' => 0,
+				'selected' => $product_data['model'],
+				'hierarchical' => 1,
+				'name' => 'model',
+				'class' => 'form-no-clear',
+				'depth' => 1,
+				'tab_index' => 0,
+				'taxonomy' => 'fktr_model',
+				'hide_if_empty' => false
 			));
-		$selectCategory = wp_dropdown_categories( array(
-			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Category', 'fakturo' ),
-			'orderby'            => 'name', 
-			'order'              => 'ASC',
-			'show_count'         => 0,
-			'hide_empty'         => 0, 
-			'child_of'           => 0,
-			'exclude'            => '',
-			'echo'               => 0,
-			'selected'           => $product_data['category'],
-			'hierarchical'       => 1, 
-			'name'               => 'category',
-			'class'              => 'form-no-clear',
-			'depth'              => 1,
-			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_category',
-			'hide_if_empty'      => false
+			$selectCategory = wp_dropdown_categories(array(
+				'show_option_all' => '',
+				'show_option_none' => __('Choose a Category', 'fakturo'),
+				'orderby' => 'name',
+				'order' => 'ASC',
+				'show_count' => 0,
+				'hide_empty' => 0,
+				'child_of' => 0,
+				'exclude' => '',
+				'echo' => 0,
+				'selected' => $product_data['category'],
+				'hierarchical' => 1,
+				'name' => 'category',
+				'class' => 'form-no-clear',
+				'depth' => 1,
+				'tab_index' => 0,
+				'taxonomy' => 'fktr_category',
+				'hide_if_empty' => false
 			));
-		$selectProductType = wp_dropdown_categories( array(
-			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Product Type', 'fakturo' ),
-			'orderby'            => 'name', 
-			'order'              => 'ASC',
-			'show_count'         => 0,
-			'hide_empty'         => 0, 
-			'child_of'           => 0,
-			'exclude'            => '',
-			'echo'               => 0,
-			'selected'           => $product_data['product_type'],
-			'hierarchical'       => 1, 
-			'name'               => 'product_type',
-			'class'              => 'form-no-clear',
-			'depth'              => 1,
-			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_product_type',
-			'hide_if_empty'      => false
+			$selectProductType = wp_dropdown_categories(array(
+				'show_option_all' => '',
+				'show_option_none' => __('Choose a Product Type', 'fakturo'),
+				'orderby' => 'name',
+				'order' => 'ASC',
+				'show_count' => 0,
+				'hide_empty' => 0,
+				'child_of' => 0,
+				'exclude' => '',
+				'echo' => 0,
+				'selected' => $product_data['product_type'],
+				'hierarchical' => 1,
+				'name' => 'product_type',
+				'class' => 'form-no-clear',
+				'depth' => 1,
+				'tab_index' => 0,
+				'taxonomy' => 'fktr_product_type',
+				'hide_if_empty' => false
 			));
 
-		$selectTax = wp_dropdown_categories( array(
-			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Tax', 'fakturo' ),
-			'orderby'            => 'name', 
-			'order'              => 'ASC',
-			'show_count'         => 0,
-			'hide_empty'         => 0, 
-			'child_of'           => 0,
-			'exclude'            => '',
-			'echo'               => 0,
-			'selected'           => $product_data['tax'],
-			'hierarchical'       => 1, 
-			'name'               => 'tax',
-			'class'              => 'form-no-clear',
-			'depth'              => 1,
-			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_tax',
-			'hide_if_empty'      => false
+			$selectTax = wp_dropdown_categories(array(
+				'show_option_all' => '',
+				'show_option_none' => __('Choose a Tax', 'fakturo'),
+				'orderby' => 'name',
+				'order' => 'ASC',
+				'show_count' => 0,
+				'hide_empty' => 0,
+				'child_of' => 0,
+				'exclude' => '',
+				'echo' => 0,
+				'selected' => $product_data['tax'],
+				'hierarchical' => 1,
+				'name' => 'tax',
+				'class' => 'form-no-clear',
+				'depth' => 1,
+				'tab_index' => 0,
+				'taxonomy' => 'fktr_tax',
+				'hide_if_empty' => false
 			));
-		
-		$selectPackaging = wp_dropdown_categories( array(
-			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Packaging', 'fakturo' ),
-			'orderby'            => 'name', 
-			'order'              => 'ASC',
-			'show_count'         => 0,
-			'hide_empty'         => 0, 
-			'child_of'           => 0,
-			'exclude'            => '',
-			'echo'               => 0,
-			'selected'           => $product_data['packaging'],
-			'hierarchical'       => 1, 
-			'name'               => 'packaging',
-			'class'              => 'form-no-clear',
-			'depth'              => 1,
-			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_packaging',
-			'hide_if_empty'      => false
+
+			$selectPackaging = wp_dropdown_categories(array(
+				'show_option_all' => '',
+				'show_option_none' => __('Choose a Packaging', 'fakturo'),
+				'orderby' => 'name',
+				'order' => 'ASC',
+				'show_count' => 0,
+				'hide_empty' => 0,
+				'child_of' => 0,
+				'exclude' => '',
+				'echo' => 0,
+				'selected' => $product_data['packaging'],
+				'hierarchical' => 1,
+				'name' => 'packaging',
+				'class' => 'form-no-clear',
+				'depth' => 1,
+				'tab_index' => 0,
+				'taxonomy' => 'fktr_packaging',
+				'hide_if_empty' => false
 			));
-		$selectOrigin = wp_dropdown_categories( array(
-			'show_option_all'    => '',
-			'show_option_none'   => __('Choose a Origin', 'fakturo' ),
-			'orderby'            => 'name', 
-			'order'              => 'ASC',
-			'show_count'         => 0,
-			'hide_empty'         => 0, 
-			'child_of'           => 0,
-			'exclude'            => '',
-			'echo'               => 0,
-			'selected'           => $product_data['origin'],
-			'hierarchical'       => 1, 
-			'name'               => 'origin',
-			'class'              => 'form-no-clear',
-			'depth'              => 1,
-			'tab_index'          => 0,
-			'taxonomy'           => 'fktr_origins',
-			'hide_if_empty'      => false
+			$selectOrigin = wp_dropdown_categories(array(
+				'show_option_all' => '',
+				'show_option_none' => __('Choose a Origin', 'fakturo'),
+				'orderby' => 'name',
+				'order' => 'ASC',
+				'show_count' => 0,
+				'hide_empty' => 0,
+				'child_of' => 0,
+				'exclude' => '',
+				'echo' => 0,
+				'selected' => $product_data['origin'],
+				'hierarchical' => 1,
+				'name' => 'origin',
+				'class' => 'form-no-clear',
+				'depth' => 1,
+				'tab_index' => 0,
+				'taxonomy' => 'fktr_origins',
+				'hide_if_empty' => false
 			));
-			
+
 			$echoHtml = '<table class="form-table">
 			<tbody>
 			<tr class="tr_fktr">
@@ -640,9 +638,9 @@ if (!class_exists('fktrPostTypeProducts')) :
 				<textarea class="mw-95" rows="4" name="description" id="description">' . $product_data['description'] . '</textarea>
 				</td>
 			</tr>';
-			
+
 			if (isset($setting_system['use_stock_product']) && $setting_system['use_stock_product']) {
-				
+
 				$echoHtml .= '<tr class="user-address-wrap">
 					<th><label for="min">' . __('Minimal stock', 'fakturo') . '</label></th>
 					<td><input type="number" name="min" id="min" value="' . $product_data['min'] . '" class="regular-text"></td>
@@ -763,9 +761,9 @@ if (!class_exists('fktrPostTypeProducts')) :
 			if (!isset($fields['tax'])) {
 				$fields['tax'] = 0;
 			}
-		
-		
-		
+
+
+
 			if (!isset($fields['reference'])) {
 				$fields['reference'] = '';
 			}
@@ -775,7 +773,7 @@ if (!class_exists('fktrPostTypeProducts')) :
 			if (!isset($fields['description'])) {
 				$fields['description'] = '';
 			}
-		
+
 			if (!isset($fields['min'])) {
 				$fields['min'] = '';
 			}
@@ -800,7 +798,7 @@ if (!class_exists('fktrPostTypeProducts')) :
 			if (!isset($fields['prices_final'])) {
 				$fields['prices_final'] = array();
 			}
-			
+
 			return $fields;
 		}
 
@@ -821,12 +819,12 @@ if (!class_exists('fktrPostTypeProducts')) :
 				$fields = array();
 				$fields['cost'] = 0;
 				$fields['currency'] = 0;
-				
+
 				$fields['model'] = 0;
 				$fields['category'] = 0;
 				$fields['product_type'] = 0;
 				$fields['tax'] = 0;
-				
+
 				$fields['reference'] = '';
 				$fields['manufacturers'] = '';
 				$fields['description'] = '';
@@ -836,16 +834,16 @@ if (!class_exists('fktrPostTypeProducts')) :
 				$fields['unit'] = '';
 				$fields['note'] = '';
 				$fields['origin'] = 0;
-				
+
 				$fields['prices'] = array();
 				$fields['prices_final'] = array();
 				$fields['stocks'] = array();
-				
+
 				$fields = apply_filters('fktr_clean_product_fields', $fields);
-				
+
 				foreach ($fields as $field => $value) {
 					if (!is_null($value)) {
-						
+
 						$new = apply_filters('fktr_product_metabox_save_' . $field, $value);  //filtra cada campo antes de grabar
 						update_post_meta($post->ID, $field, $new);
 					}
@@ -854,9 +852,9 @@ if (!class_exists('fktrPostTypeProducts')) :
 		}
 
 		public static function get_product_data($product_id) {
-			$custom_field_keys = get_post_custom($product_id);		
-	 		$custom_field_keys = is_array($custom_field_keys) ? $custom_field_keys : array($custom_field_keys);
-			
+			$custom_field_keys = get_post_custom($product_id);
+			$custom_field_keys = is_array($custom_field_keys) ? $custom_field_keys : array($custom_field_keys);
+
 			foreach ($custom_field_keys as $key => $value) {
 				$custom_field_keys[$key] = maybe_unserialize($value[0]);
 			}
@@ -879,7 +877,7 @@ if (!class_exists('fktrPostTypeProducts')) :
 			}
 			$fields = apply_filters('fktr_clean_product_fields', $_POST);
 			$fields = apply_filters('fktr_product_before_save', $fields);
-			
+
 			if (isset($fields['webcam_image']) && $fields['webcam_image'] != NULL) {
 				delete_post_meta($post_id, '_thumbnail_id');
 				$filename = 'webcam_image_' . microtime() . '.jpg';
@@ -904,22 +902,21 @@ if (!class_exists('fktrPostTypeProducts')) :
 					unset($fields['webcam_image']);
 				}
 			}
-			
+
 			foreach ($fields as $field => $value) {
-				
+
 				if (!is_null($value)) {
-					
+
 					$new = apply_filters('fktr_product_metabox_save_' . $field, $value);  //filtra cada campo antes de grabar
 					update_post_meta($post_id, $field, $new);
 				}
 			}
-			
+
 			do_action('fktr_save_product', $post_id, $post);
 		}
 
 	}
 
 	endif;
-$fktrPostTypeProducts = new fktrPostTypeProducts();
-?>
 
+$fktrPostTypeProducts = new fktrPostTypeProducts();

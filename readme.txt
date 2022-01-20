@@ -2,14 +2,14 @@
 Contributors: etruel, sniuk, khaztiel
 Donate link: 
 Tags: invoice, sales, purchases, billing, receipt, Tax Code, VAT, PDF invoices, bill, bill clients, merchantplus, SME, pyme, checkout, online payment, pay, recurring billing, send invoice, web invoice, wp-invoice, wp-sales, e-commerce, e-store, eshop, wp ecommerce
-Requires at least: 4.7
-Tested up to: 5.8
+Requires at least: 4.9
+Tested up to: 5.9
 Stable tag: trunk
-Requires PHP: 7.0
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-The better open source Invoice System.  An easy and fully-configurable SME Management system for Wordpress.
+The best and more complete open source Invoice System.  An easy and fully-configurable SME Management system for Wordpress.
 
 == Description ==
 
@@ -83,11 +83,17 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 
 == Changelog ==
-= 1.0.0 August 25, 2021) =
+= 1.0.0 (Jan XX, 2022) =
+* Updated dompdf library.
+* Added new reports.
+* Added new print templates by default.
+* Added reference codes to products list.
 * Tweaks on Quick Actions texts on sales.
 * Changed Draft by Pending status texts in sales.
 * Improved security nonces on Quick actions.
 * Improved many Help contents.
+* Fixes price scales on sales.
+* Added print featured for Pendient invoices.
 * Fixes available Bulk Actions on sales.
 * Fixes Date Picker in Start of activities of Setting page to allow strings.
 * Fixes deprecated call to wp_no_robots on wizard.

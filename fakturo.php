@@ -7,7 +7,7 @@
  Author: Etruel Developments LLC
  Author URI: https://etruel.com
  Text Domain: fakturo
- Domain Path: /lang/
+ Domain Path: /languages/
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
