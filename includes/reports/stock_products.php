@@ -536,7 +536,7 @@ class stock_products_report {
 				<input type="hidden" name="page" value="fakturo_reports"/>
 				<input type="hidden" name="sec" value="<?php echo $request['sec'] ?>"/>
 				<?php echo $selectClients ?>
-				
+				<span><?php echo __('Range from:', 'fakturo' ); ?></span>
 				<select name="letter_from" id="letter_from">
 					<?php
 						for($i=65; $i<=90; $i++) {  
@@ -545,7 +545,7 @@ class stock_products_report {
 						} 
 					?>
 				</select>
-				
+				<span><?php echo __('to:', 'fakturo' ); ?></span>
 				<select name="letter_to" id="letter_to">
 					<?php
 						for($i=65; $i<=90; $i++) {
@@ -574,30 +574,26 @@ class stock_products_report {
 	* @return Array of objects.
 	*/
 	public static function get_objects($return, $request, $ranges) {
-
 		global $wpdb;
+
+		$letter_from = (isset($request['letter_from']) ? $request['letter_from'] : 'A' );
+		$letter_to = (isset($request['letter_to']) ? $request['letter_to'] : 'Z' );
+		
+		if($letter_to == 'Z' || $letter_from > $letter_to ){
+			$letter_to = 'Y';
+		}
+
 		$sql = "SELECT p.ID, pm.meta_key, pm.meta_value as timestamp_value, p.post_type as post_type FROM {$wpdb->posts} as p
 				LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
 		        WHERE 
 		        pm.meta_key = 'post_title'
 				AND p.post_status = 'publish'
 				AND (p.post_type = 'fktr_product' OR p.post_type = 'fktr_receipt')
-				
-				AND pm.meta_value Between '".$request['letter_from']."' AND 
-				 (
-					 SELECT pm.meta_value FROM {$wpdb->posts} as p
-					LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
-			        WHERE 
-			        pm.meta_key = 'post_title'
-					AND p.post_status = 'publish'
-					AND (p.post_type = 'fktr_product' OR p.post_type = 'fktr_receipt')
-					AND pm.meta_value LIKE '".$request['letter_to']."_%'  ORDER BY pm.meta_value desc limit 1
-				 )
-				
-				or p.ID = '".$request['product_id']."'
 
-		";
-		
+				AND pm.meta_value between '$letter_from' and char(ascii('$letter_to') + 1)
+				OR p.ID = '".$request['product_id']."'
+				 ";
+				
 		$results = $wpdb->get_results($sql, OBJECT);
 		if (!empty($results)) {
 			$return = $results;
