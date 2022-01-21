@@ -80,8 +80,18 @@ class stock_products_report {
 		//$new_array = $default_array_data;
 		if (!empty($objects_client)) {
 
-			$new_array[0] = __('ID', 'fakturo');
-			$new_array[1] = __('Name', 'fakturo');
+			$options = get_option('fakturo_system_options_group');
+			
+			$selectSearchCode = array();
+			$selectSearchCode['reference'] = __( 'Reference', 'fakturo' );
+			$selectSearchCode['internal_code'] = __( 'Internal code', 'fakturo' );
+			$selectSearchCode['manufacturers_code'] = __( 'Manufacturers code', 'fakturo' );							
+			$selectSearchCode = apply_filters('fktr_search_code_array', $selectSearchCode);
+
+			$new_array[0] = __('Name', 'fakturo');
+			foreach ($selectSearchCode as $key => $txt) {
+				$new_array[1] .=  (array_search($key, $options['search_code'])!==false) ? $txt : '';
+			}
 			$new_array[2] = __('Inventory', 'fakturo');
 			$new_array[3] = __('Scale', 'fakturo');
 			$new_array[4] = __('Cost', 'fakturo');
@@ -99,8 +109,21 @@ class stock_products_report {
 					// Get Prices
 					$product_prices = self::get_prices_product_report($product_data);
 					
-					$new_array[0] = $product_data['post_ID'];
-					$new_array[1] = $product_data['post_title'];
+					
+					$new_array[0] = $product_data['post_title'];
+
+					foreach($options['search_code'] as $key => $value){
+						if($value == 'reference'){
+							$new_array[1] = $product_data['reference'];
+						}
+						if($value == 'internal_code'){
+							$new_array[1] = $product_data['ID'];
+						}
+						if($value == 'manufacturers_code'){
+							$new_array[1] = $product_data['manufacturers'];
+						}
+					}
+
 					$new_array[2] = $total_stock;
 					$new_array[3] = $product_prices['scale'];
 					$new_array[4] = $product_prices['price_initial'];
@@ -118,8 +141,20 @@ class stock_products_report {
 						// Get Prices
 						$product_prices = self::get_prices_product_report($product_data);
 			 
-						$new_array[0] = $testval->ID;
-						$new_array[1] = $testval->timestamp_value;
+						$new_array[0] = $testval->timestamp_value;
+						
+						foreach($options['search_code'] as $key => $value){
+							if($value == 'reference'){
+								$new_array[1] = $product_data['reference'];
+							}
+							if($value == 'internal_code'){
+								$new_array[1] = $product_data['ID'];
+							}
+							if($value == 'manufacturers_code'){
+								$new_array[1] = $product_data['manufacturers'];
+							}
+						}
+
 						$new_array[2] = $total_stock;
 						$new_array[3] = $product_prices['scale'];
 						$new_array[4] = $product_prices['price_initial'];
@@ -133,7 +168,7 @@ class stock_products_report {
 			
 		}
 		header('Content-Type: application/excel');
-		header('Content-Disposition: attachment; filename="client_account_movements.csv"');
+		header('Content-Disposition: attachment; filename="Products_Summary_'.date_i18n('Ymdhi').'.csv"');
 		$out = fopen('php://output', 'w');
 		foreach ($array_data as $k => $arr) {
 			fputcsv($out, $arr, ';');
@@ -199,33 +234,45 @@ class stock_products_report {
 
 
 		//$total_html_print .= '<div style="width:50%; text-align: right; display: inline-block;"><h3>'.sprintf(__('Date: since %s til %s', 'fakturo' ), date_i18n($setting_system['dateformat'], $ranges['from']), date_i18n($setting_system['dateformat'], $ranges['to'])).'</h3></div>';
-		$html_objects = '<div style="clear: both;"><h2>No results with this filters</h2></div>';
+		$html_objects = '';
 		if (!empty($objects_client)) {
-			$html_objects = '<table class="wp-list-table widefat fixed striped posts" style="width: 100%;">
+
+			$options = get_option('fakturo_system_options_group');
+			
+			$selectSearchCode = array();
+			$selectSearchCode['reference'] = __( 'Reference', 'fakturo' );
+			$selectSearchCode['internal_code'] = __( 'Internal code', 'fakturo' );
+			$selectSearchCode['manufacturers_code'] = __( 'Manufacturers code', 'fakturo' );							
+			$selectSearchCode = apply_filters('fktr_search_code_array', $selectSearchCode);
+			
+			$html_objects .= '<table class="wp-list-table widefat fixed striped posts" id="table_report_product">
 				<thead>
-					<tr>
-						<td width="5%">
-							'.__('ID', 'fakturo').'
-						</td>
-						<td width="10%">
-							'.__('Name', 'fakturo').'
-						</td>
-						<td width="10%">
-							'.__('Inventory', 'fakturo').'
-						</td>
-						<td width="15%">
-							'.__('Scale', 'fakturo' ).'
-						</td>
-						<td width="10%">
-							'.__('Cost', 'fakturo' ).'
-						</td>
-						<td width="10%">
-							'.__('Price', 'fakturo').'
-						</td>
-					</tr>
+				<tr>
+					<td width="30%">
+					'.__('Name', 'fakturo').'
+					</td>
+					';
+					foreach ($selectSearchCode as $key => $txt) {
+						$html_objects .=  (array_search($key, $options['search_code'])!==false) ? '<td width="10%">'.$txt.'</td>' : '';
+					}
+					
+					$html_objects .= '<td width="10%">
+						'.__('Inventory', 'fakturo').'
+					</td>
+					<td width="10%">
+						'.__('Scale', 'fakturo' ).'
+					</td>
+					<td width="10%">
+						'.__('Cost', 'fakturo' ).'
+					</td>
+					<td width="10%">
+						'.__('Price', 'fakturo').'
+					</td>
+				</tr>
 				</thead>
 				<tbody id="the-list">';
-				
+
+
 				if (is_numeric($request['product_id']) && $request['product_id'] > 0) {
 					$product_data = fktrPostTypeProducts::get_product_data($request['product_id']);
 
@@ -239,12 +286,22 @@ class stock_products_report {
 					
 						$html_objects .= '<tr>
 							<td>
-								'.$product_data['post_ID'].'
-							</td>
-							<td>
-								<a href="'.$obj_link.'" target="_blank">'.$product_data['post_title'].'</a>
-							</td>
-							<td>
+								<a href="'.$obj_link.'">'.$product_data['post_title'].'</a>
+							</td>';
+
+							foreach($options['search_code'] as $key => $value){
+								if($value == 'reference'){
+									$html_objects .= '<td>'.$product_data['reference'].'</td>';
+								}
+								if($value == 'internal_code'){
+									$html_objects .= '<td>'.$product_data['ID'].'</td>';
+								}
+								if($value == 'manufacturers_code'){
+									$html_objects .= '<td>'.$product_data['manufacturers'].'</td>';
+								}
+							}
+
+							$html_objects .= '<td>
 								'. $total_stock .'
 							</td>
 							<td>
@@ -273,14 +330,24 @@ class stock_products_report {
 	
 						$obj_link = admin_url('post.php?post='.$testval->ID.'&action=edit');
 					
-						$html_objects .= '<tr>
+						
+							$html_objects .= '<tr>
 							<td>
-								'.$testval->ID.'
+								<a href="'.$obj_link.'">'.$testval->timestamp_value.'</a>
 							</td>
-							<td>
-								<a href="'.$obj_link.'" target="_blank">'.$testval->timestamp_value.'</a>
-							</td>
-							<td>
+								';
+								foreach($options['search_code'] as $key => $value){
+									if($value == 'reference'){
+										$html_objects .= '<td>'.$product_data['reference'].'</td>';
+									}
+									if($value == 'internal_code'){
+										$html_objects .= '<td>'.$product_data['ID'].'</td>';
+									}
+									if($value == 'manufacturers_code'){
+										$html_objects .= '<td>'.$product_data['manufacturers'].'</td>';
+									}
+								}
+							$html_objects .= '<td>
 								'. $total_stock .'
 							</td>
 							<td>
@@ -299,6 +366,8 @@ class stock_products_report {
 			$html_objects .= '</tbody>
 			</table>
 			<div class="clear"></div>';
+		}else{
+			$html_objects = '<div style="clear: both;"><h2>No results with this filters</h2></div>';
 		}
 		
 		$total_html_print .= '
@@ -308,12 +377,12 @@ class stock_products_report {
 		</div>';
 		$total_html_print .= '</body>
 			</html>';
-
+			
 		$pdf = fktr_pdf::getInstance();
 		$pdf ->set_paper("A4", "portrait");
 		$pdf ->load_html(utf8_decode($total_html_print));
 		$pdf ->render();
-		$pdf ->stream('pdf.pdf', array('Attachment'=>0));
+		$pdf ->stream('Products_Summary_'.date_i18n('Ymdhi').'.pdf', array('Attachment'=>0));
 
 	}
 	
@@ -360,22 +429,32 @@ class stock_products_report {
 		
 		echo $html_client_data;
 		echo '<br>';
-
-		$html_objects = '<div style="clear: both;"><h2>No results with this filters</h2></div>';
+		$html_objects='';
 		if (!empty($objects_client)) {
-			$html_objects = '<table class="wp-list-table widefat fixed striped posts" id="table_report_product">
+
+			$options = get_option('fakturo_system_options_group');
+			
+			$selectSearchCode = array();
+			$selectSearchCode['reference'] = __( 'Reference', 'fakturo' );
+			$selectSearchCode['internal_code'] = __( 'Internal code', 'fakturo' );
+			$selectSearchCode['manufacturers_code'] = __( 'Manufacturers code', 'fakturo' );							
+			$selectSearchCode = apply_filters('fktr_search_code_array', $selectSearchCode);
+			
+			$html_objects .= '<table class="wp-list-table widefat fixed striped posts" id="table_report_product">
 				<thead>
 				<tr>
-					<td width="5%">
-						'.__('ID', 'fakturo').'
+					<td width="30%">
+					'.__('Name', 'fakturo').'
 					</td>
-					<td width="40%">
-						'.__('Name', 'fakturo').'
-					</td>
-					<td width="10%">
+					';
+					foreach ($selectSearchCode as $key => $txt) {
+						$html_objects .=  (array_search($key, $options['search_code'])!==false) ? '<td width="10%">'.$txt.'</td>' : '';
+					}
+					
+					$html_objects .= '<td width="10%">
 						'.__('Inventory', 'fakturo').'
 					</td>
-					<td width="15%">
+					<td width="10%">
 						'.__('Scale', 'fakturo' ).'
 					</td>
 					<td width="10%">
@@ -403,12 +482,22 @@ class stock_products_report {
 				
 					$html_objects .= '<tr>
 						<td>
-							'.$product_data['post_ID'].'
-						</td>
-						<td>
-							<a href="'.$obj_link.'" target="_blank">'.$product_data['post_title'].'</a>
-						</td>
-						<td>
+							<a href="'.$obj_link.'" >'.$product_data['post_title'].'</a>
+						</td>';
+
+						foreach($options['search_code'] as $key => $value){
+							if($value == 'reference'){
+								$html_objects .= '<td>'.$product_data['reference'].'</td>';
+							}
+							if($value == 'internal_code'){
+								$html_objects .= '<td>'.$product_data['ID'].'</td>';
+							}
+							if($value == 'manufacturers_code'){
+								$html_objects .= '<td>'.$product_data['manufacturers'].'</td>';
+							}
+						}
+
+						$html_objects .= '<td>
 							'. $total_stock .'
 						</td>
 						<td>
@@ -425,9 +514,8 @@ class stock_products_report {
 				</table>';
 
 			}else{
-				
+			
 				foreach ($objects_client as $obj => $testval) {
-					
 					$product_data = fktrPostTypeProducts::get_product_data($testval->ID);
 					
 					// Get Stock
@@ -436,17 +524,26 @@ class stock_products_report {
 					// Get Prices
 					$product_prices = self::get_prices_product_report($product_data);
 					
-
+				
 					$obj_link = admin_url('post.php?post='.$testval->ID.'&action=edit');
 				
 					$html_objects .= '<tr>
 						<td>
-							'.$testval->ID.'
-						</td>
-						<td>
 							<a href="'.$obj_link.'" target="_blank">'.$testval->timestamp_value.'</a>
 						</td>
-						<td>
+							';
+							foreach($options['search_code'] as $key => $value){
+								if($value == 'reference'){
+									$html_objects .= '<td>'.$product_data['reference'].'</td>';
+								}
+								if($value == 'internal_code'){
+									$html_objects .= '<td>'.$product_data['ID'].'</td>';
+								}
+								if($value == 'manufacturers_code'){
+									$html_objects .= '<td>'.$product_data['manufacturers'].'</td>';
+								}
+							}
+						$html_objects .= '<td>
 							'. $total_stock .'
 						</td>
 						<td>
@@ -463,6 +560,8 @@ class stock_products_report {
 				$html_objects .= '</tbody>
 				</table>';
 			}
+		}else{
+			$html_objects = '<div style="clear: both;"><h2>No results with this filters</h2></div>';
 		}
 		
 		echo '<div style="width: 100%;">' . $html_objects . '</div>';
@@ -591,7 +690,7 @@ class stock_products_report {
 				AND (p.post_type = 'fktr_product' OR p.post_type = 'fktr_receipt')
 
 				AND pm.meta_value between '$letter_from' and char(ascii('$letter_to') + 1)
-				OR p.ID = '".$request['product_id']."'
+				OR p.ID = '".$request['product_id']."' ORDER BY pm.meta_value ASC
 				 ";
 				
 		$results = $wpdb->get_results($sql, OBJECT);
