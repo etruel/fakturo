@@ -4839,6 +4839,14 @@ msgstr "Documentos"
 msgid "All clients"
 msgstr "Todos los clientes"
 
+#: includes/reports/stock_products.php:539
+msgid "Range from:"
+msgstr "Rango desde:"
+
+#: includes/reports/stock_products.php:548
+msgid "to:"
+msgstr "hasta:"
+
 #: includes/reports/stock_products.php:173
 msgid "All Products"
 msgstr "Todos los productos"
