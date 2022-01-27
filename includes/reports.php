@@ -98,7 +98,7 @@ class reports {
 	* @param $ranges Array of ranges on timestamp to get objects.
 	* @return Array of ids or a empty array on failed.
 	*/
-	public static function get_objects($request, $ranges) {
+	public static function get_objects($request, $ranges, $limit = '') {
 		$return = array();
 		if ($request['sec'] == 'sales') {
 			$return = get_sales_on_range($ranges['from'], $ranges['to']);
@@ -106,7 +106,7 @@ class reports {
 		/**
 		* Can filter and add objects to use on sections.
 		*/
-		$return = apply_filters('get_objects_reports_'.$request['sec'], $return, $request, $ranges);
+		$return = apply_filters('get_objects_reports_'.$request['sec'], $return, $request, $ranges, $limit);
 		return $return;
 	}
 	
