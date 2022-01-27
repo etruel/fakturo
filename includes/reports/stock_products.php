@@ -23,7 +23,7 @@ class stock_products_report {
 	public static function hooks() {
 		add_action('report_page_before_content_stock_products', array(__CLASS__, 'before_content'), 10, 2);
 		add_action('report_page_content_stock_products', array(__CLASS__, 'content'), 10, 2);
-		add_filter('get_objects_reports_stock_products', array(__CLASS__, 'get_objects'), 10, 3);
+		add_filter('get_objects_reports_stock_products', array(__CLASS__, 'get_objects'), 10, 4);
 
 		// export report		
 		add_action('admin_post_stock_products_print_pdf', array(__CLASS__, 'print_pdf'));
@@ -414,8 +414,43 @@ class stock_products_report {
 		//load select 2
 		self::get_form_filters($request);
 		
+		//get number post
+		$rows = count(reports::get_objects($request, $ranges, $limit=''));
+				
+		$page_rows = (isset($_REQUEST['show_pagination']) ? $_REQUEST['show_pagination'] :'10' );
+
+		// Page Numbers
+		$last = ceil($rows/$page_rows);
+
+		if($last < 1){
+			$last = 1;
+		}
+
+		$pagenum = 1;
+
+		if(isset($_GET['pn'])){
+			$pagenum = preg_replace('#[^0-9]#', '', $_GET['pn']);
+		}
+		
+		if ($pagenum < 1) { 
+			$pagenum = 1; 
+		} 
+		else if ($pagenum > $last) { 
+			$pagenum = $last; 
+		}
+		
+		$limit = 'LIMIT ' .($pagenum - 1) * $page_rows .',' .$page_rows;
+		
+		
 		//load data query sql
-		$objects_client = reports::get_objects($request, $ranges);
+		if( !isset( $_REQUEST['show_pagination'] ) ){
+			$objects_client = reports::get_objects($request, $ranges, $limit);
+		}else{
+			$objects_client = reports::get_objects($request, $ranges, $limit);
+		}
+		$paginationCtrls = self::products_pagination($request, $ranges, reports::get_objects($request, $ranges, $limit=''));
+		
+		 
 		
 		$total_documents = array('subtotal' => 0, 'total' => 0);
 		$html_client_data = '';
@@ -558,12 +593,14 @@ class stock_products_report {
 					</tr>';
 				}
 				$html_objects .= '</tbody>
-				</table>';
+				</table>
+				<div id="pagination_controls">'. $paginationCtrls .'</div>';
 			}
 		}else{
 			$html_objects = '<div style="clear: both;"><h2>No results with this filters</h2></div>';
 		}
 		
+
 		echo '<div style="width: 100%;">' . $html_objects . '</div>';
 	}
 
@@ -588,12 +625,12 @@ class stock_products_report {
 			'taxonomy' => 'fktr_price_scales',
 			'hide_empty' => false,
 		));
-
+		
 		$scale = '';
 		$price_initial = 0;
 		$price_finally = 0;
 		$product_tax = get_fakturo_term($product_data['tax'], 'fktr_tax');
-	
+		
 		foreach ($terms_prices as $price) {
 			
 			if (empty($product_data['prices'][$price->term_id])) {
@@ -608,13 +645,79 @@ class stock_products_report {
 				
 				$product_data['prices_final'][$price->term_id] = ($product_data['prices'][$price->term_id]!= 0) ? ((($product_data['prices'][$price->term_id]/100)*$tax_porcent)+$product_data['prices'][$price->term_id]) : 0;
 			}
-
+			
 			$scale = $price->name . ' ('.$price->percentage.'%)';
 			$price_initial = (isset($product_data['prices'][$price->term_id]) ? number_format($product_data['prices'][$price->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) : '' );
 			$price_finally = (isset($product_data['prices_final'][$price->term_id]) ? number_format($product_data['prices_final'][$price->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) : '' );
 		}
 		return array('scale'=>$scale, 'price_initial'=> $price_initial, 'price_finally' => $price_finally );
+		
+	}
+	
+	public static function products_pagination($request, $ranges, $objects_client){
+		
+		//get number post
+		$rows = count($objects_client);
+		
+		$page_rows = (isset($_REQUEST['show_pagination']) ? $_REQUEST['show_pagination'] : '10' );
+		
+		// Page Numbers
+		$last = ceil($rows/$page_rows);
+		
+		if($last < 1){
+			$last = 1;
+		}
+		
+		$pagenum = 1;
+		
+		if(isset($_GET['pn'])){
+			$pagenum = preg_replace('#[^0-9]#', '', $_GET['pn']);
+		}
+		
+		if ($pagenum < 1) { 
+			$pagenum = 1; 
+		} 
+		else if ($pagenum > $last) { 
+			$pagenum = $last; 
+		}
+		
+		$paginationCtrls = '';
+		
+		if($last != 1){
 
+			$id_product = (isset($_REQUEST['product_id']) ? $_REQUEST['product_id'] : '-1');
+			$letter_from = (isset($_REQUEST['letter_from']) ? $_REQUEST['letter_from'] : 'A');
+			$letter_to = (isset($_REQUEST['letter_to']) ? $_REQUEST['letter_to'] : 'Z');
+			$show_pagination = (isset($_REQUEST['show_pagination']) ? $_REQUEST['show_pagination'] : '10');
+
+			
+			if ($pagenum > 1) {
+				$previous = $pagenum - 1;
+				$paginationCtrls .= '<a href="'.admin_url('admin.php?page=fakturo_reports&sec=stock_products').'&product_id='.$id_product.'&letter_from='.$letter_from.'&letter_to='.$letter_to.'&show_pagination='.$show_pagination.'&pn='.$previous.'" class="button-secondary ">Anterior</a> &nbsp; &nbsp; ';
+				
+				for($i = $pagenum-4; $i < $pagenum; $i++){
+					if($i > 0){
+						$paginationCtrls .= '<a href="'.admin_url('admin.php?page=fakturo_reports&sec=stock_products').'&product_id='.$id_product.'&letter_from='.$letter_from.'&letter_to='.$letter_to.'&show_pagination='.$show_pagination.'&pn='.$i.'" class="button-secondary ">'.$i.'</a> &nbsp; ';
+					}
+				}
+			}
+			
+			$paginationCtrls .= '<a class="button-secondary ">'.$pagenum.'</a>';
+			
+			// generamos el numero de paginas
+			for($i = $pagenum+1; $i <= $last; $i++){
+				$paginationCtrls .= '<a href="'.admin_url('admin.php?page=fakturo_reports&sec=stock_products').'&product_id='.$id_product.'&letter_from='.$letter_from.'&letter_to='.$letter_to.'&show_pagination='.$show_pagination.'&pn='.$i.'" class="button-secondary ">'.$i.'</a> &nbsp; ';
+				if($i >= $pagenum+4){
+					break;
+				}
+			}
+			
+			if ($pagenum != $last) {
+				$next = $pagenum + 1;
+				$paginationCtrls .= ' &nbsp; &nbsp; <a href="'.admin_url('admin.php?page=fakturo_reports&sec=stock_products').'&product_id='.$id_product.'&letter_from='.$letter_from.'&letter_to='.$letter_to.'&show_pagination='.$show_pagination.'&pn='.$next.'" class="button-secondary ">Siguiente</a> ';
+			}
+		}
+		return $paginationCtrls;
 	}
 
 	public static function get_form_filters($request) {
@@ -627,7 +730,7 @@ class stock_products_report {
 											'class' => '',
 											'selected' => $request['product_id']
 										));
-
+										
   
 ?>
 		<div id="div_filter_form" style="padding:5px;">
@@ -649,10 +752,20 @@ class stock_products_report {
 					<?php
 						for($i=65; $i<=90; $i++) {
 							$letter = chr($i);  
-							echo '<option value="'. $letter .'" '. (( $letter == $request['letter_to'])? 'selected' : '' ) .'>'. $letter .'</option>';
+							echo '<option value="'. $letter .'" '. (( $letter == ((isset($request['letter_to']) || !empty($request['letter_to'])) ? $request['letter_to'] : 'Z'  )  )? 'selected' : '' ) .'>'. $letter .'</option>';
 						} 
 					?>
 				</select>
+
+				<span><?php echo __('Mostrar', 'fakturo' ); ?></span>
+				<select name="show_pagination" id="show_pagination">
+					<?php
+						for($i=0; $i<=50; $i = $i+5) {
+							echo '<option value="'. $i .'" '. (( $i == ((isset($request['show_pagination']) || !empty($request['show_pagination'])) ? $request['show_pagination'] : '10'  )  )? 'selected' : '' ) .'>'. $i .'</option>';
+						} 
+					?>
+				</select>
+
 				<input type="submit" class="button-secondary" value="<?php echo __( 'Filter', 'fakturo' ) ?>"/>
 				
 				<a class="button-secondary right" href="<?php echo admin_url('admin-post.php?action=stock_products_download_csv&'.http_build_query($request) ) ?>" ><?php echo __( 'CSV', 'fakturo' ) ?></a>
@@ -672,16 +785,18 @@ class stock_products_report {
 	* @param Array $ranges of ranges on timestamp to get objects.
 	* @return Array of objects.
 	*/
-	public static function get_objects($return, $request, $ranges) {
+	public static function get_objects($return, $request, $ranges, $limit) {
+		
 		global $wpdb;
-
+		$show_pagination = (!empty($limit) ? $limit : '' );
+		
 		$letter_from = (isset($request['letter_from']) ? $request['letter_from'] : 'A' );
-		$letter_to = (isset($request['letter_to']) ? $request['letter_to'] : 'Z' );
+		$letter_to   = (isset($request['letter_to']) ? $request['letter_to'] : 'Z' );
 		
 		if($letter_to == 'Z' || $letter_from > $letter_to ){
 			$letter_to = 'Y';
 		}
-
+		
 		$sql = "SELECT p.ID, pm.meta_key, pm.meta_value as timestamp_value, p.post_type as post_type FROM {$wpdb->posts} as p
 				LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
 		        WHERE 
@@ -690,7 +805,7 @@ class stock_products_report {
 				AND (p.post_type = 'fktr_product' OR p.post_type = 'fktr_receipt')
 
 				AND pm.meta_value between '$letter_from' and char(ascii('$letter_to') + 1)
-				OR p.ID = '".$request['product_id']."' ORDER BY pm.meta_value ASC
+				OR p.ID = '".$request['product_id']."' ORDER BY pm.meta_value ASC  $show_pagination
 				 ";
 				
 		$results = $wpdb->get_results($sql, OBJECT);
