@@ -102,6 +102,10 @@ class fktrPostTypeReceipts {
 			$html = $tpl->fromString($print_template['content']);
 			if (isset($_REQUEST['pdf'])) {
 				$pdf = fktr_pdf::getInstance();
+				
+				$pdf ->set_option('isRemoteEnabled', true);
+				$pdf ->set_option('isHtml5ParserEnabled', true);
+
 				$pdf ->set_paper("A4", "portrait");
 				$pdf ->load_html(utf8_decode($html));
 				$pdf ->render();
