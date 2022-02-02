@@ -379,6 +379,10 @@ class stock_products_report {
 			</html>';
 			
 		$pdf = fktr_pdf::getInstance();
+		
+		$pdf ->set_option('isRemoteEnabled', true);
+		$pdf ->set_option('isHtml5ParserEnabled', true);
+
 		$pdf ->set_paper("A4", "portrait");
 		$pdf ->load_html(utf8_decode($total_html_print));
 		$pdf ->render();

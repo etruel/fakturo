@@ -1,6 +1,7 @@
 <?php
 	// reference the Dompdf namespace
 	use Dompdf\Dompdf;
+	use Dompdf\Options;
 
 	class fktr_pdf  {
 
