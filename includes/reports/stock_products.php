@@ -761,7 +761,7 @@ class stock_products_report {
 					?>
 				</select>
 
-				<span><?php echo __('Mostrar', 'fakturo' ); ?></span>
+				<span><?php echo __('Show', 'fakturo' ); ?></span>
 				<select name="show_pagination" id="show_pagination">
 					<?php
 						for($i=0; $i<=50; $i = $i+5) {

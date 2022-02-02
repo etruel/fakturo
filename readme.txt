@@ -5,7 +5,7 @@ Tags: invoice, sales, purchases, billing, receipt, Tax Code, VAT, PDF invoices, 
 Requires at least: 4.9
 Tested up to: 5.9
 Stable tag: trunk
-Requires PHP: 7.4
+Requires PHP: 7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
