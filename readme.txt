@@ -19,7 +19,7 @@ It's FREE, fully-configurable, customizable and upgradable through Wordpress fil
 NOTE: This plugin is in Beta stage. The 1.0 version will be the official release but you can start to use it now ;-)
 The release date is close, we are working on it every day!!
 We really enjoy and thank if you can check and test the Fakturo.
-We are receiving feedbacks in english and spanish at the Wordpress support forums and in the [development repository](https://bitbucket.org/etruel/fakturo/issues).
+We are receiving feedbacks in english and spanish at the Wordpress support forums and in the [development repository](https://github.com/etruel/fakturo).
 
 = Introduction =
 There are many systems to manage invoices on the web. Some freeware, some modular, some online, some with addons, some with e-invoicing, some with stock, some easy, some are updated periodically, some of them with technical support, etc... always "some"..., so that's why was born Fakturo, because it is not "some" more, but that it has all the above and much more.
