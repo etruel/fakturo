@@ -1,9 +1,9 @@
 === Fakturo ===
-Contributors: etruel, sniuk, khaztiel
+Contributors: etruel, sniuk, khaztiel, axellourenco
 Donate link: 
 Tags: invoice, sales, purchases, billing, receipt, Tax Code, VAT, PDF invoices, bill, bill clients, merchantplus, SME, pyme, checkout, online payment, pay, recurring billing, send invoice, web invoice, wp-invoice, wp-sales, e-commerce, e-store, eshop, wp ecommerce
 Requires at least: 4.9
-Tested up to: 5.9
+Tested up to: 6.0
 Stable tag: trunk
 Requires PHP: 7.3
 License: GPLv2 or later
@@ -83,20 +83,22 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 
 == Changelog ==
-= 1.0.0 (Jan XX, 2022) =
-* Updated dompdf library.
+
+= 1.0.0 (Jun 29, 2022) =
 * Added new reports.
 * Added new print templates by default.
 * Added reference codes to products list.
+* Added print featured for Pendient invoices.
+* Updated dompdf library.
 * Tweaks on Quick Actions texts on sales.
 * Changed Draft by Pending status texts in sales.
 * Improved security nonces on Quick actions.
 * Improved many Help contents.
 * Fixes price scales on sales.
-* Added print featured for Pendient invoices.
 * Fixes available Bulk Actions on sales.
 * Fixes Date Picker in Start of activities of Setting page to allow strings.
 * Fixes deprecated call to wp_no_robots on wizard.
+* Many fixes and improvements on all the code and styles here and there.
 
 = 0.9.1 Beta (April 18, 2019) =
 * Added Client Name in Sales list.

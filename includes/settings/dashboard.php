@@ -1,6 +1,6 @@
 <?php
 $fktr_widgets_dashboard = array();
-function fktr_add_dashboard_widget($slug = '', $title = '', $hook) {
+function fktr_add_dashboard_widget($slug = '', $title = '', $hook = '') {
 	global $fktr_widgets_dashboard;
 	if (!is_array($fktr_widgets_dashboard)) {
 		$fktr_widgets_dashboard = array();

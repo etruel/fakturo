@@ -1778,7 +1778,7 @@ if (!class_exists('fktrPostTypeSales')) :
 
 		public static function clean_fields($fields) {
 			$setting_system = get_option('fakturo_system_options_group', false);
-			if (!isset($fields['client_id'])) {
+			if (!isset($fields['client_id']) ) {
 				$fields['client_id'] = 0;
 			}
 			if (!isset($fields['client_data']) || !is_array($fields['client_data'])) {
@@ -1800,7 +1800,7 @@ if (!class_exists('fktrPostTypeSales')) :
 				$fields['client_data']['price_scale']['name'] = __('No price scale', 'fakturo');
 				$fields['client_data']['credit_limit'] = 0;
 			}
-			if (!isset($fields['client_data']['tax_condition'])) {
+			if (!isset($fields['client_data']['tax_condition']) or ($fields['client_data']['tax_condition'] =="NaN") ) {
 				$fields['client_data']['tax_condition'] = 0;
 			}
 
@@ -1817,19 +1817,19 @@ if (!class_exists('fktrPostTypeSales')) :
 			if (!isset($fields['date'])) {
 				$fields['date'] = current_time('timestamp');
 			}
-			if (!isset($fields['invoice_currency'])) {
+			if (!isset($fields['invoice_currency']) or ($fields['invoice_currency'] =="NaN") ) {
 				$fields['invoice_currency'] = 0;
 			}
 			if (!isset($fields['invoice_saleman'])) {
 				$fields['invoice_saleman'] = get_current_user_id();
 			}
-			if (!isset($fields['invoice_discount'])) {
+			if (!isset($fields['invoice_discount']) or ($fields['invoice_discount'] =="NaN") ) {
 				$fields['invoice_discount'] = 0;
 			}
-			if (!isset($fields['in_sub_total'])) {
+			if (!isset($fields['in_sub_total']) or ($fields['in_sub_total'] =="NaN") ) {
 				$fields['in_sub_total'] = 0;
-			}
-			if (!isset($fields['in_total'])) {
+			} 
+			if (!isset($fields['in_total']) or ($fields['in_total'] =="NaN") ) {
 				$fields['in_total'] = 0;
 			}
 			if (!isset($fields['product_stock_location'])) {

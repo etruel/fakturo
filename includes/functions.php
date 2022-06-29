@@ -177,7 +177,7 @@ function getRateFromCurrencyId($currency_id) {
 function fakturo_transform_money($from_c, $to_c, $value_money) {
 	$setting_system = get_option('fakturo_system_options_group', false);
 	$default_c = $setting_system['currency'];
-	$retorno = $value_money;
+	$retorno = $value_money / 1;  // /1 to make a string-> value
 	$current_currency = $from_c;
 	if ($from_c != $to_c) {
 		if ($default_c != $current_currency) {

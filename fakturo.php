@@ -1,7 +1,7 @@
 <?php
 /*
  Plugin Name: Fakturo
- Plugin URI: http://www.fakturo.org
+ Plugin URI: https://www.fakturo.org
  Description: Make invoices with products and clients.  If you like it, please rate it 5 stars.
  Version: 1.0.0
  Author: Etruel Developments LLC
