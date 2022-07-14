@@ -4,7 +4,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
 <title></title>
 <style type='text/css'>
-	body {
+	html,body {
+		margin:0;
+		padding:0;
+	}
+	#body {
 		position:absolute;
 		left:0px;
 		top:0px;
@@ -261,22 +265,23 @@
 </style>
 </head>
 <body>
+  <div id="body">
 	<div><img src='{$fktr_receipt_background_image}' width='700' height='800'></div>
-  <div id='razon_social'>{$company.name}</div>
+  	<div id='razon_social'>{$company.name}</div>
 	<div id='direccion'>{$company.address} </div>
 	<div id='localidad'>{$company.city} - {$company.state}</div>
 	<div id='url'>{$company.website}</div>
 	<div id='condicion_iva'>{$company.tax_condition.name}</div>
 
 	<div id='nro_recibo'>RECIBO: {$receipt.post_title}</div>
-  <div id='fecha'>FECHA: {function="date_i18n('d-m-Y', $receipt.date)"}</div>
+  	<div id='fecha'>FECHA: {function="date_i18n('d-m-Y', $receipt.date)"}</div>
 
 	<div id='cuit'>C.U.I.T</div><div id='cuitval'>{$company.taxpayer}</div>
 	<div id='iibb'>Ing.Brutos</div><div id='iibbval'>{$company.tax}</div>
 	<div id='inact'>Inicio de Act.</div><div id='inactval'>{$company.start}</div>
-	
 
 	<div id='rec_efectivo'>{$receipt.cash}</div>
 	<div id='rec_total'>{$receipt.total_to_pay}</div>
+  </div>
 </body>
 </html>

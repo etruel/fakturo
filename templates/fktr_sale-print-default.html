@@ -316,7 +316,7 @@
 	<div id='nro_factura'>{$invoice.post_title}</div>
     <!--<div id='top_fecha'>{function="date_i18n('d-m-Y', $invoice.date)"}</div>-->
 
-  	<div id='text_fecha'>{function="date_i18n('j \d\e F \d\e Y', $invoice.date)"}</div>
+  	<div id='text_fecha'>{function="date_i18n('F j, Y', $invoice.date)"}</div>
     <div id='nombre_cliente'>{$invoice.client_data.name}</div>
     <div id='cuit_cliente'>{$invoice.client_data.taxpayer}</div>
     <div id='dir_cliente'>{$invoice.client_data.address}</div>
