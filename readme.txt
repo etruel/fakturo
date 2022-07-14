@@ -3,9 +3,9 @@ Contributors: etruel, sniuk, khaztiel, axellourenco
 Donate link: 
 Tags: invoice, sales, purchases, billing, receipt, Tax Code, VAT, PDF invoices, bill, bill clients, merchantplus, SME, pyme, checkout, online payment, pay, recurring billing, send invoice, web invoice, wp-invoice, wp-sales, e-commerce, e-store, eshop, wp ecommerce
 Requires at least: 4.9
-Tested up to: 6.0
+Tested up to: 6.0.1
 Stable tag: trunk
-Requires PHP: 7.3
+Requires PHP: 7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,12 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 
 == Changelog ==
+
+= 1.0.1 (Jul 15, 2022) =
+* Added background images variables in product, client and provider print templates.
+* Added default background images selected by language.
+* Added english & spanish images for document backgrounds.
+* Fixes Reset to default Print templates for .
 
 = 1.0.0 (Jun 29, 2022) =
 * Added new reports.
@@ -211,5 +217,5 @@ First Release
 
 == Upgrade Notice ==
 
-= 1.0.0 =
-First official release.
+= 1.0.1 =
+Some changes in invoices and receipts images.
