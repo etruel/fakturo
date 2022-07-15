@@ -4,7 +4,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
 <title></title>
 <style type='text/css'>
-	body {
+	html,body {
+		margin:0;
+		padding:0;
+	}
+	#body {
 		position:absolute;
 		left:0px;
 		top:0px;
@@ -261,18 +265,17 @@
 </style>
 </head>
 <body>
+  <div id="body">
 	<div><img src='{$fktr_product_background_image}' width='1200' height='800'></div>
-  <div id='razon_social'>{$company.name}</div>
+  	<div id='razon_social'>{$company.name}</div>
 	<div id='direccion'>{$company.address} </div>
 	<div id='localidad'>{$company.city} - {$company.state}</div>
 	<div id='url'>{$company.website}</div>
 	<div id='condicion_iva'>{$company.tax_condition.name}</div>
 
-
 	<div id='cuit'>C.U.I.T</div><div id='cuitval'>{$company.taxpayer}</div>
 	<div id='iibb'>Ing.Brutos</div><div id='iibbval'>{$company.tax}</div>
 	<div id='inact'>Inicio de Act.</div><div id='inactval'>{$company.start}</div>
-	
-
+  </div>
 </body>
 </html>
