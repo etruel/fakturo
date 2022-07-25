@@ -84,6 +84,9 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 == Changelog ==
 
+= 1.0.2 (Jul xx, 2022) =
+* Added DejaVu fonts to dompdf for RTL languages.
+
 = 1.0.1 (Jul 15, 2022) =
 * Added background images variables in product, client and provider print templates.
 * Added default background images selected by language.
