@@ -302,11 +302,10 @@
 	<div><img src='{$fktr_invoice_background_image}' width='790' height='1100'></div>
 	<!--<div id='logo'><img src='{$company.img_url}' width="280" height='90'></div>-->
     <div id='razon_social'>{$company.name}</div>
-	<div id='direccion'>{$company.address} </div>
-	<div id='localidad'>{$company.city} - Bs. As.</div>
-  	<div id='condicion_iva'>223 477-0801</div>
+	<div id='direccion'>{$company.address} - {$company.telephone}</div>
+	<div id='localidad'>{$company.city}</div>
+	<div id='condicion_iva'>{$company.tax_condition.name}</div>
 	<div id='url'>{$company.website}</div>
-	<!--<div id='condicion_iva'>{$company.tax_condition.name}</div>-->
 
 	<div id='cuit'>Taxpayer</div><div id='cuitval'>{$company.taxpayer}</div>
 	<div id='iibb'>Ing.Brutos</div><div id='iibbval'>{$company.tax}</div>
