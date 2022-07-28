@@ -180,16 +180,16 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 
 				$imgfiles	 = scandir(FAKTURO_PLUGIN_DIR . 'assets/images/');
 				// echo '$imgfiles=' . '<pre>' . print_r($imgfiles, 1) . '</pre>' . '<br>';
-				$locale		 = substr(get_locale(),0,2); // en, es
+				$locale		 = substr(get_locale(), 0, 2); // en, es
 				if (in_array(('invoice_background_' . $locale . '.jpg'), $imgfiles)) {
 					$backgroundimage = 'invoice_background_' . $locale . '.jpg';
-				}else{
+				} else {
 					// english by default if doesn't exist current language  
 					$backgroundimage = 'invoice_background_en.jpg';
 				}
 
 				//$tpl->assign("fktr_invoice_background_image", FAKTURO_PLUGIN_URL . 'assets/images/invoice_background.jpg');
-				$tpl->assign("fktr_invoice_background_image", FAKTURO_PLUGIN_URL . 'assets/images/'.$backgroundimage);
+				$tpl->assign("fktr_invoice_background_image", FAKTURO_PLUGIN_URL . 'assets/images/' . $backgroundimage);
 				$tpl->assign("fktr_invoice_demo_image", FAKTURO_PLUGIN_URL . 'assets/images/demo.png');
 
 				$sale_invoice									 = fktrPostTypeSales::get_sale_data($object->id);
@@ -216,67 +216,91 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				$sale_invoice['subtotal']	 = $sale_invoice['in_sub_total'];
 				$sale_invoice['total']		 = $sale_invoice['in_total'];
 				$tpl->assign("invoice", $sale_invoice);
-				
 			} else if ($object->assgined == 'fktr_receipt') {
 				// assign vars to print template assgined to fktr_receipt.
 				$imgfiles	 = scandir(FAKTURO_PLUGIN_DIR . 'assets/images/');
-				$locale		 = substr(get_locale(),0,2); // en, es
+				$locale		 = substr(get_locale(), 0, 2); // en, es
 				if (in_array(('receipt_background_' . $locale . '.jpg'), $imgfiles)) {
 					$backgroundimage = 'receipt_background_' . $locale . '.jpg';
-				}else{
+				} else {
 					// english by default if doesn't exist current language  
 					$backgroundimage = 'receipt_background_en.jpg';
 				}
-				$tpl->assign("fktr_receipt_background_image", FAKTURO_PLUGIN_URL . 'assets/images/'.$backgroundimage);
+				$tpl->assign("fktr_receipt_background_image", FAKTURO_PLUGIN_URL . 'assets/images/' . $backgroundimage);
 
 				$receipt = fktrPostTypeReceipts::get_receipt_data($object->id);
+				if (!empty($receipt['check_invs'])) {
+					foreach ($receipt['check_invs'] as $key => $invoice_id) {
+						$invoice_data = fktrPostTypeSales::get_sale_data($invoice_id);
+
+//						{$receipt.invoices.ArrayToLoop.client_data.name}
+//						{$receipt.invoices.ArrayToLoop.client_data.address}
+//						{$receipt.invoices.ArrayToLoop.client_data.city}
+//						{$receipt.invoices.ArrayToLoop.client_data.state.id}
+//						{$receipt.invoices.ArrayToLoop.client_data.state.name}
+//						{$receipt.invoices.ArrayToLoop.client_data.country.id}
+//						{$receipt.invoices.ArrayToLoop.client_data.country.name}
+//						{$receipt.invoices.ArrayToLoop.client_data.taxpayer}
+//						{$receipt.invoices.ArrayToLoop.client_data.tax_condition}
+//						{$receipt.invoices.ArrayToLoop.client_data.payment_type}
+//						{$receipt.invoices.ArrayToLoop.client_data.price_scale.id}
+//						{$receipt.invoices.ArrayToLoop.client_data.price_scale.name}
+//						{$receipt.invoices.ArrayToLoop.client_data.credit_limit}
+						$ript_invoice					 = array();
+						$ript_invoice['title']			 = $invoice_data['post_title'];
+						$ript_invoice['invoice_type']	 = $invoice_data['invoice_type'];
+						$ript_invoice['sale_point']		 = $invoice_data['sale_point'];
+						$ript_invoice['number']			 = $invoice_data['invoice_number'];
+						$ript_invoice['date']			 = $invoice_data['date'];
+						$ript_invoice['currency']		 = $invoice_data['invoice_currency'];
+						$ript_invoice['saleman']		 = $invoice_data['invoice_saleman'];
+						$ript_invoice['discount']		 = $invoice_data['invoice_discount'];
+						$ript_invoice['sub_total']		 = $invoice_data['in_sub_total'];
+						$ript_invoice['total']			 = $invoice_data['in_total'];
+						$receipt['invoices'][]			 = $ript_invoice;
+					}
+				}
 				$tpl->assign("receipt", $receipt);
-			
-				
 			} else if ($object->assgined == 'fktr_product') {
 				// assign vars to print template assgined to fktr_product.
 				$imgfiles	 = scandir(FAKTURO_PLUGIN_DIR . 'assets/images/');
-				$locale		 = substr(get_locale(),0,2); // en, es
+				$locale		 = substr(get_locale(), 0, 2); // en, es
 				if (in_array(('product_background_' . $locale . '.jpg'), $imgfiles)) {
 					$backgroundimage = 'product_background_' . $locale . '.jpg';
-				}else{
+				} else {
 					// english by default if doesn't exist current language  
 					$backgroundimage = 'product_background_en.jpg';
 				}
-				$tpl->assign("fktr_product_background_image", FAKTURO_PLUGIN_URL . 'assets/images/'.$backgroundimage);
-				
+				$tpl->assign("fktr_product_background_image", FAKTURO_PLUGIN_URL . 'assets/images/' . $backgroundimage);
+
 				$product = fktrPostTypeProducts::get_product_data($object->id);
 				$tpl->assign("product", $product);
-
 			} else if ($object->assgined == 'fktr_client') {
 				// assign vars to print template assgined to fktr_client.
 				$imgfiles	 = scandir(FAKTURO_PLUGIN_DIR . 'assets/images/');
-				$locale		 = substr(get_locale(),0,2); // en, es
+				$locale		 = substr(get_locale(), 0, 2); // en, es
 				if (in_array(('client_background_' . $locale . '.jpg'), $imgfiles)) {
 					$backgroundimage = 'client_background_' . $locale . '.jpg';
-				}else{
+				} else {
 					// english by default if doesn't exist current language  
 					$backgroundimage = 'client_background_en.jpg';
 				}
-				$tpl->assign("fktr_client_background_image", FAKTURO_PLUGIN_URL . 'assets/images/'.$backgroundimage);
+				$tpl->assign("fktr_client_background_image", FAKTURO_PLUGIN_URL . 'assets/images/' . $backgroundimage);
 
-				
 				$client = fktrPostTypeClients::get_client_data($object->id);
 				$tpl->assign("client", $client);
-
 			} else if ($object->assgined == 'fktr_provider') {
 				// assign vars to print template assgined to fktr_provider.
 				$imgfiles	 = scandir(FAKTURO_PLUGIN_DIR . 'assets/images/');
-				$locale		 = substr(get_locale(),0,2); // en, es
+				$locale		 = substr(get_locale(), 0, 2); // en, es
 				if (in_array(('provider_background_' . $locale . '.jpg'), $imgfiles)) {
 					$backgroundimage = 'provider_background_' . $locale . '.jpg';
-				}else{
+				} else {
 					// english by default if doesn't exist current language  
 					$backgroundimage = 'provider_background_en.jpg';
 				}
-				$tpl->assign("fktr_provider_background_image", FAKTURO_PLUGIN_URL . 'assets/images/'.$backgroundimage);
+				$tpl->assign("fktr_provider_background_image", FAKTURO_PLUGIN_URL . 'assets/images/' . $backgroundimage);
 
-				
 				$provider = fktrPostTypeProviders::get_provider_data($object->id);
 				$tpl->assign("provider", $provider);
 			}
@@ -357,7 +381,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 					'taxonomy'	 => $print_template['assigned'],
 					'hide_empty' => false,
 					'number'	 => 1,
-						));
+				));
 				if (!is_wp_error($terms)) {
 					if ($terms) {
 						foreach ($terms as $t) {

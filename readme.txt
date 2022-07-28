@@ -85,6 +85,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 == Changelog ==
 
 = 1.0.2 (Jul xx, 2022) =
+* Added print template invoices and checks ArrayToLoop variables for Receipts.
 * Added DejaVu fonts to dompdf for RTL languages.
 
 = 1.0.1 (Jul 15, 2022) =

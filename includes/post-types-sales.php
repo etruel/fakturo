@@ -1906,6 +1906,11 @@ if (!class_exists('fktrPostTypeSales')) :
 			}
 		}
 
+		/**
+		 * get_sale_data
+		 * @param type int $sale_id
+		 * @return type array All invoice data
+		 */
 		public static function get_sale_data($sale_id) {
 			$custom_field_keys = get_post_custom($sale_id);
 			foreach ($custom_field_keys as $key => $value) {
