@@ -188,9 +188,32 @@
 	}
 	#area_detalle {
 		position:absolute;
-		left:36px;
-		top:405px;
-		font-size:10pt;
+		left: 38px;
+    top: 242px;
+    width: 200px;
+		font-size:9pt;
+	}
+	#area_checks{
+		position:absolute;
+		left: 260px;
+    top: 335px;
+    width: 402px;
+		font-size:9.5pt;
+	}
+	.ck_row_bankn{
+		width: 92px;
+		text-align: center;
+	}
+	.ck_row_serie{
+		width: 112px;
+		text-align: center;
+	}
+	.ck_row_cdate{
+		width: 94px;
+		text-align: center;
+	}
+	.ck_row_value{
+		width: 105px;
 	}
 	#notas {
 		position:absolute;
@@ -229,20 +252,24 @@
 		width:105px;
 		text-align:center;
 	}
-    #descuento {
-        position:absolute;
-        left:545px;
-        bottom:161px;
-        font-size:12pt;
-    }
-    #total_letra {
-		position:absolute;
-		left:135px;
-		bottom:164px;
-		width:350px;
-		font-size:12pt;
-		line-height: 1.4;
+	.row_date{
+		width: 63px;
 	}
+	.row_date,
+	.row_number{
+    text-align: center;
+	}
+	.row_number,
+	.row_total{
+    width: 70px;
+	}
+ 	#rec_check {
+		position:absolute;
+		left:535px;
+		bottom:226px;
+		font-size:12pt;
+		text-align:center;
+  	}
 	#rec_efectivo {
 		position:absolute;
 		left:535px;
@@ -262,6 +289,12 @@
 		bottom:39px;
 		font-size:12pt;
 	}
+	#rec_text {
+      position: absolute;
+      left: 420px;
+      font-size: 12pt;
+      top: 180px;
+	}
 </style>
 </head>
 <body>
@@ -279,9 +312,43 @@
 	<div id='cuit'>C.U.I.T</div><div id='cuitval'>{$company.taxpayer}</div>
 	<div id='iibb'>Ing.Brutos</div><div id='iibbval'>{$company.tax}</div>
 	<div id='inact'>Inicio de Act.</div><div id='inactval'>{$company.start}</div>
-
+    
+    <div id="rec_text">{function="fktr_number_to_letter_es($receipt.total_to_impute)"}</div>
+	
+    <div id='rec_check'></div>
 	<div id='rec_efectivo'>{$receipt.cash}</div>
 	<div id='rec_total'>{$receipt.total_to_pay}</div>
+    
+
+	<div id='area_detalle'>
+		{loop="$receipt.invoices"}
+		<div class='row'>
+			<table border='0' cellpadding='0' cellspacing='0'>
+				<tr>
+					<td class='row_date'> {function="date_i18n('d-m-Y', $value.date)"}</td>
+					<td class='row_number'> {$value.number} </td>
+					<td class='row_total'>${$value.total}</td>
+				</tr>
+			</table>
+		</div>
+		{/loop}
+	</div>
+
+	<div id='area_checks'>
+		{loop="$receipt.checks"}
+		<div class='row'>
+			<table border='0' cellpadding='0' cellspacing='0'>
+				<tr>
+					<td class='ck_row_bankn'>${$value.bank}</td>
+					<td class='ck_row_serie'>{$value.number} </td>
+					<td class='ck_row_cdate'>{function="date_i18n('d-m-Y', $value.cashing_date)"}</td>
+					<td class='ck_row_value'>{$value.value} </td>
+				</tr>
+			</table>
+		</div>
+		{/loop}
+	</div>
+
   </div>
 </body>
 </html>

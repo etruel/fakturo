@@ -192,7 +192,9 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				$tpl->assign("fktr_invoice_background_image", FAKTURO_PLUGIN_URL . 'assets/images/' . $backgroundimage);
 				$tpl->assign("fktr_invoice_demo_image", FAKTURO_PLUGIN_URL . 'assets/images/demo.png');
 
-				$sale_invoice									 = fktrPostTypeSales::get_sale_data($object->id);
+				$sale_invoice				 = fktrPostTypeSales::get_sale_data($object->id);
+				$sale_invoice['datei18n']	 = date_i18n(get_option('date_format'), $sale_invoice['date']);
+
 				$client_data									 = fktrPostTypeClients::get_client_data($sale_invoice['client_id']);
 				$sale_invoice['client_data']['phone']			 = $client_data['phone'];
 				$sale_invoice['client_data']['tax_condition']	 = (array) get_fakturo_term($sale_invoice['client_data']['tax_condition'], 'fktr_tax_conditions');
@@ -215,6 +217,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				}
 				$sale_invoice['subtotal']	 = $sale_invoice['in_sub_total'];
 				$sale_invoice['total']		 = $sale_invoice['in_total'];
+
 				$tpl->assign("invoice", $sale_invoice);
 			} else if ($object->assgined == 'fktr_receipt') {
 				// assign vars to print template assgined to fktr_receipt.
@@ -228,7 +231,10 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				}
 				$tpl->assign("fktr_receipt_background_image", FAKTURO_PLUGIN_URL . 'assets/images/' . $backgroundimage);
 
-				$receipt = fktrPostTypeReceipts::get_receipt_data($object->id);
+				$receipt			 = fktrPostTypeReceipts::get_receipt_data($object->id);
+				$receipt['datei18n'] = date_i18n(get_option('date_format'), $receipt['date']);
+
+				// imputed invoices
 				if (!empty($receipt['check_invs'])) {
 					foreach ($receipt['check_invs'] as $key => $invoice_id) {
 						$invoice_data = fktrPostTypeSales::get_sale_data($invoice_id);
@@ -252,6 +258,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 						$ript_invoice['sale_point']		 = $invoice_data['sale_point'];
 						$ript_invoice['number']			 = $invoice_data['invoice_number'];
 						$ript_invoice['date']			 = $invoice_data['date'];
+						$ript_invoice['datei18n']		 = date_i18n(get_option('date_format'), $invoice_data['date']);
 						$ript_invoice['currency']		 = $invoice_data['invoice_currency'];
 						$ript_invoice['saleman']		 = $invoice_data['invoice_saleman'];
 						$ript_invoice['discount']		 = $invoice_data['invoice_discount'];
@@ -260,6 +267,42 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 						$receipt['invoices'][]			 = $ript_invoice;
 					}
 				}
+
+				// checks 
+				if (!empty($receipt['ck_ids'])) {
+					foreach ($receipt['ck_ids'] as $term_id) {
+						$check[]	 = array();
+						$term_check	 = get_fakturo_term($term_id, 'fktr_check');
+						if (!is_wp_error($term_check)) {
+							$bank_text	 = __('No bank', 'fakturo');
+							$term_bank	 = get_fakturo_term($term_check->bank_id, 'fktr_bank_entities');
+							if (!is_wp_error($term_bank)) {
+								$bank_text = $term_bank->name;
+							}
+							$symbol			 = ''; //__('No Symbol', 'fakturo');
+							$checkCurrency	 = get_fakturo_term($term_check->currency_id, 'fktr_currencies');
+							if (!is_wp_error($checkCurrency)) {
+								$symbol = $checkCurrency->symbol;
+							}
+							$check['id']			 = $term_id;
+							$check['number']		 = $term_check->name;
+							$check['cashing_date']	 = $term_check->cashing_date;
+							$check['bank']			 = $bank_text;
+							$check['value']			 = (($setting_system['currency_position'] == 'before') ? '' . $symbol . ' ' : '') . '' . number_format($term_check->value, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (($setting_system['currency_position'] == 'after') ? ' ' . $symbol . '' : '');
+							$receipt['checks'][]	 = $check;
+						}
+					}
+				} else {
+					// make an empty check to show their variables
+					$check[]				 = array();
+					$check['id']			 = '';
+					$check['number']		 = '';
+					$check['cashing_date']	 = '';
+					$check['bank']			 = '';
+					$check['value']			 = '';
+					$receipt['checks'][]	 = $check;
+				}
+
 				$tpl->assign("receipt", $receipt);
 			} else if ($object->assgined == 'fktr_product') {
 				// assign vars to print template assgined to fktr_product.

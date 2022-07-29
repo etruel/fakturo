@@ -84,9 +84,13 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 == Changelog ==
 
-= 1.0.2 (Jul xx, 2022) =
+= 1.0.2 (Jul 28, 2022) =
 * Added print template invoices and checks ArrayToLoop variables for Receipts.
 * Added DejaVu fonts to dompdf for RTL languages.
+* Updated Receipts default print template.
+* Fixes Warning: number_format() expects parameter 1 to be float on print templates.
+* Fixes to use different fonts in print templates for dompdf. 
+* Fixes emailing PDF in UTF-8 to support RTL languages. 
 
 = 1.0.1 (Jul 15, 2022) =
 * Added background images variables in product, client and provider print templates.
@@ -221,5 +225,5 @@ First Release
 
 == Upgrade Notice ==
 
-= 1.0.1 =
-Some changes in invoices and receipts images.
+= 1.0.2 =
+Most of changes in Print templates.

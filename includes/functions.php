@@ -323,7 +323,7 @@ function fktr_get_dialer_options() {
 function fktr_number_to_letter_cents() {
 	global $importe_parcial;
 
-	$importe_parcial = number_format($importe_parcial, 2, ".", "") * 100;
+	$importe_parcial = number_format(floatval($importe_parcial), 2, ".", "") * 100;
 
 	if($importe_parcial > 0) {
 		$num_letra = " con " . fktr_number_to_letter_ten_cents($importe_parcial);
@@ -756,7 +756,7 @@ function fktr_number_to_letter_million() {
 function fktr_number_to_letter_es($numero) {
 	global $importe_parcial;
 
-	$importe_parcial = $numero;
+	$importe_parcial = floatval($numero);
 
 	if($numero < 1000000000) {
 		if($numero >= 1000000 && $numero <= 999999999.99)
