@@ -234,24 +234,40 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				$receipt			 = fktrPostTypeReceipts::get_receipt_data($object->id);
 				$receipt['datei18n'] = date_i18n(get_option('date_format'), $receipt['date']);
 
+				$client_data						 = fktrPostTypeClients::get_client_data($receipt['client_id']);
+				//$receipt['client_data']				 = $client_data;
+				$receipt['client_data']['active']		 = $client_data['active'];
+				$receipt['client_data']['name']		 = $client_data['post_title'];
+				$receipt['client_data']['address']	 = $client_data['address'];
+				$receipt['client_data']['city']		 = $client_data['city'];
+				$receipt['client_data']['postcode']		 = $client_data['postcode'];
+				$receipt['client_data']['phone']		 = $client_data['phone'];
+				$receipt['client_data']['cell_phone']		 = $client_data['cell_phone'];
+				$receipt['client_data']['email']		 = $client_data['email'];
+				$receipt['client_data']['image']		 = $client_data['webcam_image'];
+
+				$country_name	 = __('No country', 'fakturo');
+				$country_data	 = get_fakturo_term($client_data['selected_country'], 'fktr_countries');
+				if (!is_wp_error($country_data)) {
+					$country_name = $country_data->name;
+				}
+				$receipt['client_data']['country']['name'] = $country_name;
+
+				$state_name	 = __('No state', 'fakturo');
+				$state_data	 = get_fakturo_term($client_data['selected_state'], 'fktr_countries');
+				if (!is_wp_error($state_data)) {
+					$state_name = $state_data->name;
+				}
+				$client_data['selected_state_name'] = $state_name;
+
+				$receipt['client_data']['taxpayer']		 = $client_data['taxpayer'];
+				$receipt['client_data']['tax_condition'] = $client_data['tax_condition'];
+
 				// imputed invoices
 				if (!empty($receipt['check_invs'])) {
 					foreach ($receipt['check_invs'] as $key => $invoice_id) {
 						$invoice_data = fktrPostTypeSales::get_sale_data($invoice_id);
 
-//						{$receipt.invoices.ArrayToLoop.client_data.name}
-//						{$receipt.invoices.ArrayToLoop.client_data.address}
-//						{$receipt.invoices.ArrayToLoop.client_data.city}
-//						{$receipt.invoices.ArrayToLoop.client_data.state.id}
-//						{$receipt.invoices.ArrayToLoop.client_data.state.name}
-//						{$receipt.invoices.ArrayToLoop.client_data.country.id}
-//						{$receipt.invoices.ArrayToLoop.client_data.country.name}
-//						{$receipt.invoices.ArrayToLoop.client_data.taxpayer}
-//						{$receipt.invoices.ArrayToLoop.client_data.tax_condition}
-//						{$receipt.invoices.ArrayToLoop.client_data.payment_type}
-//						{$receipt.invoices.ArrayToLoop.client_data.price_scale.id}
-//						{$receipt.invoices.ArrayToLoop.client_data.price_scale.name}
-//						{$receipt.invoices.ArrayToLoop.client_data.credit_limit}
 						$ript_invoice					 = array();
 						$ript_invoice['title']			 = $invoice_data['post_title'];
 						$ript_invoice['invoice_type']	 = $invoice_data['invoice_type'];
@@ -269,6 +285,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				}
 
 				// checks 
+				$total_checks = 0;
 				if (!empty($receipt['ck_ids'])) {
 					foreach ($receipt['ck_ids'] as $term_id) {
 						$check[]	 = array();
@@ -289,6 +306,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 							$check['cashing_date']	 = $term_check->cashing_date;
 							$check['bank']			 = $bank_text;
 							$check['value']			 = (($setting_system['currency_position'] == 'before') ? '' . $symbol . ' ' : '') . '' . number_format($term_check->value, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (($setting_system['currency_position'] == 'after') ? ' ' . $symbol . '' : '');
+							$total_checks			 += $term_check->value;
 							$receipt['checks'][]	 = $check;
 						}
 					}
@@ -302,7 +320,8 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 					$check['value']			 = '';
 					$receipt['checks'][]	 = $check;
 				}
-
+				$receipt['total_checks'] = $total_checks;
+				
 				$tpl->assign("receipt", $receipt);
 			} else if ($object->assgined == 'fktr_product') {
 				// assign vars to print template assgined to fktr_product.

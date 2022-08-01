@@ -81,6 +81,14 @@ function get_fakturo_terms($args = array()) {
 	}
 	return $return_terms;
 }
+
+/**
+ * 
+ * @param type $term_id		Taxonomy ID to search for
+ * @param type $taxonomy	Taxonomy slug
+ * @param type $field		Field name to get
+ * @return mixed Taxonomy field value or WP_Error
+ */
 function get_fakturo_term($term_id, $taxonomy, $field = null) {
 	if ($term_id < 1) {
 		return new WP_Error( 'incorrect_term_id', __('You has send a incorrect term_id', 'fakturo'));

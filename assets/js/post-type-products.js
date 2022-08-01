@@ -68,8 +68,9 @@ jQuery(document).ready(function($) {
 			jQuery('#prices_final_' + jQuery(this).data('id')).val(newPrice.formatMoney(products_object.decimal_numbers, products_object.decimal, products_object.thousand));
 		});
 	});
-
-
+	
+	// To get suggested prices on load edit product screen  
+	jQuery('#tax').change();
 
 });
 
