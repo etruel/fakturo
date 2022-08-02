@@ -1,354 +1,319 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
-<title></title>
-<style type='text/css'>
-	html,body {
-		margin:0;
-		padding:0;
-	}
-	#body {
-		position:absolute;
-		left:0px;
-		top:0px;
-		margin:0;
-		padding:0;
-	}
-	#logo {
-		position:absolute;
-		left:35px;
-		top:10px;
-		width:80px;
-		text-align:center;
-	}
-	#logo img{
-		display: block;
-		width:100%;
-		height: auto;
-	}
-	#razon_social {
-		position:absolute;
-		left:35px;
-		top:30px;
-		font-size:14pt;
-		width:278px;
-	}
-	#cuit, #iibb, #inact {
-		position:absolute;
-		left:450px;
-		font-size:12pt;
-		text-align:left;
-	}
-	#cuitval, #iibbval, #inactval{
-		position:absolute;
-		left:546px;
-		font-size:12pt;
-		width: 120px;
-		text-align: right;
-	}
-	#cuit, #cuitval{
-		top:80px;
-	}
-	#iibb, #iibbval{
-		top:105px;
-	}
-	#inact, #inactval {
-		top: 130px;
-	}
-	#direccion {
-		position:absolute;
-		left:35px;
-		top:70px;
-		font-size:9pt;
-		width:278px;
-	}
-	#localidad {
-		position:absolute;
-		left:35px;
-		top:90px;
-		font-size:12pt;
-		width:278px;
-	}
-	#url {
-		position:absolute;
-		left:35px;
-		top:110px;
-		font-size:12pt;
-		width:278px;
-	}
-	#condicion_iva {
-		position:absolute;
-		left:35px;
-		top:130px;
-		font-size:12pt;
-		width:278px;
-	}
-	#tipo_factura {
-		position:absolute;
-		left:334px;
-		top:14px;
-		font-size:34pt;
-	}
-	#nro_recibo {
-		position:absolute;
-		right:35px;
-		top:32px;
-		font-size:16pt;
-	}
-	#cae {
-		position:absolute;
-		left:515px;
-		top:90px;
-		font-size:12pt;
-	}
-	#cae_vto {
-		position:absolute;
-		left:540px;
-		top:110px;
-		font-size:10pt;
-	}
-    #doc_rel {
-		position:absolute;
-		left:515px;
-		top:70px;
-		font-size:10pt;
-	}
-	#fecha {
-		position: absolute;
-		right: 35px;
-		top: 10px;
-		font-size: 10pt;
-	}
-	#dia_fecha {
-		position: absolute;
-		left:150px;
-		top:204px;
-		font-size: 10pt;
-	}
-	#mes_fecha {
-		position:absolute;
-		left:417px;
-		top:204px;
-		font-size:12pt;
-	}
-	#anio_fecha {
-		position:absolute;
-		left:610px;
-		top:204px;
-		font-size:12pt;
-	}
-	#nombre_cliente {
-		position:absolute;
-		left:95px;
-		top:233px;
-		font-size:12pt;
-	}
-	#cuit_cliente {
-		position:absolute;
-		left:482px;
-		top:233px;
-		font-size:12pt;
-	}
-	#dir_cliente {
-		position:absolute;
-		left:95px;
-		top:260px;
-		font-size:12pt;
-	}
-	#loc_cliente {
-		position:absolute;
-		right:102px;
-		top:260px;
-		font-size:12pt;
-	}
-	#iva_cliente {
-		position:absolute;
-		left:61px;
-		top:286px;
-		font-size:12pt;
-	}
-	#tel_cliente {
-		position:absolute;
-		right:110px;
-		top:286px;
-		font-size:12pt;
-	}
-	#cond_cliente {
-		position:absolute;
-		left:127px;
-		top:313px;
-		font-size:12pt;
-	}
-	#remito_cliente {
-		position:absolute;
-		left:530px;
-		top:348px;
-		font-size:12pt;
-	}
-	#area_detalle {
-		position:absolute;
-		left: 38px;
-    top: 242px;
-    width: 200px;
-		font-size:9pt;
-	}
-	#area_checks{
-		position:absolute;
-		left: 260px;
-    top: 335px;
-    width: 402px;
-		font-size:9.5pt;
-	}
-	.ck_row_bankn{
-		width: 92px;
-		text-align: center;
-	}
-	.ck_row_serie{
-		width: 112px;
-		text-align: center;
-	}
-	.ck_row_cdate{
-		width: 94px;
-		text-align: center;
-	}
-	.ck_row_value{
-		width: 105px;
-	}
-	#notas {
-		position:absolute;
-		left:120px;
-		width:360px;
-		top:815px;
-		font-size:10pt;
-	}
-	.row {
-		float:left;
-		width:630px;
-	}
-	.row_cantidad {
-		float:left;
-		top:0;
-		width:70px;
-		text-align:center;
-	}
-	.row_codigo {
-		float:left;
-		width:100px;
-		text-align:center;
-	}
-	.row_articulo {
-		float:left;
-		width:280px;
-		text-align:left;
-	}
-	.row_unitario {
-		float:left;
-		width:75px;
-		text-align:center;
-	}
-	.row_importe {
-		float:left;
-		width:105px;
-		text-align:center;
-	}
-	.row_date{
-		width: 63px;
-	}
-	.row_date,
-	.row_number{
-    text-align: center;
-	}
-	.row_number,
-	.row_total{
-    width: 70px;
-	}
- 	#rec_check {
-		position:absolute;
-		left:535px;
-		bottom:226px;
-		font-size:12pt;
-		text-align:center;
-  	}
-	#rec_efectivo {
-		position:absolute;
-		left:535px;
-		bottom:206px;
-		font-size:12pt;
-		text-align:center;
-	}
-	#rec_total {
-		position:absolute;
-		left:535px;
-		bottom:182px;
-		font-size:12pt;
-	}
-	#fact_iva {
-		position:absolute;
-		left:535px;
-		bottom:39px;
-		font-size:12pt;
-	}
-	#rec_text {
-      position: absolute;
-      left: 420px;
-      font-size: 12pt;
-      top: 180px;
-	}
-</style>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
+	<title></title>
+	<style type='text/css'>
+		*{
+			font-family: 'DejaVu Sans';  
+		}
+		html,body {
+			margin:0;
+			padding:0;
+		}
+		#body {
+			position:absolute;
+			left:0px;
+			top:0px;
+			margin:0;
+			padding:0;
+		}
+		#logo {
+			position:absolute;
+			left:35px;
+			top:10px;
+			width:80px;
+			text-align:center;
+		}
+		#logo img{
+			display: block;
+			width:100%;
+			height: auto;
+		}
+		#razon_social {
+			position:absolute;
+			left:35px;
+			top:30px;
+			font-size:14pt;
+			width:278px;
+		}
+		#cuit, #iibb, #inact {
+			position:absolute;
+			left:450px;
+			font-size:12pt;
+			text-align:left;
+		}
+		#cuitval, #iibbval, #inactval{
+			position:absolute;
+			left:546px;
+			font-size:12pt;
+			width: 120px;
+			text-align: right;
+		}
+		#cuit, #cuitval{
+			top:80px;
+		}
+		#iibb, #iibbval{
+			top:105px;
+		}
+		#inact, #inactval {
+			top: 130px;
+		}
+		#direccion {
+			position:absolute;
+			left:35px;
+			top:70px;
+			font-size:9pt;
+			width:278px;
+		}
+		#localidad {
+			position:absolute;
+			left:35px;
+			top:90px;
+			font-size:12pt;
+			width:278px;
+		}
+		#url {
+			position:absolute;
+			left:35px;
+			top:110px;
+			font-size:12pt;
+			width:278px;
+		}
+		#condicion_iva {
+			position:absolute;
+			left:35px;
+			top:130px;
+			font-size:12pt;
+			width:278px;
+		}
+		#nro_recibo {
+			position:absolute;
+			right:35px;
+			top:32px;
+			font-size:16pt;
+		}
+		#fecha {
+			position: absolute;
+			right: 35px;
+			top: 10px;
+			font-size: 10pt;
+		}
+		#nombre_cliente {
+			position: absolute;
+			left: 292px;
+			top: 178px;
+			font-size: 11pt;
+		}
+		#dir_cliente {
+			position: absolute;
+			left: 308px;
+			top: 204px;
+			font-size: 11pt;
+		}
+		#phone_cliente {
+			position: absolute;
+			left: 298px;
+			top: 229px;
+			font-size: 11pt;
+		}
+		#cuit_cliente {
+			position: absolute;
+			left: 494px;
+			top: 229px;
+			font-size: 12pt;
+		}
+		#area_detalle {
+			position:absolute;
+			left: 38px;
+			top: 242px;
+			width: 200px;
+			font-size:9pt;
+		}
+		#area_checks{
+			position:absolute;
+			left: 260px;
+			top: 302px;
+			width: 402px;
+			font-size:9.5pt;
+		}
+		.ck_row_bankn{
+			width: 92px;
+			text-align: center;
+		}
+		.ck_row_serie{
+			width: 112px;
+			text-align: center;
+		}
+		.ck_row_cdate{
+			width: 94px;
+			text-align: center;
+		}
+		.ck_row_value{
+			width: 105px;
+		}
+		.ck_row_bankn,
+		.ck_row_serie,
+		.ck_row_cdate,
+		.ck_row_value{
+			font-size: 9.5pt;
+		}
+		#notas {
+			position:absolute;
+			left:120px;
+			width:360px;
+			top:815px;
+			font-size:10pt;
+		}
+		.row {
+			float:left;
+			width:630px;
+		}
+		.row_cantidad {
+			float:left;
+			top:0;
+			width:70px;
+			text-align:center;
+		}
+		.row_codigo {
+			float:left;
+			width:100px;
+			text-align:center;
+		}
+		.row_articulo {
+			float:left;
+			width:280px;
+			text-align:left;
+		}
+		.row_unitario {
+			float:left;
+			width:75px;
+			text-align:center;
+		}
+		.row_importe {
+			float:left;
+			width:105px;
+			text-align:center;
+		}
+		.row_date{
+			width: 63px;
+		}
+		.row_date,
+		.row_number{
+			text-align: center;
+		}
+		.row_number,
+		.row_total{
+			width: 70px;
+		}
+		.row_date,
+		.row_number,
+		.row_total{
+			font-size:9pt;
+		}
+		#rec_check {
+			position:absolute;
+			left:530px;
+			bottom:230px;
+			font-size:12pt;
+			text-align:center;
+		}
+		#rec_efectivo {
+			position:absolute;
+			left:530px;
+			bottom:206px;
+			font-size:12pt;
+			text-align:center;
+		}
+		#rec_total {
+			position:absolute;
+			left:530px;
+			bottom:182px;
+			font-size:12pt;
+		}
+		#rec_check,
+		#rec_efectivo,
+		#rec_total{
+			width: 130px;
+		}
+		.row_total,
+		.ck_row_value,
+		#rec_check,
+		#rec_efectivo,
+		#rec_total{
+			text-align: right;
+		}
+		#rec_total_text {
+			position: absolute;
+			left: 35px;
+			top: 523px;
+			font-size: 12pt;
+			line-height: 1.5;
+			max-width: 588px;
+		}
+		#fact_iva {
+			position:absolute;
+			left:535px;
+			bottom:39px;
+			font-size:12pt;
+		}
+	</style>
 </head>
 <body>
-  <div id="body">
-	<div><img src='{$fktr_receipt_background_image}' width='700' height='800'></div>
-  	<div id='razon_social'>{$company.name}</div>
-	<div id='direccion'>{$company.address} </div>
-	<div id='localidad'>{$company.city} - {$company.state}</div>
-	<div id='url'>{$company.website}</div>
-	<div id='condicion_iva'>{$company.tax_condition.name}</div>
+	<div id="body">
+		<div><img src='{$fktr_receipt_background_image}' width='700' height='800'></div>
+		<div id='razon_social'>{$company.name}</div>
+		<div id='direccion'>{$company.address} </div>
+		<div id='localidad'>{$company.city} - {$company.state}</div>
+		<div id='url'>{$company.website}</div>
+		<div id='condicion_iva'>{$company.tax_condition.name}</div>
 
-	<div id='nro_recibo'>RECIBO: {$receipt.post_title}</div>
-  	<div id='fecha'>FECHA: {function="date_i18n('d-m-Y', $receipt.date)"}</div>
+		<div id='nro_recibo'>RECIBO: {$receipt.post_title}</div>
+		<div id='fecha'>FECHA: {$receipt.datei18n}</div>
 
-	<div id='cuit'>C.U.I.T</div><div id='cuitval'>{$company.taxpayer}</div>
-	<div id='iibb'>Ing.Brutos</div><div id='iibbval'>{$company.tax}</div>
-	<div id='inact'>Inicio de Act.</div><div id='inactval'>{$company.start}</div>
-    
-    <div id="rec_text">{function="fktr_number_to_letter_es($receipt.total_to_impute)"}</div>
-	
-    <div id='rec_check'></div>
-	<div id='rec_efectivo'>{$receipt.cash}</div>
-	<div id='rec_total'>{$receipt.total_to_pay}</div>
-    
+		<div id='cuit'>TAX</div><div id='cuitval'>{$company.taxpayer}</div>
+		<div id='iibb'>Ing.Brutos</div><div id='iibbval'>{$company.tax}</div>
+		<div id='inact'>Inicio de Act.</div><div id='inactval'>{$company.start}</div>
 
-	<div id='area_detalle'>
-		{loop="$receipt.invoices"}
-		<div class='row'>
-			<table border='0' cellpadding='0' cellspacing='0'>
-				<tr>
-					<td class='row_date'> {function="date_i18n('d-m-Y', $value.date)"}</td>
-					<td class='row_number'> {$value.number} </td>
-					<td class='row_total'>${$value.total}</td>
-				</tr>
-			</table>
+		<div id="nombre_cliente">{$receipt.client_data.name}</div>
+		<div id="dir_cliente">{$receipt.client_data.address}</div>
+		<div id="phone_cliente">{$receipt.client_data.phone}</div>
+		<div id="cuit_cliente">{$receipt.client_data.tax_condition}</div>
+
+		<div id='rec_check'>{$receipt.total_checks}</div>
+		<div id='rec_efectivo'>{$receipt.cash}</div>
+		<div id='rec_total'>{$receipt.total_to_pay}</div>
+		<div id="rec_total_text">{function="fktr_number_to_letter_es($receipt.total_to_pay)"}</div>
+
+		<div id='area_detalle'>
+			{loop="$receipt.invoices"}
+			<div class='row'>
+				<table border='0' cellpadding='0' cellspacing='0'>
+					<tr>
+						<td class='row_date'> {function="date_i18n('d-m-Y', $value.date)"}</td>
+						<td class='row_number'> {$value.number} </td>
+						<td class='row_total'>${$value.total}</td>
+					</tr>
+				</table>
+			</div>
+			{/loop}
 		</div>
-		{/loop}
-	</div>
 
-	<div id='area_checks'>
-		{loop="$receipt.checks"}
-		<div class='row'>
-			<table border='0' cellpadding='0' cellspacing='0'>
-				<tr>
-					<td class='ck_row_bankn'>${$value.bank}</td>
-					<td class='ck_row_serie'>{$value.number} </td>
-					<td class='ck_row_cdate'>{function="date_i18n('d-m-Y', $value.cashing_date)"}</td>
-					<td class='ck_row_value'>{$value.value} </td>
-				</tr>
-			</table>
+		<div id='area_checks'>
+			{loop="$receipt.checks"}
+			<div class='row'>
+				<table border='0' cellpadding='0' cellspacing='0'>
+					<tr>
+						<td class='ck_row_bankn'>${$value.bank}</td>
+						<td class='ck_row_serie'>{$value.number} </td>
+						<td class='ck_row_cdate'>{function="date_i18n('d-m-Y', $value.cashing_date)"}</td>
+						<td class='ck_row_value'>{$value.value} </td>
+					</tr>
+				</table>
+			</div>
+			{/loop}
 		</div>
-		{/loop}
-	</div>
 
-  </div>
+	</div>
 </body>
 </html>
