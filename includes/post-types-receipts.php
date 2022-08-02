@@ -126,7 +126,7 @@ class fktrPostTypeReceipts {
 	}
 	 public static function bulk_actions($actions){
 
-        $actions['send_receipt_pdf_client'] = __( 'Send pdf to clients', 'fakturo');
+        $actions['send_receipt_pdf_client'] = __( 'Send PDF to clients', 'fakturo');
 
         return $actions;
     }
@@ -148,13 +148,13 @@ class fktrPostTypeReceipts {
 			$actions['print_receipt'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_receipt&nonce='.$action_nonce).'" class="btn_print_receipt" target="_new">'.__( 'Print Receipt', 'fakturo' ).'</a>';
 
 
-			if (empty($actions['send_invoice_to_client'])) {
+			if (empty($actions['send_receipt_to_client'])) {
 				$sale_data = self::get_receipt_data($post->ID);
 				$client_data = fktrPostTypeClients::get_client_data($sale_data['client_id']);
 				if (!empty($client_data['email'])) {
 					$url = admin_url('admin-post.php?id='.$post->ID.'&action=send_receipt_to_client');
 					$url = wp_nonce_url($url, 'send_receipt_to_client', '_wpnonce');
-					$actions['send_receipt_to_client'] = '<a href="'.$url.'" class="btn_send_receipt">'.__( 'Send PDF to Client', 'fakturo' ).'</a>';
+					$actions['send_receipt_to_client'] = '<a href="'.$url.'" class="btn_send_receipt">'.__( 'email PDF to Client', 'fakturo' ).'</a>';
 				}
 			}
 			

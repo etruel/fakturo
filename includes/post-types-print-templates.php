@@ -175,6 +175,10 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				return $tpl;
 			}
 
+
+			/**
+			 * Sale Invoices Print templates 
+			 */
 			if ($object->assgined == 'fktr_sale') {
 				// assign vars to print template assgined to fktr_sale.
 
@@ -219,6 +223,10 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				$sale_invoice['total']		 = $sale_invoice['in_total'];
 
 				$tpl->assign("invoice", $sale_invoice);
+
+				/**
+				 * Receipts Print templates 
+				 */
 			} else if ($object->assgined == 'fktr_receipt') {
 				// assign vars to print template assgined to fktr_receipt.
 				$imgfiles	 = scandir(FAKTURO_PLUGIN_DIR . 'assets/images/');
@@ -234,17 +242,26 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				$receipt			 = fktrPostTypeReceipts::get_receipt_data($object->id);
 				$receipt['datei18n'] = date_i18n(get_option('date_format'), $receipt['date']);
 
-				$client_data						 = fktrPostTypeClients::get_client_data($receipt['client_id']);
+				$client_data							 = fktrPostTypeClients::get_client_data($receipt['client_id']);
 				//$receipt['client_data']				 = $client_data;
+				//echo '$client_data=' . '<pre>' . print_r($client_data, 1) . '</pre>' . '<br>';
 				$receipt['client_data']['active']		 = $client_data['active'];
-				$receipt['client_data']['name']		 = $client_data['post_title'];
-				$receipt['client_data']['address']	 = $client_data['address'];
-				$receipt['client_data']['city']		 = $client_data['city'];
+				$receipt['client_data']['name']			 = $client_data['post_title'];
+				$receipt['client_data']['address']		 = $client_data['address'];
+				$receipt['client_data']['city']			 = $client_data['city'];
 				$receipt['client_data']['postcode']		 = $client_data['postcode'];
 				$receipt['client_data']['phone']		 = $client_data['phone'];
-				$receipt['client_data']['cell_phone']		 = $client_data['cell_phone'];
+				$receipt['client_data']['cell_phone']	 = $client_data['cell_phone'];
 				$receipt['client_data']['email']		 = $client_data['email'];
-				$receipt['client_data']['image']		 = $client_data['webcam_image'];
+				$receipt['client_data']['photo']		 = (isset($client_data['webcam_image'])) ? $client_data['webcam_image'] : '';
+				$receipt['client_data']['taxpayer']		 = $client_data['taxpayer'];
+
+				$tax_condition	 = __('No Tax', 'fakturo');
+				$tax_data		 = get_fakturo_term($client_data['selected_tax_condition'], 'fktr_tax_conditions');
+				if (!is_wp_error($tax_data)) {
+					$tax_condition = $tax_data->name;
+				}
+				$receipt['client_data']['tax_condition'] = $tax_condition;
 
 				$country_name	 = __('No country', 'fakturo');
 				$country_data	 = get_fakturo_term($client_data['selected_country'], 'fktr_countries');
@@ -259,9 +276,6 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 					$state_name = $state_data->name;
 				}
 				$client_data['selected_state_name'] = $state_name;
-
-				$receipt['client_data']['taxpayer']		 = $client_data['taxpayer'];
-				$receipt['client_data']['tax_condition'] = $client_data['tax_condition'];
 
 				// imputed invoices
 				if (!empty($receipt['check_invs'])) {
@@ -321,8 +335,12 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 					$receipt['checks'][]	 = $check;
 				}
 				$receipt['total_checks'] = $total_checks;
-				
+
 				$tpl->assign("receipt", $receipt);
+
+				/**
+				 * Products Print templates 
+				 */
 			} else if ($object->assgined == 'fktr_product') {
 				// assign vars to print template assgined to fktr_product.
 				$imgfiles	 = scandir(FAKTURO_PLUGIN_DIR . 'assets/images/');
@@ -401,7 +419,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 					$pdf->set_option('isHtml5ParserEnabled', true);
 
 					$pdf->set_paper("A4", "portrait");
-					$pdf->load_html(utf8_decode($html));
+					$pdf->load_html($html);  // removed utf8_decode($html) for RTL
 					$pdf->render();
 					$pdf->stream('pdf.pdf', array('Attachment' => 0));
 				} else {

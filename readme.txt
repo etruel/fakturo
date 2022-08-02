@@ -84,11 +84,15 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 == Changelog ==
 
-= 1.0.3 (Aug 1, 2022) =
+= 1.0.3 (Aug 2, 2022) =
 * Updated Select2 libraries to last stable release 4.0.13 to improves security.
 * Added .min versions of css and js files to improve debug and loadings speeds.
 * Added i18n languages of select2 to allow compatibilities with other languages.
-* Improved Receipt background images.
+* Added Arabic background images for invoices and receipts.
+* Improves Default Print templates for invoices and Receipts.
+* Improves Receipt and invoices background images for English and Spanish.
+* Fixes See PDF button inside print Print template edit screen.
+* Fixes quick actions Send email to clients on Receipts list.
 * Fixes removing CUIT from english background print template receipt.
 * Fixes adding missed client variables on receipt print templates.
 * Fixes not showed suggested prices on load product edit screen.
