@@ -84,9 +84,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 == Changelog ==
 
-== Changelog ==
-
-= 1.0.3 (Aug 2, 2022) =
+= 1.0.3 (Aug 9, 2023) =
 * Fix errors when is activated 
 * Added condition for don't allow error with variables
 
