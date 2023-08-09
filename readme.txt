@@ -84,6 +84,12 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 == Changelog ==
 
+== Changelog ==
+
+= 1.0.3 (Aug 2, 2022) =
+* Fix errors when is activated 
+* Added condition for don't allow error with variables
+
 = 1.0.3 (Aug 2, 2022) =
 * Updated Select2 libraries to last stable release 4.0.13 to improves security.
 * Added .min versions of css and js files to improve debug and loadings speeds.
