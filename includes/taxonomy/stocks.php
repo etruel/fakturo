@@ -153,7 +153,7 @@ class fktr_tax_stock {
 					
 					'datetimepicker' => json_encode($objectL10n),
 					
-					'currencies' => json_encode($currencies),
+					'currencies' => json_encode(isset($currencies) ? $currencies : ''),
 					
 					'txt_search_products' => __('Search products...', 'fakturo' ),
 					'characters_to_search' => apply_filters('fktr_sales_characters_to_search_product', 3),
