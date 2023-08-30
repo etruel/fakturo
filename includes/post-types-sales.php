@@ -928,10 +928,28 @@ if (!class_exists('fktrPostTypeSales')) :
 								</div>
 							</div>
 							<div id="totals-box">
-								<div id="sub_total">Subtotal: <label id="label_sub_total">' . (($setting_system['currency_position'] == 'before') ? $currencyDefault->symbol . ' ' : '') . '' . number_format($sub_total, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (($setting_system['currency_position'] == 'after') ? ' ' . $currencyDefault->symbol : '') . '</label><input type="hidden" name="in_sub_total" id="in_sub_total" value="' . $sub_total . '"/>  </div>
-								<div id="discount_total"' . (($discount > 0) ? '' : ' style="display:none;"') . '>Discount: <label id="label_discount">' . (($setting_system['currency_position'] == 'before') ? $currencyDefault->symbol . ' ' : '') . '' . number_format($discount, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (($setting_system['currency_position'] == 'after') ? ' ' . $currencyDefault->symbol : '') . '</label><input type="hidden" name="in_discount" id="in_discount" value="' . $discount . '"/> </div>
-								<div id="tax_total"' . (($discriminates_taxes) ? '' : ' style="display:none;"') . '>' . $htmltaxes . '</div>
-								<div id="total">Total: <label id="label_total">' . (($setting_system['currency_position'] == 'before') ? $currencyDefault->symbol . ' ' : '') . '' . number_format($total, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (($setting_system['currency_position'] == 'after') ? ' ' . $currencyDefault->symbol : '') . '</label><input type="hidden" name="in_total" id="in_total" value="' . $total . '"/>  </div>
+							<div id="sub_total">Subtotal: <label id="label_sub_total">' . (
+								($setting_system['currency_position'] == 'before' && isset($currencyDefault->symbol))
+								? $currencyDefault->symbol . ' ' : ''
+							) . '' . number_format($sub_total, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (
+								($setting_system['currency_position'] == 'after' && isset($currencyDefault->symbol))
+								? ' ' . $currencyDefault->symbol : ''
+							) . '</label><input type="hidden" name="in_sub_total" id="in_sub_total" value="' . $sub_total . '"/>  </div>
+							<div id="discount_total"' . (($discount > 0) ? '' : ' style="display:none;"') . '>Discount: <label id="label_discount">' . (
+								($setting_system['currency_position'] == 'before' && isset($currencyDefault->symbol))
+								? $currencyDefault->symbol . ' ' : ''
+							) . '' . number_format($discount, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (
+								($setting_system['currency_position'] == 'after' && isset($currencyDefault->symbol))
+								? ' ' . $currencyDefault->symbol : ''
+							) . '</label><input type="hidden" name="in_discount" id="in_discount" value="' . $discount . '"/> </div>
+							<div id="tax_total"' . (($discriminates_taxes) ? '' : ' style="display:none;"') . '>' . $htmltaxes . '</div>
+							<div id="total">Total: <label id="label_total">' . (
+								($setting_system['currency_position'] == 'before' && isset($currencyDefault->symbol))
+								? $currencyDefault->symbol . ' ' : ''
+							) . '' . number_format($total, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (
+								($setting_system['currency_position'] == 'after' && isset($currencyDefault->symbol))
+								? ' ' . $currencyDefault->symbol : ''
+							) . '</label><input type="hidden" name="in_total" id="in_total" value="' . $total . '"/>  </div>
 							</div>
 						</td>
 						</tr>

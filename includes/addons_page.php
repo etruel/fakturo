@@ -129,41 +129,43 @@ class fktr_admin_page {
 			include_once(ABSPATH . WPINC . '/feed.php');
 			$addonitems = fetch_feed( 'https://etruel.com/downloads/category/fakturo/feed/' );
 			$addon = array();
-			foreach($addonitems->get_items() as $item) {
-				$itemtitle = $item->get_title();
-				$versions = $item->get_item_tags('', 'version');
-				$version = (is_array($versions)) ? $versions[0]['data'] : '';
-				$guid = $item->get_item_tags('', 'guid');
-				$guid = (is_array($guid)) ? $guid[0]['data'] : '';
-				wp_parse_str($guid, $query ); 
-				if(isset($query ) && !empty($query ) ) {
-					if(isset($query['p'])){
-						$download_id = $query['p'];
+			if(!is_wp_error($addonitems)){
+				foreach($addonitems->get_items() as $item) {
+					$itemtitle = $item->get_title();
+					$versions = $item->get_item_tags('', 'version');
+					$version = (is_array($versions)) ? $versions[0]['data'] : '';
+					$guid = $item->get_item_tags('', 'guid');
+					$guid = (is_array($guid)) ? $guid[0]['data'] : '';
+					wp_parse_str($guid, $query ); 
+					if(isset($query ) && !empty($query ) ) {
+						if(isset($query['p'])){
+							$download_id = $query['p'];
+						}
 					}
+				
+					$plugindirname = str_replace('-','_', strtolower( sanitize_file_name( $itemtitle )));
+					$buynowURI = (!empty($download_id)) ? 'https://etruel.com/checkout?edd_action=add_to_cart&download_id='.$download_id.'&edd_options[price_id]=1' : 'https://etruel.com/';
+					$addon[ $plugindirname ] = Array (
+						'Name'		  => $itemtitle,
+						'PluginURI'	  => $item->get_permalink(),
+						'buynowURI'	  => $buynowURI,
+						'Version'	  => $version,	
+						'Description' => $item->get_description(),
+						'Author'	  => 'etruel', 
+						'AuthorURI'   => 'https://etruel.com',
+						'TextDomain'  => '',
+						'DomainPath'  => '',
+						'Network'	  => '',
+						'Title'		  => $itemtitle,
+						'AuthorName'  => 'etruel', 
+						'Remote'	  => true 
+					);
 				}
-			
-				$plugindirname = str_replace('-','_', strtolower( sanitize_file_name( $itemtitle )));
-				$buynowURI = (!empty($download_id)) ? 'https://etruel.com/checkout?edd_action=add_to_cart&download_id='.$download_id.'&edd_options[price_id]=1' : 'https://etruel.com/';
-				$addon[ $plugindirname ] = Array (
-					'Name'		  => $itemtitle,
-					'PluginURI'	  => $item->get_permalink(),
-					'buynowURI'	  => $buynowURI,
-					'Version'	  => $version,	
-					'Description' => $item->get_description(),
-					'Author'	  => 'etruel', 
-					'AuthorURI'   => 'https://etruel.com',
-					'TextDomain'  => '',
-					'DomainPath'  => '',
-					'Network'	  => '',
-					'Title'		  => $itemtitle,
-					'AuthorName'  => 'etruel', 
-					'Remote'	  => true 
-				);
+				$addons = apply_filters( 'fktr_addons_array', array_filter( $addon ) );
+				$length = apply_filters( 'fakturo_addons_transient_length', DAY_IN_SECONDS );
+				set_transient( 'fakturo_addons_data', $addons, $length );
+				$cached = $addons;
 			}
-			$addons = apply_filters( 'fktr_addons_array', array_filter( $addon ) );
-			$length = apply_filters( 'fakturo_addons_transient_length', DAY_IN_SECONDS );
-			set_transient( 'fakturo_addons_data', $addons, $length );
-			$cached = $addons;
 		}
 		
 		$plugins = array_merge( $plugins, $cached );
