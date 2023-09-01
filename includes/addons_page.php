@@ -73,24 +73,23 @@ class fktr_admin_page {
 
 	}
 	public static function plugins_page() {
-		if (!defined('WPEM_ADMIN_DIR')) {
-			define('WPEM_ADMIN_DIR' , ABSPATH . basename(admin_url()));
+		global $s;
+		if (!class_exists('WP_Plugins_List_Table')) {
+			require_once ABSPATH . 'wp-admin/includes/class-wp-plugins-list-table.php';
 		}
-		if ( ! class_exists( 'WP_List_Table' ) ) {
-			require_once WPEM_ADMIN_DIR . '/includes/class-wp-list-table.php';
-		}
+		$s = '';
+		$plugins_list_table = new WP_Plugins_List_Table();
+		$plugins_list_table->prepare_items();
 		
-		if ( ! class_exists( 'WP_Plugins_List_Table' ) ) {
-			require WPEM_ADMIN_DIR .'/includes/class-wp-plugins-list-table.php';
-		}
+		echo '<div class="wrap">';
+		echo '<h1 class="wp-heading-inline">'.__( 'Fakturo Add-ons Plugins', 'fakturo').'</h1>';
+		echo '<hr class="wp-header-end">';
+		// Output the list table HTML
+		$plugins_list_table->views();
+		$plugins_list_table->search_box('Search Plugins', 'plugin-search-input');
+		$plugins_list_table->display();
 		
-		global $plugins, $status, $wp_list_table;
-		$status ='all'; 
-		$page=  (!isset($page) or is_null($page))? 1 : $page;
-		$plugins['all']=get_plugins();
-
-		require WPEM_ADMIN_DIR . '/plugins.php' ;
-		exit;
+		echo '</div>';
 
 	}
 	public static function showhide_addons($plugins) {
@@ -124,7 +123,7 @@ class fktr_admin_page {
 
 	public static function read_addons($plugins){
 		
-		$cached = get_transient( 'fakturo_addons_data' );
+		$cached = '';
 		if ( !is_array( $cached ) ) { // If no cache read source feed
 			include_once(ABSPATH . WPINC . '/feed.php');
 			$addonitems = fetch_feed( 'https://etruel.com/downloads/category/fakturo/feed/' );
