@@ -122,7 +122,7 @@ class fktr_admin_page {
 	}
 
 	public static function read_addons($plugins){
-		// $cached = get_transient('fakturo_addons_data');
+		$cached = get_transient('fakturo_addons_data');
 		if ( !isset($cached) || !is_array($cached) ) { // If no cache read source feed
 			include_once(ABSPATH . WPINC . '/feed.php');
 			$addonitems = fetch_feed( 'https://etruel.com/downloads/category/fakturo/feed/' );
