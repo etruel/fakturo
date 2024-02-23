@@ -145,7 +145,7 @@ class fktrAdminMenu {
 			array('fktrSettings','fakturo_settings')
                 );
 		$page = add_submenu_page(
-			'fakturo-settings-system',
+			'',
 			__( 'Settings', 'fakturo' ), 
 			__( 'Settings', 'fakturo' ), 
 			'edit_fakturo_settings', 
@@ -153,7 +153,7 @@ class fktrAdminMenu {
 			array('fktrSettings','fakturo_settings_system')
                 );
 		$page = add_submenu_page(
-			'fakturo-settings-dashboard',
+			'',
 			__( 'Settings', 'fakturo' ), 
 			__( 'Settings', 'fakturo' ), 
 			'edit_fakturo_settings', 
@@ -161,7 +161,7 @@ class fktrAdminMenu {
 			array('fktrSettings','fakturo_settings_dashboard')
 		);	
 		$page = add_submenu_page(
-			'fakturo-license-page',
+			'',
 			__( 'Settings', 'fakturo' ), 
 			__( 'Settings', 'fakturo' ), 
 			'edit_fakturo_settings', 

@@ -123,9 +123,11 @@ class fktr_admin_page {
 
 	public static function read_addons($plugins){
 		$cached = get_transient('fakturo_addons_data');
-		if ( !isset($cached) || !is_array($cached) ) { // If no cache read source feed
+		
+		if ( empty($cached) ) { // If no cache read source feed
 			include_once(ABSPATH . WPINC . '/feed.php');
-			$addonitems = fetch_feed( 'https://etruel.com/downloads/category/fakturo/feed/' );
+			$addonitems = fetch_feed( 'https://etruel.com/downloads/category/fakturo-add-ons/feed' );
+			
 			$addon = array();
 			if(!is_wp_error($addonitems)){
 				foreach($addonitems->get_items() as $item) {
@@ -142,6 +144,8 @@ class fktr_admin_page {
 					}
 				
 					$plugindirname = str_replace('-','_', strtolower( sanitize_file_name( $itemtitle )));
+
+
 					$buynowURI = (!empty($download_id)) ? 'https://etruel.com/checkout?edd_action=add_to_cart&download_id='.$download_id.'&edd_options[price_id]=1' : 'https://etruel.com/';
 					$addon[ $plugindirname ] = Array (
 						'Name'		  => $itemtitle,
