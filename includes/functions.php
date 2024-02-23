@@ -476,43 +476,37 @@ function fktr_number_to_letter_ten_cents($numero) {
 
 function fktr_number_to_letter_units($numero) {
 	switch ($numero) {
-		case 9: {
-				$num = "nueve";
-				break;
-			}
-		case 8: {
-				$num = "ocho";
-				break;
-			}
-		case 7: {
-				$num = "siete";
-				break;
-			}
-		case 6: {
-				$num = "seis";
-				break;
-			}
-		case 5: {
-				$num = "cinco";
-				break;
-			}
-		case 4: {
-				$num = "cuatro";
-				break;
-			}
-		case 3: {
-				$num = "tres";
-				break;
-			}
-		case 2: {
-				$num = "dos";
-				break;
-			}
-		case 1: {
-				$num = "uno";
-				break;
-			}
+		case 9:
+			$num = "nueve";
+			break;
+		case 8:
+			$num = "ocho";
+			break;
+		case 7:
+			$num = "siete";
+			break;
+		case 6:
+			$num = "seis";
+			break;
+		case 5:
+			$num = "cinco";
+			break;
+		case 4:
+			$num = "cuatro";
+			break;
+		case 3:
+			$num = "tres";
+			break;
+		case 2:
+			$num = "dos";
+			break;
+		case 1:
+			$num = "uno";
+			break;
+		default:
+			$num = '';
 	}
+	
 	return $num;
 }
 

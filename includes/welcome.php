@@ -54,9 +54,7 @@ class fktr_welcome {
 
 		// Now remove them from the menus so plugins that allow customizing the admin menu don't show them
 //		remove_submenu_page( 'index.php', 'fakturo-about' );
-		remove_submenu_page( 'index.php', 'fakturo-changelog' );
-		remove_submenu_page( 'index.php', 'fakturo-getting-started' );
-		remove_submenu_page('index.php', 'fakturo-privacy');
+		
 
 	}
 	
@@ -141,6 +139,10 @@ class fktr_welcome {
 				/*]]>*/
 			</style>
 		<?php
+		//remove sub menu page from dashboard menu
+		remove_submenu_page( 'index.php', 'fakturo-changelog' );
+		remove_submenu_page( 'index.php', 'fakturo-getting-started' );
+		remove_submenu_page('index.php', 'fakturo-privacy');
 	}
 
 	/**

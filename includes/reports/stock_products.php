@@ -747,7 +747,11 @@ class stock_products_report {
 					<?php
 						for($i=65; $i<=90; $i++) {  
 							$letter = chr($i);  
-							echo '<option value="'. $letter .'" '. (( $letter == $request['letter_from'])? 'selected' : '' ) .'>'. $letter .'</option>';
+							if (isset($request['letter_from'])) {
+								echo '<option value="'. $letter .'" '. (( $letter == $request['letter_from'])? 'selected' : '' ) .'>'. $letter .'</option>';
+							} else {
+								echo '<option value="'. $letter .'">'. $letter .'</option>';
+							}
 						} 
 					?>
 				</select>
