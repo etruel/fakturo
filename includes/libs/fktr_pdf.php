@@ -11,7 +11,8 @@
 		}
 		public static function getInstance($options = null) {
 			if (is_null(self::$instance)) {
-				self::includes();
+				if(!class_exists('Dompdf\Dompdf'))
+					self::includes();
 				// instantiate and use the dompdf class
             	self::$instance = new Dompdf($options);
         	}
