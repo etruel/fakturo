@@ -77,13 +77,13 @@ class fktr_welcome {
 				[class*="dashboard_page_fakturo-"] .about__section h2, .about__section h3, .about__section h4, .about__section h5 { margin: 1em 0; }
 				[class*="dashboard_page_fakturo-"] .about__section a{ color: #222; }
 				[class*="dashboard_page_fakturo-"] .about__section a:hover{ color: #f7b63e; }
-				[class*="dashboard_page_fakturo-"] .about__header { background-image: <?php echo 'url('.FAKTURO_PLUGIN_URL . 'assets/images/about-header.png)'; ?>; background-size: 80%; background-position: bottom right; padding-top: 3rem; background-color: #f7b63e; }
+				[class*="dashboard_page_fakturo-"] .about__header { background-image: <?php echo 'url('.FAKTURO_PLUGIN_URL . 'assets/images/about-header.png)'; ?>; background-size: 80%; background-position: bottom right; padding-top: 3rem; background-color: #f7b63e; height: initial; padding-bottom: 0; }
 				[class*="dashboard_page_fakturo-"] .about__header-title{ margin: 5rem 2rem 0;padding: 1em 0; }
 				[class*="dashboard_page_fakturo-"] .about__header-title p { margin: 0; padding: 80px 0 0; font-size: 4em; color: #222; line-height: 1; font-weight: 900; text-transform: uppercase; }
 				[class*="dashboard_page_fakturo-"] .about__header-title p span { color: #333; }
 				[class*="dashboard_page_fakturo-"] .about__header-text { max-width: 25em; margin: 0 2rem 3rem; padding: 0; font-size: 1.5em; line-height: 1.4;}
-				[class*="dashboard_page_fakturo-"] .about__header-text p { color: #222; margin-top: 0; }
-				[class*="dashboard_page_fakturo-"] .about__header-navigation { display: flex; justify-content: flex-start; background: #fff; color: #222; border-color: #222; padding-top: 0;}
+				[class*="dashboard_page_fakturo-"] .about__header-text p { color: #222; margin-top: 0; text-align: left; }
+				[class*="dashboard_page_fakturo-"] .about__header-navigation { display: flex; justify-content: center; width: 100%; margin-bottom: 0; background: #fff; color: #222; border-color: #222; padding-top: 0;}
 				[class*="dashboard_page_fakturo-"] .about__header-navigation .nav-tab{color: #222 ; margin: 0; padding: 24px 32px; float: none; font-size: 1.4em; line-height: 1; border-style: solid; background: 0 0; border-width: 0 0 3px; border-color: transparent;}
 				[class*="dashboard_page_fakturo-"] .about__header-navigation .nav-tab-active { margin-bottom: -3px; }
 				[class*="dashboard_page_fakturo-"] .about__header-navigation .nav-tab-active:active, [class*="dashboard_page_fakturo-"] .about__header-navigation .nav-tab-active:hover, [class*="dashboard_page_fakturo-"] .about__header-navigation .nav-tab-active { color: #f7b63e; border-color: #f7b63e;}
@@ -221,6 +221,8 @@ class fktr_welcome {
 			?>
 
 			</div>
+
+			<hr/>
 
 			<?php $this->subscription_form(); ?>
 
@@ -419,6 +421,8 @@ class fktr_welcome {
 			?>
 		
 			</div>
+
+			<hr/>
 
 			<div class="about__section about__section_height has-2-columns">
 				<div class="column wpe-flex is-edge-to-edge has-accent-background-color">
