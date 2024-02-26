@@ -167,9 +167,7 @@ function fakturo_porcent_to_mask($value) {
 function fakturo_date2time($value, $dateformat = 'd-m-Y') {
 	$date		 = date_parse_from_format($dateformat, $value);
 	$timestamp	 = mktime($date['hour'], $date['minute'], $date['second'], $date['month'], $date['day'], $date['year']);
-	if ($timestamp['error_count'] != 0) {
-		$timestamp = false;  // if error return false
-	}
+	
 	return $timestamp;
 }
 
