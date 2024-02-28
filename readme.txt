@@ -88,6 +88,8 @@ You can either install it automatically from the WordPress admin, or do it manua
 * IMPORTANT UPDATE: Fixes vulnerabilities in third-party libraries. 
 * Updated DomPDF library.
 * Added condition to avoid errors on templates variables.
+* Fixes Addons page.
+* Fixes Welcome page.
 * Fixes many warnings and PHP notices.
 * Fixes an error when is activated.
 
