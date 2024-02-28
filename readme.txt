@@ -1,11 +1,11 @@
 === Fakturo ===
 Contributors: etruel, sniuk, khaztiel, axellourenco
-Donate link: 
-Tags: invoice, sales, purchases, billing, receipt, Tax Code, VAT, PDF invoices, bill, bill clients, merchantplus, SME, pyme, checkout, online payment, pay, recurring billing, send invoice, web invoice, wp-invoice, wp-sales, e-commerce, e-store, eshop, wp ecommerce
+Donate link:
+Tags: invoice, sales, purchases, billing, receipt, clients, providers
 Requires at least: 4.9
-Tested up to: 6.0.1
-Stable tag: trunk
-Requires PHP: 7.2
+Tested up to: 6.5
+Stable tag: 1.0.4
+Requires PHP: 7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,9 +84,12 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 == Changelog ==
 
-= 1.0.3 (Aug 9, 2023) =
-* Fix errors when is activated 
-* Added condition for don't allow error with variables
+= 1.0.4 (Feb 27, 2023) =
+* IMPORTANT UPDATE: Fixes vulnerabilities in third-party libraries. 
+* Updated DomPDF library.
+* Added condition to avoid errors on templates variables.
+* Fixes many warnings and PHP notices.
+* Fixes an error when is activated.
 
 = 1.0.3 (Aug 2, 2022) =
 * Updated Select2 libraries to last stable release 4.0.13 to improves security.
@@ -242,5 +245,5 @@ First Release
 
 == Upgrade Notice ==
 
-= 1.0.3 =
-Security update.
+= 1.0.4 =
+Important Security update.
