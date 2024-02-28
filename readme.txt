@@ -1,7 +1,7 @@
 === Fakturo ===
 Contributors: etruel, sniuk, khaztiel, axellourenco
 Donate link:
-Tags: invoice, sales, purchases, billing, receipt, clients, providers
+Tags: invoice, sales, purchases, billing, receipt
 Requires at least: 4.9
 Tested up to: 6.5
 Stable tag: 1.0.4
