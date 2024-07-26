@@ -1,15 +1,15 @@
 === Fakturo ===
-Contributors: etruel, sniuk, khaztiel, axellourenco
+Contributors: etruel,sniuk,khaztiel,axellourenco
 Donate link:
-Tags: invoice, sales, purchases, billing, receipt
+Tags: invoice,sales,inventory,billing,receipt
 Requires at least: 4.9
-Tested up to: 6.5
-Stable tag: 1.0.4
-Requires PHP: 7.3
+Tested up to: 6.6
+Requires PHP: 7.0
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-The best and more complete open source Invoice System.  An easy and fully-configurable SME Management system for Wordpress.
+The best and more complete open source Invoice System. An easy and fully-configurable SME Management system for Wordpress.
 
 == Description ==
 
@@ -83,6 +83,13 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 
 == Changelog ==
+
+= 1.0.5 (Jul 26, 2024) =
+* Bump to WordPress 6.6 & PHP 8.1
+* Compatibility with the new [Fakturo](https://wordpress.org/plugins/fakturo) FREE extension.
+* Updated EDD plugin updater library.
+* Fixes the creation of the menu pages to avoid PHP Warnings.
+* Fixes Extension link on Settings Page.
 
 = 1.0.4 (Feb 27, 2023) =
 * IMPORTANT UPDATE: Fixes vulnerabilities in third-party libraries. 
@@ -247,5 +254,5 @@ First Release
 
 == Upgrade Notice ==
 
-= 1.0.4 =
-Important Security update.
+= 1.0.5 =
+Bump to WordPress 6.6 & PHP 8.1.

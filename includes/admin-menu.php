@@ -217,9 +217,9 @@ class fktrAdminMenu {
 			'edit-tags.php?taxonomy=fktr_check'
 		);
               
-                /**
-                 * Products Menu items
-                 */	
+		/**
+		 * Products Menu items
+		 */	
 		add_menu_page( 
 			__( 'Products', 'fakturo' ), 
 			__( 'Products', 'fakturo' ), 
