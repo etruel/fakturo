@@ -71,8 +71,8 @@
 		#localidad {
 			position:absolute;
 			left:35px;
-			top:90px;
-			font-size:12pt;
+			top:100px;
+			font-size:10pt;
 			width:300px;
 			text-align:center;
 		}
@@ -87,7 +87,7 @@
 		#condicion_iva {
 			position:absolute;
 			left:35px;
-			top:112px;
+			top:115px;
 			font-size:12pt;
 			width:300px;
 			text-align:center;
@@ -323,9 +323,9 @@
 		<div id='cuit_cliente'>{$invoice.client_data.taxpayer}</div>
 		<div id='dir_cliente'>{$invoice.client_data.address}</div>
 		<div id='loc_cliente'>{$invoice.client_data.city}</div>
-		<div id='iva_cliente'> </div>
+		<div id='iva_cliente'>{$company.tax_condition.name}</div>
 		<div id='tel_cliente'>{$invoice.client_data.phone}</div>
-		<div id='cond_cliente'>{$company.tax_condition.name}</div>
+		<div id='cond_cliente'>{$invoice.client_data.payment_type.name}</div>
 
 		<div id='area_detalle'>
 			{loop="$invoice.products"}
