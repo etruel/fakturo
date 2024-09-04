@@ -65,7 +65,7 @@ jQuery(document).ready(function($) {
 			jQuery('#suggested_' + jQuery(this).data('id')).html(newPrice.formatMoney(products_object.decimal_numbers, products_object.decimal, products_object.thousand));
 			newPrice = newPrice + ((newPrice / 100) * porcentTax);
 
-			var currentFinalPriceValue = jQuery('#prices_final_' + jQuery(this).data('id')).val();
+			var currentFinalPriceValue = jQuery('#prices_final_' + jQuery(this).data('id')).val(); 
 			if (currentFinalPriceValue) { 
 				newPrice = parseFloat(converMaskToStandar(currentFinalPriceValue, products_object));
 			} else {
