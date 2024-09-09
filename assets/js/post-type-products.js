@@ -49,6 +49,7 @@ jQuery(document).ready(function($) {
 			var currentFinalPriceVal = parseFloat(jQuery('#prices_final_' + jQuery(this).data('id')).val()); 
 	
 			 newPrice = cost + ((cost / 100) * porcent);
+			jQuery('#suggested_' + jQuery(this).data('id')).html(newPrice.formatMoney(products_object.decimal_numbers, products_object.decimal, products_object.thousand));
 			
 		if (currentPriceVal === 0 || newPrice === 0) {
 			newPrice = cost + ((cost / 100) * porcent);
