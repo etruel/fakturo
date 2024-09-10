@@ -424,7 +424,8 @@ if (!class_exists('fktrPostTypeProducts')) :
 						<td style="text-align: center;">' . $t->name . ' (' . $t->percentage . '%)</td>
 						<td style="text-align: center;"><input type="text" value="' . (isset($product_data['prices'][$t->term_id]) ? number_format($product_data['prices'][$t->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) : '') . '"  id="prices_' . $t->term_id . '" class="prices" name="prices[' . $t->term_id . ']"/></td>
 						<td style="text-align: center;" id="suggested_' . $t->term_id . '"></td>
-						<td style="text-align: center;"><input type="text" value="' . (isset($product_data['prices_final'][$t->term_id]) ? number_format($product_data['prices_final'][$t->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) : '') . '" id="prices_final_' . $t->term_id . '" class="prices_final" name="prices_final[' . $t->term_id . ']"/></td>
+						<td style="text-align: center;"><input type="text" value="' . (isset($product_data['prices_final'][$t->term_id]) ? number_format($product_data['prices_final'][$t->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) : '') . '" id="prices_final_' . $t->term_id . '" class="prices_final" name="prices_final[' . $t->term_id . ']"/>
+						</td>
 					</tr>';
 				}
 			} else {

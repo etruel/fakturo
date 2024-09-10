@@ -1,9 +1,11 @@
 var DefaultMaskNumbers = '';
-jQuery(document).ready(function($) {
+var previusValue = 0;
+var previousTaxPercentage = 0;
+jQuery(document).ready(function ($) {
 
 
 	// This code prevents the URL from being filled with the wp-post-new-reload value
-	$('#publish').click(function(e) {
+	$('#publish').click(function (e) {
 		if ($('#original_post_status').val() === 'auto-draft' && window.history.replaceState) {
 			var location;
 			location = window.location.href;
@@ -35,42 +37,110 @@ jQuery(document).ready(function($) {
 	jQuery('.prices_final').mask(DefaultMaskNumbers, { reverse: true });
 	jQuery('#currency').select2();
 
-	jQuery('#cost').change(function() {
 
-		jQuery('.pricestr').each(function(i, obj) {
-			//alert(jQuery(this).data('id'));
+
+	jQuery('#cost').change(function () {
+		jQuery('.pricestr').each(function (i, obj) {
 			var porcent = parseFloat(jQuery(this).data('porcentage'));
 			var cost = parseFloat(converMaskToStandar(jQuery('#cost').val(), products_object));
-			var newPrice = cost + ((cost / 100) * porcent);
 			var porcentTax = parseFloat(getPorcentOfTaxSelected());
 
-			jQuery('#prices_' + jQuery(this).data('id')).val(newPrice.formatMoney(products_object.decimal_numbers, products_object.decimal, products_object.thousand));
+
+			var currentPriceVal = parseFloat(jQuery('#prices_' + jQuery(this).data('id')).val());
+			var currentFinalPriceVal = parseFloat(jQuery('#prices_final_' + jQuery(this).data('id')).val());
+
+			newPrice = cost + ((cost / 100) * porcent);
 			jQuery('#suggested_' + jQuery(this).data('id')).html(newPrice.formatMoney(products_object.decimal_numbers, products_object.decimal, products_object.thousand));
+			if (currentPriceVal === 0 || newPrice === 0) {
+				newPrice = cost + ((cost / 100) * porcent);
+			} else if (newPrice !== currentPriceVal) {
+				newPrice = currentPriceVal;
+			}
+
+			if (newPrice !== currentPriceVal) {
+				jQuery('#prices_' + jQuery(this).data('id')).val(newPrice.formatMoney(products_object.decimal_numbers, products_object.decimal, products_object.thousand));
+				jQuery('#suggested_' + jQuery(this).data('id')).html(newPrice.formatMoney(products_object.decimal_numbers, products_object.decimal, products_object.thousand));
+			}
+
 			newPrice = newPrice + ((newPrice / 100) * porcentTax);
 
-			jQuery('#prices_final_' + jQuery(this).data('id')).val(newPrice.formatMoney(products_object.decimal_numbers, products_object.decimal, products_object.thousand));
+
+			if (currentFinalPriceVal === 0 || newPrice === 0) {
+				newPrice = cost + ((cost / 100) * porcent) + ((newPrice / 100) * porcentTax);
+			} else if (newPrice !== currentFinalPriceVal) {
+				newPrice = currentFinalPriceVal;
+			}
+
+			if (newPrice !== currentFinalPriceVal) {
+				jQuery('#prices_final_' + jQuery(this).data('id')).val(newPrice.formatMoney(products_object.decimal_numbers, products_object.decimal, products_object.thousand));
+			}
 		});
 	});
 
-	jQuery('#tax').change(function() {
+	jQuery('#tax').on('select2:open', function (e) {
+		var selectedValue = jQuery(this).val();
+		var taxes = jQuery.parseJSON(products_object.taxes);
+		for (var i = 0; i < taxes.length; i++) {
+			if (taxes[i].term_id == selectedValue) {
+				previousTaxPercentage = taxes[i].percentage; 
+				break;
+			}
+		}
+	});
 
-		jQuery('.pricestr').each(function(i, obj) {
-			//alert(jQuery(this).data('id'));
+	jQuery('.pricestr').each(function (i, obj) {
+
+		var porcent = parseFloat(jQuery(this).data('porcentage'));
+		var cost = parseFloat(converMaskToStandar(jQuery('#cost').val(), products_object));
+
+		previusValue = parseFloat(converMaskToStandar(jQuery('#prices_final_' + jQuery(this).data('id')).val(), products_object));
+		var newPrice = cost + ((cost / 100) * porcent);
+		jQuery('#suggested_' + jQuery(this).data('id')).html(newPrice.formatMoney(products_object.decimal_numbers, products_object.decimal, products_object.thousand));
+	});
+
+
+	jQuery('#tax').change(function () {
+
+		jQuery('.pricestr').each(function (i, obj) {
 			var porcent = parseFloat(jQuery(this).data('porcentage'));
 			var cost = parseFloat(converMaskToStandar(jQuery('#cost').val(), products_object));
-			var newPrice = cost + ((cost / 100) * porcent);
 			var porcentTax = parseFloat(getPorcentOfTaxSelected());
 
-			jQuery('#prices_' + jQuery(this).data('id')).val(newPrice.formatMoney(products_object.decimal_numbers, products_object.decimal, products_object.thousand));
-			jQuery('#suggested_' + jQuery(this).data('id')).html(newPrice.formatMoney(products_object.decimal_numbers, products_object.decimal, products_object.thousand));
-			newPrice = newPrice + ((newPrice / 100) * porcentTax);
+			var currentPriceVal = parseFloat(converMaskToStandar(jQuery('#prices_' + jQuery(this).data('id')).val(), products_object));
+			var currentFinalPriceVal = parseFloat(converMaskToStandar(jQuery('#prices_final_' + jQuery(this).data('id')).val(), products_object));
 
-			jQuery('#prices_final_' + jQuery(this).data('id')).val(newPrice.formatMoney(products_object.decimal_numbers, products_object.decimal, products_object.thousand));
+
+			var newPrice = cost + ((cost / 100) * porcent);
+
+			if (currentPriceVal === 0 || newPrice === 0) {
+				newPrice = cost + ((cost / 100) * porcent);
+			} else if (newPrice !== currentPriceVal) {
+				newPrice = currentPriceVal;
+			}
+
+			if (newPrice !== currentPriceVal) {
+				jQuery('#prices_' + jQuery(this).data('id')).val(newPrice.formatMoney(products_object.decimal_numbers, products_object.decimal, products_object.thousand));
+				jQuery('#suggested_' + jQuery(this).data('id')).html(newPrice.formatMoney(products_object.decimal_numbers, products_object.decimal, products_object.thousand));
+			}
+
+			if (porcentTax !== 0) {
+				newPrice = currentFinalPriceVal + ((currentFinalPriceVal / 100) * porcentTax);
+			} else {
+				var factor = 1 + (previousTaxPercentage / 100);
+				var valueOriginal = currentFinalPriceVal / factor;
+				newPrice = valueOriginal;
+			}
+
+			if (currentFinalPriceVal === 0 || newPrice === 0) {
+				newPrice = cost + ((cost / 100) * porcent) + ((newPrice / 100) * porcentTax);
+			}
+
+			if (newPrice !== currentFinalPriceVal) {
+				jQuery('#prices_final_' + jQuery(this).data('id')).val(newPrice.formatMoney(products_object.decimal_numbers, products_object.decimal, products_object.thousand));
+			}
 		});
 	});
-	
-	// To get suggested prices on load edit product screen  
-	jQuery('#tax').change();
+
 
 });
 
@@ -87,6 +157,7 @@ function getPorcentOfTaxSelected() {
 	return r;
 }
 
+
 function converMaskToStandar(valueMasked, maskObject) {
 	if (valueMasked == '') {
 		return valueMasked;
@@ -98,7 +169,7 @@ function converMaskToStandar(valueMasked, maskObject) {
 	}
 	return valueMasked;
 }
-Number.prototype.formatMoney = function(c, d, t) {
+Number.prototype.formatMoney = function (c, d, t) {
 	var n = this,
 		c = isNaN(c = Math.abs(c)) ? 2 : c,
 		d = d == undefined ? "." : d,

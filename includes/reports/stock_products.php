@@ -497,10 +497,10 @@ class stock_products_report {
 						'.__('Scale', 'fakturo' ).'
 					</td>
 					<td width="10%">
-						'.__('Cost', 'fakturo' ).'
+						'.__('Price', 'fakturo' ).' 
 					</td>
 					<td width="10%">
-						'.__('Price', 'fakturo').'
+						'.__('Price Final', 'fakturo').' 
 					</td>
 				</tr>
 				</thead>
