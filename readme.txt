@@ -1,5 +1,5 @@
 === Fakturo ===
-Contributors: etruel,sniuk,khaztiel,samuelalvaradodev,axellourenco
+Contributors: etruel,sniuk,khaztiel,samuelalvaradodev7,axellourenco
 Donate link:
 Tags: invoice,sales,inventory,billing,receipt
 Requires at least: 4.9
