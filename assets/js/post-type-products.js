@@ -126,7 +126,9 @@ jQuery(document).ready(function ($) {
 			if (porcentTax !== 0) {
 				newPrice = currentFinalPriceVal + ((currentFinalPriceVal / 100) * porcentTax);
 			} else {
+
 				var factor = 1 + (previousTaxPercentage / 100); 
+
 				var valueOriginal = currentFinalPriceVal / factor;
 				newPrice = valueOriginal;
 			}
