@@ -1,5 +1,6 @@
 var DefaultMaskNumbers = '';
 var previusValue = 0;
+var previousTaxPercentage = 0;
 jQuery(document).ready(function ($) {
 
 
@@ -76,7 +77,16 @@ jQuery(document).ready(function ($) {
 		});
 	});
 
-
+	jQuery('#tax').on('select2:open', function (e) {
+		var selectedValue = jQuery(this).val();
+		var taxes = jQuery.parseJSON(products_object.taxes);
+		for (var i = 0; i < taxes.length; i++) {
+			if (taxes[i].term_id == selectedValue) {
+				previousTaxPercentage = taxes[i].percentage; 
+				break;
+			}
+		}
+	});
 
 	jQuery('.pricestr').each(function (i, obj) {
 
@@ -116,7 +126,9 @@ jQuery(document).ready(function ($) {
 			if (porcentTax !== 0) {
 				newPrice = currentFinalPriceVal + ((currentFinalPriceVal / 100) * porcentTax);
 			} else {
-				newPrice = previusValue - ((previusValue / 100) * porcentTax);
+				var factor = 1 + (previousTaxPercentage / 100);
+				var valueOriginal = currentFinalPriceVal / factor;
+				newPrice = valueOriginal;
 			}
 
 			if (currentFinalPriceVal === 0 || newPrice === 0) {

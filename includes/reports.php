@@ -31,6 +31,7 @@ class reports {
 	public static function includes() {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/sales.php';
 		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/client_summary.php';
+		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/client_incomes.php'
 		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/client_account_movements.php';
 		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/stock_products.php';
 		
