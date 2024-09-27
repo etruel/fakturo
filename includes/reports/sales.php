@@ -78,15 +78,43 @@ class sales_report {
 			$select_range_html .= '<option value="'.$key.'" '.selected($key, $request['range'], false).'>'.$value.'</option>';
 		}
 		$select_range_html .= '</select>';
-
+	
+		// Adding date inputs for custom range
+		$from_date = isset($request['from_date']) ? esc_attr($request['from_date']) : '';
+		$to_date = isset($request['to_date']) ? esc_attr($request['to_date']) : '';
+	
+		$date_inputs_html = '<div id="custom_dates" style="display:none;">';
+		$date_inputs_html .= '<label for="from_date">' . __( 'From', 'fakturo' ) . '</label>';
+		$date_inputs_html .= '<input type="date" name="from_date" id="from_date" value="'.$from_date.'" />';
+		$date_inputs_html .= '<label for="to_date" style="margin-left:10px;">' . __( 'To', 'fakturo' ) . '</label>';
+		$date_inputs_html .= '<input type="date" name="to_date" id="to_date" value="'.$to_date.'" />';
+		$date_inputs_html .= '</div>';
+	
 		$return_html = '<div id="div_filter_form" style="padding:5px;">
 			<form name="filter_form" method="get" action="'.admin_url('admin.php').'">
 				<input type="hidden" name="page" value="fakturo_reports"/>
 				<input type="hidden" name="sec" value="'.$request['sec'].'"/>
 				'.$select_range_html.'
+				'.$date_inputs_html.'
 				<input type="submit" class="button-secondary" value="'.__( 'Filter', 'fakturo' ).'"/>
 			</form>
 		</div>';
+	
+		// JavaScript to show date inputs if "Custom" is selected
+		$return_html .= '<script>
+			document.getElementById("range").addEventListener("change", function() {
+				if (this.value === "other") {
+					document.getElementById("custom_dates").style.display = "block";
+				} else {
+					document.getElementById("custom_dates").style.display = "none";
+				}
+			});
+	
+			// Trigger on page load in case "Custom" is pre-selected
+			if (document.getElementById("range").value === "other") {
+				document.getElementById("custom_dates").style.display = "block";
+			}
+		</script>';
 
 		echo $return_html;
 	}

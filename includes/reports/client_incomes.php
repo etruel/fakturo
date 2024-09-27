@@ -255,7 +255,6 @@ class client_incomes {
 			$html_client_data = '<div style="float:left; margin-left:15px;"><h3>'.__('Client', 'fakturo' ).': '.$client_data['post_title'].'</h3></div>';
 		}
 		echo $html_client_data;
-		//echo '<div style="float:right; margin-right:15px;"><h3>'.sprintf(__('Date: since %s til %s', 'fakturo' ), date_i18n($setting_system['dateformat'].' '.get_option( 'time_format' ), $ranges['from']), date_i18n($setting_system['dateformat'].' '.get_option( 'time_format' ), $ranges['to'])).'</h3></div>';
 		$html_objects = '<div style="clear: both;"><h2>No results with this filters</h2></div>';
 		if (!empty($objects_client['objects'])) {
 		
@@ -379,7 +378,18 @@ class client_incomes {
 			$select_range_html .= '<option value="'.$key.'" '.selected($key, $request['range'], false).'>'.$value.'</option>';
 		}
 		$select_range_html .= '</select>';
-
+	
+		// Adding date inputs for custom range
+		$from_date = isset($request['from_date']) ? esc_attr($request['from_date']) : '';
+		$to_date = isset($request['to_date']) ? esc_attr($request['to_date']) : '';
+	
+		$date_inputs_html = '<div id="custom_dates" style="display:none;">';
+		$date_inputs_html .= '<label for="from_date">' . __( 'From', 'fakturo' ) . '</label>';
+		$date_inputs_html .= '<input type="date" name="from_date" id="from_date" value="'.$from_date.'" />';
+		$date_inputs_html .= '<label for="to_date" style="margin-left:10px;">' . __( 'To', 'fakturo' ) . '</label>';
+		$date_inputs_html .= '<input type="date" name="to_date" id="to_date" value="'.$to_date.'" />';
+		$date_inputs_html .= '</div>';
+	
 		$return_html = '<div id="div_filter_form" style="padding:5px;">
 			<form name="filter_form" method="get" action="'.admin_url('admin.php').'">
 				<input type="hidden" name="page" value="fakturo_reports"/>
@@ -387,9 +397,26 @@ class client_incomes {
 				'.$select_range_html.'
 				'.$selectClients.'
 				<label style="margin-left:10px;margin-right:10px;"><input type="checkbox" name="show_details" id="show_details" value="1" '.checked($request['show_details'], 1, false).'/>'.__( 'Show details', 'fakturo' ).'</label>
+				'.$date_inputs_html.'
 				<input type="submit" class="button-secondary" value="'.__( 'Filter', 'fakturo' ).'"/>
 			</form>
 		</div>';
+	
+		// JavaScript to show date inputs if "Custom" is selected
+		$return_html .= '<script>
+			document.getElementById("range").addEventListener("change", function() {
+				if (this.value === "other") {
+					document.getElementById("custom_dates").style.display = "block";
+				} else {
+					document.getElementById("custom_dates").style.display = "none";
+				}
+			});
+	
+			// Trigger on page load in case "Custom" is pre-selected
+			if (document.getElementById("range").value === "other") {
+				document.getElementById("custom_dates").style.display = "block";
+			}
+		</script>';
 
 		echo $return_html;
 	}
