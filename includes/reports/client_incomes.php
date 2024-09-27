@@ -12,18 +12,18 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * client_summmary class.
+ * client_incomes class.
  *
  * @since 0.6
  */
-class client_summmary {
+class client_incomes {
 	/**
 	 * Add hooks for reports.
 	 */
 	public static function hooks() {
-		add_action('report_page_before_content_client_summary', array(__CLASS__, 'before_content'), 10, 2);
-		add_action('report_page_content_client_summary', array(__CLASS__, 'content'), 10, 2);
-		add_filter('get_objects_reports_client_summary', array(__CLASS__, 'get_objects'), 10, 3);
+		add_action('report_page_before_content_client_incomes', array(__CLASS__, 'before_content'), 10, 2);
+		add_action('report_page_content_client_incomes', array(__CLASS__, 'content'), 10, 2);
+		add_filter('get_objects_reports_client_incomes', array(__CLASS__, 'get_objects'), 10, 3);
 	}
 	/**
 	* Print HTML before content on report page.
@@ -32,7 +32,7 @@ class client_summmary {
 	*/
 	public static function before_content($request, $ranges) {
 		wp_enqueue_script( 'jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-		wp_enqueue_script('fakturo_reports_client_summary', FAKTURO_PLUGIN_URL . 'assets/js/reports-client-summary.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
+		wp_enqueue_script('fakturo_reports_client_incomes', FAKTURO_PLUGIN_URL . 'assets/js/reports-client-incomes.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 	}
 	public static function get_objects_client($request, $ranges, $subtract_the_sum = true) {
 		$setting_system = get_option('fakturo_system_options_group', false);
@@ -60,6 +60,7 @@ class client_summmary {
 							continue;
 						}
 					}
+                    print_r($object_data);
 					$discriminates_taxes = false;
 					if ($object_data['invoice_type'] > 0) {
 						$term_invoice_type = get_fakturo_term($object_data['invoice_type'], 'fktr_invoice_types');		
@@ -225,7 +226,7 @@ class client_summmary {
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$currencyDefault = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
 		if (is_wp_error($currencyDefault)) {
-			echo '<p>'.__( 'Client Summary needs the default currency on system settings.', 'fakturo' ).'</p>';
+			echo '<p>'.__( 'Client incomes needs the default currency on system settings.', 'fakturo' ).'</p>';
 			return true;
 		}
 		
@@ -254,7 +255,6 @@ class client_summmary {
 			$html_client_data = '<div style="float:left; margin-left:15px;"><h3>'.__('Client', 'fakturo' ).': '.$client_data['post_title'].'</h3></div>';
 		}
 		echo $html_client_data;
-		echo '<div style="float:right; margin-right:15px;"><h3>'.sprintf(__('Date: since %s til %s', 'fakturo' ), date_i18n($setting_system['dateformat'].' '.get_option( 'time_format' ), $ranges['from']), date_i18n($setting_system['dateformat'].' '.get_option( 'time_format' ), $ranges['to'])).'</h3></div>';
 		$html_objects = '<div style="clear: both;"><h2>No results with this filters</h2></div>';
 		if (!empty($objects_client['objects'])) {
 		
@@ -276,9 +276,6 @@ class client_summmary {
 						'.__('Subtotal', 'fakturo').'
 					</td>
 					<td>
-						'.__('Tax', 'fakturo').'
-					</td>
-					<td>
 						'.__('Total', 'fakturo').'
 					</td>
 				</tr>
@@ -286,7 +283,7 @@ class client_summmary {
 				<tbody id="the-list">';
 
 			foreach ($objects_client['objects'] as $obj) {
-
+                $client_data = fktrPostTypeClients::get_client_data($obj['client_id']);
 				$obj_type = '';
 				$obj_link = admin_url('post.php?post='.$obj['ID'].'&action=edit');
 				$subtotal_print = 0;
@@ -301,10 +298,9 @@ class client_summmary {
 					$total_documents['subtotal'] = $total_documents['subtotal']+$obj['report_subtotal'];
 					$total_documents['total'] = $total_documents['total']+$obj['report_total'];
 				}
-				$tax = $obj['report_tax'];
 				$subtotal = $obj['report_subtotal'];
 				$total = $obj['report_total'];
-				$client_print = $obj['client_data']['name'] ?? 'No name available';
+				$client_print = $client_data['post_title'] ?? 'No name available';
 
 				$subtotal_print = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($subtotal, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
 				
@@ -334,9 +330,6 @@ class client_summmary {
 						'.$subtotal_print.'
 					</td>
 					<td>
-						'.$tax_print.'
-					</td>
-					<td>
 						'.$total_print.'
 					</td>
 				</tr>';
@@ -345,78 +338,6 @@ class client_summmary {
 			</table>';
 		}
 		$html_totals_data = '';
-		if (!empty($objects_client['objects'])) {
-			$array_taxes = $objects_client['array_taxes'];
-			if (!isset($array_taxes)) {
-				$array_taxes = array();
-			}
-			$html_totals_data = '<div><table class="wp-list-table widefat fixed striped posts" style="width:40%; float:right;">
-					<thead>
-					<tr>
-						<td>
-							'.__('Documents', 'fakturo').'
-						</td>';
-			$html_totals_data .= '<td>
-							'.__('Subtotal', 'fakturo').'
-						</td>';
-			foreach ($array_taxes as $tk => $tx) {
-				$html_totals_data .= '<td>
-							'.$tx['name'].' ('.$tx['porcent'].'%)
-						</td>';
-			}
-			$html_totals_data .= '<td>
-							'.__('Total', 'fakturo').'
-						</td>';
-
-	 
-			$html_totals_data .= '</tr>
-					</thead>
-					<tbody id="the-list">
-						';
-			foreach ($documents_values as $nd => $valdoc) {
-				$html_totals_data .= '<tr>
-						<td>
-							'.$nd.'
-						</td>
-						<td>
-							'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($valdoc['subtotal'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
-						</td>';
-						foreach ($array_taxes as $tkd => $txd) {
-							$html_totals_data .= '<td>
-										'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($valdoc[$tkd.'tax'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
-									</td>';
-						}
-
-						$html_totals_data .= '<td>
-							'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($valdoc['total'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
-						</td>
-						</tr>';
-			}
-
-			$html_totals_data .= '<tr>
-						<td>
-							
-						</td>
-						<td>
-							'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($total_documents['subtotal'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
-						</td>';
-						foreach ($array_taxes as $tk => $tx) {
-							$html_totals_data .= '<td>
-										'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($tx['total'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
-									</td>';
-						}
-						
-
-						$html_totals_data .= '<td>
-							'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($total_documents['total'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
-						</td>
-						</tr>';
-
-
-			$html_totals_data .= '
-					</tbody>
-				</table></div><div style="clear:both;"> </div>';
-		}
 		echo '<div style="width: 100%;">
 		'.($request['show_details']?$html_objects:'').'
 		'.$html_totals_data.'
@@ -514,7 +435,7 @@ class client_summmary {
         WHERE 
         pm.meta_key = 'date'
 		AND p.post_status = 'publish'
-		AND (p.post_type = 'fktr_sale' OR p.post_type = 'fktr_receipt')
+		AND (p.post_type = 'fktr_receipt')
 		AND pm.meta_value >= '%s'
 		AND pm.meta_value < '%s'
         GROUP BY p.ID 
@@ -527,7 +448,7 @@ class client_summmary {
 	}
 }
 /**
- * Execute all hooks on client_summmary
+ * Execute all hooks on client_incomes
  */
-client_summmary::hooks();
+client_incomes::hooks();
 ?>
