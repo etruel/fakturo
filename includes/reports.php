@@ -146,8 +146,6 @@ class reports {
 	*/
 	public static function default_timestand_ranges($ranges, $request) {
 
-		//print_r($ranges);
-		//print_r($request);
 		$start_of_week = get_option('start_of_week', 0);
 		$start_of_week_str = 'Sunday';
 		if ($start_of_week == 0) {
