@@ -12,7 +12,13 @@
 	width: inherit;
 	text-align: left;
 }
-.tr_fktr {
-	
-	
+#div_filter_form form{
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 10px;
+	width: 100%;
+}
+#div_filter_form form #custom_dates label{
+	margin-right: 5px;
 }
