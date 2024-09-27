@@ -34,7 +34,6 @@ class reports {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/client_incomes.php';
 		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/client_account_movements.php';
 		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/stock_products.php';
-		
 	}
 	/**
 	 * Print the page the reports.
@@ -146,6 +145,9 @@ class reports {
 	* @return Array $ranges with "from, to" keys and its timestamp.
 	*/
 	public static function default_timestand_ranges($ranges, $request) {
+
+		//print_r($ranges);
+		//print_r($request);
 		$start_of_week = get_option('start_of_week', 0);
 		$start_of_week_str = 'Sunday';
 		if ($start_of_week == 0) {
@@ -190,45 +192,81 @@ class reports {
 			$ranges['to'] = strtotime('last day of last month', $current_time);
 		}
 		if ($request['range'] == 'this_quarter') {
-			$current_quarter = ceil(date('n', time())/3);
-			$current_year = date('Y');
-			if ($current_quarter == 0) {
-				$current_quarter = 3;
-				$current_year = $current_year-1;
+			$current_month = date_i18n('n', time());
+			$current_year = date_i18n('Y');
+			
+			// Determina el trimestre actual basado en el mes
+			if ($current_month >= 1 && $current_month <= 3) {
+				$current_quarter_start = 1; // Enero
+				$current_quarter_end = 3; // Marzo
+			} elseif ($current_month >= 4 && $current_month <= 6) {
+				$current_quarter_start = 4; // Abril
+				$current_quarter_end = 6; // Junio
+			} elseif ($current_month >= 7 && $current_month <= 9) {
+				$current_quarter_start = 7; // Julio
+				$current_quarter_end = 9; // Septiembre
+			} else {
+				$current_quarter_start = 10; // Octubre
+				$current_quarter_end = 12; // Diciembre
 			}
-			$current_quarter_start = 1;
-			if ($current_quarter > 1) {
-				$current_quarter_start = $current_quarter*3+1;
-			}
-   		 	$start_date = date("Y-m-d H:i:s", mktime(0, 0, 0, $current_quarter_start, 1, $current_year ));
-   			$end_date = date("Y-m-d H:i:s", mktime(0, 0, 0, $current_quarter_start+2, 1, $current_year ));
-			$ranges['from'] =  strtotime($start_date, $current_time);
-			$ranges['to'] =   strtotime($end_date, $current_time);
+		
+			// Usa date_i18n para el inicio y fin del trimestre actual
+			$start_date = date_i18n("Y-m-d H:i:s", mktime(0, 0, 0, $current_quarter_start, 1, $current_year));
+			$end_date = date_i18n("Y-m-d H:i:s", mktime(23, 59, 59, $current_quarter_end, date('t', mktime(0, 0, 0, $current_quarter_end, 1, $current_year)), $current_year));
+		
+			$ranges['from'] = strtotime($start_date);
+			$ranges['to'] = strtotime($end_date);
 		}
+		
 		if ($request['range'] == 'last_quarter') {
-			$current_quarter = ceil(date('n', time())/3);
-			$current_year = date('Y');
-			$current_quarter = $current_quarter-1;
-			if ($current_quarter == 0) {
-				$current_quarter = 3;
-				$current_year = $current_year-1;
+			$current_month = date_i18n('n', time());
+			$current_year = date_i18n('Y');
+		
+			// Determina el trimestre actual
+			if ($current_month >= 1 && $current_month <= 3) {
+				$last_quarter_start = 10; // Octubre del año pasado
+				$last_quarter_end = 12;   // Diciembre del año pasado
+				$current_year = $current_year - 1; // Ajusta al año pasado
+			} elseif ($current_month >= 4 && $current_month <= 6) {
+				$last_quarter_start = 1; // Enero
+				$last_quarter_end = 3;   // Marzo
+			} elseif ($current_month >= 7 && $current_month <= 9) {
+				$last_quarter_start = 4; // Abril
+				$last_quarter_end = 6;   // Junio
+			} else {
+				$last_quarter_start = 7; // Julio
+				$last_quarter_end = 9;   // Septiembre
 			}
-			$current_quarter_start = 1;
-			if ($current_quarter > 1) {
-				$current_quarter_start = $current_quarter*3+1;
-			}
-   		 	$start_date = date("Y-m-d H:i:s", mktime(0, 0, 0, $current_quarter_start, 1, $current_year ));
-   			$end_date = date("Y-m-d H:i:s", mktime(0, 0, 0, $current_quarter_start+2, 1, $current_year ));
-			$ranges['from'] =  strtotime($start_date, $current_time);
-			$ranges['to'] =   strtotime($end_date, $current_time);
+		
+			// Usa date_i18n para el inicio y fin del trimestre anterior
+			$start_date = date_i18n("Y-m-d H:i:s", mktime(0, 0, 0, $last_quarter_start, 1, $current_year));
+			$end_date = date_i18n("Y-m-d H:i:s", mktime(23, 59, 59, $last_quarter_end, date('t', mktime(0, 0, 0, $last_quarter_end, 1, $current_year)), $current_year));
+		
+			$ranges['from'] = strtotime($start_date);
+			$ranges['to'] = strtotime($end_date);
 		}
 		if ($request['range'] == 'this_year') {
-			$ranges['from'] =  strtotime('first day of January '.date('Y'), $current_time);
-			$ranges['to'] =   strtotime('last day of December '.date('Y'), $current_time);
+			$ranges['from'] =  strtotime('first day of January '.date_i18n('Y'), $current_time);
+			$ranges['to'] =   strtotime('last day of December '.date_i18n('Y'), $current_time);
 		}
 		if ($request['range'] == 'last_year') {
-			$ranges['from'] =  strtotime('first day of January '.(date('Y')-1), $current_time);
-			$ranges['to'] =   strtotime('last day of December '.(date('Y')-1), $current_time);
+			$ranges['from'] =  strtotime('first day of January '.(date_i18n('Y')-1), $current_time);
+			$ranges['to'] =   strtotime('last day of December '.(date_i18n('Y')-1), $current_time);
+		}
+		if ($request['range'] == 'other'){
+			   // Verificar si existen las fechas personalizadas
+			   if (!empty($request['from_date']) && !empty($request['to_date'])) {
+				$from_date = sanitize_text_field($request['from_date']);
+				$to_date = sanitize_text_field($request['to_date']);
+		
+				// Convertir las fechas a formato timestamp
+				$ranges['from'] = strtotime($from_date . ' 00:00:00');
+				$ranges['to'] = strtotime($to_date . ' 23:59:59');
+			} else {
+				// Manejo en caso de que falte alguna de las fechas
+				$ranges['from'] = strtotime('first day of January ' . date_i18n('Y'), $current_time); // Valor por defecto si no se ingresan las fechas
+				$ranges['to'] = $current_time;
+			}
 		}
 		
 		return $ranges;
