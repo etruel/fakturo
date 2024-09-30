@@ -40,13 +40,13 @@
 		#cuit, #iibb, #inact {
 			position:absolute;
 			left:450px;
-			font-size:12pt;
+			font-size:11pt;
 			text-align:left;
 		}
 		#cuitval, #iibbval, #inactval{
 			position:absolute;
 			left:546px;
-			font-size:12pt;
+			font-size:11pt;
 			width: 120px;
 			text-align: right;
 		}
@@ -70,38 +70,38 @@
 			position:absolute;
 			left:35px;
 			top:90px;
-			font-size:12pt;
+			font-size:10pt;
 			width:278px;
 		}
 		#url {
 			position:absolute;
 			left:35px;
 			top:110px;
-			font-size:12pt;
+			font-size:11pt;
 			width:278px;
 		}
 		#condicion_iva {
 			position:absolute;
 			left:35px;
 			top:130px;
-			font-size:12pt;
+			font-size:11pt;
 			width:278px;
 		}
 		#nro_recibo {
 			position:absolute;
 			right:35px;
 			top:32px;
-			font-size:16pt;
+			font-size:15pt;
 		}
 		#fecha {
 			position: absolute;
 			right: 35px;
 			top: 10px;
-			font-size: 10pt;
+			font-size: 9pt;
 		}
 		#nombre_cliente {
 			position: absolute;
-			left: 292px;
+			left: 308px;
 			top: 178px;
 			font-size: 11pt;
 		}
@@ -120,43 +120,41 @@
 		#cuit_cliente {
 			position: absolute;
 			left: 494px;
-			top: 229px;
-			font-size: 12pt;
+			top: 228px;
+			font-size: 11pt;
 		}
 		#area_detalle {
 			position:absolute;
-			left: 38px;
+			left: 35px;
 			top: 242px;
-			width: 200px;
+			width: 206px;
 			font-size:9pt;
 		}
 		#area_checks{
 			position:absolute;
-			left: 260px;
+			left: 258px;
 			top: 302px;
-			width: 402px;
-			font-size:9.5pt;
+			width: 406px;
+			font-size:9pt;
+		}
+		#area_checks .row{
+			width: auto;
+		}
+		#area_checks table tr td{
+			text-align: center;
 		}
 		.ck_row_bankn{
-			width: 92px;
-			text-align: center;
+			width: 115px;
 		}
 		.ck_row_serie{
-			width: 112px;
-			text-align: center;
+			width: 90px;
+			font-size: 8.5pt;
 		}
 		.ck_row_cdate{
-			width: 94px;
-			text-align: center;
+			width: 95px;
 		}
 		.ck_row_value{
 			width: 105px;
-		}
-		.ck_row_bankn,
-		.ck_row_serie,
-		.ck_row_cdate,
-		.ck_row_value{
-			font-size: 9.5pt;
 		}
 		#notas {
 			position:absolute;
@@ -196,7 +194,7 @@
 			text-align:center;
 		}
 		.row_date{
-			width: 63px;
+			width: 66px;
 		}
 		.row_date,
 		.row_number{
@@ -209,27 +207,34 @@
 		.row_date,
 		.row_number,
 		.row_total{
-			font-size:9pt;
+			font-size:8pt;
+		}
+		#total_importe{
+			position: absolute;
+			top: 250px;
+			left: 135px;
+			width: 70px;
+			text-align: right;
 		}
 		#rec_check {
 			position:absolute;
 			left:530px;
-			bottom:230px;
-			font-size:12pt;
+			top:555px;
+			font-size:11pt;
 			text-align:center;
 		}
 		#rec_efectivo {
 			position:absolute;
 			left:530px;
-			bottom:206px;
-			font-size:12pt;
+			top:578px;
+			font-size:11pt;
 			text-align:center;
 		}
 		#rec_total {
 			position:absolute;
 			left:530px;
-			bottom:182px;
-			font-size:12pt;
+			top:602px;
+			font-size:11pt;
 		}
 		#rec_check,
 		#rec_efectivo,
@@ -245,9 +250,9 @@
 		}
 		#rec_total_text {
 			position: absolute;
-			left: 35px;
+			left: 200px;
 			top: 523px;
-			font-size: 12pt;
+			font-size: 11pt;
 			line-height: 1.5;
 			max-width: 588px;
 		}
@@ -255,7 +260,7 @@
 			position:absolute;
 			left:535px;
 			bottom:39px;
-			font-size:12pt;
+			font-size:11pt;
 		}
 	</style>
 </head>
@@ -291,12 +296,13 @@
 				<table border='0' cellpadding='0' cellspacing='0'>
 					<tr>
 						<td class='row_date'> {function="date_i18n('d-m-Y', $value.date)"}</td>
-						<td class='row_number'> {$value.number} </td>
+						<td class='row_number'>{$value.number}</td>
 						<td class='row_total'>${$value.total}</td>
 					</tr>
 				</table>
 			</div>
 			{/loop}
+			<div id="total_importe">{$receipt.total_to_impute}</div>
 		</div>
 
 		<div id='area_checks'>
@@ -304,7 +310,7 @@
 			<div class='row'>
 				<table border='0' cellpadding='0' cellspacing='0'>
 					<tr>
-						<td class='ck_row_bankn'>${$value.bank}</td>
+						<td class='ck_row_bankn'>{$value.bank}</td>
 						<td class='ck_row_serie'>{$value.number} </td>
 						<td class='ck_row_cdate'>{function="date_i18n('d-m-Y', $value.cashing_date)"}</td>
 						<td class='ck_row_value'>{$value.value} </td>
