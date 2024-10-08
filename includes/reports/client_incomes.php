@@ -397,10 +397,10 @@ class client_incomes {
             <input type="submit" class="button-secondary" value="'.__( 'Filter', 'fakturo' ).'"/>
 			
 			
-			<input id="print-table-pdf" type="button" class="button-secondary" value="'.__( 'Print/Save Table as PDF', 'fakturo' ).'"/>
+			<input id="print-table-pdf" type="button" class="button-secondary" value="'.__( 'Save as PDF', 'fakturo' ).'"/>
 			
 			
-			<input id="download-table-csv" type="button" class="button-secondary" value="'.__( 'Download Table as CSV', 'fakturo' ).'"/>
+			<input id="download-table-csv" type="button" class="button-secondary" value="'.__( 'Save as CSV', 'fakturo' ).'"/>
         </form>
     </div>';
 
