@@ -726,64 +726,87 @@ class stock_products_report {
 
 	public static function get_form_filters($request) {
 		$selectClients = fakturo_get_select_post(array(
-											'echo' => 0,
-											'post_type' => 'fktr_product',
-											'show_option_none' => __('All Products', 'fakturo' ),
-											'name' => 'product_id',
-											'id' => 'client_id',
-											'class' => '',
-											'selected' => $request['product_id']
-										));
-										
-  
-?>
+			'echo' => 0,
+			'post_type' => 'fktr_product',
+			'show_option_none' => __('All Products', 'fakturo'),
+			'name' => 'product_id',
+			'id' => 'client_id',
+			'class' => '',
+			'selected' => $request['product_id']
+		));
+	
+	?>
 		<div id="div_filter_form" style="padding:5px;">
 			<form name="filter_form" method="get" action="<?php echo admin_url('admin.php') ?>">
 				<input type="hidden" name="page" value="fakturo_reports"/>
 				<input type="hidden" name="sec" value="<?php echo $request['sec'] ?>"/>
 				<?php echo $selectClients ?>
-				<span><?php echo __('Range from:', 'fakturo' ); ?></span>
+				<span><?php echo __('Range from:', 'fakturo'); ?></span>
 				<select name="letter_from" id="letter_from">
 					<?php
-						for($i=65; $i<=90; $i++) {  
+						for ($i = 65; $i <= 90; $i++) {  
 							$letter = chr($i);  
-							if (isset($request['letter_from'])) {
-								echo '<option value="'. $letter .'" '. (( $letter == $request['letter_from'])? 'selected' : '' ) .'>'. $letter .'</option>';
-							} else {
-								echo '<option value="'. $letter .'">'. $letter .'</option>';
-							}
-						} 
+							echo '<option value="' . $letter . '" ' . (($letter == $request['letter_from']) ? 'selected' : '') . '>' . $letter . '</option>';
+						}
 					?>
 				</select>
-				<span><?php echo __('to:', 'fakturo' ); ?></span>
+				<span><?php echo __('to:', 'fakturo'); ?></span>
 				<select name="letter_to" id="letter_to">
 					<?php
-						for($i=65; $i<=90; $i++) {
-							$letter = chr($i);  
-							echo '<option value="'. $letter .'" '. (( $letter == ((isset($request['letter_to']) || !empty($request['letter_to'])) ? $request['letter_to'] : 'Z'  )  )? 'selected' : '' ) .'>'. $letter .'</option>';
-						} 
+						for ($i = 65; $i <= 90; $i++) {
+							$letter = chr($i);
+							echo '<option value="' . $letter . '" ' . (($letter == (isset($request['letter_to']) ? $request['letter_to'] : 'Z')) ? 'selected' : '') . '>' . $letter . '</option>';
+						}
 					?>
 				</select>
-
-				<span><?php echo __('Show', 'fakturo' ); ?></span>
+	
+				<span><?php echo __('Show', 'fakturo'); ?></span>
 				<select name="show_pagination" id="show_pagination">
 					<?php
-						for($i=0; $i<=50; $i = $i+5) {
-							echo '<option value="'. $i .'" '. (( $i == ((isset($request['show_pagination']) || !empty($request['show_pagination'])) ? $request['show_pagination'] : '10'  )  )? 'selected' : '' ) .'>'. $i .'</option>';
-						} 
+						for ($i = 0; $i <= 50; $i += 5) {
+							echo '<option value="' . $i . '" ' . (($i == (isset($request['show_pagination']) ? $request['show_pagination'] : 10)) ? 'selected' : '') . '>' . $i . '</option>';
+						}
 					?>
 				</select>
-
-				<input type="submit" class="button-secondary" value="<?php echo __( 'Filter', 'fakturo' ) ?>"/>
+	
+				<input type="submit" class="button-secondary" value="<?php echo __('Filter', 'fakturo') ?>"/>
 				
-				<a class="button-secondary right" href="<?php echo admin_url('admin-post.php?action=stock_products_download_csv&'.http_build_query($request) ) ?>" ><?php echo __( 'CSV', 'fakturo' ) ?></a>
-				<a class="button-secondary right" style="margin-right:10px;" href="<?php echo admin_url('admin-post.php?action=stock_products_print_pdf&'.http_build_query($request)) ?>"><?php echo __( 'PDF', 'fakturo' )?> </a>
-				
+				<a class="button-secondary right" href="<?php echo admin_url('admin-post.php?action=stock_products_download_csv&' . http_build_query($request)) ?>" ><?php echo __('CSV', 'fakturo') ?></a>
+	
+				<!-- Updated PDF button without href -->
+				<a id="download-table-pdf" class="button-secondary right" style="margin-right:10px;"><?php echo __('PDF', 'fakturo') ?></a>
 			</form>
 		</div>
-		<?php 
-
-		
+	
+		<!-- Include jsPDF and autoTable if not already included -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+	
+		<script>
+			// Add event listener for PDF button
+			document.getElementById("download-table-pdf").addEventListener("click", function() {
+				var table = document.querySelector(".wp-list-table.widefat.fixed.striped.posts"); // Adjust this selector if needed
+				if (table) {
+					var { jsPDF } = window.jspdf;
+					var doc = new jsPDF();
+	
+					// Customize the PDF here (e.g., title, margins)
+					doc.text("", 10, 10);
+	
+					if (doc.autoTable) {
+						doc.autoTable({ html: table }); // Convert the table to PDF
+					} else {
+						doc.text("jsPDF autoTable plugin is not available", 10, 20);
+					}
+	
+					doc.save("table.pdf"); // Save as PDF
+				} else {
+					alert("Table not found!");
+				}
+			});
+		</script>
+	
+	<?php
 	}
 	/**
 	* Print HTML on report page content.
