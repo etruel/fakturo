@@ -5,7 +5,7 @@ Tags: invoice,sales,inventory,billing,receipt
 Requires at least: 4.9
 Tested up to: 6.6.2
 Requires PHP: 7.0
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,14 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 
 == Changelog ==
+
+= 1.0.7 (Sep 27, 2024) =
+* Added new report by incomes to show a summary or details of receipts by clients. 
+* Fixes Summary report to show a new column with the client. 
+* Fixes graphics report on responsive screens.
+* Fixes reports on quarter or custom dates filters formats.
+* Fixes Tax in invoice template to show the porcent instead of money with var {$invoice.uc_tax_porcent.0}
+* Fixes few styles.
 
 = 1.0.6 (Sep 10, 2024) =
 * Bump to WordPress 6.6.2
@@ -258,6 +266,4 @@ First Release
 
 
 == Upgrade Notice ==
-
-= 1.0.6 =
-Bump to WordPress 6.6.2
+Added new report and many bug fixes.

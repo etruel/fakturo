@@ -345,7 +345,7 @@
 		<div id="fact_total_text">{function="fktr_number_to_letter_es($invoice.total)"}</div>
 		<div id='descuento'>{$invoice.invoice_discount} </div>
 		<div id='fact_neto'>{function="get_money_format($invoice.subtotal, $invoice.currency)"}</div>
-		<div id='fact_iva'>{function="get_money_format($invoice.taxes_in_products.254, $invoice.currency)"}</div>
+		<div id='fact_iva'>{$invoice.uc_tax_porcent.0}%</div>
 		<div id='fact_total'>{function="get_money_format($invoice.total, $invoice.currency)"}</div>
 	</div>
 </body>
