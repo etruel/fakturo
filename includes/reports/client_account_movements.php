@@ -504,34 +504,116 @@ class client_account_movements {
 		$date_inputs_html .= '</div>';
 	
 		$return_html = '<div id="div_filter_form" style="padding:5px;">
-			<form name="filter_form" method="get" action="'.admin_url('admin.php').'">
-				<input type="hidden" name="page" value="fakturo_reports"/>
-				<input type="hidden" name="sec" value="'.$request['sec'].'"/>
-				'.$select_range_html.'
-				'.$selectClients.'
-				<label style="margin-left:10px;margin-right:10px;"><input type="checkbox" name="show_details" id="show_details" value="1" '.checked($request['show_details'], 1, false).'/>'.__( 'Show details', 'fakturo' ).'</label>
-				'.$date_inputs_html.'
-				<input type="submit" class="button-secondary" value="'.__( 'Filter', 'fakturo' ).'"/>
-			</form>
-		</div>';
-	
-		// JavaScript to show date inputs if "Custom" is selected
-		$return_html .= '<script>
-			document.getElementById("range").addEventListener("change", function() {
-				if (this.value === "other") {
-					document.getElementById("custom_dates").style.display = "block";
-				} else {
-					document.getElementById("custom_dates").style.display = "none";
-				}
-			});
-	
-			// Trigger on page load in case "Custom" is pre-selected
-			if (document.getElementById("range").value === "other") {
-				document.getElementById("custom_dates").style.display = "block";
-			}
-		</script>';
+        <form name="filter_form" method="get" action="'.admin_url('admin.php').'">
+            <input type="hidden" name="page" value="fakturo_reports"/>
+            <input type="hidden" name="sec" value="'.$request['sec'].'"/>
+            '.$select_range_html.'
+            '.$selectClients.'
+            <label style="margin-left:10px;margin-right:10px;">
+                <input type="checkbox" name="show_details" id="show_details" value="1" '.checked($request['show_details'], 1, false).'/>
+                '.__( 'Show details', 'fakturo' ).'
+            </label>
+            '.$date_inputs_html.'
+            <input type="submit" class="button-secondary" value="'.__( 'Filter', 'fakturo' ).'"/>
+			
+			
+			<input id="print-table-pdf" type="button" class="button-secondary" value="'.__( 'Save as PDF', 'fakturo' ).'"/>
+			
+			
+			<input id="download-table-csv" type="button" class="button-secondary" value="'.__( 'Save as CSV', 'fakturo' ).'"/>
+        </form>
+    </div>';
 
-		echo $return_html;
+    
+    $return_html .= '<style>
+        @media print {
+            body > *:not(.wp-list-table.widefat.fixed.striped.posts) {
+                display: none !important;
+            }
+            .wp-list-table.widefat.fixed.striped.posts {
+                display: block !important;
+                width: 100% !important;
+                border: none !important;
+            }
+            .wp-list-table.widefat.fixed.striped.posts th,
+            .wp-list-table.widefat.fixed.striped.posts td {
+                border: 1px solid #000 !important;
+            }
+        }
+    </style>';
+
+	
+	$return_html .= '<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>';
+	$return_html .= '<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>';
+
+$return_html .= '<script>
+    document.getElementById("range").addEventListener("change", function() {
+        if (this.value === "other") {
+            document.getElementById("custom_dates").style.display = "block";
+        } else {
+            document.getElementById("custom_dates").style.display = "none";
+        }
+    });
+
+  
+    if (document.getElementById("range").value === "other") {
+        document.getElementById("custom_dates").style.display = "block";
+    }
+
+    
+    document.getElementById("print-table-pdf").addEventListener("click", function() {
+        var table = document.querySelector(".wp-list-table.widefat.fixed.striped.posts");
+        if (table) {
+            
+            var { jsPDF } = window.jspdf;
+            var doc = new jsPDF();
+
+            doc.text("", 10, 10);
+            if (doc.autoTable) {
+                doc.autoTable({ html: table });
+            } else {
+                doc.text("jsPDF autoTable plugin is not available", 10, 20);
+            }
+
+            doc.save("table.pdf");
+        } else {
+            alert("Table not found!");
+        }
+    });
+
+    
+    document.getElementById("download-table-csv").addEventListener("click", function() {
+        var table = document.querySelector(".wp-list-table.widefat.fixed.striped.posts");
+        if (table) {
+            var rows = Array.from(table.querySelectorAll("tr"));
+            var csvContent = "";
+            
+            rows.forEach(function(row) {
+                var cols = Array.from(row.querySelectorAll("th, td"));
+                var rowData = cols.map(function(col) {
+                    return col.innerText.replace(/"/g, \'""\'); // Escapar comillas dobles
+                }).join(",");
+                
+                csvContent += rowData + "\\n";
+            });
+
+           
+            var blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            var link = document.createElement("a");
+            var url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "table.csv");
+            link.style.visibility = "hidden";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            alert("Table not found!");
+        }
+    });
+</script>';
+		
+    echo $return_html;
 	}
 	/**
 	* Print HTML on report page content.
