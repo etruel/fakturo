@@ -479,7 +479,7 @@ class stock_products_report {
 			$selectSearchCode['manufacturers_code'] = __( 'Manufacturers code', 'fakturo' );							
 			$selectSearchCode = apply_filters('fktr_search_code_array', $selectSearchCode);
 			
-			$html_objects .= '<table class="wp-list-table widefat fixed striped posts" id="table_report_product">
+			$html_objects .= '<div class="fktr_table-resp"><table class="wp-list-table widefat fixed striped posts" id="table_report_product">
 				<thead>
 				<tr>
 					<td width="30%">
@@ -550,7 +550,7 @@ class stock_products_report {
 						</td>
 					</tr>';
 				$html_objects .= '</tbody>
-				</table>';
+				</table></div>';
 
 			}else{
 			
@@ -597,15 +597,14 @@ class stock_products_report {
 					</tr>';
 				}
 				$html_objects .= '</tbody>
-				</table>
+				</table></div>
 				<div id="pagination_controls">'. $paginationCtrls .'</div>';
 			}
 		}else{
-			$html_objects = '<div style="clear: both;"><h2>No results with this filters</h2></div>';
+			$html_objects = '<div style="clear: both; text-align: center;"><h2>'.__("No results with this filters").'</h2></div>';
 		}
 		
-
-		echo '<div style="width: 100%;">' . $html_objects . '</div>';
+		echo '<div class="fktr_reports_container">' . $html_objects . '</div>';
 	}
 
 	public static function get_stock_product_report($product_data){
@@ -736,45 +735,47 @@ class stock_products_report {
 		));
 	
 	?>
-		<div id="div_filter_form" style="padding:5px;">
+		<div id="div_filter_form" class="fktr_filter-form">
 			<form name="filter_form" method="get" action="<?php echo admin_url('admin.php') ?>">
-				<input type="hidden" name="page" value="fakturo_reports"/>
-				<input type="hidden" name="sec" value="<?php echo $request['sec'] ?>"/>
-				<?php echo $selectClients ?>
-				<span><?php echo __('Range from:', 'fakturo'); ?></span>
-				<select name="letter_from" id="letter_from">
-					<?php
-						for ($i = 65; $i <= 90; $i++) {  
-							$letter = chr($i);  
-							echo '<option value="' . $letter . '" ' . (($letter == $request['letter_from']) ? 'selected' : '') . '>' . $letter . '</option>';
-						}
-					?>
-				</select>
-				<span><?php echo __('to:', 'fakturo'); ?></span>
-				<select name="letter_to" id="letter_to">
-					<?php
-						for ($i = 65; $i <= 90; $i++) {
-							$letter = chr($i);
-							echo '<option value="' . $letter . '" ' . (($letter == (isset($request['letter_to']) ? $request['letter_to'] : 'Z')) ? 'selected' : '') . '>' . $letter . '</option>';
-						}
-					?>
-				</select>
-	
-				<span><?php echo __('Show', 'fakturo'); ?></span>
-				<select name="show_pagination" id="show_pagination">
-					<?php
-						for ($i = 0; $i <= 50; $i += 5) {
-							echo '<option value="' . $i . '" ' . (($i == (isset($request['show_pagination']) ? $request['show_pagination'] : 10)) ? 'selected' : '') . '>' . $i . '</option>';
-						}
-					?>
-				</select>
-	
-				<input type="submit" class="button-secondary" value="<?php echo __('Filter', 'fakturo') ?>"/>
-				
-				<a class="button-secondary right" href="<?php echo admin_url('admin-post.php?action=stock_products_download_csv&' . http_build_query($request)) ?>" ><?php echo __('CSV', 'fakturo') ?></a>
-	
-				<!-- Updated PDF button without href -->
-				<a id="download-table-pdf" class="button-secondary right" style="margin-right:10px;"><?php echo __('PDF', 'fakturo') ?></a>
+				<div class="fktr_filter-options">
+					<input type="hidden" name="page" value="fakturo_reports"/>
+					<input type="hidden" name="sec" value="<?php echo $request['sec'] ?>"/>
+					<?php echo $selectClients ?>
+					<span><?php echo __('Range from:', 'fakturo'); ?></span>
+					<select name="letter_from" id="letter_from">
+						<?php
+							for ($i = 65; $i <= 90; $i++) {  
+								$letter = chr($i);  
+								echo '<option value="' . $letter . '" ' . (($letter == $request['letter_from']) ? 'selected' : '') . '>' . $letter . '</option>';
+							}
+						?>
+					</select>
+					<span><?php echo __('to:', 'fakturo'); ?></span>
+					<select name="letter_to" id="letter_to">
+						<?php
+							for ($i = 65; $i <= 90; $i++) {
+								$letter = chr($i);
+								echo '<option value="' . $letter . '" ' . (($letter == (isset($request['letter_to']) ? $request['letter_to'] : 'Z')) ? 'selected' : '') . '>' . $letter . '</option>';
+							}
+						?>
+					</select>
+		
+					<span><?php echo __('Show', 'fakturo'); ?></span>
+					<select name="show_pagination" id="show_pagination">
+						<?php
+							for ($i = 0; $i <= 50; $i += 5) {
+								echo '<option value="' . $i . '" ' . (($i == (isset($request['show_pagination']) ? $request['show_pagination'] : 10)) ? 'selected' : '') . '>' . $i . '</option>';
+							}
+						?>
+					</select>
+					<input type="submit" class="button-secondary" value="<?php echo __('Filter', 'fakturo') ?>"/>
+				</div>
+				<div class="fktr_filter-actions">
+					<a class="button-primary" href="<?php echo admin_url('admin-post.php?action=stock_products_download_csv&' . http_build_query($request)) ?>" ><?php echo __('Save as CSV', 'fakturo') ?></a>
+		
+					<!-- Updated PDF button without href -->
+					<a id="download-table-pdf" class="button-primary" style="margin-right:10px;"><?php echo __('Save as PDF', 'fakturo') ?></a>
+				</div>
 			</form>
 		</div>
 	

@@ -46,7 +46,7 @@ class sales_report {
 	*/
 	public static function content($request, $ranges) {
 		self::get_form_filters($request);
-		echo '<div style="width: 100%;">
+		echo '<div class="fktr_reports_container">
         			<canvas id="canvas"></canvas>
     			</div>';
 	}
@@ -90,7 +90,7 @@ class sales_report {
 		$date_inputs_html .= '<input type="date" name="to_date" id="to_date" value="'.$to_date.'" />';
 		$date_inputs_html .= '</div>';
 	
-		$return_html = '<div id="div_filter_form" style="padding:5px;">
+		$return_html = '<div id="div_filter_form" class="fktr_filter-form">
 			<form name="filter_form" method="get" action="'.admin_url('admin.php').'">
 				<input type="hidden" name="page" value="fakturo_reports"/>
 				<input type="hidden" name="sec" value="'.$request['sec'].'"/>
