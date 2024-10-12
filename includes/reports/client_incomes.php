@@ -250,15 +250,18 @@ class client_incomes {
 				$state_name = $state_data->name;
 			}
 		
-	
-
-			$html_client_data = '<div style="float:left; margin-left:15px;"><h3>'.__('Client', 'fakturo' ).': '.$client_data['post_title'].'</h3></div>';
+			$html_client_data = '<div class="fktr_info-item"><h3>'.__('Client', 'fakturo' ).': '.$client_data['post_title'].'</h3></div>';
 		}
-		echo $html_client_data;
-		$html_objects = '<div style="clear: both;"><h2>No results with this filters</h2></div>';
+		echo '<div class="fktr_report-info">' . $html_client_data;
+		
+		$objects_client = client_summmary::get_objects_client($request, $ranges, false);
+		$documents_values = $objects_client['documents_values'];
+
+		echo '<div class="fktr_info-item"><h3>'.sprintf(__('Date: since %s til %s', 'fakturo' ), date_i18n($setting_system['dateformat'], $ranges['from']), date_i18n($setting_system['dateformat'], $ranges['to'])).'</h3></div></div>';
+		$html_objects = '<div style="clear: both; text-align: center;"><h2>'.__("No results with this filters").'</h2></div>';
 		if (!empty($objects_client['objects'])) {
 		
-			$html_objects = '<table class="wp-list-table widefat fixed striped posts">
+			$html_objects = '<div class="fktr_table-resp"><table class="wp-list-table widefat fixed striped posts">
 				<thead>
 				<tr>
 					<td>
@@ -335,10 +338,10 @@ class client_incomes {
 				</tr>';
 			}
 			$html_objects .= '</tbody>
-			</table>';
+			</table></div>';
 		}
 		$html_totals_data = '';
-		echo '<div style="width: 100%;">
+		echo '<div class="fktr_reports_container">
 		'.($request['show_details']?$html_objects:'').'
 		'.$html_totals_data.'
 		</div>';
@@ -382,25 +385,32 @@ class client_incomes {
 		// Adding date inputs for custom range
 		$from_date = isset($request['from_date']) ? esc_attr($request['from_date']) : '';
 		$to_date = isset($request['to_date']) ? esc_attr($request['to_date']) : '';
+	
+		$date_inputs_html = '<div id="custom_dates" class="fktr_date-ranges" style="display:none;">';
+		$date_inputs_html .= '<div class="fktr_date-from"><label for="from_date">' . __( 'From', 'fakturo' ) . '</label>';
+		$date_inputs_html .= '<input type="date" name="from_date" id="from_date" value="'.$from_date.'" /></div>';
+		$date_inputs_html .= '<div class="fktr_date-to"><label for="to_date">' . __( 'To', 'fakturo' ) . '</label>';
+		$date_inputs_html .= '<input type="date" name="to_date" id="to_date" value="'.$to_date.'" /></div>';
+		$date_inputs_html .= '</div>';
 		
-	$return_html = '<div id="div_filter_form" style="padding:5px;">
+	$return_html = '<div id="div_filter_form" class="fktr_filter-form">
         <form name="filter_form" method="get" action="'.admin_url('admin.php').'">
+			<div class="fktr_filter-options">
             <input type="hidden" name="page" value="fakturo_reports"/>
             <input type="hidden" name="sec" value="'.$request['sec'].'"/>
             '.$select_range_html.'
             '.$selectClients.'
-            <label style="margin-left:10px;margin-right:10px;">
+            <label>
                 <input type="checkbox" name="show_details" id="show_details" value="1" '.checked($request['show_details'], 1, false).'/>
                 '.__( 'Show details', 'fakturo' ).'
             </label>
             '.$date_inputs_html.'
             <input type="submit" class="button-secondary" value="'.__( 'Filter', 'fakturo' ).'"/>
-			
-			
-			<input id="print-table-pdf" type="button" class="button-secondary" value="'.__( 'Save as PDF', 'fakturo' ).'"/>
-			
-			
-			<input id="download-table-csv" type="button" class="button-secondary" value="'.__( 'Save as CSV', 'fakturo' ).'"/>
+			</div>
+			<div class="fktr_filter-actions">
+			<input id="print-table-pdf" type="button" class="button-primary" value="'.__( 'Save as PDF', 'fakturo' ).'"/>
+			<input id="download-table-csv" type="button" class="button-primary" value="'.__( 'Save as CSV', 'fakturo' ).'"/>
+			</div>
         </form>
     </div>';
 
@@ -429,7 +439,7 @@ class client_incomes {
 $return_html .= '<script>
     document.getElementById("range").addEventListener("change", function() {
         if (this.value === "other") {
-            document.getElementById("custom_dates").style.display = "block";
+            document.getElementById("custom_dates").style.display = "flex";
         } else {
             document.getElementById("custom_dates").style.display = "none";
         }
@@ -437,7 +447,7 @@ $return_html .= '<script>
 
   
     if (document.getElementById("range").value === "other") {
-        document.getElementById("custom_dates").style.display = "block";
+        document.getElementById("custom_dates").style.display = "flex";
     }
 
     
