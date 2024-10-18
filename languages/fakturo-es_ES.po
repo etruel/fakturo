@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Fakturo\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-12 14:11-0400\n"
-"PO-Revision-Date: 2024-10-12 14:20-0400\n"
+"POT-Creation-Date: 2024-10-18 13:49-0400\n"
+"PO-Revision-Date: 2024-10-18 13:49-0400\n"
 "Last-Translator: manuelge <manuel@netmdp.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -4958,16 +4958,16 @@ msgstr "Filtrar"
 #: includes/reports/client_account_movements.php:520
 #: includes/reports/client_incomes.php:411
 #: includes/reports/client_summary.php:483
-#: includes/reports/stock_products.php:777
-msgid "Save as PDF"
-msgstr "Guardar PDF"
+#: includes/reports/stock_products.php:775
+msgid "PDF"
+msgstr "PDF"
 
 #: includes/reports/client_account_movements.php:521
 #: includes/reports/client_incomes.php:412
 #: includes/reports/client_summary.php:484
-#: includes/reports/stock_products.php:774
-msgid "Save as CSV"
-msgstr "Guardar CSV"
+#: includes/reports/stock_products.php:776
+msgid "CSV"
+msgstr "CSV"
 
 #: includes/reports/client_incomes.php:229
 msgid "Client incomes needs the default currency on system settings."
@@ -7185,6 +7185,12 @@ msgstr "¿Está Seguro? Perderá los datos actuales."
 msgid "Exit"
 msgstr "Salir"
 
+#~ msgid "Save as PDF"
+#~ msgstr "Guardar PDF"
+
+#~ msgid "Save as CSV"
+#~ msgstr "Guardar CSV"
+
 #, php-format
 #~ msgid ""
 #~ "There is a new version of %1$s available. %2$sView version %3$s "
@@ -7203,12 +7209,6 @@ msgstr "Salir"
 
 #~ msgid "Send PDF to Client"
 #~ msgstr "Enviar PDF al cliente"
-
-#~ msgid "CSV"
-#~ msgstr "CVS estadísticas"
-
-#~ msgid "PDF"
-#~ msgstr "PDF"
 
 #, php-format
 #~ msgid "Welcome to Fakturo %s"

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Fakturo\n"
-"POT-Creation-Date: 2024-10-12 14:10-0400\n"
+"POT-Creation-Date: 2024-10-18 13:49-0400\n"
 "PO-Revision-Date: 2018-02-16 21:59-0300\n"
 "Last-Translator: Esteban <esteban@netmdp.com>\n"
 "Language-Team: NetMdP <dev@netmdp.com>\n"
@@ -4429,13 +4429,13 @@ msgid "Filter"
 msgstr ""
 
 #: includes/reports/client_account_movements.php:520 includes/reports/client_incomes.php:411
-#: includes/reports/client_summary.php:483 includes/reports/stock_products.php:777
-msgid "Save as PDF"
+#: includes/reports/client_summary.php:483 includes/reports/stock_products.php:775
+msgid "PDF"
 msgstr ""
 
 #: includes/reports/client_account_movements.php:521 includes/reports/client_incomes.php:412
-#: includes/reports/client_summary.php:484 includes/reports/stock_products.php:774
-msgid "Save as CSV"
+#: includes/reports/client_summary.php:484 includes/reports/stock_products.php:776
+msgid "CSV"
 msgstr ""
 
 #: includes/reports/client_incomes.php:229
