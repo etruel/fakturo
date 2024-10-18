@@ -61,13 +61,13 @@ class reports {
 		*/
 		do_action('report_page_before_content_'.$request['sec'], $request, $ranges);
 		
-		echo '<div class="postbox" style="margin-top:10px;">';
+		echo '<div class="wrap"><div class="postbox">';
 		//var_export('report_page_content_'.$request['sec']);
 			/*
 			* Executing hook to add content on report page. 
 			*/
 			do_action('report_page_content_'.$request['sec'], $request, $ranges);
-		echo '</div>';
+		echo '</div></div>';
 	}
 
 	/**
@@ -370,6 +370,7 @@ class reports {
 			}
 		}
 		if($print_tabs) {
+			echo '<div class="wrap">';
 			echo '<h2 class="nav-tab-wrapper fktr-settings-tabs">';
 			$current_tab = 'general';
 			foreach ($sections_tabs as $tab_id => $tabs_mains) {
@@ -400,8 +401,7 @@ class reports {
 			}
 			
 			echo '</ul></div>';
-			
-			
+			echo '</div>';/* .wrap end */
 		}
 	}
 }
