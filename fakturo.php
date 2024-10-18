@@ -3,7 +3,7 @@
  Plugin Name: Fakturo
  Plugin URI: https://fakturo.org
  Description: Make invoices with products and clients.  If you like it, please rate it 5 stars.
- Version: 1.0.7
+ Version: 1.0.8
  Author: Etruel Developments LLC
  Author URI: https://etruel.com
  Text Domain: fakturo
@@ -13,7 +13,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Plugin version
-if ( ! defined('WPE_FAKTURO_VERSION' ) ) define('WPE_FAKTURO_VERSION', '1.0.7' ); 
+if ( ! defined('WPE_FAKTURO_VERSION' ) ) define('WPE_FAKTURO_VERSION', '1.0.8' ); 
 
 if ( ! class_exists( 'fakturo' ) ) :
 
@@ -115,26 +115,8 @@ class fakturo {
 		
 		// Set filter for plugin's languages directory
 		$lang_dir = dirname( plugin_basename( __FILE__ ) ) . '/languages/';
-		$lang_dir = apply_filters('fakturo_languages_directory', $lang_dir );
-
-		// Traditional WordPress plugin locale filter
-		$locale        = apply_filters( 'plugin_locale',  get_locale(), 'fakturo' );
-		$mofile        = sprintf( '%1$s-%2$s.mo', 'fakturo', $locale );
-
-		// Setup paths to current locale file
-		$mofile_local  = $lang_dir . $mofile;
-		$mofile_global = WP_LANG_DIR . '/fakturo/' . $mofile;
-
-		if ( file_exists( $mofile_global ) ) {
-			// Look in global /wp-content/languages/fakturo/ folder
-			load_textdomain( 'fakturo', $mofile_global );
-		} elseif ( file_exists( $mofile_local ) ) {
-			// Look in local /wp-content/plugins/fakturo/languages/ folder
-			load_textdomain( 'fakturo', $mofile_local );
-		} else {
-			// Load the default language files
-			load_plugin_textdomain( 'fakturo', false, $lang_dir );
-		}
+		// Load the default language files
+		load_plugin_textdomain( 'fakturo', false, $lang_dir );
 		
 	}
 	

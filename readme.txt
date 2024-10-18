@@ -5,7 +5,7 @@ Tags: invoice,sales,inventory,billing,receipt
 Requires at least: 4.9
 Tested up to: 6.6.2
 Requires PHP: 7.0
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,14 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 
 == Changelog ==
+
+= 1.0.8 (Oct 17, 2024) =
+* Added features to export data as PDF or CSV in all reports.
+* Added Responsive views in all reports to allow see them also on cellphones. 
+* Fixes filters with custom dates range in all reports.
+* Fixes many styles and margins in all reports.
+* Fixes some tax variables in templates.
+* Improves load TextDomain for languages files.
 
 = 1.0.7 (Sep 27, 2024) =
 * Added new report by incomes to show a summary or details of receipts by clients. 
@@ -266,4 +274,4 @@ First Release
 
 
 == Upgrade Notice ==
-Added new report and many bug fixes.
+Improves all reports range and some bug fixes.
