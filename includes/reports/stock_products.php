@@ -771,10 +771,9 @@ class stock_products_report {
 					<input type="submit" class="button-secondary" value="<?php echo __('Filter', 'fakturo') ?>"/>
 				</div>
 				<div class="fktr_filter-actions">
-					<a class="button-primary" href="<?php echo admin_url('admin-post.php?action=stock_products_download_csv&' . http_build_query($request)) ?>" ><?php echo __('Save as CSV', 'fakturo') ?></a>
-		
 					<!-- Updated PDF button without href -->
-					<a id="download-table-pdf" class="button-primary" style="margin-right:10px;"><?php echo __('Save as PDF', 'fakturo') ?></a>
+					<a id="download-table-pdf" class="button-secondary" title="Download report to PDF"><?php echo __('PDF', 'fakturo') ?></a>
+					<a class="button-secondary" title="Export report to CSV" href="<?php echo admin_url('admin-post.php?action=stock_products_download_csv&' . http_build_query($request)) ?>" ><?php echo __('CSV', 'fakturo') ?></a>
 				</div>
 			</form>
 		</div>

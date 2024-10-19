@@ -408,8 +408,8 @@ class client_incomes {
             <input type="submit" class="button-secondary" value="'.__( 'Filter', 'fakturo' ).'"/>
 			</div>
 			<div class="fktr_filter-actions">
-			<input id="print-table-pdf" type="button" class="button-primary" value="'.__( 'Save as PDF', 'fakturo' ).'"/>
-			<input id="download-table-csv" type="button" class="button-primary" value="'.__( 'Save as CSV', 'fakturo' ).'"/>
+			<input id="print-table-pdf" type="button" class="button-secondary" title="Download report to PDF" value="'.__( 'PDF', 'fakturo' ).'"/>
+			<input id="download-table-csv" type="button" class="button-secondary" title="Export report to CSV" value="'.__( 'CSV', 'fakturo' ).'"/>
 			</div>
         </form>
     </div>';
