@@ -226,7 +226,7 @@ class client_incomes {
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$currencyDefault = get_fakturo_term($setting_system['currency'], 'fktr_currencies');
 		if (is_wp_error($currencyDefault)) {
-			echo '<p>'.__( 'Client incomes needs the default currency on system settings.', 'fakturo' ).'</p>';
+			echo '<p>'.__( 'Client Summary needs the default currency on system settings.', 'fakturo' ).'</p>';
 			return true;
 		}
 		
@@ -249,19 +249,15 @@ class client_incomes {
 			if(!is_wp_error($state_data)) {
 				$state_name = $state_data->name;
 			}
-		
+	
 			$html_client_data = '<div class="fktr_info-item"><h3>'.__('Client', 'fakturo' ).': '.$client_data['post_title'].'</h3></div>';
 		}
 		echo '<div class="fktr_report-info">' . $html_client_data;
-		
-		$objects_client = client_summmary::get_objects_client($request, $ranges, false);
-		$documents_values = $objects_client['documents_values'];
-
-		echo '<div class="fktr_info-item"><h3>'.sprintf(__('Date: since %s til %s', 'fakturo' ), date_i18n($setting_system['dateformat'], $ranges['from']), date_i18n($setting_system['dateformat'], $ranges['to'])).'</h3></div></div>';
+		echo '<div class="fktr_info-item"><h3>'.sprintf(__('Date: since %s til %s', 'fakturo' ), date_i18n($setting_system['dateformat'].' '.get_option( 'time_format' ), $ranges['from']), date_i18n($setting_system['dateformat'].' '.get_option( 'time_format' ), $ranges['to'])).'</h3></div></div>';
 		$html_objects = '<div style="clear: both; text-align: center;"><h2>'.__("No results with this filters").'</h2></div>';
 		if (!empty($objects_client['objects'])) {
 		
-			$html_objects = '<div class="fktr_table-resp"><table class="wp-list-table widefat fixed striped posts">
+			$html_objects = '<div class="fktr_table-resp"><table class="wp-list-table widefat fixed striped posts" style="min-width: 1000px;">
 				<thead>
 				<tr>
 					<td>
@@ -275,8 +271,11 @@ class client_incomes {
 						if (is_numeric($request['client_id']) && $request['client_id'] < 0) {
 							$html_objects .= '<td>'.__('Client', 'fakturo').'</td>';
 						}
-						$html_objects .=	'<td>
+						$html_objects .=    '<td>
 						'.__('Subtotal', 'fakturo').'
+					</td>
+					<td>
+						'.__('Tax', 'fakturo').'
 					</td>
 					<td>
 						'.__('Total', 'fakturo').'
@@ -284,9 +283,8 @@ class client_incomes {
 				</tr>
 				</thead>
 				<tbody id="the-list">';
-
+	
 			foreach ($objects_client['objects'] as $obj) {
-                $client_data = fktrPostTypeClients::get_client_data($obj['client_id']);
 				$obj_type = '';
 				$obj_link = admin_url('post.php?post='.$obj['ID'].'&action=edit');
 				$subtotal_print = 0;
@@ -301,10 +299,11 @@ class client_incomes {
 					$total_documents['subtotal'] = $total_documents['subtotal']+$obj['report_subtotal'];
 					$total_documents['total'] = $total_documents['total']+$obj['report_total'];
 				}
+				$tax = $obj['report_tax'];
 				$subtotal = $obj['report_subtotal'];
 				$total = $obj['report_total'];
-				$client_print = $client_data['post_title'] ?? 'No name available';
-
+				$client_print = $obj['client_data']['name'] ?? 'No name available';
+	
 				$subtotal_print = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($subtotal, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
 				
 				$total_print = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($total, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
@@ -333,6 +332,9 @@ class client_incomes {
 						'.$subtotal_print.'
 					</td>
 					<td>
+						'.$tax_print.'
+					</td>
+					<td>
 						'.$total_print.'
 					</td>
 				</tr>';
@@ -341,6 +343,78 @@ class client_incomes {
 			</table></div>';
 		}
 		$html_totals_data = '';
+		if (!empty($objects_client['objects'])) {
+			$array_taxes = $objects_client['array_taxes'];
+			if (!isset($array_taxes)) {
+				$array_taxes = array();
+			}
+			$html_totals_data = '<div class="fktr_report-summary"><table class="wp-list-table widefat fixed striped posts">
+					<thead>
+					<tr>
+						<td>
+							'.__('Documents', 'fakturo').'
+						</td>';
+			$html_totals_data .= '<td>
+							'.__('Subtotal', 'fakturo').'
+						</td>';
+			foreach ($array_taxes as $tk => $tx) {
+				$html_totals_data .= '<td>
+							'.$tx['name'].' ('.$tx['porcent'].'%)
+						</td>';
+			}
+			$html_totals_data .= '<td>
+							'.__('Total', 'fakturo').'
+						</td>';
+	
+	 
+			$html_totals_data .= '</tr>
+					</thead>
+					<tbody id="the-list">
+						';
+			foreach ($documents_values as $nd => $valdoc) {
+				$html_totals_data .= '<tr>
+						<td>
+							'.$nd.'
+						</td>
+						<td>
+							'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($valdoc['subtotal'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
+						</td>';
+						foreach ($array_taxes as $tkd => $txd) {
+							$html_totals_data .= '<td>
+										'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($valdoc[$tkd.'tax'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
+									</td>';
+						}
+	
+						$html_totals_data .= '<td>
+							'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($valdoc['total'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
+						</td>
+						</tr>';
+			}
+	
+			$html_totals_data .= '<tr>
+						<td>
+							
+						</td>
+						<td>
+							'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($total_documents['subtotal'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
+						</td>';
+						foreach ($array_taxes as $tk => $tx) {
+							$html_totals_data .= '<td>
+										'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($tx['total'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
+									</td>';
+						}
+						
+	
+						$html_totals_data .= '<td>
+							'.(($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($total_documents['total'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'').'
+						</td>
+						</tr>';
+	
+	
+			$html_totals_data .= '
+					</tbody>
+				</table></div><div style="clear:both;"> </div>';
+		}
 		echo '<div class="fktr_reports_container">
 		'.($request['show_details']?$html_objects:'').'
 		'.$html_totals_data.'
@@ -404,7 +478,7 @@ class client_incomes {
                 <input type="checkbox" name="show_details" id="show_details" value="1" '.checked($request['show_details'], 1, false).'/>
                 '.__( 'Show details', 'fakturo' ).'
             </label>
-            
+            '.$date_inputs_html.'
             <input type="submit" class="button-secondary" value="'.__( 'Filter', 'fakturo' ).'"/>
 			</div>
 			<div class="fktr_filter-actions">
