@@ -518,7 +518,7 @@ class client_account_movements {
 			</div>
         </form>
     </div>';
-
+ 
     
     $return_html .= '<style>
         @media print {
@@ -643,4 +643,3 @@ $return_html .= '<script>
  * Execute all hooks on client_summmary
  */
 client_account_movements::hooks();
-?>
