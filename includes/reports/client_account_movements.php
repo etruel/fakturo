@@ -509,10 +509,6 @@ class client_account_movements {
             <input type="hidden" name="sec" value="'.$request['sec'].'"/>
             '.$select_range_html.'
             '.$selectClients.'
-            <label>
-                <input type="checkbox" name="show_details" id="show_details" value="1" '.checked($request['show_details'], 1, false).'/>
-                '.__( 'Show details', 'fakturo' ).'
-            </label>
             '.$date_inputs_html.'
             <input type="submit" class="button-secondary" value="'.__( 'Filter', 'fakturo' ).'"/>
 			</div>
