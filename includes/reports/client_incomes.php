@@ -636,4 +636,4 @@ $return_html .= '<script>
  * Execute all hooks on client_incomes
  */
 client_incomes::hooks();
-?>
+
