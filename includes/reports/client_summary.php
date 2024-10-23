@@ -608,4 +608,5 @@ $return_html .= '<script>
 /**
  * Execute all hooks on client_summmary
  */
+
 client_summmary::hooks();
