@@ -472,7 +472,7 @@ class client_summmary {
             <input type="hidden" name="sec" value="'.$request['sec'].'"/>
             '.$select_range_html.'
             '.$selectClients.'
-            <label>
+            <label style="margin-left:10px;margin-right:10px;">
                 <input type="checkbox" name="show_details" id="show_details" value="1" '.checked($request['show_details'], 1, false).'/>
                 '.__( 'Show details', 'fakturo' ).'
             </label>
@@ -523,25 +523,51 @@ $return_html .= '<script>
     }
 
     
-    document.getElementById("print-table-pdf").addEventListener("click", function() {
-        var table = document.querySelector(".wp-list-table.widefat.fixed.striped.posts");
-        if (table) {
-            
-            var { jsPDF } = window.jspdf;
-            var doc = new jsPDF();
-
-            doc.text("", 10, 10);
-            if (doc.autoTable) {
-                doc.autoTable({ html: table });
-            } else {
-                doc.text("jsPDF autoTable plugin is not available", 10, 20);
+   document.getElementById("print-table-pdf").addEventListener("click", function() {
+    // Get all tables with the specified class
+    var tables = document.querySelectorAll(".wp-list-table.widefat.fixed.striped.posts");
+    
+    if (tables.length > 0) {
+        var { jsPDF } = window.jspdf;
+        var doc = new jsPDF();
+        
+        // Keep track of the current vertical position
+        var currentY = 10;
+        
+        // Process each table
+        tables.forEach(function(table, index) {
+            // Add page break if not the first table and theres not enough space
+            if (index > 0) {
+                if (currentY > doc.internal.pageSize.height - 20) {
+                    doc.addPage();
+                    currentY = 10;
+                } else {
+                    // Add some spacing between tables
+                    currentY += 10;
+                }
             }
+            
+            // Add the table
+            if (doc.autoTable) {
+                doc.autoTable({
+                    html: table,
+                    startY: currentY,
+                    didDrawPage: function(data) {
+                        // Update the current Y position for the next table
+                        currentY = data.cursor.y;
+                    }
+                });
+            } else {
+                doc.text("jsPDF autoTable plugin is not available", 10, currentY);
+                currentY += 10;
+            }
+        });
 
-            doc.save("table.pdf");
-        } else {
-            alert("Table not found!");
-        }
-    });
+        doc.save("tables.pdf");
+    } else {
+        alert("No tables found!");
+    }
+});
 
     
     document.getElementById("download-table-csv").addEventListener("click", function() {
@@ -609,4 +635,3 @@ $return_html .= '<script>
  * Execute all hooks on client_summmary
  */
 client_summmary::hooks();
-?>
