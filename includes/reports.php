@@ -34,6 +34,7 @@ class reports {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/client_incomes.php';
 		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/client_account_movements.php';
 		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/stock_products.php';
+		require_once FAKTURO_PLUGIN_DIR . 'includes/reports/expenses_summary.php';
 	}
 	/**
 	 * Print the page the reports.
@@ -295,22 +296,25 @@ class reports {
 		$sections_tabs = array(
 			'sales' => apply_filters('ftkr_report_sales_sections', array( 
 				'default' => array('text' => __( '​​Sales', 'fakturo' ), 'sec' => 'sales', 'cap' => 'fktr_report_sales')
-				)
-			),
+			)),
 			
 			'clients' => apply_filters('ftkr_report_clients_sections', array( 
 				'client_summary' =>  array('text' => __( 'Summary', 'fakturo' ), 'sec' => 'client_summary', 'cap' => 'fktr_report_client_summary'),
 				'client_incomes' =>  array('text' => __( 'Incomes', 'fakturo' ), 'sec' => 'client_incomes', 'cap' => 'fktr_report_client_incomes'),
 				'client_account_movements' =>  array('text' => __( 'Client&#x27;s account', 'fakturo' ), 'sec' => 'client_account_movements', 'cap' => 'fktr_report_client_account_movements'),
-				'default' =>  array('text' => __( 'Clients', 'fakturo' ), 'sec' => 'client_summary', 'cap' => 'fktr_report_client_summary')				
-				)
-			),
+				'default' =>  array('text' => __( 'Clients', 'fakturo' ), 'sec' => 'client_summary', 'cap' => 'fktr_report_client_summary')                
+			)),
 			
 			'stock_products' => apply_filters('ftkr_report_stok_products_sections', array(
 				'stock_products' =>  array('text' => __( 'Summary', 'fakturo' ), 'sec' => 'stock_products', 'cap' => 'fktr_report_client_summary'),
-				'default' =>  array('text' => __( 'Products', 'fakturo' ), 'sec' => 'stock_products', 'cap' => 'fktr_report_client_summary')				
-				)
-			),
+				'default' =>  array('text' => __( 'Products', 'fakturo' ), 'sec' => 'stock_products', 'cap' => 'fktr_report_client_summary')                
+			)),
+
+			'salesman' => apply_filters('ftkr_report_expenses_sections', array(
+				'expenses_summary' => array('text' => __( 'Summary', 'fakturo' ), 'sec' => 'expenses_summary', 'cap' => 'fktr_report_expenses'),
+				'default' => array('text' => __( 'Vendedores', 'fakturo' ), 'sec' => 'expenses_summary', 'cap' => 'fktr_report_expenses')
+			)),
+	
 		);
 		/* 
 		* These filters can be used to add or update tab values.
