@@ -100,6 +100,10 @@ class fktr_tax_commission_scales {
 	public static function add_form_fields() {
         // Get all sellers
         $allsellers = get_users(array('role' => 'fakturo_seller'));
+		$allmanagers = get_users(array('role' => 'fakturo_manager'));
+		$alladmins = get_users(array('role' => 'administrator'));
+		$allsellers = array_merge($allsellers, $allmanagers, $alladmins);
+        
         
         // Get all categories
         $categories = get_terms(array(
@@ -189,6 +193,9 @@ class fktr_tax_commission_scales {
         
         // Get all sellers
         $allsellers = get_users(array('role' => 'fakturo_seller'));
+		$allmanagers = get_users(array('role' => 'fakturo_manager'));
+		$alladmins = get_users(array('role' => 'administrator'));
+		$allsellers = array_merge($allsellers, $allmanagers, $alladmins);
         
         // Get all categories
         $categories = get_terms(array(
