@@ -314,7 +314,6 @@ class fktr_tax_commission_scales {
         return '
         <script>
         document.addEventListener("DOMContentLoaded", function() {
-        
             const rangesContainer = document.querySelector(".ranges-container");
             
             function updateButtons() {
@@ -337,6 +336,29 @@ class fktr_tax_commission_scales {
                 }
             }
             
+            // Handle input validation and dependencies
+            function handleRangeInputs(row) {
+                const fromInput = row.querySelector(\'input[name*="[from]"]\');
+                const toInput = row.querySelector(\'input[name*="[to]"]\');
+                
+                fromInput.addEventListener("input", function() {
+                    if (this.value && toInput.value && parseInt(this.value) >= parseInt(toInput.value)) {
+                        toInput.value = ""; // Clear "to" if it\'s less than "from"
+                    }
+                });
+                
+                toInput.addEventListener("input", function() {
+                    if (this.value && fromInput.value && parseInt(this.value) <= parseInt(fromInput.value)) {
+                        this.value = ""; // Clear "to" if it\'s less than "from"
+                    }
+                });
+            }
+            
+            // Apply input handlers to existing rows
+            rangesContainer.querySelectorAll(".range-row").forEach(row => {
+                handleRangeInputs(row);
+            });
+            
             rangesContainer.addEventListener("click", function(event) {
                 if (event.target.classList.contains("add-range")) {
                     const currentRows = rangesContainer.querySelectorAll(".range-row").length;
@@ -345,13 +367,14 @@ class fktr_tax_commission_scales {
                     newRangeRow.classList.add("range-row");
                     
                     newRangeRow.innerHTML = `
-                        <input type="number" name="term_meta[ranges][${currentRows}][from]" placeholder="'.__('From', 'fakturo').'" class="small-text">
-                        <input type="number" name="term_meta[ranges][${currentRows}][to]" placeholder="'.__('To', 'fakturo').'" class="small-text">
-                        <input type="number" name="term_meta[ranges][${currentRows}][percentage]" placeholder="%" class="small-text">
+                        <input type="number" name="term_meta[ranges][${currentRows}][from]" placeholder="'.__('Desde', 'fakturo').'" class="small-text" required>
+                        <input type="number" name="term_meta[ranges][${currentRows}][to]" placeholder="'.__('Hasta (opcional)', 'fakturo').'" class="small-text">
+                        <input type="number" name="term_meta[ranges][${currentRows}][percentage]" placeholder="%" class="small-text" required>
                         <button type="button" class="button button-secondary remove-range">-</button>
                     `;
                     
                     rangesContainer.appendChild(newRangeRow);
+                    handleRangeInputs(newRangeRow);
                     updateButtons();
                 }
                 
@@ -406,7 +429,11 @@ class fktr_tax_commission_scales {
                 $ranges_str = '';
                 if (!empty($term->ranges)) {
                     foreach ($term->ranges as $range) {
-                        $ranges_str .= sprintf('%d-%d: %d%%, ', $range->from, $range->to, $range->percentage);
+                        if (empty($range->to) || $range->to == PHP_INT_MAX) {
+                            $ranges_str .= sprintf('%d+: %d%%, ', $range->from, $range->percentage);
+                        } else {
+                            $ranges_str .= sprintf('%d-%d: %d%%, ', $range->from, $range->to, $range->percentage);
+                        }
                     }
                     $out = rtrim($ranges_str, ', ');
                 }
@@ -418,10 +445,26 @@ class fktr_tax_commission_scales {
         return $out;    
     }
 	
-	public static function before_save($fields)  {
-		// Any preprocessing of fields before saving
-		return $fields;
-	}
+    public static function before_save($fields) {
+        if (isset($fields['ranges']) && is_array($fields['ranges'])) {
+            foreach ($fields['ranges'] as $key => $range) {
+                // Ensure required fields are set
+                if (empty($range['from']) || empty($range['percentage'])) {
+                    unset($fields['ranges'][$key]);
+                    continue;
+                }
+                
+                // If "to" is empty, it means it's an unbounded range (greater than)
+                if (empty($range['to'])) {
+                    $fields['ranges'][$key]['to'] = PHP_INT_MAX;
+                }
+            }
+            
+            // Reindex array after possible unsets
+            $fields['ranges'] = array_values($fields['ranges']);
+        }
+        return $fields;
+    }
 
 	public static function save_fields($term_id, $tt_id) {
 		if (isset( $_POST['term_meta'])) {

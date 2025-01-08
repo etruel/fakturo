@@ -97,6 +97,7 @@ class client_summmary {
 					if ($discriminates_taxes) {
 						if (!empty($object_data['taxes_in_products'])) {
 							foreach ($object_data['taxes_in_products'] as $key => $value) {
+								$value = is_numeric($value) ? $value : 0;
 								$taxPorcent = 0;
 								$taxName = 'Tax';
 								if ($key > 0) {

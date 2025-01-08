@@ -895,7 +895,7 @@ if (!class_exists('fktrPostTypeSales')) :
 						}
 					}
 
-					$htmltaxes .= '<label id="label_tax_in_' . $key . '">' . $taxName . ' ' . fakturo_porcent_to_mask($taxPorcent) . '%:' . (($setting_system['currency_position'] == 'before') ? $currencyDefault->symbol . ' ' : '') . '' . number_format($value, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (($setting_system['currency_position'] == 'after') ? ' ' . $currencyDefault->symbol : '') . '</label> <input type="hidden" name="taxes_in_products[' . $key . ']" value="' . $value . '"/>';
+					$htmltaxes .= '<label id="label_tax_in_' . $key . '">' . $taxName . ' ' . fakturo_porcent_to_mask($taxPorcent) . '%:' . (($setting_system['currency_position'] == 'before') ? $currencyDefault->symbol . ' ' : '') . '' . number_format((float)($value ?? 0), $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (($setting_system['currency_position'] == 'after') ? ' ' . $currencyDefault->symbol : '') . '</label> <input type="hidden" name="taxes_in_products[' . $key . ']" value="' . $value . '"/>';
 				}
 			}
 
