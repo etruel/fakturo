@@ -15,6 +15,27 @@ if (!defined('ABSPATH')) exit;
  * @since 0.6
  */
 class expenses_summary_report {
+
+
+    /**
+     * Get all salespeople
+     */
+    private static function get_salespeople() {
+        global $wpdb;
+        
+        $query = "SELECT DISTINCT 
+            pm.meta_value AS seller_id,
+            u.display_name 
+            FROM {$wpdb->postmeta} pm 
+            JOIN {$wpdb->posts} p ON p.ID = pm.post_id 
+            JOIN {$wpdb->users} u ON u.ID = pm.meta_value
+            WHERE pm.meta_key = 'invoice_saleman' 
+            AND p.post_type = 'fktr_sale'
+            ORDER BY u.display_name";
+            
+        return $wpdb->get_results($query);
+    }
+
     /**
      * Extract total amount from post excerpt
      */
@@ -44,6 +65,50 @@ class expenses_summary_report {
     public static function before_content($request, $ranges) {
         wp_enqueue_script('jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array('jquery'), WPE_FAKTURO_VERSION, true);
         wp_enqueue_script('fakturo_reports_expenses_summary', FAKTURO_PLUGIN_URL . 'assets/js/reports-expenses-summary.js', array('jquery'), WPE_FAKTURO_VERSION, true);
+        
+        // Add jQuery script for custom date range handling
+        add_action('admin_footer', function() {
+            ?>
+            <script>
+            jQuery(document).ready(function($) {
+                // Function to toggle custom date inputs
+                function toggleCustomDates() {
+                    if ($('#range').val() === 'other') {
+                        $('#custom_dates').slideDown();
+                    } else {
+                        $('#custom_dates').slideUp();
+                    }
+                }
+
+                // Initial state
+                toggleCustomDates();
+
+                // Handle range select change
+                $('#range').on('change', toggleCustomDates);
+
+                // Form validation
+                $('form[name="filter_form"]').on('submit', function(e) {
+                    if ($('#range').val() === 'other') {
+                        var fromDate = $('#from_date').val();
+                        var toDate = $('#to_date').val();
+                        
+                        if (!fromDate || !toDate) {
+                            e.preventDefault();
+                            alert('<?php echo esc_js(__("Please select both start and end dates", "fakturo")); ?>');
+                            return false;
+                        }
+                        
+                        if (fromDate > toDate) {
+                            e.preventDefault();
+                            alert('<?php echo esc_js(__("Start date cannot be later than end date", "fakturo")); ?>');
+                            return false;
+                        }
+                    }
+                });
+            });
+            </script>
+            <?php
+        });
     }
 
     /**
@@ -58,6 +123,14 @@ class expenses_summary_report {
                 " AND p.post_date BETWEEN %s AND %s",
                 date('Y-m-d H:i:s', $ranges['from']),
                 date('Y-m-d H:i:s', $ranges['to'])
+            );
+        }
+
+        $seller_condition = "";
+        if (!empty($request['seller_id'])) {
+            $seller_condition = $wpdb->prepare(
+                " AND pm2.meta_value = %s",
+                $request['seller_id']
             );
         }
 
@@ -81,6 +154,7 @@ class expenses_summary_report {
             AND pm1.meta_key IS NOT NULL 
             AND pm2.meta_key IS NOT NULL
             {$date_condition}
+            {$seller_condition}
             GROUP BY pm2.meta_value, u.ID";
 
         return $wpdb->get_results($query);
@@ -159,7 +233,7 @@ class expenses_summary_report {
                     }
                 }
             }
-    
+          
             $commission = ($sale->total * $total_sum) * ($percentage/100);
             $grand_total_commission += $commission;
     
@@ -289,33 +363,51 @@ class expenses_summary_report {
 
         $array_range = apply_filters('report_filters_range', $array_range, $request);
 
+        // Get salespeople for the dropdown
+        $salespeople = self::get_salespeople();
+        
         $select_range_html = '<select name="range" id="range">';
         foreach ($array_range as $key => $value) {
             $select_range_html .= '<option value="' . $key . '" ' . selected($key, $request['range'], false) . '>' . $value . '</option>';
         }
         $select_range_html .= '</select>';
 
-        // Custom date range inputs
+        // Create salesperson dropdown
+        $select_seller_html = '<select name="seller_id" id="seller_id">
+            <option value="">' . __('All Salespeople', 'fakturo') . '</option>';
+        foreach ($salespeople as $seller) {
+            $selected = isset($request['seller_id']) && $request['seller_id'] == $seller->seller_id ? 'selected' : '';
+            $select_seller_html .= '<option value="' . esc_attr($seller->seller_id) . '" ' . $selected . '>' . 
+                esc_html($seller->display_name) . '</option>';
+        }
+        $select_seller_html .= '</select>';
+
+        // Custom date range inputs with improved styling
         $from_date = isset($request['from_date']) ? esc_attr($request['from_date']) : '';
         $to_date = isset($request['to_date']) ? esc_attr($request['to_date']) : '';
 
-        $date_inputs_html = '<div id="custom_dates" class="fktr_date-ranges" style="display:none;">
-            <div class="fktr_date-from">
-                <label for="from_date">' . __('From', 'fakturo') . '</label>
-                <input type="date" name="from_date" id="from_date" value="' . $from_date . '" />
-            </div>
-            <div class="fktr_date-to">
-                <label for="to_date">' . __('To', 'fakturo') . '</label>
-                <input type="date" name="to_date" id="to_date" value="' . $to_date . '" />
-            </div>
-        </div>';
+        $date_inputs_html = '<div id="custom_dates" class="fktr_date-ranges" style="display:none;">';
+		$date_inputs_html .= '<div class="fktr_date-from"><label for="from_date">' . __( 'From', 'fakturo' ) . '</label>';
+		$date_inputs_html .= '<input type="date" name="from_date" id="from_date" value="'.$from_date.'" /></div>';
+		$date_inputs_html .= '<div class="fktr_date-from"><label for="to_date">' . __( 'To', 'fakturo' ) . '</label>';
+		$date_inputs_html .= '<input type="date" name="to_date" id="to_date" value="'.$to_date.'" /></div>';
+		$date_inputs_html .= '</div>';
 
         echo '<div id="div_filter_form" class="fktr_filter-form">
             <form name="filter_form" method="get" action="' . admin_url('admin.php') . '">
                 <div class="fktr_filter-options">
                     <input type="hidden" name="page" value="fakturo_reports"/>
                     <input type="hidden" name="sec" value="' . $request['sec'] . '"/>
-                    ' . $select_range_html . '
+                    <div class="fktr_filter-row">
+                        <div class="fktr_filter-item">
+                            <label for="range">' . __('Date Range', 'fakturo') . '</label>
+                            ' . $select_range_html . '
+                        </div>
+                        <div class="fktr_filter-item">
+                            <label for="seller_id">' . __('Salesperson', 'fakturo') . '</label>
+                            ' . $select_seller_html . '
+                        </div>
+                    </div>
                     ' . $date_inputs_html . '
                     <input type="submit" class="button-secondary" value="' . __('Filter', 'fakturo') . '"/>
                 </div>
@@ -324,8 +416,22 @@ class expenses_summary_report {
                     <input id="download-table-csv" type="button" class="button-secondary" value="' . __('CSV', 'fakturo') . '"/>
                 </div>
             </form>
-        </div>';
-
+        </div>
+        <style>
+        .fktr_filter-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .fktr_filter-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .fktr_filter-item label {
+            font-weight: bold;
+        }
+        </style>';
     }
 
     /**
