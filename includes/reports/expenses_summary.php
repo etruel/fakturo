@@ -184,7 +184,7 @@ class expenses_summary_report {
                 <table class="wp-list-table widefat fixed striped posts">
                     <thead>
                         <tr>
-                        <th>' . __('Name', 'fakturo') . '</th>
+                            <th>' . __('Name', 'fakturo') . '</th>
                             <th>' . __('Email', 'fakturo') . '</th>
                             <th>' . __('Total Sales', 'fakturo') . '</th>
                             <th>' . __('Last Sale Date', 'fakturo') . '</th>
@@ -194,7 +194,7 @@ class expenses_summary_report {
                     </thead>
                     <tbody id="the-list">';
     
-                    $grand_total_commission = 0;
+        $grand_total_commission = 0;
 
         $base_scale = null;
         foreach ($escalas as $escala) {
@@ -222,7 +222,6 @@ class expenses_summary_report {
             }
     
             $total_sum = self::extract_total_sum($sale->post_excerpt);
-           // $grand_total += $total_sum;
     
             $percentage = 0;
             if ($matching_scale && !empty($matching_scale['ranges'])) {
@@ -236,14 +235,22 @@ class expenses_summary_report {
           
             $commission = ($sale->total * $total_sum) * ($percentage/100);
             $grand_total_commission += $commission;
+
+            // Agregar el ícono de warning si la comisión es 0
+            $warning_icon = '';
+            if ($commission == 0) {
+                $warning_icon = '<span class="dashicons dashicons-warning commission-warning" title="' . 
+                    esc_attr__('No commission range matched for this seller', 'fakturo') . 
+                    '"></span>';
+            }
     
             echo '<tr>
-            <td>' . esc_html($sale->display_name) . '</td>
+                <td>' . esc_html($sale->display_name) . '</td>
                 <td>' . esc_html($sale->user_email) . '</td>
                 <td>' . esc_html($sale->total) . '</td>
                 <td>' . esc_html(date_i18n(get_option('date_format'), strtotime($sale->post_date))) . '</td>
                 <td>' . number_format($total_sum, 2, '.', ',') . '</td>
-                <td>' . number_format($commission, 2, '.', ',') . '</td>
+                <td>' . number_format($commission, 2, '.', ',') . ' ' . $warning_icon . '</td>
             </tr>';
         }
     
@@ -255,92 +262,112 @@ class expenses_summary_report {
         echo '</tbody></table></div></div>';
 
         echo '<style>
-        @media print {
-            body > *:not(.wp-list-table.widefat.fixed.striped.posts) {
-                display: none !important;
+            .commission-warning {
+                color: #f0ad4e;
+                font-size: 18px;
+                vertical-align: middle;
+                margin-left: 5px;
+                cursor: help;
             }
-            .wp-list-table.widefat.fixed.striped.posts {
-                display: block !important;
-                width: 100% !important;
-                border: none !important;
+            .commission-warning:hover {
+                color: #ec971f;
             }
-            .wp-list-table.widefat.fixed.striped.posts th,
-            .wp-list-table.widefat.fixed.striped.posts td {
-                border: 1px solid #000 !important;
-            }
-        }
-    </style>';
-
-    // Agregar scripts necesarios para PDF
-    echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>';
-    echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>';
-
-    // Agregar script para exportación
-    echo '<script>
-    document.getElementById("print-table-pdf").addEventListener("click", function() {
-        var tables = document.querySelectorAll(".wp-list-table.widefat.fixed.striped.posts");
-        
-        if (tables.length > 0) {
-            var { jsPDF } = window.jspdf;
-            var doc = new jsPDF();
-            
-            var currentY = 10;
-            
-            tables.forEach(function(table, index) {
-                if (index > 0) {
-                    if (currentY > doc.internal.pageSize.height - 20) {
-                        doc.addPage();
-                        currentY = 10;
-                    } else {
-                        currentY += 10;
-                    }
+                 [title] {
+        font-size: 14px;  /* Increase this value to make the tooltip text larger */
+    }
+    /* For Webkit browsers (Chrome, Safari) */
+    .commission-warning::before {
+        font-size: 14px;  /* Increase this value to match */
+    }
+            @media print {
+                body > *:not(.wp-list-table.widefat.fixed.striped.posts) {
+                    display: none !important;
                 }
+                .wp-list-table.widefat.fixed.striped.posts {
+                    display: block !important;
+                    width: 100% !important;
+                    border: none !important;
+                }
+                .wp-list-table.widefat.fixed.striped.posts th,
+                .wp-list-table.widefat.fixed.striped.posts td {
+                    border: 1px solid #000 !important;
+                }
+                .commission-warning {
+                    display: none;
+                }
+            }
+        </style>';
+
+        // Agregar scripts necesarios para PDF
+        echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>';
+        echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>';
+
+        // Agregar script para exportación
+        echo '<script>
+        document.getElementById("print-table-pdf").addEventListener("click", function() {
+            var tables = document.querySelectorAll(".wp-list-table.widefat.fixed.striped.posts");
+            
+            if (tables.length > 0) {
+                var { jsPDF } = window.jspdf;
+                var doc = new jsPDF();
                 
-                if (doc.autoTable) {
-                    doc.autoTable({
-                        html: table,
-                        startY: currentY,
-                        didDrawPage: function(data) {
-                            currentY = data.cursor.y;
+                var currentY = 10;
+                
+                tables.forEach(function(table, index) {
+                    if (index > 0) {
+                        if (currentY > doc.internal.pageSize.height - 20) {
+                            doc.addPage();
+                            currentY = 10;
+                        } else {
+                            currentY += 10;
                         }
-                    });
-                }
-            });
+                    }
+                    
+                    if (doc.autoTable) {
+                        doc.autoTable({
+                            html: table,
+                            startY: currentY,
+                            didDrawPage: function(data) {
+                                currentY = data.cursor.y;
+                            }
+                        });
+                    }
+                });
 
-            doc.save("commission_report.pdf");
-        } else {
-            alert("No se encontraron tablas para exportar!");
-        }
-    });
+                doc.save("commission_report.pdf");
+            } else {
+                alert("No se encontraron tablas para exportar!");
+            }
+        });
 
-    document.getElementById("download-table-csv").addEventListener("click", function() {
-        var table = document.querySelector(".wp-list-table.widefat.fixed.striped.posts");
-        if (table) {
-            var rows = Array.from(table.querySelectorAll("tr"));
-            var csvContent = "";
-            
-            rows.forEach(function(row) {
-                var cols = Array.from(row.querySelectorAll("th, td"));
-                var rowData = cols.map(function(col) {
-                    return "\\"" + col.innerText.replace(/"/g, "\\"\\"") + "\\"";
-                }).join(",");
+        document.getElementById("download-table-csv").addEventListener("click", function() {
+            var table = document.querySelector(".wp-list-table.widefat.fixed.striped.posts");
+            if (table) {
+                var rows = Array.from(table.querySelectorAll("tr"));
+                var csvContent = "";
                 
-                csvContent += rowData + "\\n";
-            });
+                rows.forEach(function(row) {
+                    var cols = Array.from(row.querySelectorAll("th, td"));
+                    var rowData = cols.map(function(col) {
+                        return "\\"" + col.innerText.replace(/"/g, "\\"\\"") + "\\"";
+                    }).join(",");
+                    
+                    csvContent += rowData + "\\n";
+                });
 
-            var blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-            var link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "commission_report.csv";
-            link.style.visibility = "hidden";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } else {
-            alert("No se encontró la tabla para exportar!");
-        }
-    });
-    </script>';
+                var blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+                var link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = "commission_report.csv";
+                link.style.visibility = "hidden";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                alert("No se encontró la tabla para exportar!");
+            }
+        });
+        </script>';
     }
 
     /**

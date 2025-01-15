@@ -193,9 +193,9 @@ class fktr_tax_commission_scales {
         
         // Get all sellers
         $allsellers = get_users(array('role' => 'fakturo_seller'));
-		$allmanagers = get_users(array('role' => 'fakturo_manager'));
-		$alladmins = get_users(array('role' => 'administrator'));
-		$allsellers = array_merge($allsellers, $allmanagers, $alladmins);
+        $allmanagers = get_users(array('role' => 'fakturo_manager'));
+        $alladmins = get_users(array('role' => 'administrator'));
+        $allsellers = array_merge($allsellers, $allmanagers, $alladmins);
         
         // Get all categories
         $categories = get_terms(array(
@@ -284,9 +284,10 @@ class fktr_tax_commission_scales {
             $total_ranges = count($term_meta->ranges);
             foreach ($term_meta->ranges as $index => $range) {
                 $is_last = ($index === $total_ranges - 1);
+                $to_value = ($range->to == PHP_INT_MAX) ? '' : esc_attr($range->to);
                 $echoHtml .= '<div class="range-row">
                     <input type="number" name="term_meta[ranges]['.$index.'][from]" value="'.esc_attr($range->from).'" placeholder="'.__('From', 'fakturo').'" class="small-text">
-                    <input type="number" name="term_meta[ranges]['.$index.'][to]" value="'.esc_attr($range->to).'" placeholder="'.__('To', 'fakturo').'" class="small-text">
+                    <input type="number" name="term_meta[ranges]['.$index.'][to]" value="'.$to_value.'" placeholder="'.__('To', 'fakturo').'" class="small-text">
                     <input type="number" name="term_meta[ranges]['.$index.'][percentage]" value="'.esc_attr($range->percentage).'" placeholder="%" class="small-text">
                     '.($is_last ? '<button type="button" class="button button-secondary add-range">+</button>' : '').'
                     '.($index > 0 ? '<button type="button" class="button button-secondary remove-range">-</button>' : '').'
@@ -302,7 +303,7 @@ class fktr_tax_commission_scales {
         }
     
         $echoHtml .= '</div>
-                <p class="description">'.__('Define commission percentage ranges', 'fakturo').'</p>
+                <p class="description">'.__('Define commission percentage ranges. Leave "To" field empty for infinity.', 'fakturo').'</p>
             </td>
         </tr>';
     
@@ -315,6 +316,14 @@ class fktr_tax_commission_scales {
         <script>
         document.addEventListener("DOMContentLoaded", function() {
             const rangesContainer = document.querySelector(".ranges-container");
+            const headerElement = rangesContainer.previousElementSibling; // Assuming the header is right before the container
+            
+            // Create warning container
+            const globalWarning = document.createElement("div");
+            globalWarning.style.color = "red";
+            globalWarning.style.marginBottom = "10px";
+            globalWarning.style.display = "none";
+            rangesContainer.parentNode.insertBefore(globalWarning, rangesContainer);
             
             function updateButtons() {
                 const rows = rangesContainer.querySelectorAll(".range-row");
@@ -336,21 +345,38 @@ class fktr_tax_commission_scales {
                 }
             }
             
-            // Handle input validation and dependencies
-            function handleRangeInputs(row) {
-                const fromInput = row.querySelector(\'input[name*="[from]"]\');
-                const toInput = row.querySelector(\'input[name*="[to]"]\');
+            function validateAllRanges() {
+                const rows = rangesContainer.querySelectorAll(".range-row");
+                let hasError = false;
                 
-                fromInput.addEventListener("input", function() {
-                    if (this.value && toInput.value && parseInt(this.value) >= parseInt(toInput.value)) {
-                        toInput.value = ""; // Clear "to" if it\'s less than "from"
+                rows.forEach(row => {
+                    const fromInput = row.querySelector("input[name*=\"[from]\"]");
+                    const toInput = row.querySelector("input[name*=\"[to]\"]");
+                    
+                    if (fromInput.value && toInput.value && parseInt(fromInput.value) >= parseInt(toInput.value)) {
+                        hasError = true;
                     }
                 });
                 
+                if (hasError) {
+                    globalWarning.textContent = "Error: The “From” value cannot be greater than or equal to “To” in any range.";
+                    globalWarning.style.display = "block";
+                } else {
+                    globalWarning.style.display = "none";
+                }
+            }
+            
+            // Handle input validation and dependencies
+            function handleRangeInputs(row) {
+                const fromInput = row.querySelector("input[name*=\"[from]\"]");
+                const toInput = row.querySelector("input[name*=\"[to]\"]");
+                
+                fromInput.addEventListener("input", function() {
+                    validateAllRanges();
+                });
+                
                 toInput.addEventListener("input", function() {
-                    if (this.value && fromInput.value && parseInt(this.value) <= parseInt(fromInput.value)) {
-                        this.value = ""; // Clear "to" if it\'s less than "from"
-                    }
+                    validateAllRanges();
                 });
             }
             
@@ -381,6 +407,7 @@ class fktr_tax_commission_scales {
                 if (event.target.classList.contains("remove-range")) {
                     event.target.closest(".range-row").remove();
                     updateButtons();
+                    validateAllRanges();
                 }
             });
         });
