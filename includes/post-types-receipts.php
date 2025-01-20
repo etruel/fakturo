@@ -500,7 +500,7 @@ class fktrPostTypeReceipts {
 	
 		$print_url = admin_url('admin-post.php?id=' . $post->ID . '&action=print_receipt&nonce=' . $nonce);
 	
-		echo '<a href="' . $print_url . '" class="button button-primary" id="print_receipt_button"  target="_blank">' . __('Print Receipt', 'fakturo') . '</a>';
+		echo '<a href="' . $print_url . '" class="button button-secondary" id="print_receipt_button"  target="_blank">' . __('Print Receipt', 'fakturo') . '</a>';
 	}
 	public static function cancel_box() {
 		global $post;
