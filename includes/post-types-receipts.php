@@ -83,41 +83,46 @@ class fktrPostTypeReceipts {
 		}
 	}
 	public static function print_receipt() {
-		if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'fktr_receipts_action_nonce')) {
-			wp_die('A security issue has occurred.');
-		}
-		$object = new stdClass();
-		$object->type = 'post';
-		$object->id = intval($_REQUEST['id']);
-		$object->assgined = 'fktr_receipt';
-		if ($object->id) {
-			$id_print_template = fktrPostTypePrintTemplates::get_id_by_assigned($object->assgined);
-			if ($id_print_template) {
-				$print_template = fktrPostTypePrintTemplates::get_print_template_data($id_print_template);
-			} else {
-				wp_die(__('No print template assigned to receipts', 'fakturo' ));
-			}
-			$tpl = new fktr_tpl;
-			$tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, false);
-			$html = $tpl->fromString($print_template['content']);
-			if (isset($_REQUEST['pdf'])) {
-				$pdf = fktr_pdf::getInstance();
-				
-				$pdf ->set_option('isRemoteEnabled', true);
-				$pdf ->set_option('isHtml5ParserEnabled', true);
+    if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'fktr_receipts_action_nonce')) {
+        wp_die('A security issue has occurred.');
+    }
 
-				$pdf ->set_paper("A4", "portrait");
-				$pdf ->load_html(utf8_decode($html));
-				$pdf ->render();
-				$pdf ->stream('pdf.pdf', array('Attachment'=>0));
+    $object = new stdClass();
+    $object->type = 'post';
+    $object->id = intval($_REQUEST['id']);
+    $object->assgined = 'fktr_receipt';
 
-			} else {
-				echo $html;
-			}
-			
-			exit();
-		}
-	}
+    if ($object->id) {
+        $id_print_template = fktrPostTypePrintTemplates::get_id_by_assigned($object->assgined);
+        
+        if ($id_print_template) {
+            $print_template = fktrPostTypePrintTemplates::get_print_template_data($id_print_template);
+        } else {
+            wp_die(__('No print template assigned to receipts', 'fakturo'));
+        }
+
+        // Aquí se genera el HTML con el template
+        $tpl = new fktr_tpl;
+        $tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, false);
+        $html = $tpl->fromString($print_template['content']);
+
+        if (isset($_REQUEST['pdf'])) {
+            // Si se solicita el PDF
+            $pdf = fktr_pdf::getInstance();
+            $pdf->set_option('isRemoteEnabled', true);
+            $pdf->set_option('isHtml5ParserEnabled', true);
+            $pdf->set_paper("A4", "portrait");
+            $pdf->load_html(utf8_decode($html));
+            $pdf->render();
+            $pdf->stream('pdf.pdf', array('Attachment' => 0));
+        } else {
+            // Muestra el HTML si no se solicita PDF
+            echo $html;
+        }
+
+        exit();
+    }
+}
 	public static function admin_inline_scripts() {
 		global $current_screen;
 		if ($current_screen->post_type == 'fktr_receipt') {
@@ -486,6 +491,16 @@ class fktrPostTypeReceipts {
 		}
 		add_meta_box('fakturo-receipt-box', __('Receipt data', 'fakturo' ), array(__CLASS__, 'receipt_box'),'fktr_receipt','normal', 'high' );
 		do_action('add_ftkr_receipt_meta_boxes');
+
+		add_meta_box('fakturo-print-receipt-box', __('Print Receipt', 'fakturo' ), array(__CLASS__, 'print_receipt_button_box'),'fktr_receipt','side', 'high' );
+	}
+
+	public static function print_receipt_button_box($post) {
+		$nonce = wp_create_nonce('fktr_receipts_action_nonce');
+	
+		$print_url = admin_url('admin-post.php?id=' . $post->ID . '&action=print_receipt&nonce=' . $nonce);
+	
+		echo '<a href="' . $print_url . '" class="button button-primary" id="print_receipt_button"  target="_blank">' . __('Print Receipt', 'fakturo') . '</a>';
 	}
 	public static function cancel_box() {
 		global $post;
