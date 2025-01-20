@@ -43,13 +43,12 @@ class fktrPostTypeEmailTemplates {
 		add_action( 'post_submitbox_misc_actions', array(__CLASS__, 'submitbox') );
 	}
 	public static function reset_email_template() {
-
 		if (!isset($_GET['_nonce']) || !wp_verify_nonce($_GET['_nonce'], 'reset_email_to_default')) {
 			fktrNotices::add(array('below-h2' => false, 'text' => __('A problem, please try again.', 'fakturo' )));
 			wp_redirect(admin_url('edit.php?post_type=fktr_email_template'));
 			exit;
 		}
-
+	
 		$template_id = $_REQUEST['id'];
 		if (empty($template_id)) {
 			fktrNotices::add(array('below-h2' => false, 'text' => __('Invalid e-mail template id.', 'fakturo' )));
@@ -57,27 +56,36 @@ class fktrPostTypeEmailTemplates {
 			exit;
 		}
 		
+		// Obtener los datos actuales
 		$email_template = self::get_email_template_data($template_id);
-		if (!isset($email_template['assigned'])) {
-			fktrNotices::add(array('below-h2' => false, 'text' => __('This e-mail template has no assigned object.', 'fakturo' )));
-			wp_redirect(admin_url('post.php?post='.$template_id.'&action=edit'));
-			exit;
-		}
-		if ($email_template['assigned'] == -1) {
-			fktrNotices::add(array('below-h2' => false, 'text' => __('This e-mail template has no assigned object.', 'fakturo' )));
-			wp_redirect(admin_url('post.php?post='.$template_id.'&action=edit'));
-			exit;
-		}
 		
-		$new_content = self::get_default_template_by_assigned($email_template['assigned']);
-		$new = apply_filters('fktr_email_template_metabox_save_content', $new_content );  //filtra cada campo antes de grabar
+		// Guardar los datos actuales antes de cualquier cambio
+		$current_description = isset($email_template['description']) ? $email_template['description'] : '';
+		$current_subject = isset($email_template['subject']) ? $email_template['subject'] : '';
+		$current_assigned = isset($email_template['assigned']) ? $email_template['assigned'] : '';
+		
+		// Obtener la plantilla por defecto manteniendo el assigned actual
+		$new_content = self::get_default_template_by_assigned($current_assigned);
+		/*if (empty($new_content)) {
+			fktrNotices::add(array('below-h2' => false, 'text' => __('Default template not found.', 'fakturo' )));
+			wp_redirect(admin_url('post.php?post='.$template_id.'&action=edit'));
+			exit;
+		}*/
+	
+		// Actualizar solo el contenido
 		$args_template = array(
-		      'ID'           => $template_id,
-		      'post_content' => $new,
-		  );
+			'ID' => $template_id,
+			'post_content' => $new_content
+		);
 		wp_update_post($args_template);
-		update_post_meta($template_id, 'content',  $new);
-		fktrNotices::add(array('below-h2' => false, 'text' => __('This e-mail template has been reset to default.', 'fakturo' )));
+	
+		// Actualizar el meta 'content' pero mantener el resto de metadatos
+		update_post_meta($template_id, 'content', $new_content);
+		update_post_meta($template_id, 'description', $current_description);
+		update_post_meta($template_id, 'subject', $current_subject);
+		update_post_meta($template_id, 'assigned', $current_assigned);
+	
+		fktrNotices::add(array('below-h2' => false, 'text' => __('Template content has been reset to default.', 'fakturo' )));
 		wp_redirect(admin_url('post.php?post='.$template_id.'&action=edit'));
 		exit;
 	}
