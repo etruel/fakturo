@@ -5,7 +5,7 @@ Tags: invoice,sales,inventory,billing,receipt
 Requires at least: 4.9
 Tested up to: 6.6.2
 Requires PHP: 7.0
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,15 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 
 == Changelog ==
+
+= 1.0.9 (Ene 21, 2025) =
+* Added seller commission calculation by sales quantity.
+* Added "Print Receipt" button inside the Receipt Edit screen.
+* Improved the PDF layout in the Summary Report.
+* Improved the Client Account Report with updated filters.
+* Added template variables for generating print templates of receipts.
+* Updated the Income Report with better calculations.
+* Improves styles and functionality of the PDF and CSV export buttons.
 
 = 1.0.8 (Oct 17, 2024) =
 * Added features to export data as PDF or CSV in all reports.
