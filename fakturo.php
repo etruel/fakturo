@@ -65,6 +65,7 @@ class fakturo {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/origins.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/stocks.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/checks.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/taxonomy/scales.php'; 
 		
 		require_once FAKTURO_PLUGIN_DIR . 'includes/settings/settings.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/users/users-list.php'; 

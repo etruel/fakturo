@@ -516,6 +516,9 @@ class fktrSettings {
 		if (!isset($options['individual_numeration_by_sale_point'])) {
 			$options['individual_numeration_by_sale_point'] = 0;
 		}
+		if (!isset($options['commissions_for_salespeople'])) {
+			$options['commissions_for_salespeople'] = 0;
+		}
 		
 
 		if (empty($options['search_code'])) {
@@ -760,7 +763,8 @@ class fktrSettings {
 		$echoSelectListInvoiceNumber .= '</select>';			
 		 
 	
-		settings_errors(); 							
+		settings_errors(); 		
+		//print_r($options);					
 		echo '
 		<div id="tab_container">
 			<br/><h1>'. __( 'System Settings', 'fakturo' ) .'</h1>
@@ -929,6 +933,21 @@ class fktrSettings {
 							</td>
 						
 					  </tr>
+
+					  <tr>
+        <th>'. __( 'Commissions for salespeople', 'fakturo' ) .'</th>
+        <td class="italic-label">
+            <input id="fakturo_system_options_commissions" 
+                   class="slidercheck" 
+                   type="checkbox" 
+                   name="fakturo_system_options_group[commissions_for_salespeople]" 
+                   value="1" 
+                   '.checked($options['commissions_for_salespeople'], 1, false).'>
+            <label for="fakturo_system_options_commissions">
+                <span class="ui"></span>'. __( 'Activate commissions for salespeople', 'fakturo' ).'
+            </label>
+        </td>
+    </tr>
 					 
 					  <tr>
 							<th>'. __( 'Search code on invoices, budgets, etc..', 'fakturo' ) .'</th>
@@ -1008,59 +1027,64 @@ class fktrSettings {
 	
 	public static function add_setting_tabs() {
 		global $current_screen;
-		
+		$options = get_option('fakturo_system_options_group');
+		if (!isset($options['commissions_for_salespeople'])) {
+			$options['commissions_for_salespeople'] = 0;
+		}
+		//print_r($options);
 		
 		$sections_tabs = array(
 			'general' => apply_filters('ftkr_company_sections', array( 
-				'company_info' => array('text' => __( 'Company Info', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings'), 'screen' => 'fakturo_page_fakturo-settings') , 
+				'company_info' => array('text' => __( 'Company Info', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings'), 'screen' => 'fakturo_page_fakturo-settings'),
 				'invoice_type' =>  array('text' => __( 'Invoice Types', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_invoice_types'), 'screen' => 'edit-fktr_invoice_types'),
 				'sale_points' =>  array('text' => __( 'Sale Points', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_sale_points'), 'screen' => 'edit-fktr_sale_points'),
-				'payment_types' =>  array('text' => __( 'Payment Types', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_payment_types'), 'screen' => 'edit-fktr_payment_types'), 
-				'fakturo_wizard' =>  array('text' => __( 'Run Configurations Wizard', 'fakturo' ), 'url' => admin_url('admin-post.php?action=fktr_wizard'), 'screen' => 'fktr_wizard'), 
-				'default' => array('text' => __( '​​Company Settings', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings'), 'screen' => 'fakturo_page_fakturo-settings')
-				)
-			),
+				'payment_types' =>  array('text' => __( 'Payment Types', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_payment_types'), 'screen' => 'edit-fktr_payment_types'),
+				'fakturo_wizard' =>  array('text' => __( 'Run Configurations Wizard', 'fakturo' ), 'url' => admin_url('admin-post.php?action=fktr_wizard'), 'screen' => 'fktr_wizard'),
+				'default' => array('text' => __( 'Company Settings', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings'), 'screen' => 'fakturo_page_fakturo-settings')
+			)),
 			'system' => apply_filters('ftkr_system_sections', array( 
-				'system_settings' =>  array('text' => __( 'General', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings-system'), 'screen' => 'admin_page_fakturo-settings-system'), 
-				'print-template' =>  array('text' => __( 'Print Templates', 'fakturo' ), 'url' => admin_url('edit.php?post_type=fktr_print_template'), 'screen' => 'fktr_print_template'), 
-				'email-template' =>  array('text' => __( 'E-mail Templates', 'fakturo' ), 'url' => admin_url('edit.php?post_type=fktr_email_template'), 'screen' => 'fktr_email_template'), 
-				'dashboard-settings' =>  array('text' => __( 'Dashboard Setup', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings-dashboard'), 'screen' => 'admin_page_fakturo-settings-dashboard'), 
-				'default' =>  array('text' => __( 'System Settings', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings-system'), 'screen' => 'admin_page_fakturo-settings-system')				
-				)
-			),
+				'system_settings' =>  array('text' => __( 'General', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings-system'), 'screen' => 'admin_page_fakturo-settings-system'),
+				'print-template' =>  array('text' => __( 'Print Templates', 'fakturo' ), 'url' => admin_url('edit.php?post_type=fktr_print_template'), 'screen' => 'fktr_print_template'),
+				'email-template' =>  array('text' => __( 'E-mail Templates', 'fakturo' ), 'url' => admin_url('edit.php?post_type=fktr_email_template'), 'screen' => 'fktr_email_template'),
+				'dashboard-settings' =>  array('text' => __( 'Dashboard Setup', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings-dashboard'), 'screen' => 'admin_page_fakturo-settings-dashboard'),
+				'default' =>  array('text' => __( 'System Settings', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings-system'), 'screen' => 'admin_page_fakturo-settings-system')
+			)),
 			'tables' => apply_filters('ftkr_system_sections', array( 
 				'currencies' =>  array('text' => __( 'Currencies', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_currencies'), 'screen' => 'edit-fktr_currencies'),
 				'bank_entities' =>  array('text' => __( 'Bank Entities', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_bank_entities'), 'screen' => 'edit-fktr_bank_entities'),
-				'countries' => array('text' => __( 'Countries and States', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_countries'), 'screen' => 'edit-fktr_countries') ,
+				'countries' => array('text' => __( 'Countries and States', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_countries'), 'screen' => 'edit-fktr_countries'),
 				'default' => array('text' => __( 'Tables', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_currencies'), 'screen' => 'edit-fktr_currencies')
-				)
-			),
+			)),
 			'products' => apply_filters('ftkr_products_sections', array( 
-				'product_types' =>  array('text' => __( 'Product Types', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_product_type'), 'screen' => 'edit-fktr_product_type') ,
+				'product_types' =>  array('text' => __( 'Product Types', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_product_type'), 'screen' => 'edit-fktr_product_type'),
 				'locations' => array('text' =>  __( 'Locations', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_locations'), 'screen' => 'edit-fktr_locations'),
-				'packagings' =>  array('text' => __( 'Packagings', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_packaging'), 'screen' => 'edit-fktr_packaging') , 
-				'price_scales' =>  array('text' => __( 'Price Scales', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_price_scales'), 'screen' => 'edit-fktr_price_scales') ,
-				'origins' =>  array('text' => __( 'Origins', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_origins'), 'screen' => 'edit-fktr_origins') ,
-				'default' => array('text' => __( '​​Products', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_product_type'), 'screen' => 'edit-fktr_product_type')
-				)
-			),
+				'packagings' =>  array('text' => __( 'Packagings', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_packaging'), 'screen' => 'edit-fktr_packaging'),
+				'price_scales' =>  array('text' => __( 'Price Scales', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_price_scales'), 'screen' => 'edit-fktr_price_scales'),
+				'origins' =>  array('text' => __( 'Origins', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_origins'), 'screen' => 'edit-fktr_origins'),
+				'default' => array('text' => __( 'Products', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_product_type'), 'screen' => 'edit-fktr_product_type')
+			)),
 			'taxes' => apply_filters('ftkr_taxes_sections', array( 
-				'taxes' =>  array('text' => __( 'Taxes', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax'), 'screen' => 'edit-fktr_tax') ,
-				'tax_condition' => array('text' => __( 'Tax Conditions', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax_conditions'), 'screen' => 'edit-fktr_tax_conditions')  ,
+				'taxes' =>  array('text' => __( 'Taxes', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax'), 'screen' => 'edit-fktr_tax'),
+				'tax_condition' => array('text' => __( 'Tax Conditions', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax_conditions'), 'screen' => 'edit-fktr_tax_conditions'),
 				'default' => array('text' => __( 'Taxes', 'fakturo' ), 'url' => admin_url('edit-tags.php?taxonomy=fktr_tax'), 'screen' => 'edit-fktr_tax')
-				)
-			),
+			)),
 			'extensions' => apply_filters('ftkr_extensions_sections', array( 
 				'default' => array('text' =>  __( 'Extensions', 'fakturo' ), 'url' => admin_url('plugins.php?page=fakturo'), 'screen' => '')
-				)
-			) ,
+			)),
 			'licenses' => apply_filters('ftkr_licenses_sections', array( 
 				'licenses_page' =>  array('text' => __( 'Licenses', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-license-page'), 'screen' => 'admin_page_fakturo-license-page'),
-				'default' => array('text' => __( '​​Licenses', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-license-page'), 'screen' => 'admin_page_fakturo-license-page')
-				)
-			)
-			
+				'default' => array('text' => __( 'Licenses', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-license-page'), 'screen' => 'admin_page_fakturo-license-page')
+			))
 		);
+		
+		// Condicionalmente agregar la página 'Custom Form' a la sección 'system'
+		if ($options['commissions_for_salespeople'] == 1) {
+			$sections_tabs['tables']['fktr_products'] = array(
+				'text' => __( 'Scales', 'fakturo' ),
+				'url' => admin_url('edit-tags.php?taxonomy=fktr_commission_scales'),
+				'screen' => 'edit-fktr_commission_scales'
+			);
+		}
 		
 		$sections_tabs = apply_filters('ftkr_tabs_sections', $sections_tabs);
 		
