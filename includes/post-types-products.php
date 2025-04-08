@@ -289,6 +289,7 @@ if (!class_exists('fktrPostTypeProducts')) :
 				));
 				wp_localize_script('post-type-products', 'products_object',
 						array('ajax_url' => admin_url('admin-ajax.php'),
+							'textrequired_tax' => __('Please choose a tax!', 'fakturo'),
 							'thousand' => $setting_system['thousand'],
 							'decimal' => $setting_system['decimal'],
 							'decimal_numbers' => $setting_system['decimal_numbers'],
@@ -567,6 +568,8 @@ if (!class_exists('fktrPostTypeProducts')) :
 				'taxonomy' => 'fktr_tax',
 				'hide_if_empty' => false
 			));
+
+			$selectTax = str_replace('<select', '<select required', $selectTax);
 
 			$selectPackaging = wp_dropdown_categories(array(
 				'show_option_all' => '',

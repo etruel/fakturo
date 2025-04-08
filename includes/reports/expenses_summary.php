@@ -231,9 +231,9 @@ class expenses_summary_report {
                         break;
                     }
                 }
-            }
-          
-            $commission = ($sale->total * $total_sum) * ($percentage/100);
+            }  
+            
+            $commission = $total_sum * ($percentage/100);
             $grand_total_commission += $commission;
 
             // Agregar el ícono de warning si la comisión es 0
