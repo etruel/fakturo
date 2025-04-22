@@ -3,9 +3,9 @@ Contributors: etruel,sniuk,khaztiel,samuelalvaradodev7,axellourenco
 Donate link:
 Tags: invoice,sales,inventory,billing,receipt
 Requires at least: 4.9
-Tested up to: 6.6.2
+Tested up to: 6.8
 Requires PHP: 7.0
-Stable tag: 1.2
+Stable tag: 1.0.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,7 +84,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 == Changelog ==
 
-= 1.2 (Abr 8, 2025) =
+= 1.0.10 (Abr 8, 2025) =
 * Improves and fix the sales comission
 * Restriction with taxes to create the product
 
