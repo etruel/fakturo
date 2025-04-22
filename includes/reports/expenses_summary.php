@@ -148,7 +148,7 @@ class expenses_summary_report {
                 AND pm1.meta_value = 'fktr_sale' 
             LEFT JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id 
                 AND pm2.meta_key = 'invoice_saleman' 
-            LEFT JOIN {$wpdb->users} u ON p.post_author = u.ID
+            LEFT JOIN {$wpdb->users} u ON pm2.meta_value = u.ID
             WHERE p.post_status = 'publish' 
             AND p.post_type = 'fktr_sale' 
             AND pm1.meta_key IS NOT NULL 
@@ -231,9 +231,9 @@ class expenses_summary_report {
                         break;
                     }
                 }
-            }
-          
-            $commission = ($sale->total * $total_sum) * ($percentage/100);
+            }  
+            
+            $commission = $total_sum * ($percentage/100);
             $grand_total_commission += $commission;
 
             // Agregar el ícono de warning si la comisión es 0
@@ -243,12 +243,21 @@ class expenses_summary_report {
                     esc_attr__('No commission range matched for this seller', 'fakturo') . 
                     '"></span>';
             }
-    
+            // Split the string into an array of date strings
+            $date_array = explode(", ", $sale->post_date);
+
+            // Convert each date string to a DateTime object
+            $date_objects = array_map(function ($date) {
+                return new DateTime($date);
+            }, $date_array);
+
+            // Find the latest date
+            $latest_date = max($date_objects);
             echo '<tr>
                 <td>' . esc_html($sale->display_name) . '</td>
                 <td>' . esc_html($sale->user_email) . '</td>
                 <td>' . esc_html($sale->total) . '</td>
-                <td>' . esc_html(date_i18n(get_option('date_format'), strtotime($sale->post_date))) . '</td>
+                <td>' . esc_html($latest_date->format(get_option('date_format'))) . '</td>
                 <td>' . number_format($total_sum, 2, '.', ',') . '</td>
                 <td>' . number_format($commission, 2, '.', ',') . ' ' . $warning_icon . '</td>
             </tr>';

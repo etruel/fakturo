@@ -25,6 +25,14 @@ jQuery(document).ready(function ($) {
 	jQuery('#origin').select2();
 	jQuery('#td_internal_code').html(jQuery('#post_ID').val());
 
+	// Custom form validation for required fields
+	jQuery('form').submit(function(event) {
+		if (jQuery('#tax').val() == '-1') {
+			// Prevent form submission if no tax is selected
+			alert(products_object.textrequired_tax);
+			event.preventDefault(); // Stop form submission
+		}
+	});
 
 	var decimal_numbers = parseInt(products_object.decimal_numbers);
 	var decimal_ex = '';
