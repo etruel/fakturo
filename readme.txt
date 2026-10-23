@@ -5,7 +5,7 @@ Tags: invoice,sales,inventory,billing,receipt
 Requires at least: 4.9
 Tested up to: 6.8
 Requires PHP: 7.0
-Stable tag: 1.0.9
+Stable tag: 1.0.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,16 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 
 == Changelog ==
+
+= 1.0.10 (Oct 23, 2026) =
+* New Add-ons screen: activate, license and manage auto-updates of each add-on from its own row, with bulk actions and live search.
+* Free add-ons from WordPress.org, like Fakturo Stock in List, can be installed right from the Add-ons screen.
+* Faster Licenses screen: the store answer is remembered and the status of every add-on license is shown at a glance.
+* Activate, deactivate and check licenses without reloading the page.
+* Add-on updates are also detected by scheduled WP-Cron checks.
+* Secure connection with the license store, with updated EDD updater 1.9.4.
+* Setup wizard loads its texts at the right moment and prints clean styles on its standalone page.
+* Updated Spanish translation.
 
 = 1.0.9 (Apr 22, 2025) =
 * Improved and fixed the seller commission calculations on sales.
