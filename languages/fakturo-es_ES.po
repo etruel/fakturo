@@ -7213,3 +7213,190 @@ msgstr "Salir"
 #, php-format
 #~ msgid "Welcome to Fakturo %s"
 #~ msgstr "Bienvenido a Fakturo %s"
+
+#. translators: 1: matching add-ons, 2: add-ons listed.
+#, php-format
+msgid "Showing %1$s of %2$s."
+msgstr "Mostrando %1$s de %2$s."
+
+msgid "No add-ons match your search."
+msgstr "Ninguna extensión coincide con su búsqueda."
+
+msgid "Search Add-ons"
+msgstr "Buscar extensiones"
+
+msgid "Add-on name, feature…"
+msgstr "Nombre o función de la extensión…"
+
+msgid "You cannot delete a plugin while it is active on the main site."
+msgstr "No puede eliminar un plugin mientras está activo en el sitio principal."
+
+msgid "The plugin could not be activated because it triggered a fatal error."
+msgstr "No se pudo activar el plugin porque provocó un error fatal."
+
+msgid "Deletion failed:"
+msgstr "Falló la eliminación:"
+
+msgid "The selected add-on has been deleted."
+msgstr "Se eliminó la extensión seleccionada."
+
+msgid "The selected add-ons have been deleted."
+msgstr "Se eliminaron las extensiones seleccionadas."
+
+msgid "Plugin activated."
+msgstr "Plugin activado."
+
+msgid "Selected plugins activated."
+msgstr "Plugins seleccionados activados."
+
+msgid "Plugin deactivated."
+msgstr "Plugin desactivado."
+
+msgid "Selected plugins deactivated."
+msgstr "Plugins seleccionados desactivados."
+
+msgid "Icon"
+msgstr "Ícono"
+
+msgid "Working…"
+msgstr "Procesando…"
+
+msgid "The license server did not answer. Try again in a moment."
+msgstr "El servidor de licencias no respondió. Inténtelo de nuevo en un momento."
+
+msgid "Expired"
+msgstr "Vencida"
+
+msgid "unlimited"
+msgstr "ilimitadas"
+
+msgid "left"
+msgstr "restantes"
+
+msgid "Lifetime"
+msgstr "De por vida"
+
+msgid "Version"
+msgstr "Versión"
+
+msgid "Manage Sites"
+msgstr "Administrar sitios"
+
+msgid "View Upgrades"
+msgstr "Ver mejoras"
+
+msgid "Extend"
+msgstr "Extender"
+
+msgid "My Licenses"
+msgstr "Mis licencias"
+
+msgid "Fakturo add-ons"
+msgstr "extensiones de Fakturo"
+
+#. translators: 1: link to the licenses page of the account, 2: link to the add-ons list.
+#, php-format
+msgid "Paste the license key from your purchase email. Bought it but cannot find the email? Your key is always in your account: %1$s (log in with the email you used to buy). Not a customer yet? See the %2$s."
+msgstr "Pegue la clave de licencia que llegó en el correo de su compra. ¿Compró pero no encuentra el correo? Su clave siempre está en su cuenta: %1$s (ingrese con el correo que usó para comprar). ¿Aún no es cliente? Vea las %2$s."
+
+#. translators: %s: link to the licenses page of the account.
+#, php-format
+msgid "This license has expired. Renew it to keep receiving updates and support, or check your other keys in %s."
+msgstr "Esta licencia venció. Renuévela para seguir recibiendo actualizaciones y soporte, o revise sus otras claves en %s."
+
+msgid "The key is right but this site is not activated with it. Use Activate License to receive updates and support."
+msgstr "La clave es correcta, pero este sitio no está activado con ella. Use Activar licencia para recibir actualizaciones y soporte."
+
+#. translators: %s: link to the licenses page of the account.
+#, php-format
+msgid "The store does not accept this key. Check that it was copied whole, without spaces, or copy it again from %s."
+msgstr "La tienda no acepta esta clave. Verifique que se copió completa, sin espacios, o cópiela de nuevo desde %s."
+
+msgid "You are not allowed to do this."
+msgstr "No tiene permiso para hacer esto."
+
+msgid "Extensions list"
+msgstr "lista de extensiones"
+
+#. translators: %s: add-on name.
+#, php-format
+msgid "%s License"
+msgstr "Licencia de %s"
+
+msgid "Enter your license key and save: the site is activated for updates and support."
+msgstr "Ingrese su clave de licencia y guarde: el sitio se activa para recibir actualizaciones y soporte."
+
+msgid "License keys saved."
+msgstr "Claves de licencia guardadas."
+
+msgid "The license server did not answer. Save again in a moment."
+msgstr "El servidor de licencias no respondió. Guarde de nuevo en un momento."
+
+msgid "License activated for this site!"
+msgstr "¡Licencia activada para este sitio!"
+
+msgid "This license has expired."
+msgstr "Esta licencia venció."
+
+msgid "This license has been disabled."
+msgstr "Esta licencia fue deshabilitada."
+
+msgid "This license key does not exist."
+msgstr "Esta clave de licencia no existe."
+
+msgid "This license has no activations left."
+msgstr "Esta licencia no tiene activaciones disponibles."
+
+msgid "This license key is for another product."
+msgstr "Esta clave de licencia es de otro producto."
+
+msgid "The license could not be activated."
+msgstr "No se pudo activar la licencia."
+
+msgid "Invalid request."
+msgstr "Solicitud no válida."
+
+msgid "Save a license key first."
+msgstr "Guarde primero una clave de licencia."
+
+#. translators: %s: add-on name.
+#, php-format
+msgid "Activate %s on this site"
+msgstr "Activar %s en este sitio"
+
+msgid "Activate"
+msgstr "Activar"
+
+msgid "Automatic updates are turned off on this site."
+msgstr "Las actualizaciones automáticas están desactivadas en este sitio."
+
+msgid "Add license"
+msgstr "Agregar licencia"
+
+msgid "Add the license key of this add-on to enable automatic updates."
+msgstr "Agregue la clave de licencia de esta extensión para habilitar las actualizaciones automáticas."
+
+msgid "Renew license"
+msgstr "Renovar licencia"
+
+msgid "This license has expired. Renew it to enable automatic updates."
+msgstr "Esta licencia venció. Renuévela para habilitar las actualizaciones automáticas."
+
+msgid "Activate license"
+msgstr "Activar licencia"
+
+msgid "Check license"
+msgstr "Verificar licencia"
+
+msgid "Check the license key of this add-on to enable automatic updates."
+msgstr "Verifique la clave de licencia de esta extensión para habilitar las actualizaciones automáticas."
+
+#. translators: %s: add-on name.
+msgid "Install %s from WordPress.org, free"
+msgstr "Instalar %s desde WordPress.org, gratis"
+
+msgid "Install now"
+msgstr "Instalar ahora"
+
+msgid "Add a column specifying the stock of each product plus other features like print or export Products list."
+msgstr "Agrega una columna con el stock de cada producto, además de otras funciones como imprimir o exportar la lista de productos."

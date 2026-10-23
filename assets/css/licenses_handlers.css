@@ -1,3 +1,30 @@
-.validcheck:before { content: "\2714";color:green;font-size: 40px;}
-.renewcheck:before { content: "\26A0";color:red;font-size: 30px;}
-.warningcheck:before { content: "\26A0";color:orange;font-size: 30px;}
+/* Licenses screen: one card per license. */
+.fktr-licenses{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;padding:24px 0 0}
+.fktr-license-card{flex:1 1 360px;min-width:0;background:#fff;border:1px solid #c3c4c7;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+.fktr-license-card h2{display:flex;align-items:center;gap:8px;margin:0;padding:13px 18px;background:#1d2327;border-bottom:3px solid #2271b1;color:#fff;font-size:14px;font-weight:600}
+.fktr-license-body{padding:18px 22px 20px}
+.fktr-license-label{display:block;margin-bottom:6px;font-size:13px;font-weight:600;color:#2c3338}
+.fktr-license-key{display:block;width:100%;max-width:none;font-family:Menlo,Consolas,monospace;font-size:13px;letter-spacing:.5px}
+.fktr-license-body .description{display:block;margin-top:5px;font-size:12px}
+.fktr-license-status:not(:empty){margin-top:16px;padding-top:14px;border-top:1px solid #f0f0f1}
+.fktr-license-state{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+.fktr-license-badge{display:inline-flex;align-items:center;gap:6px;font-weight:700}
+.fktr-license-badge:before{font-size:16px}
+.fktr-license-badge.valid{color:#00a32a}.fktr-license-badge.valid:before{content:"\2714"}
+.fktr-license-badge.warn{color:#996800}.fktr-license-badge.warn:before{content:"\26A0";color:#dba617}
+.fktr-license-badge.bad{color:#d63638}.fktr-license-badge.bad:before{content:"\26A0"}
+.fktr-license-off{color:#d63638!important;border-color:#f5a8a9!important}
+.fktr-license-off:hover{background:#d63638!important;border-color:#d63638!important;color:#fff!important}
+.fktr-license-on{color:#00a32a!important;border-color:#7ad47f!important}
+.fktr-license-on:hover{background:#00a32a!important;border-color:#00a32a!important;color:#fff!important}
+.fktr-license-meta{background:#f6f7f7;border:1px solid #e2e4e7;border-radius:4px;color:#50575e;font-size:12px;line-height:2;padding:10px 14px}
+.fktr-license-meta strong{display:inline-block;min-width:110px;color:#2c3338}
+.fktr-license-meta code{background:#fff;border:1px solid #dcdcde;border-radius:3px;font-size:11px;padding:1px 5px}
+.fktr-license-notice{margin-bottom:6px}.fktr-license-notice a{color:#d63638}
+.fktr-license-links{margin-top:6px;padding-top:6px;border-top:1px solid #e2e4e7}
+.fktr-license-links a{color:#2271b1;text-decoration:none}.fktr-license-links a:hover{text-decoration:underline}
+.fktr-license-message{margin-top:10px;font-size:13px;font-weight:600}
+.fktr-license-message.ok{color:#00a32a}.fktr-license-message.err{color:#d63638}
+.fktr-license-help{margin:12px 0 0;padding:10px 14px;background:#f0f6fc;border-left:4px solid #2271b1;border-radius:0 4px 4px 0;color:#50575e;font-size:13px}
+.fktr-license-help a{color:#2271b1;font-weight:600}
+.fktr-license-status:has(.fktr-license-help:only-child){margin-top:12px;padding-top:0;border-top:0}

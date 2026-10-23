@@ -5,330 +5,503 @@ if ( !defined('ABSPATH') ) {
 	header( 'HTTP/1.1 403 Forbidden' );
 	exit();
 }
+
+/**
+ * Licenses of the add-ons against the etruel.com store (EDD Software Licensing).
+ *
+ * Add-ons register through the `fktr_plugins_updater_args` filter. Options: `fktr_license_keys` (key per
+ * add-on), `fktr_license_status` (status per add-on) and `fktr_license_info` (what the store last said,
+ * so the screen never asks it on every load).
+ */
 class fktr_licenses_handlers {
-	function __construct() {
-		add_action('admin_init', array(__CLASS__, 'plugin_updater'), 0 );
-		add_action('fktr_licenses_forms', array(__CLASS__, 'license_page') );
-		add_action('init', array(__CLASS__, 'disable_old_updater'), 0 );
-		add_filter('fktr_plugins_updater_args', array(__CLASS__, 'activate_new_updater'), 10, 1);
-		add_action('admin_print_scripts', array(__CLASS__, 'scripts'));
-		add_action('admin_print_styles', array(__CLASS__, 'styles'));
-		
-		add_action('wp_ajax_fktr_check_license', array(__CLASS__, 'ajax_check_license'));
-		add_action('wp_ajax_fktr_status_license', array(__CLASS__, 'ajax_change_status_license'));
+
+	const SCREEN		 = 'admin_page_fakturo-license-page';
+	const SLUG			 = 'fakturo-license-page';
+	const NONCE			 = 'fktr_licenses';
+	const CAPABILITY	 = 'edit_fakturo_settings';
+	const CHECK_EVERY	 = 12 * HOUR_IN_SECONDS;
+	const ACCOUNT_URL	 = 'https://etruel.com/my-account/purchase-history/';
+	const CHECKOUT_URL	 = 'https://etruel.com/checkout/';
+	const LICENSES_URL	 = 'https://etruel.com/my-account/licenses/';
+
+	public static function hooks() {
+		add_action('init', array(__CLASS__, 'plugin_updater'), 0);
+		add_action('fktr_licenses_forms', array(__CLASS__, 'license_page'));
+		add_action('admin_enqueue_scripts', array(__CLASS__, 'enqueue'));
+		add_action('wp_ajax_fktr_license', array(__CLASS__, 'ajax_license'));
 		add_action('admin_post_fktr_save_licenses', array(__CLASS__, 'save_licenses'));
+	}
 
-	}
-	public static function disable_old_updater() {
-		
-		
-	}
-	public static function activate_new_updater($args) {
-		
-
-		return $args;
-	}
+	/**
+	 * Updates come from the store. It runs in the admin and in WP-Cron, whose update check never fires admin_init.
+	 */
 	public static function plugin_updater() {
-		$plugins_args = array();
-		$plugins_args = apply_filters('fktr_plugins_updater_args', $plugins_args);
-		
-		if(!class_exists( 'EDD_SL_Plugin_Updater') && !empty($plugins_args)) {
-			if(file_exists(FAKTURO_PLUGIN_DIR . 'includes/libs/Plugin_Updater.php')) {
-				require_once(FAKTURO_PLUGIN_DIR . 'includes/libs/Plugin_Updater.php');
-			} 
+		if (!is_admin() && !wp_doing_cron()) {
+			return;
 		}
-		
-		
-		foreach ($plugins_args as $plugin_name => $args) {
-			$license_key = self::get_key($plugin_name);
-			$edd_updater = new EDD_SL_Plugin_Updater($args['api_url'], $args['plugin_file'], array(
-					'version' 	=> $args['api_data']['version'], 
-					'license' 	=> $license_key, 		
-					'item_name' => $args['api_data']['item_name'], 	
-					'author' 	=> $args['api_data']['author']
-				)
-			);
-			
-			if( ! is_multisite() ) {
-				add_action( 'after_plugin_row_' . plugin_basename($args['plugin_file']), 'wp_plugin_update_row', 10, 2 );
-			}
-			
-		}
-	}
-	public static function get_key($plugin_name) {
-		$keys = get_option('fktr_license_keys');
-		if ($keys === false) {
-			$keys = array();
-		}
-		if (empty($keys[$plugin_name])) {
-			return false;
-		}
-		return $keys[$plugin_name];
-	}
-	public static function get_license_status($plugin_name) {
-		$keys = get_option('fktr_license_status');
-		if ($keys === false) {
-			$keys = array();
-		}
-		if (empty($keys[$plugin_name])) {
-			return false;
-		}
-		return $keys[$plugin_name];
-	}
-	public static function set_license_status($plugin_name, $status) {
-		$keys = get_option('fktr_license_status');
-		if ($keys === false) {
-			$keys = array();
-		}
-		$keys[$plugin_name] = $status;
-		update_option( 'fktr_license_status', $keys);
-	}
-	public static function change_status_license($plugin_name, $action) {
-		$plugins_args = array();
-		$plugins_args = apply_filters('fktr_plugins_updater_args', $plugins_args);
-		if (empty($plugins_args[$plugin_name])) {
-			return false;
-		}	
-		$license = self::get_key($plugin_name);
-		
-		$api_params = array(
-			'edd_action'=> $action,
-			'license' 	=> $license,
-			'item_name' => urlencode($plugins_args[$plugin_name]['api_data']['item_name']),
-			'url'       => home_url()
-		);
-
-			
-		$response = wp_remote_post( esc_url_raw($plugins_args[$plugin_name]['api_url']), array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
-		if (is_wp_error($response)) {
-			return false;
-		}
-				
-		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
-		self::set_license_status($plugin_name, $license_data->license);
-		return $license_data;
-	}
-	public static function ajax_change_status_license() {
-		if (!empty($_POST['plugin_name']) && !empty($_POST['status'])) {
-			$action_return = self::change_status_license($_POST['plugin_name'], $_POST['status']);
-			echo json_encode($action_return);
-			wp_die();
-			
-		}
-		
-	}
-	public static function ajax_check_license() {
-		$plugin_name = $_POST['plugin_name'];
-		$plugins_args = array();
-		$plugins_args = apply_filters('fktr_plugins_updater_args', $plugins_args);
-		if (empty($plugins_args[$plugin_name])) {
-			wp_die('error');
-		}
-		$license = $_POST['license'];
-		$args = array(
-			'license' 	=> $license,
-			'item_name' => urlencode($plugins_args[$plugin_name]['api_data']['item_name']),
-			'url'       => home_url(),
-			'version' 	=> $plugins_args[$plugin_name]['api_data']['version'],
-			'author' 	=> 'Esteban Truelsegaard'	
-		);
-		$api_url = $plugins_args[$plugin_name]['api_url'];
-		$lisense_object = self::check_license($api_url, $args);
-		echo json_encode($lisense_object);
-		wp_die();
-	}
-	public static function check_license($api_url, $args) {
-		$args['edd_action'] = 'check_license';
-		$api_params = $args;
-		$response = wp_remote_post( esc_url_raw($api_url), array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
-		if (is_wp_error($response)) {
-			return false;
-		}
-		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
-		return $license_data;
-		
-	}
-	public static function styles() {
-		$screen = get_current_screen();
-		if ($screen->id == 'admin_page_fakturo-license-page') {
-			wp_enqueue_style('fktr-settings-licenses', FAKTURO_PLUGIN_URL.'assets/css/licenses_handlers.css');	
-		}
-		
-	}
-	public static function scripts() {
-		$screen = get_current_screen();
-		if ($screen->id == 'admin_page_fakturo-license-page') {
-			wp_enqueue_script( 'fktr-jquery-settings-licenses', FAKTURO_PLUGIN_URL. 'assets/js/licenses_handlers.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
-			wp_localize_script('fktr-jquery-settings-licenses', 'fktr_license_object',
-				array('ajax_url' => admin_url( 'admin-ajax.php' ),
-					'txt_check_license' => __('Check License', 'fakturo'),
-				)
-			);
-		}
-	}
-	public static function save_licenses() {
-		if (!isset($_POST['fktr_save_licenses_nonce']) || !wp_verify_nonce($_POST['fktr_save_licenses_nonce'], 'fktr_save_licenses')) {
-			wp_redirect(admin_url('admin.php?page=fakturo-license-page'));
-			exit();
-		}
-		$keys = $_POST['license_key'];
-		$plugins_args = array();
-		$plugins_args = apply_filters('fktr_plugins_updater_args', $plugins_args);
-		update_option( 'fktr_license_keys', $keys);
-		foreach ($_POST['license_key'] as $plugin_name => $key) {
-			if (empty($plugins_args[$plugin_name])) {
-				continue;
-			}
-			$license = $keys[$plugin_name];
-			$args = array(
-				'license' 	=> $license,
-				'item_name' => urlencode($plugins_args[$plugin_name]['api_data']['item_name']),
-				'url'       => home_url(),
-				'version' 	=> $plugins_args[$plugin_name]['api_data']['version'],
-				'author' 	=> 'Esteban Truelsegaard'	
-			);
-			$api_url = $plugins_args[$plugin_name]['api_url'];
-			$lisense_object = self::check_license($api_url, $args);
-			self::set_license_status($plugin_name, $lisense_object->license);
-		}
-		wp_redirect(admin_url('admin.php?page=fakturo-license-page'));
-		exit();
-	}
-	public static function license_page() {
-		$screen = get_current_screen();
-
-		$plugins_args = array();
-		$plugins_args = apply_filters('fktr_plugins_updater_args', $plugins_args);
+		$plugins_args = apply_filters('fktr_plugins_updater_args', array());
 		if (empty($plugins_args)) {
+			return;
+		}
+		if (!class_exists('EDD_SL_Plugin_Updater')) {
+			$lib = FAKTURO_PLUGIN_DIR . 'includes/libs/Plugin_Updater.php';
+			if (!file_exists($lib)) {
+				return;
+			}
+			require_once $lib;
+		}
+		foreach ($plugins_args as $plugin_name => $args) {
+			$data = array(
+				'version'	 => $args['api_data']['version'],
+				'license'	 => self::get_key($plugin_name),
+				'item_name'	 => $args['api_data']['item_name'],
+				'author'	 => $args['api_data']['author'],
+			);
+			if (!empty($args['api_data']['item_id'])) {
+				$data['item_id'] = $args['api_data']['item_id'];
+			}
+			new EDD_SL_Plugin_Updater($args['api_url'], $args['plugin_file'], $data);
+			if (!is_multisite()) {
+				add_action('after_plugin_row_' . plugin_basename($args['plugin_file']), 'wp_plugin_update_row', 10, 2);
+			}
+		}
+	}
 
-			 
-		   	echo '<div class="msg"><p>', __('This is where you would enter the license keys for one of our premium plugins, should you activate one.', 'fakturo'), '</p>';
-		   	echo '<p>', __('See some of the Fakturo Add-ons in the', 'fakturo'), ' <a href="', admin_url( 'plugins.php?page=fakturo').'">Extensions list</a>.</p></div>';
- 			return true;
+	public static function enqueue() {
+		$screen = get_current_screen();
+		if (!$screen || $screen->id !== self::SCREEN) {
+			return;
+		}
+		$css = FAKTURO_PLUGIN_DIR . 'assets/css/licenses_handlers.css';
+		$js	 = FAKTURO_PLUGIN_DIR . 'assets/js/licenses_handlers.js';
+		wp_enqueue_style('fktr-settings-licenses', FAKTURO_PLUGIN_URL . 'assets/css/licenses_handlers.css', array(), WPE_FAKTURO_VERSION . '.' . filemtime($css));
+		wp_enqueue_script('fktr-jquery-settings-licenses', FAKTURO_PLUGIN_URL . 'assets/js/licenses_handlers.js', array('jquery'), WPE_FAKTURO_VERSION . '.' . filemtime($js), true);
+		wp_localize_script('fktr-jquery-settings-licenses', 'fktr_license_object', array(
+			'ajax_url'	 => admin_url('admin-ajax.php'),
+			'nonce'		 => wp_create_nonce(self::NONCE),
+			'working'	 => __('Working…', 'fakturo'),
+			'failed'	 => __('The license server did not answer. Try again in a moment.', 'fakturo'),
+		));
+	}
+
+	/* ---------- Stored data ---------- */
+
+	private static function get_map($option) {
+		$map = get_option($option, array());
+		return is_array($map) ? $map : array();
+	}
+
+	public static function get_key($plugin_name) {
+		$keys = self::get_map('fktr_license_keys');
+		return ( isset($keys[$plugin_name]) && is_string($keys[$plugin_name]) && $keys[$plugin_name] !== '' ) ? $keys[$plugin_name] : false;
+	}
+
+	public static function get_license_status($plugin_name) {
+		$status = self::get_map('fktr_license_status');
+		return ( !empty($status[$plugin_name]) && is_string($status[$plugin_name]) ) ? $status[$plugin_name] : false;
+	}
+
+	public static function set_license_status($plugin_name, $status) {
+		$map				 = self::get_map('fktr_license_status');
+		$map[$plugin_name]	 = sanitize_key($status);
+		update_option('fktr_license_status', $map);
+	}
+
+	public static function get_license_info($plugin_name) {
+		$info = self::get_map('fktr_license_info');
+		return ( isset($info[$plugin_name]) && is_array($info[$plugin_name]) ) ? $info[$plugin_name] : array();
+	}
+
+	/**
+	 * The license slot an installed add-on registered, found by its plugin file, or false.
+	 * Add-ons declare their updater under a key of their own in `fktr_plugins_updater_args`.
+	 *
+	 * @param string $plugin_file Plugin basename (dir/file.php).
+	 */
+	public static function name_by_file($plugin_file) {
+		static $by_file = null;
+		if (null === $by_file) {
+			$by_file = array();
+			foreach ((array) apply_filters('fktr_plugins_updater_args', array()) as $plugin_name => $args) {
+				if (!empty($args['plugin_file'])) {
+					$by_file[plugin_basename($args['plugin_file'])] = $plugin_name;
+				}
+			}
+		}
+		return isset($by_file[$plugin_file]) ? $by_file[$plugin_file] : false;
+	}
+
+	public static function has_valid_license($plugin_name) {
+		return ( self::get_key($plugin_name) && self::get_license_status($plugin_name) === 'valid' );
+	}
+
+	/**
+	 * What an add-on without a valid license shows in its row: the caption of the button
+	 * and the sentence that explains it. Where the license screen is the answer to all of them.
+	 *
+	 * @return array caption, title, url
+	 */
+	public static function license_prompt($plugin_name) {
+		$status = self::get_key($plugin_name) ? self::get_license_status($plugin_name) : '';
+		if ($status === '') {
+			$caption = __('Add license', 'fakturo');
+			$title	 = __('Add the license key of this add-on to enable automatic updates.', 'fakturo');
+		} elseif ($status === 'expired') {
+			$caption = __('Renew license', 'fakturo');
+			$title	 = __('This license has expired. Renew it to enable automatic updates.', 'fakturo');
+		} elseif (in_array($status, array('inactive', 'site_inactive', 'deactivated'), true)) {
+			$caption = __('Activate license', 'fakturo');
+			$title	 = __('The key is right but this site is not activated with it. Use Activate License to receive updates and support.', 'fakturo');
+		} else {
+			$caption = __('Check license', 'fakturo');
+			$title	 = __('Check the license key of this add-on to enable automatic updates.', 'fakturo');
+		}
+		return array('caption' => $caption, 'title' => $title, 'url' => admin_url('admin.php?page=' . self::SLUG));
+	}
+
+	/**
+	 * Keeps what a store answer says about the license: status and the account data shown on the screen.
+	 */
+	private static function remember($plugin_name, $data) {
+		if (!is_object($data) || empty($data->license) || !is_string($data->license)) {
+			return;
+		}
+		self::set_license_status($plugin_name, $data->license);
+		$expires = isset($data->expires) ? (string) $data->expires : '';
+		$info	 = array(
+			'expires'			 => ( $expires === 'lifetime' ) ? 'lifetime' : substr(sanitize_text_field($expires), 0, 10),
+			'site_count'		 => isset($data->site_count) ? (int) $data->site_count : 0,
+			'license_limit'		 => isset($data->license_limit) ? (int) $data->license_limit : 0,
+			'activations_left'	 => isset($data->activations_left) ? ( ( $data->activations_left === 'unlimited' ) ? 'unlimited' : (int) $data->activations_left ) : 0,
+			'payment_id'		 => isset($data->payment_id) ? (int) $data->payment_id : 0,
+			'license_id'		 => isset($data->license_id) ? (int) $data->license_id : 0,
+			'customer_name'		 => isset($data->customer_name) ? sanitize_text_field($data->customer_name) : '',
+			'customer_email'	 => isset($data->customer_email) ? sanitize_email($data->customer_email) : '',
+			'checked'			 => time(),
+		);
+		$all				 = self::get_map('fktr_license_info');
+		$all[$plugin_name]	 = $info;
+		update_option('fktr_license_info', $all, false);
+	}
+
+	/* ---------- Talking to the store ---------- */
+
+	/**
+	 * @param string $action check_license | activate_license | deactivate_license
+	 * @return object|false The store's answer, or false when it did not give a usable one.
+	 */
+	private static function request($plugin_name, $action, $license) {
+		$plugins_args = apply_filters('fktr_plugins_updater_args', array());
+		if (empty($plugins_args[$plugin_name]) || $license === '' || $license === false) {
+			return false;
+		}
+		$args	 = $plugins_args[$plugin_name];
+		$body	 = array(
+			'edd_action' => $action,
+			'license'	 => $license,
+			'item_name'	 => rawurlencode($args['api_data']['item_name']),
+			'url'		 => home_url(),
+		);
+		if (!empty($args['api_data']['item_id'])) {
+			$body['item_id'] = $args['api_data']['item_id'];
+		}
+		$response = wp_remote_post(esc_url_raw($args['api_url']), array('timeout' => 15, 'body' => $body));
+		if (is_wp_error($response) || (int) wp_remote_retrieve_response_code($response) !== 200) {
+			return false;
+		}
+		$data = json_decode(wp_remote_retrieve_body($response));
+		return is_object($data) ? $data : false;
+	}
+
+	/**
+	 * Asks the store about a license and remembers the answer.
+	 */
+	private static function refresh($plugin_name, $action = 'check_license', $license = null) {
+		if ($license === null) {
+			$license = self::get_key($plugin_name);
+		}
+		$data = self::request($plugin_name, $action, $license);
+		if ($data) {
+			if ($action === 'deactivate_license') {
+				if (isset($data->license) && $data->license === 'deactivated') {
+					self::set_license_status($plugin_name, 'inactive');
+				}
+				// The account data stays what the store last said.
+			} else {
+				self::remember($plugin_name, $data);
+			}
+		}
+		return $data;
+	}
+
+	private static function plugin_names() {
+		return array_keys(apply_filters('fktr_plugins_updater_args', array()));
+	}
+
+	/* ---------- Screen ---------- */
+
+	private static function status_label($status) {
+		switch ($status) {
+			case 'valid':
+				return array('valid', __('Valid', 'fakturo'));
+			case 'expired':
+				return array('bad', __('Expired', 'fakturo'));
+			case 'inactive':
+			case 'site_inactive':
+			case 'deactivated':
+				return array('warn', __('Inactive', 'fakturo'));
+			case false:
+				return array('none', '');
+			default:
+				return array('bad', __('Invalid', 'fakturo'));
+		}
+	}
+
+	/**
+	 * The status part of a license card: state, buttons and what the store says about the account.
+	 */
+	public static function render_status($plugin_name, $args) {
+		$license = self::get_key($plugin_name);
+		if (!$license) {
+			return self::render_help('');
+		}
+		$info = self::get_license_info($plugin_name);
+		if (empty($info['checked']) || !isset($info['license_id']) || $info['checked'] < time() - self::CHECK_EVERY) {
+			self::refresh($plugin_name);
+			$info = self::get_license_info($plugin_name);
+		}
+		$status = self::get_license_status($plugin_name);
+		list($class, $label) = self::status_label($status);
+
+		$html = '<div class="fktr-license-state"><span class="fktr-license-badge ' . esc_attr($class) . '">' . esc_html($label) . '</span>';
+		if ($status === 'valid') {
+			$html .= '<button type="button" class="button fktr-license-act fktr-license-off" data-do="deactivate_license">' . esc_html__('Deactivate License', 'fakturo') . '</button>';
+		} elseif (in_array($status, array('inactive', 'site_inactive', 'deactivated'), true)) {
+			$html .= '<button type="button" class="button fktr-license-act fktr-license-on" data-do="activate_license">' . esc_html__('Activate License', 'fakturo') . '</button>';
+		}
+		$html .= '<button type="button" class="button fktr-license-act" data-do="check_license">' . esc_html__('Check License', 'fakturo') . '</button></div>';
+
+		if (!empty($info['payment_id']) && !empty($info['license_limit'])) {
+			$expires = isset($info['expires']) ? $info['expires'] : '';
+			$left	 = isset($info['activations_left']) ? $info['activations_left'] : 0;
+			$extend	 = self::extend_url($license, $args);
+			$html	.= '<div class="fktr-license-meta">';
+			if ($status !== 'valid' && $left !== 'unlimited' && (int) $left <= 0) {
+				$html .= '<div class="fktr-license-notice"><a href="' . esc_url(self::account_url($info)) . '" target="_blank" rel="noopener">' . esc_html__("No activations left. Click here to manage the sites you've activated licenses on.", 'fakturo') . '</a></div>';
+			}
+			if ($expires !== 'lifetime' && $expires !== '' && strtotime($expires) !== false && strtotime($expires) < strtotime('+2 weeks')) {
+				$html .= '<div class="fktr-license-notice"><a href="' . esc_url($extend) . '" target="_blank" rel="noopener">' . esc_html__('Renew your license to continue receiving updates and support.', 'fakturo') . '</a></div>';
+			}
+			$html .= '<strong>' . esc_html__('Activations', 'fakturo') . ':</strong> ' . (int) $info['site_count'] . '/' . (int) $info['license_limit'] . ' (' . esc_html(( $left === 'unlimited' ) ? __('unlimited', 'fakturo') : (int) $left) . ' ' . esc_html__('left', 'fakturo') . ')<br>'
+					. '<strong>' . esc_html__('Expires on', 'fakturo') . ':</strong> <code>' . esc_html(( $expires === 'lifetime' ) ? __('Lifetime', 'fakturo') : $expires) . '</code><br>'
+					. '<strong>' . esc_html__('Version', 'fakturo') . ':</strong> ' . esc_html($args['api_data']['version']) . '<br>'
+					. '<strong>' . esc_html__('Registered to', 'fakturo') . ':</strong> ' . esc_html($info['customer_name']) . ' (<code>' . esc_html($info['customer_email']) . '</code>)'
+					. '<div class="fktr-license-links">'
+					. '<a href="' . esc_url(self::account_url($info)) . '" target="_blank" rel="noopener">' . esc_html__('Manage Sites', 'fakturo') . '</a> &ndash; '
+					. '<a href="' . esc_url(self::account_url($info, 'upgrades')) . '" target="_blank" rel="noopener">' . esc_html__('View Upgrades', 'fakturo') . '</a>'
+					. ( $expires === 'lifetime' ? '' : ' &ndash; <a href="' . esc_url($extend) . '" target="_blank" rel="noopener">' . esc_html__('Extend', 'fakturo') . '</a>' )
+					. '</div></div>';
+		}
+		return $html . self::render_help($status);
+	}
+
+	/**
+	 * Where to find or get a key, for a blank key and for one the store does not accept.
+	 */
+	private static function render_help($status) {
+		if ($status === 'valid') {
+			return '';
+		}
+		$licenses	 = '<a href="' . esc_url(self::LICENSES_URL) . '" target="_blank" rel="noopener">' . esc_html__('My Licenses', 'fakturo') . '</a>';
+		$addons		 = '<a href="' . esc_url(admin_url('plugins.php?page=fakturo')) . '">' . esc_html__('Fakturo add-ons', 'fakturo') . '</a>';
+		if ($status === '') {
+			$text = sprintf(
+				/* translators: 1: link to the licenses page of the account, 2: link to the add-ons list. */
+				esc_html__('Paste the license key from your purchase email. Bought it but cannot find the email? Your key is always in your account: %1$s (log in with the email you used to buy). Not a customer yet? See the %2$s.', 'fakturo'),
+				$licenses,
+				$addons
+			);
+		} elseif ($status === 'expired') {
+			$text = sprintf(
+				/* translators: %s: link to the licenses page of the account. */
+				esc_html__('This license has expired. Renew it to keep receiving updates and support, or check your other keys in %s.', 'fakturo'),
+				$licenses
+			);
+		} elseif (in_array($status, array('inactive', 'site_inactive', 'deactivated'), true)) {
+			$text = esc_html__('The key is right but this site is not activated with it. Use Activate License to receive updates and support.', 'fakturo');
+		} else {
+			$text = sprintf(
+				/* translators: %s: link to the licenses page of the account. */
+				esc_html__('The store does not accept this key. Check that it was copied whole, without spaces, or copy it again from %s.', 'fakturo'),
+				$licenses
+			);
+		}
+		return '<p class="fktr-license-help">' . $text . '</p>';
+	}
+
+	/**
+	 * Page of the customer's account for this license: its sites or its upgrades.
+	 */
+	private static function account_url($info, $view = '') {
+		$args = array('action' => 'manage_licenses', 'payment_id' => $info['payment_id']);
+		if ($view !== '') {
+			$args = array('view' => $view) + $args;
+		}
+		if (!empty($info['license_id'])) {
+			$args['license_id'] = $info['license_id'];
+		}
+		return add_query_arg($args, self::ACCOUNT_URL);
+	}
+
+	private static function extend_url($license, $args) {
+		$query = array('edd_license_key' => $license);
+		if (!empty($args['api_data']['item_id'])) {
+			$query['download_id'] = $args['api_data']['item_id'];
+		}
+		return add_query_arg($query, self::CHECKOUT_URL);
+	}
+
+	public static function license_page() {
+		if (!current_user_can(self::CAPABILITY)) {
+			wp_die(esc_html__('You are not allowed to do this.', 'fakturo'));
+		}
+		$plugins_args = apply_filters('fktr_plugins_updater_args', array());
+
+		echo '<div id="tab_container"><br/><h1>' . esc_html__('Licenses', 'fakturo') . '</h1>';
+		if (empty($plugins_args)) {
+			echo '<div class="msg"><p>' . esc_html__('This is where you would enter the license keys for one of our premium plugins, should you activate one.', 'fakturo') . '</p>';
+			echo '<p>' . esc_html__('See some of the Fakturo Add-ons in the', 'fakturo') . ' <a href="' . esc_url(admin_url('plugins.php?page=fakturo')) . '">' . esc_html__('Extensions list', 'fakturo') . '</a>.</p></div></div>';
+			return;
 		}
 
-		echo '<form method="post" action="'.admin_url('admin-post.php' ).'">
-				<input type="hidden" name="action" value="fktr_save_licenses">
-				'.wp_nonce_field('fktr_save_licenses', 'fktr_save_licenses_nonce').'
-		';
+		echo '<form action="' . esc_url(admin_url('admin-post.php')) . '" id="form_fktr_licenses" method="post">
+				<input type="hidden" name="action" value="fktr_save_licenses"/>';
+		wp_nonce_field(self::NONCE);
+		echo '<div class="fktr-licenses">';
 		foreach ($plugins_args as $plugin_name => $args) {
 			$license = self::get_key($plugin_name);
-			$plugin_title_name = $args['api_data']['item_name'];
-			$license_status = self::get_license_status($plugin_name);
-			$status_license_html = '';
-			if ($license_status != false && $license_status == 'valid') {
-				$status_license_html = '<strong>'.__('Status', 'fakturo').':</strong> '.__('Valid', 'fakturo').'<span class="validcheck"> </span>
-										<br/>
-										<input id="'.$plugin_name.'_btn_license_deactivate" class="btn_license_deactivate button-secondary" name="'.$plugin_name.'_btn_license_deactivate" type="button" value="'.__('Deactivate License', 'fakturo').'" style="vertical-align: middle;"/>';
-			} else if ($license_status === 'invalid' || $license_status === 'expired' || $license_status === 'item_name_mismatch' ) {
-				$status_license_html = '<strong>'.__('Status', 'fakturo').':</strong> '.__('Invalid', 'fakturo').'<i class="renewcheck"></i>';
-			} elseif($license_status === 'inactive' || $license_status === 'deactivated' || $license_status === 'site_inactive' ) {
-				$status_license_html = '<strong>'.__('Status', 'fakturo').':</strong> '.__('Inactive', 'fakturo').'<i class="warningcheck"></i>
-				<br/>
-				<input id="'.$plugin_name.'_btn_license_activate" class="btn_license_activate button-secondary" name="'.$plugin_name.'_btn_license_activate" type="button" value="'.__('Activate License', 'fakturo').'"/>
-				';
-			}
-			
-			
-			$html_addons = '
-			<div class="postbox ">
-			<div class="inside">
-			<h2><span class="dashicons-before dashicons-admin-plugins"></span>'.__($plugin_title_name.' License', 'fakturo').'</h2>
-			<table class="form-table">
-			<tbody>
-				<tr valign="top">
-					<th scope="row" valign="top">
-						'.__('License Key', 'fakturo').'
-					</th>
-					<td>
-						<input id="license_key_'.$plugin_name.'" data-plugin="'.$plugin_name.'" class="regular-text inp_license_key" name="license_key['.$plugin_name.']" type="text" value="'.esc_attr( $license ).'" /><br />
-						<label class="description" for="license_key_'.$plugin_name.'">'.__('Enter your license key', 'fakturo').'</label>
-					</td>
-				</tr>';
-				if ($license != false) {
-					$html_div = '';
-					$args_check = array(
-						'license' 	=> $license,
-						'item_name' => urlencode($args['api_data']['item_name']),
-						'url'       => home_url(),
-						'version' 	=> $args['api_data']['version'],
-						'author' 	=> 'Esteban Truelsegaard'	
-					);
-					$api_url = $args['api_url'];
-					$license_data = self::check_license($api_url, $args_check);
-					if (is_object($license_data)) {
-						
-						$currentActivations = (!empty($license_data->site_count)?$license_data->site_count: '');
-						$activationsLeft = (!empty($license_data->activations_left)?$license_data->activations_left: '');
-						$activationsLimit = (!empty($license_data->license_limit)?$license_data->license_limit: '');
-						$expires = (!empty($license_data->expires)?$license_data->expires: '');
-						$expires = substr( $expires, 0, strpos( $expires, " "));
-						
-						if (!empty($license_data->payment_id) && !empty($license_data->license_limit)) {
-							
-							$html_div .= '<small>';
-							if ($license_status !== 'valid' && $activationsLeft === 0) {
-								$accountUrl = 'http://etruel.com/my-account/?action=manage_licenses&payment_id=' . $license_data->payment_id;
-								$html_div .= '<a href="'.$accountUrl.'">'.__("No activations left. Click here to manage the sites you've activated licenses on.", 'fakturo').'</a>
-										<br/>';
-								
-							}
-							if ( strtotime($expires) < strtotime("+2 weeks") ) {
-								$renewalUrl = esc_attr($args['api_url']. '/checkout/?edd_license_key=' . $license); 
-								$html_div .= '<a href="'.$renewalUrl.'">'.__('Renew your license to continue receiving updates and support.', 'fakturo').'</a>
-										<br/>';
-								
-							}
-							$html_div .= '<strong>'.__('Activations', 'fakturo').':</strong>
-										'.$currentActivations.'/'.$activationsLimit.' ('.$activationsLeft.' left)
-									<br/>
-									<strong>'.__('Expires on', 'fakturo').':</strong>
-										<code>'.$expires.'</code>
-									<br/>
-									<strong>'.__('Registered to', 'fakturo').':</strong>
-										'.$license_data->customer_name.' (<code>'.$license_data->customer_email.'</code>)
-								</small>';			
-							
-						}
-					}
-								
-					$html_addons .= '<tr id="tr_license_status_'.$plugin_name.'" class="tr_license_status" style="vertical-align: middle;">
-						<th scope="row" style="vertical-align: middle;">
-							'.__('Activated for updates', 'fakturo').'
-						</th>
-						<td id="td_license_status_'.$plugin_name.'">
-						<p>'.$status_license_html.'</p>
-						<div id="'.$plugin_name.'_ajax_status_license">'.$html_div.'</div>
-						</td>
-					</tr>';
-				} else {
-					$html_addons .= '<tr id="tr_license_status_'.$plugin_name.'" class="tr_license_status" style="vertical-align: middle; display:none;">
-						<th scope="row" style="vertical-align: middle;">
-							'.__('Activated for updates', 'fakturo').'
-						</th>
-						<td id="td_license_status_'.$plugin_name.'">
-							
-							<input id="'.$plugin_name.'_btn_license_check" class="btn_license_check button-secondary" name="'.$plugin_name.'_btn_license_check" type="button" value="'.__('Check License', 'fakturo').'"/>
-							<div id="'.$plugin_name.'_ajax_status_license" style="display:none;"></div>
-						</td>
-					</tr>';
-					
-				}
-				
-						
-			$html_addons .= '</tbody>
-			</table>
-			</div>
-			</div>
-			';
-			
-			echo $html_addons;
-			
+			echo '<div class="fktr-license-card" data-plugin="' . esc_attr($plugin_name) . '">
+					<h2>' . esc_html(sprintf(
+						/* translators: %s: add-on name. */
+						__('%s License', 'fakturo'), $args['api_data']['item_name']
+					)) . '</h2>
+					<div class="fktr-license-body">
+						<label class="fktr-license-label" for="license_key_' . esc_attr($plugin_name) . '">' . esc_html__('License Key', 'fakturo') . '</label>
+						<input id="license_key_' . esc_attr($plugin_name) . '" class="fktr-license-key" name="license_key[' . esc_attr($plugin_name) . ']" type="text" autocomplete="off" spellcheck="false" value="' . esc_attr($license ? $license : '') . '">
+						<span class="description">' . esc_html__('Enter your license key and save: the site is activated for updates and support.', 'fakturo') . '</span>
+						<div class="fktr-license-status">' . self::render_status($plugin_name, $args) . '</div>
+						<div class="fktr-license-message" role="status"></div>
+					</div>
+				</div>';
 		}
+		echo '</div>';
 		submit_button();
-		echo '</form>';
+		echo '</form></div>';
 	}
-	
+
+	/* ---------- Actions ---------- */
+
+	private static function allowed() {
+		return current_user_can(self::CAPABILITY);
+	}
+
+	private static function done($message, $error = false) {
+		if (class_exists('fktrNotices')) {
+			fktrNotices::add(array('text' => esc_html($message), 'error' => $error, 'screen' => self::SCREEN));
+		}
+		wp_safe_redirect(admin_url('admin.php?page=' . self::SLUG));
+		exit;
+	}
+
+	public static function save_licenses() {
+		if (!self::allowed() || !isset($_POST['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'])), self::NONCE)) {
+			wp_die(esc_html__('You are not allowed to do this.', 'fakturo'));
+		}
+		$posted	 = ( isset($_POST['license_key']) && is_array($_POST['license_key']) ) ? wp_unslash($_POST['license_key']) : array();
+		$keys	 = self::get_map('fktr_license_keys');
+		$msg	 = '';
+		$error	 = false;
+		foreach (self::plugin_names() as $plugin_name) {
+			if (!isset($posted[$plugin_name]) || !is_string($posted[$plugin_name])) {
+				continue;
+			}
+			$new = trim(sanitize_text_field($posted[$plugin_name]));
+			$old = isset($keys[$plugin_name]) ? (string) $keys[$plugin_name] : '';
+			if ($new === $old && $old !== '') {
+				continue;
+			}
+			if ($old !== '') {
+				self::refresh($plugin_name, 'deactivate_license', $old);
+			}
+			if ($new === '') {
+				unset($keys[$plugin_name]);
+				self::forget($plugin_name);
+				continue;
+			}
+			$keys[$plugin_name] = $new;
+			update_option('fktr_license_keys', $keys);
+			$data	 = self::refresh($plugin_name, 'activate_license', $new);
+			$msg	 = self::activation_message($data);
+			$error	 = !( $data && isset($data->license) && $data->license === 'valid' );
+		}
+		update_option('fktr_license_keys', $keys);
+		self::done($msg !== '' ? $msg : __('License keys saved.', 'fakturo'), $error);
+	}
+
+	private static function activation_message($data) {
+		if (!$data) {
+			return __('The license server did not answer. Save again in a moment.', 'fakturo');
+		}
+		if (!empty($data->license) && $data->license === 'valid') {
+			return __('License activated for this site!', 'fakturo');
+		}
+		$errors = array(
+			'expired'				 => __('This license has expired.', 'fakturo'),
+			'disabled'				 => __('This license has been disabled.', 'fakturo'),
+			'missing'				 => __('This license key does not exist.', 'fakturo'),
+			'invalid'				 => __('This license key does not exist.', 'fakturo'),
+			'no_activations_left'	 => __('This license has no activations left.', 'fakturo'),
+			'item_name_mismatch'	 => __('This license key is for another product.', 'fakturo'),
+			'invalid_item_id'		 => __('This license key is for another product.', 'fakturo'),
+		);
+		$error = ( isset($data->error) && is_string($data->error) ) ? $data->error : '';
+		return isset($errors[$error]) ? $errors[$error] : __('The license could not be activated.', 'fakturo');
+	}
+
+	private static function forget($plugin_name) {
+		foreach (array('fktr_license_status', 'fktr_license_info') as $option) {
+			$map = self::get_map($option);
+			unset($map[$plugin_name]);
+			update_option($option, $map, false);
+		}
+	}
+
+	/**
+	 * Check, activate or deactivate from the screen's buttons; answers the refreshed status block.
+	 */
+	public static function ajax_license() {
+		if (!self::allowed() || !check_ajax_referer(self::NONCE, 'nonce', false)) {
+			wp_send_json_error(array('message' => __('You are not allowed to do this.', 'fakturo')), 403);
+		}
+		$do				 = isset($_POST['do']) ? sanitize_key(wp_unslash($_POST['do'])) : '';
+		$plugin_name	 = isset($_POST['plugin']) ? sanitize_text_field(wp_unslash($_POST['plugin'])) : '';
+		$plugins_args	 = apply_filters('fktr_plugins_updater_args', array());
+		if (!in_array($do, array('check_license', 'activate_license', 'deactivate_license'), true) || empty($plugins_args[$plugin_name])) {
+			wp_send_json_error(array('message' => __('Invalid request.', 'fakturo')), 400);
+		}
+		if (!self::get_key($plugin_name)) {
+			wp_send_json_error(array('message' => __('Save a license key first.', 'fakturo')));
+		}
+		$data = self::refresh($plugin_name, $do);
+		if (!$data) {
+			wp_send_json_error(array('message' => __('The license server did not answer. Try again in a moment.', 'fakturo')));
+		}
+		wp_send_json_success(array(
+			'html'		 => self::render_status($plugin_name, $plugins_args[$plugin_name]),
+			'message'	 => ( $do === 'activate_license' ) ? self::activation_message($data) : '',
+		));
+	}
+
 }
-$fktr_licenses_handlers = new fktr_licenses_handlers();
-?>
+
+fktr_licenses_handlers::hooks();

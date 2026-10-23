@@ -1,0 +1,124 @@
+/* Fakturo Add-ons screen: the catalogue of etruel.com inside a plugins list table. */
+.fktr-addons-search .fktr-addons-filter-live {
+	margin-right: 8px;
+	color: #646970;
+}
+.fktr-addon-icon-placeholder {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 100px;
+	height: 50px;
+	background-color: #e5e5e5;
+	border: 1px solid #dcdcde;
+	box-sizing: border-box;
+}
+.fktr-addon-icon-placeholder .dashicons {
+	font-size: 28px;
+	width: 28px;
+	height: 28px;
+	color: #8c8f94;
+}
+.plugins_page_fakturo .column-icon img {
+	max-width: 100px;
+	height: auto;
+}
+/* One width for every state of the button, centered, so the column aligns. */
+.column-buybutton .button {
+	min-width: 140px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	text-align: center;
+}
+@media screen and (max-width: 782px) {
+	.plugins_page_fakturo .column-name {
+		display: none;
+	}
+}
+/* Installed: the label that links to the store page. */
+.fktr-btn-installed {
+	background-color: #f0f6fc !important;
+	border-color: #2271b1 !important;
+	color: #2271b1 !important;
+}
+/* Installed but stopped: starting it is the action that matters, so it does not look like "Purchase". */
+.fktr-btn-activate {
+	background-color: #00a32a !important;
+	border-color: #008a20 !important;
+	color: #fff !important;
+	text-shadow: none !important;
+	box-shadow: none !important;
+}
+.fktr-btn-activate:hover,
+.fktr-btn-activate:focus {
+	background-color: #008a20 !important;
+	border-color: #007017 !important;
+	color: #fff !important;
+}
+.button.fktr-btn-activate .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+	line-height: 1;
+}
+/* A license is needed before it can update: amber, attention. */
+.fktr-btn-license {
+	background-color: #d98500 !important;
+	border-color: #b06d00 !important;
+	color: #fff !important;
+	text-shadow: none !important;
+	box-shadow: none !important;
+}
+.fktr-btn-license:hover,
+.fktr-btn-license:focus {
+	background-color: #b06d00 !important;
+	border-color: #935b00 !important;
+	color: #fff !important;
+}
+/* Auto-updates switch: teal when it can be turned on, outlined when it is on. */
+.fktr-btn-autoupdate {
+	background-color: #2c8c99 !important;
+	border-color: #227079 !important;
+	color: #fff !important;
+	text-shadow: none !important;
+	box-shadow: none !important;
+}
+.fktr-btn-autoupdate:hover,
+.fktr-btn-autoupdate:focus {
+	background-color: #227079 !important;
+	border-color: #1b5960 !important;
+	color: #fff !important;
+}
+.fktr-btn-autoupdate.is-enabled {
+	background-color: #fff !important;
+	border-color: #2c8c99 !important;
+	color: #227079 !important;
+}
+.fktr-btn-autoupdate.is-enabled:hover,
+.fktr-btn-autoupdate.is-enabled:focus {
+	background-color: #f0fbfc !important;
+	border-color: #227079 !important;
+	color: #1b5960 !important;
+}
+/* Free on wordpress.org: green, installed with WordPress' own installer. */
+.fktr-btn-install {
+	background-color: #2e8960 !important;
+	border-color: #2e8960 !important;
+	color: #fff !important;
+	text-shadow: none !important;
+	box-shadow: none !important;
+}
+.fktr-btn-install:hover,
+.fktr-btn-install:focus {
+	background-color: #237c4e !important;
+	border-color: #237c4e !important;
+	color: #fff !important;
+}
+.button.fktr-btn-install .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+	line-height: 1;
+}

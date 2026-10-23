@@ -6583,3 +6583,190 @@ msgstr ""
 #: includes/wizard_install.php:2204
 msgid "Exit"
 msgstr ""
+
+#. translators: 1: matching add-ons, 2: add-ons listed.
+#, php-format
+msgid "Showing %1$s of %2$s."
+msgstr ""
+
+msgid "No add-ons match your search."
+msgstr ""
+
+msgid "Search Add-ons"
+msgstr ""
+
+msgid "Add-on name, feature…"
+msgstr ""
+
+msgid "You cannot delete a plugin while it is active on the main site."
+msgstr ""
+
+msgid "The plugin could not be activated because it triggered a fatal error."
+msgstr ""
+
+msgid "Deletion failed:"
+msgstr ""
+
+msgid "The selected add-on has been deleted."
+msgstr ""
+
+msgid "The selected add-ons have been deleted."
+msgstr ""
+
+msgid "Plugin activated."
+msgstr ""
+
+msgid "Selected plugins activated."
+msgstr ""
+
+msgid "Plugin deactivated."
+msgstr ""
+
+msgid "Selected plugins deactivated."
+msgstr ""
+
+msgid "Icon"
+msgstr ""
+
+msgid "Working…"
+msgstr ""
+
+msgid "The license server did not answer. Try again in a moment."
+msgstr ""
+
+msgid "Expired"
+msgstr ""
+
+msgid "unlimited"
+msgstr ""
+
+msgid "left"
+msgstr ""
+
+msgid "Lifetime"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Manage Sites"
+msgstr ""
+
+msgid "View Upgrades"
+msgstr ""
+
+msgid "Extend"
+msgstr ""
+
+msgid "My Licenses"
+msgstr ""
+
+msgid "Fakturo add-ons"
+msgstr ""
+
+#. translators: 1: link to the licenses page of the account, 2: link to the add-ons list.
+#, php-format
+msgid "Paste the license key from your purchase email. Bought it but cannot find the email? Your key is always in your account: %1$s (log in with the email you used to buy). Not a customer yet? See the %2$s."
+msgstr ""
+
+#. translators: %s: link to the licenses page of the account.
+#, php-format
+msgid "This license has expired. Renew it to keep receiving updates and support, or check your other keys in %s."
+msgstr ""
+
+msgid "The key is right but this site is not activated with it. Use Activate License to receive updates and support."
+msgstr ""
+
+#. translators: %s: link to the licenses page of the account.
+#, php-format
+msgid "The store does not accept this key. Check that it was copied whole, without spaces, or copy it again from %s."
+msgstr ""
+
+msgid "You are not allowed to do this."
+msgstr ""
+
+msgid "Extensions list"
+msgstr ""
+
+#. translators: %s: add-on name.
+#, php-format
+msgid "%s License"
+msgstr ""
+
+msgid "Enter your license key and save: the site is activated for updates and support."
+msgstr ""
+
+msgid "License keys saved."
+msgstr ""
+
+msgid "The license server did not answer. Save again in a moment."
+msgstr ""
+
+msgid "License activated for this site!"
+msgstr ""
+
+msgid "This license has expired."
+msgstr ""
+
+msgid "This license has been disabled."
+msgstr ""
+
+msgid "This license key does not exist."
+msgstr ""
+
+msgid "This license has no activations left."
+msgstr ""
+
+msgid "This license key is for another product."
+msgstr ""
+
+msgid "The license could not be activated."
+msgstr ""
+
+msgid "Invalid request."
+msgstr ""
+
+msgid "Save a license key first."
+msgstr ""
+
+#. translators: %s: add-on name.
+#, php-format
+msgid "Activate %s on this site"
+msgstr ""
+
+msgid "Activate"
+msgstr ""
+
+msgid "Automatic updates are turned off on this site."
+msgstr ""
+
+msgid "Add license"
+msgstr ""
+
+msgid "Add the license key of this add-on to enable automatic updates."
+msgstr ""
+
+msgid "Renew license"
+msgstr ""
+
+msgid "This license has expired. Renew it to enable automatic updates."
+msgstr ""
+
+msgid "Activate license"
+msgstr ""
+
+msgid "Check license"
+msgstr ""
+
+msgid "Check the license key of this add-on to enable automatic updates."
+msgstr ""
+
+#. translators: %s: add-on name.
+msgid "Install %s from WordPress.org, free"
+msgstr ""
+
+msgid "Install now"
+msgstr ""
+
+msgid "Add a column specifying the stock of each product plus other features like print or export Products list."
+msgstr ""

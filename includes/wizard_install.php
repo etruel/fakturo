@@ -26,22 +26,27 @@ class fktr_wizard {
 		
 		add_action('admin_post_fktr_wizard_post', array(__CLASS__, 'post_actions'));
 
-		self::add_step(1, __( 'Load Countries', 'fakturo' ), array(__CLASS__, 'page_step_one'), array(__CLASS__, 'action_one'));
 		add_action('wp_ajax_fktr_load_countries_states', array(__CLASS__, 'load_countries_ajax'));
 		add_action('wp_ajax_fktr_load_selected_countries_states', array(__CLASS__, 'load_countries_states_ajax'));
-		
-		self::add_step(2, __( 'Company Info', 'fakturo' ), array(__CLASS__, 'page_step_two'), array(__CLASS__, 'action_two'));
-
-		self::add_step(3, __( 'Load Currencies', 'fakturo' ), array(__CLASS__, 'page_step_three'), null);
 		add_action('wp_ajax_fktr_load_currencies', array(__CLASS__, 'load_currencies_ajax'));
 
+		add_action('init', array(__CLASS__, 'register_steps'), 0);
+	}
+
+	/**
+	* Static function register_steps
+	* Titles are translated, so the steps are added once the text domain can load.
+	* @access public
+	* @return void
+	*/
+	public static function register_steps() {
+		self::add_step(1, __( 'Load Countries', 'fakturo' ), array(__CLASS__, 'page_step_one'), array(__CLASS__, 'action_one'));
+		self::add_step(2, __( 'Company Info', 'fakturo' ), array(__CLASS__, 'page_step_two'), array(__CLASS__, 'action_two'));
+		self::add_step(3, __( 'Load Currencies', 'fakturo' ), array(__CLASS__, 'page_step_three'), null);
 		self::add_step(4, __( 'Money Format', 'fakturo' ), array(__CLASS__, 'page_step_four'), array(__CLASS__, 'action_four'));
 		self::add_step(5, __( 'Invoice Details and Formats', 'fakturo' ), array(__CLASS__, 'page_invoice_format'), array(__CLASS__, 'action_invoice_format'));
-		
 		self::add_step(6, __( 'Products', 'fakturo' ), array(__CLASS__, 'page_products'), array(__CLASS__, 'action_products'));
 		self::add_step(7, __( 'Payments', 'fakturo' ), array(__CLASS__, 'page_payments'), array(__CLASS__, 'action_payments'));
-		
-		
 	}
 	/**
 	* Static function redirect_login
@@ -118,6 +123,7 @@ class fktr_wizard {
 	*/
 	public static function get_steps() {
 		$steps = array();
+		ksort(self::$steps_data);
 		foreach (self::$steps_data as $step_data) {
 			$steps[] = $step_data['title'];
 		}
@@ -2189,6 +2195,8 @@ class fktr_wizard {
 		</style>
 		<?php
 			do_action('fktr_wizard_output_print_styles');
+			// A standalone page: core's legacy emoji handler is only unhooked by the enqueue actions it never fires.
+			remove_action('wp_print_styles', 'print_emoji_styles');
 			wp_print_styles();
 			do_action('fktr_wizard_output_print_scripts');
 			wp_print_scripts();
