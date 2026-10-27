@@ -251,13 +251,13 @@ class fktrPostTypeEmailTemplates {
 	public static function get_id_by_assigned($assigned) {
 		global $wpdb;
 		$return = false;
-		$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as assigned FROM {$wpdb->posts} as p
+		$sql = $wpdb->prepare("SELECT p.ID, pm.meta_key, pm.meta_value as assigned FROM {$wpdb->posts} as p
 				 LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
                  WHERE 
                  pm.meta_key = 'assigned'
 				 AND p.post_status = 'publish'
 				 AND p.post_type = 'fktr_email_template'
-				 AND pm.meta_value = '%s'
+				 AND pm.meta_value = %s
                  GROUP BY p.ID 
 				 LIMIT 1
 			 ", $assigned);

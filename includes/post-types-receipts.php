@@ -112,7 +112,7 @@ class fktrPostTypeReceipts {
             $pdf->set_option('isRemoteEnabled', true);
             $pdf->set_option('isHtml5ParserEnabled', true);
             $pdf->set_paper("A4", "portrait");
-            $pdf->load_html(utf8_decode($html));
+            $pdf->load_html($html);
             $pdf->render();
             $pdf->stream('pdf.pdf', array('Attachment' => 0));
         } else {
@@ -346,10 +346,10 @@ class fktrPostTypeReceipts {
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$client_data = fktrPostTypeClients::get_client_data($_POST['client_id']);
 		$client_data['invoice_sales'] = array();
-		$sqlInvoices = sprintf("SELECT p.ID FROM {$wpdb->postmeta} pm
-				 LEFT JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+		$sqlInvoices = $wpdb->prepare("SELECT p.ID FROM {$wpdb->postmeta} pm
+				 INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
 				 WHERE pm.meta_key = 'client_id'
-				 AND pm.meta_value = '%s'
+				 AND pm.meta_value = %s
 				 AND p.post_status = 'publish'
 				 AND p.post_type = 'fktr_sale'
 			 ", $_POST['client_id']);
@@ -881,12 +881,12 @@ class fktrPostTypeReceipts {
 	public static function exist_a_receipt_number($receipt_number) {
 		global $wpdb;
 		$return = false;
-		$setting_system = get_option('fakturo_system_options_group', false);
-		
-		$sql = sprintf("SELECT pm.meta_value FROM {$wpdb->postmeta} pm
-			LEFT JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+		$receipt_number = is_scalar($receipt_number) ? (string) $receipt_number : '';
+
+		$sql = $wpdb->prepare("SELECT pm.meta_value FROM {$wpdb->postmeta} pm
+			INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
 			WHERE pm.meta_key = 'receipt_number'
-			AND pm.meta_value = '%s'
+			AND pm.meta_value = %s
 			AND p.post_status = 'publish'
 			AND p.post_type = 'fktr_receipt'
 			LIMIT 1

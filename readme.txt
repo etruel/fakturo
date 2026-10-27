@@ -5,7 +5,7 @@ Tags: invoice,sales,inventory,billing,receipt
 Requires at least: 4.9
 Tested up to: 6.8
 Requires PHP: 7.0
-Stable tag: 1.0.10
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,11 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 
 == Changelog ==
+
+= 1.1 =
+* Ready for PHP 8.2 and 8.3: no more deprecated notices when reading settings, printing or exporting PDFs.
+* PDFs of invoices, receipts and reports keep every character, including accents, symbols and non-Latin alphabets.
+* Faster and more robust invoice and receipt number validation, product search and report queries.
 
 = 1.0.10 (Oct 23, 2026) =
 * New Add-ons screen: activate, license and manage auto-updates of each add-on from its own row, with bulk actions and live search.

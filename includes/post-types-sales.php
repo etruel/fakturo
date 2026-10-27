@@ -186,7 +186,7 @@ if (!class_exists('fktrPostTypeSales')) :
 				if (isset($_REQUEST['pdf'])) {
 					$pdf = fktr_pdf::getInstance();
 					$pdf->set_paper("A4", "portrait");
-					$pdf->load_html(utf8_decode($html));
+					$pdf->load_html($html);
 					$pdf->render();
 					$pdf->stream('pdf.pdf', array('Attachment' => 0));
 				} else {
@@ -219,7 +219,7 @@ if (!class_exists('fktrPostTypeSales')) :
 				if (isset($_REQUEST['pdf'])) {
 					$pdf = fktr_pdf::getInstance();
 					$pdf->set_paper("A4", "portrait");
-					$pdf->load_html(utf8_decode($html));
+					$pdf->load_html($html);
 					$pdf->render();
 					$pdf->stream('pdf.pdf', array('Attachment' => 0));
 				} else {
@@ -410,7 +410,7 @@ if (!class_exists('fktrPostTypeSales')) :
 
 		public static function product_parameter_internal_code($search, $innerJoin, $where) {
 			if (is_numeric($search)) {
-				$where = $where . " OR ID = " . $search . "";
+				$where = $where . " OR ID = " . absint($search) . "";
 			}
 			return array($innerJoin, $where);
 		}
@@ -473,22 +473,24 @@ if (!class_exists('fktrPostTypeSales')) :
 		}
 		public static function get_products() {
 			global $wpdb;
-			$search = addslashes($_GET['s']);
+			$search = (isset($_GET['s']) && is_scalar($_GET['s'])) ? wp_unslash((string) $_GET['s']) : '';
+			$search = esc_sql($wpdb->esc_like($search));
 			$setting_system = get_option('fakturo_system_options_group', false);
 			$prefix = $wpdb->prefix;
 			$innerJoin = " INNER JOIN {$prefix}postmeta ON {$prefix}postmeta.post_id = {$prefix}posts.ID ";
 			$descriptionWhere = "post_title LIKE '%" . $search . "%'";
-			if ($setting_system['default_description'] == 'short_description') {
-				$descriptionWhere = "post_title LIKE '%" . $search . "%'";
-			} else if ($setting_system['default_description'] == 'description') {
+			if (isset($setting_system['default_description']) && $setting_system['default_description'] == 'description') {
 				$descriptionWhere = "(meta_value LIKE '%" . $search . "%' AND meta_key = 'description')";
 			}
 			$where = " {$prefix}posts.post_status = 'publish' AND {$prefix}posts.post_type ='fktr_product' AND (" . $descriptionWhere . "";
 
-			foreach ($setting_system['search_code'] as $k => $val) {
+			$search_codes = !empty($setting_system['search_code']) ? (array) $setting_system['search_code'] : array();
+			foreach ($search_codes as $k => $val) {
 				$values = apply_filters('fktr_search_product_parameter_' . $val, $search, $innerJoin, $where);
-				$innerJoin = $values[0];
-				$where = $values[1];
+				if (is_array($values) && count($values) == 2) {
+					$innerJoin = $values[0];
+					$where = $values[1];
+				}
 			}
 			$where = $where . ")";
 			$sqlSearch = "SELECT * FROM {$prefix}posts" . $innerJoin . " WHERE" . $where . " GROUP BY {$prefix}posts.ID LIMIT 10";
@@ -1516,73 +1518,31 @@ if (!class_exists('fktrPostTypeSales')) :
 
 		public static function exist_a_invoice_number($invoice_number, $sale_point, $invoice_type) {
 			global $wpdb;
-			$return = false;
-			$setting_system = get_option('fakturo_system_options_group', false);
-			if ($setting_system['individual_numeration_by_invoice_type'] && $setting_system['individual_numeration_by_sale_point']) {
-				$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as invoice_number, sale.meta_value as sale_point, invoicet.meta_value as invoice_type FROM {$wpdb->posts} as p
-				 LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
-                 LEFT JOIN {$wpdb->postmeta} as sale ON p.ID = pm.post_id
-                 LEFT JOIN {$wpdb->postmeta} as invoicet ON p.ID = pm.post_id
-                 WHERE 
-                 pm.meta_key = 'invoice_number'
-				 AND p.post_status = 'publish'
-				 AND p.post_type = 'fktr_sale'
-                 AND sale.meta_key = 'sale_point'
-                 AND invoicet.meta_key = 'invoice_type'
-				 AND pm.meta_value = '%s'
-                 AND sale.meta_value = '%s'
-				 AND invoicet.meta_value = '%s'
-				 AND invoicet.post_id = sale.post_id 
-				 AND sale.post_id = p.ID
-                 GROUP BY p.ID 
-				 LIMIT 1
-			 ", $invoice_number, $sale_point, $invoice_type);
-			} else if ($setting_system['individual_numeration_by_sale_point']) {
-				$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as invoice_number, sale.meta_value as sale_point FROM {$wpdb->posts} as p
-				 LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
-                 LEFT JOIN {$wpdb->postmeta} as sale ON p.ID = pm.post_id
-                 WHERE 
-                 pm.meta_key = 'invoice_number'
-				 AND p.post_status = 'publish'
-				 AND p.post_type = 'fktr_sale'
-                 AND sale.meta_key = 'sale_point'
-				 AND pm.meta_value = '%s'
-                 AND sale.meta_value = '%s'
-                 AND sale.post_id = p.ID
-                 GROUP BY p.ID 
-				 LIMIT 1
-			 ", $invoice_number, $sale_point);
-			} else if ($setting_system['individual_numeration_by_invoice_type']) {
-				$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as invoice_number, invoicet.meta_value as invoice_type FROM {$wpdb->posts} as p
-				 LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
-                 LEFT JOIN {$wpdb->postmeta} as invoicet ON p.ID = pm.post_id
-                 WHERE 
-                 pm.meta_key = 'invoice_number'
-				 AND p.post_status = 'publish'
-				 AND p.post_type = 'fktr_sale'
-                 AND invoicet.meta_key = 'invoice_type'
-				 AND pm.meta_value = '%s'
-				 AND invoicet.meta_value = '%s'
-				 AND invoicet.post_id = p.ID
-                 GROUP BY p.ID 
-				 LIMIT 1
-			 ", $invoice_number, $invoice_type);
-			} else {
-				$sql = sprintf("SELECT pm.meta_value FROM {$wpdb->postmeta} pm
-				 LEFT JOIN {$wpdb->posts} p ON p.ID = pm.post_id
-				 WHERE pm.meta_key = 'invoice_number'
-				 AND pm.meta_value = '%s'
-				 AND p.post_status = 'publish'
-				 AND p.post_type = 'fktr_sale'
-				 LIMIT 1
-			 ", $invoice_number);
+			$setting_system = get_option('fakturo_system_options_group', array());
+
+			$joins = '';
+			$where = '';
+			$args = array(is_scalar($invoice_number) ? (string) $invoice_number : '');
+			if (!empty($setting_system['individual_numeration_by_sale_point'])) {
+				$joins .= " INNER JOIN {$wpdb->postmeta} sale ON sale.post_id = p.ID AND sale.meta_key = 'sale_point'";
+				$where .= ' AND sale.meta_value = %s';
+				$args[] = is_scalar($sale_point) ? (string) $sale_point : '';
+			}
+			if (!empty($setting_system['individual_numeration_by_invoice_type'])) {
+				$joins .= " INNER JOIN {$wpdb->postmeta} invoicet ON invoicet.post_id = p.ID AND invoicet.meta_key = 'invoice_type'";
+				$where .= ' AND invoicet.meta_value = %s';
+				$args[] = is_scalar($invoice_type) ? (string) $invoice_type : '';
 			}
 
-			$r = $wpdb->get_results($sql);
-			if (!empty($r)) {
-				$return = true;
-			}
-			return $return;
+			$sql = "SELECT p.ID FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = 'invoice_number'"
+				. $joins . "
+				WHERE p.post_type = 'fktr_sale'
+				AND p.post_status = 'publish'
+				AND pm.meta_value = %s" . $where . "
+				LIMIT 1";
+
+			return (bool) $wpdb->get_var($wpdb->prepare($sql, $args));
 		}
 
 		public static function get_suggest_invoice_number() {

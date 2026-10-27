@@ -67,7 +67,7 @@ function get_fakturo_terms($args = array()) {
 			$newTerm->count				 = $t->count;
 
 			$t->description	 = trim($t->description);
-			$t->description	 = utf8_encode($t->description);
+			$t->description	 = fktr_to_utf8($t->description);
 			$t->description	 = str_replace('&quot;', '"', $t->description);
 			$term_meta		 = json_decode($t->description);
 			if (isset($term_meta)) {
@@ -111,7 +111,7 @@ function get_fakturo_term($term_id, $taxonomy, $field = null) {
 	$return->count				 = $term->count;
 
 	$term->description	 = trim($term->description);
-	$term->description	 = utf8_encode($term->description);
+	$term->description	 = fktr_to_utf8($term->description);
 	$term->description	 = str_replace('&quot;', '"', $term->description);
 	$term_meta			 = json_decode($term->description);
 	if (isset($term_meta)) {
@@ -221,29 +221,43 @@ function fktr_array_multi_key_exists(array $arrNeedles, array $arrHaystack, $bln
 	return fktr_array_multi_key_exists($arrNeedles, $arrHaystack, $blnMatchAll);
 }
 
+/**
+ * Returns the text as UTF-8, converting it only when it is not UTF-8 already.
+ * Replacement for the deprecated utf8_encode().
+ */
+function fktr_to_utf8($text) {
+	if (!is_string($text) || preg_match('//u', $text)) {
+		return $text;
+	}
+	if (function_exists('mb_convert_encoding')) {
+		return mb_convert_encoding($text, 'UTF-8', 'ISO-8859-1');
+	}
+	return $text;
+}
+
 function get_sales_on_range($from, $to) {
 	global $wpdb;
 	$sales_ids = array();
 	if ($from != 0 && $to != 0) {
-		$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as timestamp_value FROM {$wpdb->posts} as p
+		$sql = $wpdb->prepare("SELECT p.ID, pm.meta_key, pm.meta_value as timestamp_value FROM {$wpdb->posts} as p
 		LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
         WHERE 
         pm.meta_key = 'date'
 		AND p.post_status = 'publish'
 		AND p.post_type = 'fktr_sale'
-		AND pm.meta_value >= '%s'
-		AND pm.meta_value < '%s'
+		AND pm.meta_value >= %s
+		AND pm.meta_value < %s
         GROUP BY p.ID 
 		", $from, $to);
 	} else {
-		$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as timestamp_value FROM {$wpdb->posts} as p
+		$sql = "SELECT p.ID, pm.meta_key, pm.meta_value as timestamp_value FROM {$wpdb->posts} as p
 		LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
         WHERE 
         pm.meta_key = 'date'
 		AND p.post_status = 'publish'
 		AND p.post_type = 'fktr_sale'
         GROUP BY p.ID 
-		");
+		";
 	}
 
 	$results = $wpdb->get_results($sql, OBJECT);

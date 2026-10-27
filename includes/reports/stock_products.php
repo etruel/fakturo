@@ -213,7 +213,7 @@ class stock_products_report {
 		$total_html_print .= '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 				<html>
 					<head>
-						<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
+						<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 						<title></title>
 
 					</head>
@@ -384,7 +384,7 @@ class stock_products_report {
 		$pdf ->set_option('isHtml5ParserEnabled', true);
 
 		$pdf ->set_paper("A4", "portrait");
-		$pdf ->load_html(utf8_decode($total_html_print));
+		$pdf ->load_html($total_html_print);
 		$pdf ->render();
 		$pdf ->stream('Products_Summary_'.date_i18n('Ymdhi').'.pdf', array('Attachment'=>0));
 
@@ -421,7 +421,7 @@ class stock_products_report {
 		//get number post
 		$rows = count(reports::get_objects($request, $ranges, $limit=''));
 				
-		$page_rows = (isset($_REQUEST['show_pagination']) ? $_REQUEST['show_pagination'] :'10' );
+		$page_rows = (isset($_REQUEST['show_pagination']) ? max(1, absint($_REQUEST['show_pagination'])) : 10 );
 
 		// Page Numbers
 		$last = ceil($rows/$page_rows);
@@ -662,7 +662,7 @@ class stock_products_report {
 		//get number post
 		$rows = count($objects_client);
 		
-		$page_rows = (isset($_REQUEST['show_pagination']) ? $_REQUEST['show_pagination'] : '10' );
+		$page_rows = (isset($_REQUEST['show_pagination']) ? max(1, absint($_REQUEST['show_pagination'])) : 10 );
 		
 		// Page Numbers
 		$last = ceil($rows/$page_rows);
@@ -819,7 +819,7 @@ class stock_products_report {
 	public static function get_objects($return, $request, $ranges, $limit) {
 		
 		global $wpdb;
-		$show_pagination = (!empty($limit) ? $limit : '' );
+		$show_pagination = (!empty($limit) && preg_match('/^LIMIT \d+,\d+$/', $limit)) ? $limit : '';
 		
 		$letter_from = (isset($request['letter_from']) ? $request['letter_from'] : 'A' );
 		$letter_to   = (isset($request['letter_to']) ? $request['letter_to'] : 'Z' );
@@ -827,17 +827,20 @@ class stock_products_report {
 		if($letter_to == 'Z' || $letter_from > $letter_to ){
 			$letter_to = 'Y';
 		}
+		$letter_from = is_scalar($letter_from) ? (string) $letter_from : 'A';
+		$letter_to   = is_scalar($letter_to) ? (string) $letter_to : 'Y';
+		$product_id  = isset($request['product_id']) ? absint($request['product_id']) : 0;
 		
-		$sql = "SELECT p.ID, pm.meta_key, pm.meta_value as timestamp_value, p.post_type as post_type FROM {$wpdb->posts} as p
+		$sql = $wpdb->prepare("SELECT p.ID, pm.meta_key, pm.meta_value as timestamp_value, p.post_type as post_type FROM {$wpdb->posts} as p
 				LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
 		        WHERE 
 		        pm.meta_key = 'post_title'
 				AND p.post_status = 'publish'
 				AND (p.post_type = 'fktr_product' OR p.post_type = 'fktr_receipt')
 
-				AND pm.meta_value between '$letter_from' and char(ascii('$letter_to') + 1)
-				OR p.ID = '".$request['product_id']."' ORDER BY pm.meta_value ASC  $show_pagination
-				 ";
+				AND pm.meta_value between %s and char(ascii(%s) + 1)
+				OR p.ID = %d ORDER BY pm.meta_value ASC  $show_pagination
+				 ", $letter_from, $letter_to, $product_id);
 				
 		$results = $wpdb->get_results($sql, OBJECT);
 		if (!empty($results)) {

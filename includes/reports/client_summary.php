@@ -615,14 +615,14 @@ $return_html .= '<script>
 	*/
 	public static function get_objects($return, $request, $ranges) {
 		global $wpdb;
-		$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as timestamp_value, p.post_type as post_type FROM {$wpdb->posts} as p
+		$sql = $wpdb->prepare("SELECT p.ID, pm.meta_key, pm.meta_value as timestamp_value, p.post_type as post_type FROM {$wpdb->posts} as p
 		LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
         WHERE 
         pm.meta_key = 'date'
 		AND p.post_status = 'publish'
 		AND (p.post_type = 'fktr_sale' OR p.post_type = 'fktr_receipt')
-		AND pm.meta_value >= '%s'
-		AND pm.meta_value < '%s'
+		AND pm.meta_value >= %s
+		AND pm.meta_value < %s
         GROUP BY p.ID 
 		", $ranges['from'], $ranges['to']);
 		$results = $wpdb->get_results($sql, OBJECT);

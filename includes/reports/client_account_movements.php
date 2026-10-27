@@ -188,7 +188,7 @@ class client_account_movements {
 		$total_html_print .= '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 				<html>
 					<head>
-						<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
+						<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 						<title></title>
 
 					</head>
@@ -313,7 +313,7 @@ class client_account_movements {
 		$pdf ->set_option('isHtml5ParserEnabled', true);
 
 		$pdf ->set_paper("A4", "portrait");
-		$pdf ->load_html(utf8_decode($total_html_print));
+		$pdf ->load_html($total_html_print);
 		$pdf ->render();
 		$pdf ->stream('pdf.pdf', array('Attachment'=>0));
 
@@ -622,14 +622,14 @@ $return_html .= '<script>
 	*/
 	public static function get_objects($return, $request, $ranges) {
 		global $wpdb;
-		$sql = sprintf("SELECT p.ID, pm.meta_key, pm.meta_value as timestamp_value, p.post_type as post_type FROM {$wpdb->posts} as p
+		$sql = $wpdb->prepare("SELECT p.ID, pm.meta_key, pm.meta_value as timestamp_value, p.post_type as post_type FROM {$wpdb->posts} as p
 		LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
         WHERE 
         pm.meta_key = 'date'
 		AND p.post_status = 'publish'
 		AND (p.post_type = 'fktr_sale' OR p.post_type = 'fktr_receipt')
-		AND pm.meta_value >= '%s'
-		AND pm.meta_value < '%s'
+		AND pm.meta_value >= %s
+		AND pm.meta_value < %s
         GROUP BY p.ID 
 		", $ranges['from'], $ranges['to']);
 		$results = $wpdb->get_results($sql, OBJECT);
