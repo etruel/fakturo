@@ -1833,6 +1833,7 @@ class fktr_wizard {
 		$new_options = get_option('fakturo_system_options_group', array());
 		$new_options['payment_type'] = $_POST['fakturo_system_options_group']['payment_type'];
 		update_option('fakturo_system_options_group', $new_options);
+		fktrDefaultTemplates::create_all(array('print', 'email'), false);
 	}
 
 	

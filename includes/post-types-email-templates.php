@@ -66,11 +66,14 @@ class fktrPostTypeEmailTemplates {
 		
 		// Obtener la plantilla por defecto manteniendo el assigned actual
 		$new_content = self::get_default_template_by_assigned($current_assigned);
-		/*if (empty($new_content)) {
+		if ($new_content === '') {
 			fktrNotices::add(array('below-h2' => false, 'text' => __('Default template not found.', 'fakturo' )));
 			wp_redirect(admin_url('post.php?post='.$template_id.'&action=edit'));
 			exit;
-		}*/
+		}
+		if ($current_subject === '') {
+			$current_subject = self::get_default_subject($current_assigned);
+		}
 	
 		// Actualizar solo el contenido
 		$args_template = array(
@@ -139,7 +142,7 @@ class fktrPostTypeEmailTemplates {
 
 			$htmlContent = $tpl->fromString($email_template['content']);
 			$htmlSubject = $tpl->fromString($email_template['subject']);
-			echo '<div style="padding: 15px 10px; font-size: 14px; border-radius: 2px; border: 1px solid #ddd;">'.__('E-mail template', 'fakturo' ).': '.$email_template['post_title'].'</div><br/>';
+			echo '<div style="padding: 15px 10px; font-size: 14px; border-radius: 2px; border: 1px solid #ddd;">'.__('E-mail template', 'fakturo' ).': '.esc_html(get_post_field('post_title', $template_id)).'</div><br/>';
 			echo '<div style="padding: 15px 10px; font-size: 14px; border-radius: 2px; border: 1px solid #ddd;">'.__('E-mail Subject', 'fakturo' ).': ['.$htmlSubject.']</div><br/>';
 			echo '<div style="padding: 15px 10px; font-size: 14px; border-radius: 2px; border: 1px solid #ddd;">'.__('E-mail Body', 'fakturo' ).': ['.$htmlContent.']</div><br/>';
 
@@ -150,57 +153,13 @@ class fktrPostTypeEmailTemplates {
 		
 	}
 	public static function assignment($tpl, $object, $default_template) {
-		$setting_system = get_option('fakturo_system_options_group', array());
-		$tpl->assign("setting_system", $setting_system);
-		$company = get_option('fakturo_info_options_group', array());
-		$company['img_url'] = $company['url'];
-		$company['tax_condition'] = (array)get_fakturo_term($company['tax_condition'] , 'fktr_tax_conditions');
-		$tpl->assign( "company", $company);
 		if (!$default_template) {
 			$id_email_template = self::get_id_by_assigned($object->assgined);
 			if ($id_email_template) {
 				$default_template = self::get_email_template_data($id_email_template);
 			}
 		}
-		if (!$default_template) {
-			return $tpl;
-		}
-		
-		if ($object->assgined == 'fktr_sale') {
-			// assign vars to print template assgined to fktr_sale.
-			$tpl->assign( "fktr_invoice_background_image", FAKTURO_PLUGIN_URL . 'assets/images/invoice_background.jpg');
-
-			$sale_invoice = fktrPostTypeSales::get_sale_data($object->id);
-			$client_data = fktrPostTypeClients::get_client_data($sale_invoice['client_id']);
-			$sale_invoice['client_data']['phone'] = $client_data['phone'];
-			$sale_invoice['client_data']['tax_condition'] = (array)get_fakturo_term($sale_invoice['client_data']['tax_condition'], 'fktr_tax_conditions');
-			$sale_invoice['client_data']['payment_type'] = (array)get_fakturo_term($sale_invoice['client_data']['payment_type'], 'fktr_payment_types');
-			$sale_invoice['invoice_type'] = (array)get_fakturo_term($sale_invoice['invoice_type'], 'fktr_invoice_types');
-			$sale_invoice['currency'] = (array)get_fakturo_term($sale_invoice['invoice_currency'], 'fktr_currencies');
-			$sale_invoice['products'] = array();
-			if (!empty($sale_invoice['uc_id'])) {
-				foreach ($sale_invoice['uc_id'] as $key => $product_id) {
-					$newProduct = array();
-					$newProduct['code'] = $sale_invoice['uc_code'][$key]; 
-					$newProduct['description'] = $sale_invoice['uc_description'][$key];
-					$newProduct['quantity'] = $sale_invoice['uc_quality'][$key];
-					$newProduct['unit_price'] = $sale_invoice['uc_unit_price'][$key];
-					$newProduct['tax'] = $sale_invoice['uc_tax'][$key];
-					$newProduct['tax_porcent'] = $sale_invoice['uc_tax_porcent'][$key];
-					$newProduct['amount'] = $sale_invoice['uc_amount'][$key];
-					$sale_invoice['products'][] = $newProduct;
-				}
-			}
-			$sale_invoice['subtotal'] = $sale_invoice['in_sub_total'];
-			$sale_invoice['total'] = $sale_invoice['in_total'];
-			$tpl->assign( "invoice", $sale_invoice);
-			
-		} else if ($object->assgined == 'fktr_receipt') {
-			$receipt = fktrPostTypeReceipts::get_receipt_data($object->id);
-			$tpl->assign( "receipt", $receipt);
-		}
-
-		return $tpl;
+		return fktrPostTypePrintTemplates::assignment($tpl, $object, $default_template);
 	}
 	public static function get_object_type($print_template) {
 		$object_type = 'post';
@@ -248,28 +207,42 @@ class fktrPostTypeEmailTemplates {
 		return $ret;
 
 	}
-	public static function get_id_by_assigned($assigned) {
+	/**
+	 * Ids of the published templates assigned to an object type, newest first.
+	 */
+	public static function get_ids_by_assigned($assigned) {
 		global $wpdb;
-		$return = false;
-		$sql = $wpdb->prepare("SELECT p.ID, pm.meta_key, pm.meta_value as assigned FROM {$wpdb->posts} as p
-				 LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
-                 WHERE 
-                 pm.meta_key = 'assigned'
+		return array_map('intval', $wpdb->get_col($wpdb->prepare("SELECT p.ID FROM {$wpdb->posts} as p
+				 INNER JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
+				 WHERE pm.meta_key = 'assigned'
 				 AND p.post_status = 'publish'
 				 AND p.post_type = 'fktr_email_template'
 				 AND pm.meta_value = %s
-                 GROUP BY p.ID 
-				 LIMIT 1
-			 ", $assigned);
-		$r = $wpdb->get_results($sql, ARRAY_A);
-		if (!empty($r)) {
-			foreach ($r as $key => $value) {
-				$return = $value['ID'];
-			}
-
-		}
-		return $return;
+				 GROUP BY p.ID
+				 ORDER BY p.ID DESC
+			 ", $assigned)));
 	}
+
+	/**
+	 * The template in use for an object type: the newest published one.
+	 */
+	public static function get_id_by_assigned($assigned) {
+		$ids = self::get_ids_by_assigned($assigned);
+		return empty($ids) ? false : $ids[0];
+	}
+
+	public static function duplicates_notice($assigned, $post_id) {
+		if ($assigned == -1) {
+			return '';
+		}
+		$ids = self::get_ids_by_assigned($assigned);
+		if (count($ids) < 2 || !in_array((int) $post_id, $ids)) {
+			return '';
+		}
+		$text = sprintf(__('There are %1$d published templates for this object. The one in use is "%2$s" (#%3$d), the newest one. Unpublish or delete the others to avoid confusion.', 'fakturo'), count($ids), get_post_field('post_title', $ids[0]), $ids[0]);
+		return '<div class="notice notice-warning inline"><p>' . esc_html($text) . '</p></div>';
+	}
+
 	public static function default_assigned($data) {
 		$args = array(
 			'public'   => false
@@ -499,6 +472,7 @@ class fktrPostTypeEmailTemplates {
 						'msg_before_reset' => __('Save before to reset to default.', 'fakturo'),
 					
 				));
+			wp_localize_script('post-type-email-template', 'fktr_default_template', fktrDefaultTemplates::script_strings('email'));
 		
 		}
 		
@@ -609,18 +583,18 @@ class fktrPostTypeEmailTemplates {
 		$selectHtml = '<select name="assigned" id="assigned">
 							<option value="-1" '.selected(-1, $email_template['assigned'], false).'> '.__('Select please', 'fakturo' ) .' </option>';
 		foreach ($array_assigned as $key => $value) {
-			$selectHtml .= '<option value="'.$key.'" '.selected($key, $email_template['assigned'], false).'> '.$value .' </option>';
+			$selectHtml .= '<option value="'.esc_attr($key).'" '.selected($key, $email_template['assigned'], false).'> '.esc_html($value).' </option>';
 		}
 		$selectHtml .= '</select>';
-		$echoHtml = '<table>
+		$echoHtml = self::duplicates_notice($email_template['assigned'], $post->ID).'<table>
 					<tbody>
 						<tr class="tr_fktr">
 							<th><label for="description">'.__('Description', 'fakturo' ) .'	</label></th>
-							<td><input id="description" type="text" name="description" value="'.$email_template['description'].'" class="regular-text"></td>
+							<td><input id="description" type="text" name="description" value="'.esc_attr($email_template['description']).'" class="regular-text"></td>
 						</tr>
 						<tr class="tr_fktr">
 							<th><label for="subject">'.__('Subject', 'fakturo' ) .'	</label></th>
-							<td><input id="subject" type="text" name="subject" value="'.$email_template['subject'].'" class="regular-text"></td>
+							<td><input id="subject" type="text" name="subject" value="'.esc_attr($email_template['subject']).'" class="regular-text"></td>
 						</tr>
 						<tr class="tr_fktr">
 							<th><label for="assigned">'.__('Assigned to', 'fakturo' ) .'	</label></th>
@@ -700,6 +674,19 @@ class fktrPostTypeEmailTemplates {
 
 		$default_email_templates = apply_filters('fktr_default_email_template_paths', $default_email_templates);
 		return $default_email_templates;
+	}
+	public static function get_default_subject($assigned) {
+		$subjects = array(
+			'fktr_sale'				=> __('Invoice {$invoice.post_title} from {$company.name}', 'fakturo'),
+			'fktr_receipt'			=> __('Receipt {$receipt.post_title} from {$company.name}', 'fakturo'),
+			'fktr_client'			=> __('A message from {$company.name}', 'fakturo'),
+			'fktr_provider'			=> __('A message from {$company.name}', 'fakturo'),
+			'fktr_product'			=> __('{$product.post_title} - {$company.name}', 'fakturo'),
+			'fktr_print_template'	=> __('Print template: {$print_template.post_title}', 'fakturo'),
+			'fktr_email_template'	=> __('E-mail template: {$email_template.post_title}', 'fakturo'),
+		);
+		$subjects = apply_filters('fktr_default_email_subjects', $subjects);
+		return isset($subjects[$assigned]) ? $subjects[$assigned] : '';
 	}
 	public static function get_default_template_by_assigned($assigned) {
 		$ret = '';

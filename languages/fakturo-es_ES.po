@@ -7368,6 +7368,56 @@ msgstr "Tipo de pago/Cuenta bancaria"
 msgid "Client price scale and currency"
 msgstr "Escala de precios y moneda del cliente"
 
+#: includes/default-templates.php:100
+msgid "Default template"
+msgstr "Plantilla por defecto"
+
+#: includes/default-templates.php:105
+#, php-format
+msgid "Default templates: %1$d created, %2$d reset to default."
+msgstr "Plantillas por defecto: %1$d creadas, %2$d restablecidas."
+
+#: includes/default-templates.php:117
+msgid "This creates one template for every object type and resets to default the ones that already exist, removing their changes. Are you sure?"
+msgstr "Esto crea una plantilla para cada tipo de objeto y restablece a su valor por defecto las que ya existen, borrando sus cambios. ¿Está seguro?"
+
+#: includes/default-templates.php:117
+msgid "Create default templates"
+msgstr "Crear plantillas por defecto"
+
+#: includes/default-templates.php:160
+msgid "This replaces the current content with the default template of the selected type. Are you sure?"
+msgstr "Esto reemplaza el contenido actual por la plantilla por defecto del tipo seleccionado. ¿Está seguro?"
+
+#: includes/default-templates.php:130 includes/post-types-email-templates.php:61 includes/post-types-print-templates.php:73
+msgid "Default template not found."
+msgstr "No se encontró la plantilla por defecto."
+
+#: includes/post-types-email-templates.php includes/post-types-print-templates.php
+#, php-format
+msgid "There are %1$d published templates for this object. The one in use is \"%2$s\" (#%3$d), the newest one. Unpublish or delete the others to avoid confusion."
+msgstr "Hay %1$d plantillas publicadas para este objeto. La que se usa es «%2$s» (#%3$d), la más nueva. Anule la publicación o elimine las demás para evitar confusiones."
+
+#: includes/post-types-email-templates.php
+msgid "Invoice {$invoice.post_title} from {$company.name}"
+msgstr "Factura {$invoice.post_title} de {$company.name}"
+
+#: includes/post-types-email-templates.php
+msgid "Receipt {$receipt.post_title} from {$company.name}"
+msgstr "Recibo {$receipt.post_title} de {$company.name}"
+
+#: includes/post-types-email-templates.php
+msgid "A message from {$company.name}"
+msgstr "Un mensaje de {$company.name}"
+
+#: includes/post-types-email-templates.php
+msgid "Print template: {$print_template.post_title}"
+msgstr "Plantilla de impresión: {$print_template.post_title}"
+
+#: includes/post-types-email-templates.php
+msgid "E-mail template: {$email_template.post_title}"
+msgstr "Plantilla de correo electrónico: {$email_template.post_title}"
+
 #~ msgid "Save as PDF"
 #~ msgstr "Guardar PDF"
 

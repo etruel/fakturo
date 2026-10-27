@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>{$print_template.post_title}</title>
+<style type="text/css">
+	@page { margin: 40px 45px; }
+	body { font-family: "DejaVu Sans", sans-serif; font-size: 10pt; color: #222222; }
+	h1 { font-size: 16pt; margin: 0 0 4px 0; }
+	h2 { font-size: 11pt; margin: 18px 0 6px 0; border-bottom: 1px solid #999999; }
+	.company { font-size: 9pt; color: #555555; margin-bottom: 14px; }
+	table.data td { padding: 3px 8px 3px 0; vertical-align: top; }
+	table.data td.label { color: #666666; width: 110px; }
+	pre { font-family: "DejaVu Sans Mono", monospace; font-size: 7pt; white-space: pre-wrap; word-wrap: break-word; background: #f4f4f4; padding: 8px; }
+</style>
+</head>
+<body>
+	<h1>{$print_template.post_title}</h1>
+	<div class="company">{$company.name} - {$company.address} - {$company.city} - {$company.website}</div>
+	<table class="data">
+		<tr><td class="label">Description</td><td>{$print_template.description}</td></tr>
+		<tr><td class="label">Assigned to</td><td>{$print_template.assigned_label}</td></tr>
+	</table>
+	<h2>Template code</h2>
+	<pre>{$print_template.content_escaped}</pre>
+</body>
+</html>

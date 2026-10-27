@@ -70,6 +70,11 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 			}
 
 			$new_content = self::get_default_template_by_assigned($print_template['assigned']);
+			if ($new_content === '') {
+				fktrNotices::add(array('below-h2' => false, 'text' => __('Default template not found.', 'fakturo')));
+				wp_redirect(admin_url('post.php?post=' . $template_id . '&action=edit'));
+				exit;
+			}
 			$new		 = apply_filters('fktr_print_template_metabox_save_content', $new_content);  //filtra cada campo antes de grabar
 			update_post_meta($template_id, 'content', $new);
 			fktrNotices::add(array('below-h2' => false, 'text' => __('This print template has been reset to default.', 'fakturo')));
@@ -158,6 +163,18 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 			}
 		}
 
+		public static function format_money($amount, $symbol = '') {
+			$setting_system = get_option('fakturo_system_options_group', array());
+			if (!is_numeric($amount) || !isset($setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand'])) {
+				return trim($symbol . ' ' . $amount);
+			}
+			$text = number_format((float) $amount, (int) $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']);
+			if (isset($setting_system['currency_position']) && $setting_system['currency_position'] == 'after') {
+				return trim($text . ' ' . $symbol);
+			}
+			return trim($symbol . ' ' . $text);
+		}
+
 		public static function assignment($tpl, $object, $default_template) {
 			$setting_system				 = get_option('fakturo_system_options_group', array());
 			$tpl->assign("setting_system", $setting_system);
@@ -221,6 +238,9 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				}
 				$sale_invoice['subtotal']	 = $sale_invoice['in_sub_total'];
 				$sale_invoice['total']		 = $sale_invoice['in_total'];
+				$sale_invoice['post_title']	 = get_post_field('post_title', $object->id);
+				$sale_invoice['post_status'] = get_post_field('post_status', $object->id);
+				$sale_invoice['total_formatted'] = self::format_money($sale_invoice['total'], isset($sale_invoice['currency']['symbol']) ? $sale_invoice['currency']['symbol'] : '');
 
 				$tpl->assign("invoice", $sale_invoice);
 
@@ -241,12 +261,15 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 
 				$receipt			 = fktrPostTypeReceipts::get_receipt_data($object->id);
 				$receipt['datei18n'] = date_i18n(get_option('date_format'), $receipt['date']);
+				$receipt['post_title'] = get_post_field('post_title', $object->id);
+				$receipt_currency	 = get_fakturo_term($receipt['currency_id'], 'fktr_currencies');
+				$receipt['total_formatted'] = self::format_money($receipt['total_to_pay'], is_wp_error($receipt_currency) ? '' : $receipt_currency->symbol);
 
 				$client_data							 = fktrPostTypeClients::get_client_data($receipt['client_id']);
 				//$receipt['client_data']				 = $client_data;
 				//echo '$client_data=' . '<pre>' . print_r($client_data, 1) . '</pre>' . '<br>';
 				$receipt['client_data']['active']		 = $client_data['active'];
-				$receipt['client_data']['name']			 = $client_data['post_title'];
+				$receipt['client_data']['name']			 = get_post_field('post_title', $receipt['client_id']);
 				$receipt['client_data']['address']		 = $client_data['address'];
 				$receipt['client_data']['city']			 = $client_data['city'];
 				$receipt['client_data']['postcode']		 = $client_data['postcode'];
@@ -283,7 +306,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 						$invoice_data = fktrPostTypeSales::get_sale_data($invoice_id);
 
 						$ript_invoice					 = array();
-						$ript_invoice['title']			 = $invoice_data['post_title'];
+						$ript_invoice['title']			 = get_post_field('post_title', $invoice_id);
 						$ript_invoice['invoice_type']	 = $invoice_data['invoice_type'];
 						$ript_invoice['sale_point']		 = $invoice_data['sale_point'];
 						$ript_invoice['number']			 = $invoice_data['invoice_number'];
@@ -354,6 +377,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				$tpl->assign("fktr_product_background_image", FAKTURO_PLUGIN_URL . 'assets/images/' . $backgroundimage);
 
 				$product = fktrPostTypeProducts::get_product_data($object->id);
+				$product['post_title'] = get_post_field('post_title', $object->id);
 				$tpl->assign("product", $product);
 			} else if ($object->assgined == 'fktr_client') {
 				// assign vars to print template assgined to fktr_client.
@@ -368,6 +392,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				$tpl->assign("fktr_client_background_image", FAKTURO_PLUGIN_URL . 'assets/images/' . $backgroundimage);
 
 				$client = fktrPostTypeClients::get_client_data($object->id);
+				$client['post_title'] = get_post_field('post_title', $object->id);
 				$tpl->assign("client", $client);
 			} else if ($object->assgined == 'fktr_provider') {
 				// assign vars to print template assgined to fktr_provider.
@@ -382,7 +407,11 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				$tpl->assign("fktr_provider_background_image", FAKTURO_PLUGIN_URL . 'assets/images/' . $backgroundimage);
 
 				$provider = fktrPostTypeProviders::get_provider_data($object->id);
+				$provider['post_title'] = get_post_field('post_title', $object->id);
 				$tpl->assign("provider", $provider);
+			} else if ($object->assgined == 'fktr_print_template' || $object->assgined == 'fktr_email_template') {
+				$kind = ($object->assgined == 'fktr_email_template') ? 'email' : 'print';
+				$tpl->assign($kind . '_template', fktrDefaultTemplates::template_vars($kind, $object->id));
 			}
 
 			return $tpl;
@@ -432,26 +461,40 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 			wp_die('<h3>' . __('Could not find any object related to this print template', 'fakturo') . '</h3>');
 		}
 
-		public static function get_id_by_assigned($assigned) {
+		/**
+		 * Ids of the published templates assigned to an object type, newest first.
+		 */
+		public static function get_ids_by_assigned($assigned) {
 			global $wpdb;
-			$return	 = false;
-			$sql	 = $wpdb->prepare("SELECT p.ID, pm.meta_key, pm.meta_value as assigned FROM {$wpdb->posts} as p
-				 LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
-                 WHERE 
-                 pm.meta_key = 'assigned'
+			return array_map('intval', $wpdb->get_col($wpdb->prepare("SELECT p.ID FROM {$wpdb->posts} as p
+				 INNER JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
+				 WHERE pm.meta_key = 'assigned'
 				 AND p.post_status = 'publish'
 				 AND p.post_type = 'fktr_print_template'
 				 AND pm.meta_value = %s
-                 GROUP BY p.ID 
-				 LIMIT 1
-			 ", $assigned);
-			$r		 = $wpdb->get_results($sql, ARRAY_A);
-			if (!empty($r)) {
-				foreach ($r as $key => $value) {
-					$return = $value['ID'];
-				}
+				 GROUP BY p.ID
+				 ORDER BY p.ID DESC
+			 ", $assigned)));
+		}
+
+		/**
+		 * The template in use for an object type: the newest published one.
+		 */
+		public static function get_id_by_assigned($assigned) {
+			$ids = self::get_ids_by_assigned($assigned);
+			return empty($ids) ? false : $ids[0];
+		}
+
+		public static function duplicates_notice($assigned, $post_id) {
+			if ($assigned == -1) {
+				return '';
 			}
-			return $return;
+			$ids = self::get_ids_by_assigned($assigned);
+			if (count($ids) < 2 || !in_array((int) $post_id, $ids)) {
+				return '';
+			}
+			$text = sprintf(__('There are %1$d published templates for this object. The one in use is "%2$s" (#%3$d), the newest one. Unpublish or delete the others to avoid confusion.', 'fakturo'), count($ids), get_post_field('post_title', $ids[0]), $ids[0]);
+			return '<div class="notice notice-warning inline"><p>' . esc_html($text) . '</p></div>';
 		}
 
 		public static function get_rand_object_id($object_type, $print_template) {
@@ -657,6 +700,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 							'msg_reset'			 => __('This will remove all your modified data. Are you sure?', 'fakturo'),
 							'msg_before_reset'	 => __('Save before to reset to default.', 'fakturo'),
 				));
+				wp_localize_script('post-type-print-template', 'fktr_default_template', fktrDefaultTemplates::script_strings('print'));
 			}
 		}
 
@@ -681,14 +725,14 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 			$selectHtml		 = '<select name="assigned" id="assigned">
 							<option value="-1" ' . selected(-1, $print_template['assigned'], false) . '> ' . __('Select please', 'fakturo') . ' </option>';
 			foreach ($array_assigned as $key => $value) {
-				$selectHtml .= '<option value="' . $key . '" ' . selected($key, $print_template['assigned'], false) . '> ' . $value . ' </option>';
+				$selectHtml .= '<option value="' . esc_attr($key) . '" ' . selected($key, $print_template['assigned'], false) . '> ' . esc_html($value) . ' </option>';
 			}
 			$selectHtml	 .= '</select>';
-			$echoHtml	 = '<table>
+			$echoHtml	 = self::duplicates_notice($print_template['assigned'], $post->ID) . '<table>
 					<tbody>
 						<tr class="tr_fktr">
 							<th><label for="description">' . __('Description', 'fakturo') . '	</label></th>
-							<td><input id="description" type="text" name="description" value="' . $print_template['description'] . '" class="regular-text"></td>
+							<td><input id="description" type="text" name="description" value="' . esc_attr($print_template['description']) . '" class="regular-text"></td>
 						</tr>
 						<tr class="tr_fktr">
 							<th><label for="assigned">' . __('Assigned to', 'fakturo') . '	</label></th>
@@ -704,7 +748,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 								
 			</div>
 		</div>
-		<textarea name="content" cols="100" rows="24" id="content" class="">' . $print_template['content'] . '</textarea>
+		<textarea name="content" cols="100" rows="24" id="content" class="">' . esc_textarea($print_template['content']) . '</textarea>
 
 		';
 

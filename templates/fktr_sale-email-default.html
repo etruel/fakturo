@@ -1,0 +1,15 @@
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#333333;max-width:600px;">
+<p>Hello {$invoice.client_data.name},</p>
+<p>Please find attached your invoice <strong>{$invoice.post_title}</strong> dated {$invoice.datei18n}.</p>
+<table style="border-collapse:collapse;width:100%;margin:12px 0;">
+<tr><td style="padding:6px 8px;border-bottom:1px solid #dddddd;color:#666666;">Invoice</td><td style="padding:6px 8px;border-bottom:1px solid #dddddd;text-align:right;">{$invoice.post_title}</td></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid #dddddd;color:#666666;">Date</td><td style="padding:6px 8px;border-bottom:1px solid #dddddd;text-align:right;">{$invoice.datei18n}</td></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid #dddddd;color:#666666;">Payment</td><td style="padding:6px 8px;border-bottom:1px solid #dddddd;text-align:right;">{$invoice.client_data.payment_type.name}</td></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid #dddddd;color:#666666;">Total</td><td style="padding:6px 8px;border-bottom:1px solid #dddddd;text-align:right;"><strong>{$invoice.total_formatted}</strong></td></tr>
+</table>
+<p>If you have any question, just reply to this e-mail.</p>
+<p>Best regards,<br />
+<strong>{$company.name}</strong><br />
+{$company.address} - {$company.city}<br />
+{$company.website}</p>
+</div>

@@ -93,6 +93,10 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Webcam library updated to WebcamJS 1.0.26 (adds iOS Safari support); the unminified script loads when SCRIPT_DEBUG is on.
 * PDF engine updated to Dompdf 3.1.6 (with the security fixes of the 2.x series), and PHP 7.4 to 8.3 compatible. Invoices, receipts, print templates, emails and reports keep rendering exactly the same.
 * Settings, system and Licenses screens no longer show a PHP notice in the page header on PHP 8.1 and later.
+* Print and e-mail templates: every object type now comes with a ready-to-use default, created by the setup wizard or with the new "Create default templates" button.
+* Choosing the object of a new template fills in its default content and subject, and "Reset to default" no longer leaves a template empty.
+* A warning shows when several published templates are assigned to the same object; the newest one is always the one used.
+* Template titles and totals are now always available to print and e-mail templates, and the editor fields are escaped.
 
 = 1.0.10 (Oct 23, 2026) =
 * New Add-ons screen: activate, license and manage auto-updates of each add-on from its own row, with bulk actions and live search.

@@ -1,0 +1,15 @@
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#333333;max-width:600px;">
+<p>Hello {$client.post_title},</p>
+<p>This is a message from {$company.name}.</p>
+<table style="border-collapse:collapse;width:100%;margin:12px 0;">
+<tr><td style="padding:6px 8px;border-bottom:1px solid #dddddd;color:#666666;">Client</td><td style="padding:6px 8px;border-bottom:1px solid #dddddd;text-align:right;">{$client.post_title}</td></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid #dddddd;color:#666666;">Tax ID</td><td style="padding:6px 8px;border-bottom:1px solid #dddddd;text-align:right;">{$client.taxpayer}</td></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid #dddddd;color:#666666;">Address</td><td style="padding:6px 8px;border-bottom:1px solid #dddddd;text-align:right;">{$client.address}, {$client.city}</td></tr>
+<tr><td style="padding:6px 8px;border-bottom:1px solid #dddddd;color:#666666;">Phone</td><td style="padding:6px 8px;border-bottom:1px solid #dddddd;text-align:right;">{$client.phone}</td></tr>
+</table>
+<p>Please reply to this e-mail if any of your data needs to be updated.</p>
+<p>Best regards,<br />
+<strong>{$company.name}</strong><br />
+{$company.address} - {$company.city}<br />
+{$company.website}</p>
+</div>

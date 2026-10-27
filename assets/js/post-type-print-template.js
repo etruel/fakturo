@@ -42,6 +42,22 @@ jQuery(document).ready(function() {
     
 
     jQuery("#assigned").change(function() {
+        var assigned = this.value;
+        if (assigned != '-1') {
+            jQuery.post(print_template_object.ajax_url, {
+                action: 'fktr_default_template',
+                kind: fktr_default_template.kind,
+                nonce: fktr_default_template.nonce,
+                assigned: assigned
+            }, function(response) {
+                if (!response.success) {
+                    return;
+                }
+                if (jQuery.trim(editor.getValue()) == '' || confirm(fktr_default_template.msg_overwrite)) {
+                    editor.setValue(response.data.content);
+                }
+            });
+        }
         var data_sended = {
             action: 'get_vars_assigned_print',
             template_id: jQuery('#post_ID').val(),
