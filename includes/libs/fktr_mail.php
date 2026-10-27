@@ -245,11 +245,11 @@ if (!class_exists('fktr_mail')) :
 			$html		 = $tpl_print->fromString($print_template['content']);
 			$pdf		 = fktr_pdf::getInstance();
 			try {
-				$pdf->set_option('isRemoteEnabled', true);
-				$pdf->set_option('isHtml5ParserEnabled', true);
+				$pdf->getOptions()->set('isRemoteEnabled', true);
+				$pdf->getOptions()->set('isHtml5ParserEnabled', true);
 
-				$pdf->set_paper("A4", "portrait");
-				$pdf->load_html(($html), 'UTF-8');
+				$pdf->setPaper("A4", "portrait");
+				$pdf->loadHtml(($html), 'UTF-8');
 				$pdf->render();
 			} catch (Exception $e) {
 				fktrNotices::add(__('A problem to generate the pdf.', 'fakturo'));

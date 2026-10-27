@@ -309,11 +309,11 @@ class client_account_movements {
 
 		$pdf = fktr_pdf::getInstance();
 		
-		$pdf ->set_option('isRemoteEnabled', true);
-		$pdf ->set_option('isHtml5ParserEnabled', true);
+		$pdf ->getOptions()->set('isRemoteEnabled', true);
+		$pdf ->getOptions()->set('isHtml5ParserEnabled', true);
 
-		$pdf ->set_paper("A4", "portrait");
-		$pdf ->load_html($total_html_print);
+		$pdf ->setPaper("A4", "portrait");
+		$pdf ->loadHtml($total_html_print);
 		$pdf ->render();
 		$pdf ->stream('pdf.pdf', array('Attachment'=>0));
 

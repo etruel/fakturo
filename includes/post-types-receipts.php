@@ -109,10 +109,10 @@ class fktrPostTypeReceipts {
         if (isset($_REQUEST['pdf'])) {
             // Si se solicita el PDF
             $pdf = fktr_pdf::getInstance();
-            $pdf->set_option('isRemoteEnabled', true);
-            $pdf->set_option('isHtml5ParserEnabled', true);
-            $pdf->set_paper("A4", "portrait");
-            $pdf->load_html($html);
+            $pdf->getOptions()->set('isRemoteEnabled', true);
+            $pdf->getOptions()->set('isHtml5ParserEnabled', true);
+            $pdf->setPaper("A4", "portrait");
+            $pdf->loadHtml($html);
             $pdf->render();
             $pdf->stream('pdf.pdf', array('Attachment' => 0));
         } else {
