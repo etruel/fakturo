@@ -85,6 +85,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 == Changelog ==
 
 = 1.1 =
+* Welcome and Getting Started screens now speak English out of the box with full Spanish translation, and link to the right Fakturo pages.
 * Ready for PHP 8.2 and 8.3: no more deprecated notices when reading settings, printing or exporting PDFs.
 * PDFs of invoices, receipts and reports keep every character, including accents, symbols and non-Latin alphabets.
 * Faster and more robust invoice and receipt number validation, product search and report queries.

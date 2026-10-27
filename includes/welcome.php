@@ -157,7 +157,7 @@ class fktr_welcome {
 		?>
 		<div class="about__header-title">
 			<p>
-				<?php _e('Fakturo'); ?>
+				<?php _e('Fakturo', 'fakturo'); ?>
 				<span><?php echo $display_version; ?></span>
 			</p>
 		</div>
@@ -224,22 +224,28 @@ class fktr_welcome {
 
 			<hr/>
 
-			<?php $this->subscription_form(); ?>
+			<div class="about__section about__section_height-2">
+				<div class="column is-vertically-aligned-center">
+					<p><?php _e('For anyone reading this and wondering what on earth "Fakturo" is, or how on earth to start with so many options:', 'fakturo'); ?></p>
+					<h3><strong><?php _e("Relax, don't worry. Here we tell you everything!", 'fakturo'); ?></strong></h3>
+					<p><?php _e('Fakturo is a complete and free management system for small and medium-sized businesses, released as a WordPress plugin with many features for daily sales and invoicing management. It is fully configurable, customizable and extendable through WordPress filters and also through add-ons or custom support.', 'fakturo'); ?></p>
+				</div>
+			</div>
 
 			<hr/>
 
 			<div class="about__section has-3-columns mb-0">
 				<div class="column">
-					<h3><?php _e('Funciones esenciales', 'fakturo'); ?></h3>
-					<p><?php _e("Fakturo incluye una gran variedad de funciones esenciales para la gestión de ventas, de productos, stocks, clientes, cheques, cuentas, proveedores, recibos, pagos, etc. ofreciendo la posibilidad de acceso a la información en tiempo real, optimiza el proceso de ventas y permite brindar un servicio más eficiente.", 'fakturo'); ?></p>
+					<h3><?php _e('Essential features', 'fakturo'); ?></h3>
+					<p><?php _e("Fakturo includes a wide range of essential features to manage sales, products, stock, clients, checks, accounts, providers, receipts, payments and more. With real-time access to your information it streamlines the sales process and lets you offer a more efficient service.", 'fakturo'); ?></p>
 				</div>
 				<div class="column">
-					<h3><?php _e('Emisión de reportes', 'fakturo'); ?></h3>
-					<p><?php _e('Permite la emisión de reportes estadísticos, por clientes o por ingresos, controlados y generados a partir de diferentes tipos filtros como ser rangos de fecha, por grupos de facturas o clientes específicos lo cual permite obtener fácilmente resúmenes prácticos o informas detallados.', 'fakturo'); ?></p>
+					<h3><?php _e('Report generation', 'fakturo'); ?></h3>
+					<p><?php _e('Generate statistical reports by client or by income, filtered by date ranges, groups of invoices or specific clients, to easily get practical summaries or detailed reports.', 'fakturo'); ?></p>
 				</div>
 				<div class="column">
-					<h3><?php _e('Almacenamiento de datos', 'fakturo'); ?></h3>
-					<p><?php _e('El almacenamiento de información está preparado para usar la base de datos de WordPress en manera optimizada para asegurar el menor tamaño y más rápido acceso a los registros de las tablas. Asegurando así la compatibilidad con los backups tradicionales para WordPress o para cualquier servidor.', 'fakturo'); ?></p>
+					<h3><?php _e('Data storage', 'fakturo'); ?></h3>
+					<p><?php _e('Data is stored in the WordPress database in an optimized way to keep tables small and records fast to reach, and it stays compatible with traditional WordPress backups and with any server.', 'fakturo'); ?></p>
 				</div>
 			</div>
 
@@ -252,36 +258,31 @@ class fktr_welcome {
 					</div>
 				</div>
 				<div class="column is-vertically-aligned-center">
-					<h2><?php _e('¿Por qué deberías elegir Fakturo?', 'fakturo'); ?></h2>
+					<h2><?php _e('Why should you choose Fakturo?', 'fakturo'); ?></h2>
 
-					<h4><span class="dashicons dashicons-admin-settings"></span> <?php _e('Multiconfiguración', 'fakturo'); ?></h4>
-					<p><?php _e('Múltiples configuraciones disponibles para adaptarse a los requerimientos de cada situación y cada país.', 'fakturo'); ?></p>
+					<h4><span class="dashicons dashicons-admin-settings"></span> <?php _e('Multi-configuration', 'fakturo'); ?></h4>
+					<p><?php _e('Many settings are available to fit the requirements of every situation and every country.', 'fakturo'); ?></p>
 
-					<h4><span class="dashicons dashicons-money"></span> <?php _e('Asistente virtual o Wizard.', 'fakturo'); ?></h4>
-					<p><?php _e('Configuración inicial automatizada por medio de un asistente virtual, y con soporte personalizado.', 'fakturo'); ?></p>
+					<h4><span class="dashicons dashicons-money"></span> <?php _e('Virtual assistant or Wizard.', 'fakturo'); ?></h4>
+					<p><?php _e('Automated initial setup through a virtual assistant, with personalized support.', 'fakturo'); ?></p>
 
-					<h4><span class="dashicons dashicons-groups"></span> <?php _e('Multiusuario.', 'fakturo'); ?></h4>
-					<p><?php _e('Permiten que dos o más usuarios compartan los mismos recursos simultáneamente, Fakturo maneja los siguientes roles de usuarios: Administrador, Fakturo Supervisor, Vendedor.', 'fakturo'); ?></p>
+					<h4><span class="dashicons dashicons-groups"></span> <?php _e('Multi-user.', 'fakturo'); ?></h4>
+					<p><?php _e('Allows two or more users to share the same resources at the same time. Fakturo handles these user roles: Administrator, Fakturo Supervisor and Seller.', 'fakturo'); ?></p>
 
-					<h4><span class="dashicons dashicons-translation"></span> <?php _e('Multilenguaje.', 'fakturo'); ?></h4>
-					<p><?php _e('Fakturo soporta múltiples idiomas, actualmente incluye los idiomas Español e Inglés y también archivos de idioma para traducir.', 'fakturo'); ?></p>
+					<h4><span class="dashicons dashicons-translation"></span> <?php _e('Multi-language.', 'fakturo'); ?></h4>
+					<p><?php _e('Fakturo supports multiple languages. It currently includes Spanish and English, plus language files to translate it.', 'fakturo'); ?></p>
 
-					<h4><span class="dashicons dashicons-editor-code"></span> <?php _e('Preparado para programadores.', 'fakturo'); ?></h4>
-					<p><?php _e('Desarrollado y optimizado para los estándares de WordPress con docenas de Filtros y Acciones para que puedan extender sus funcionalidades.', 'fakturo'); ?></p>
+					<h4><span class="dashicons dashicons-editor-code"></span> <?php _e('Ready for developers.', 'fakturo'); ?></h4>
+					<p><?php _e('Built and optimized following WordPress standards, with dozens of filters and actions to extend its features.', 'fakturo'); ?></p>
 
-					<h4><span class="dashicons dashicons-sos"></span> <?php _e('Ayuda contextual completa.', 'fakturo'); ?></h4>
-					<p><?php _e('Integrado para usar la ayuda contextual de WordPress. En cada pantalla del sistema se encuentra la pestaña superior de Ayuda explicando esa etapa del proceso.', 'fakturo'); ?></p>
+					<h4><span class="dashicons dashicons-sos"></span> <?php _e('Complete contextual help.', 'fakturo'); ?></h4>
+					<p><?php _e('Integrated with the WordPress contextual help. Every screen has a Help tab at the top explaining that step of the process.', 'fakturo'); ?></p>
 				</div>
 			</div>
 
 			<hr/>
 
 			<div class="about__section has-3-columns mb-0">
-				<h2 class="is-section-header"><?php _e('Even More Developer Happiness', 'fakturo'); ?></h2>
-				<div class="column">
-					<h3><?php _e('JavaScript hooks', 'fakturo'); ?></h3>
-					<p><?php _e("We've implemented the JavaScript hooks like WordPress actions and filters! You can make functions to enqueue the scripts and hooks to already added filters in the code.", 'fakturo'); ?></p>
-				</div>
 				<div class="column">
 					<h3><a href="https://etruel.com/my-account/support/" target="_blank"><?php _e('Support ticket system for free', 'fakturo'); ?></a></h3>
 					<p><?php _e('Ask for any problem you may have and you\'ll get support for free. If it is necessay we will see into your website to solve your issue.', 'fakturo'); ?></p>
@@ -289,16 +290,6 @@ class fktr_welcome {
 				<div class="column">
 					<h3><a href="https://etruel.com/downloads/premium-support/" target="_blank"><?php _e('Premium Support', 'fakturo'); ?></a></h3>
 					<p><?php _e('Get access to in-depth setup assistance. We\'ll dig in and do our absolute best to resolve issues for you. Any support that requires code or setup your site will need this service.', 'fakturo'); ?></p>
-				</div>
-			</div>
-			<div class="about__section has-3-columns mb-0">
-				<div class="column">
-					<h3><?php _e('Nags updates individually for extensions', 'fakturo'); ?><span class="plugin-count" style="display: inline-block;background-color: #d54e21;color: #fff;font-size: 9px;line-height: 17px;font-weight: 600;margin: 1px 0 0 2px;vertical-align: top;-webkit-border-radius: 10px;border-radius: 10px;z-index: 26;padding: 0 6px;">1</span></h3>
-					<p><?php _e('A more clear nag update was added for the addons in the Fakturo Extensions and Addons menu items.', 'fakturo'); ?></p>
-				</div>
-				<div class="column">
-					<h3><?php _e('Hidden Options in Settings -> Writing', 'fakturo'); ?></h3>
-					<p><?php _e("If you have any problem with Fakturo item menu, Settings page or lost some plugin, we've put there a Fakturo Section, to try to avoid weird behaviors made by some thirds plugins.", 'fakturo'); ?></p>
 				</div>
 				<div class="column">
 					<h3><a href="https://wordpress.org/support/view/plugin-reviews/fakturo?filter=5&rate=5#new-post" target="_blank"><?php _e('Rate 5 stars on Wordpress', 'fakturo'); ?></a><div class="wporg-ratings" title="5 out of 5 stars" style="color:#ffb900;"><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span></div></h3>
@@ -395,7 +386,7 @@ class fktr_welcome {
 			<hr />
 
 			<div class="return-to-dashboard">
-				<a href="<?php echo esc_url(admin_url(add_query_arg(array('post_type' => 'fakturo', 'page' => 'fakturo_settings'), 'edit.php'))); ?>"><?php _e('Go to WPeMatico Settings', 'fakturo'); ?></a>
+				<a href="<?php echo esc_url(admin_url(add_query_arg(array('page' => 'fakturo-settings'), 'admin.php'))); ?>"><?php _e('Go to Fakturo Settings', 'fakturo'); ?></a>
 			</div>
 		</div>
 		<?php
@@ -427,55 +418,55 @@ class fktr_welcome {
 			<div class="about__section about__section_height has-2-columns">
 				<div class="column wpe-flex is-edge-to-edge has-accent-background-color">
 					<div class="about__image is-vertically-aligned-center">
-						<img src="<?php echo FAKTURO_PLUGIN_URL . 'screenshot-6.png'; ?>" class="Un intuitivo Dashboard Principal"/>
+						<img src="<?php echo FAKTURO_PLUGIN_URL . 'screenshot-6.png'; ?>" alt="<?php esc_attr_e('Main Dashboard', 'fakturo'); ?>"/>
 					</div>
 				</div>
 				<div class="column is-vertically-aligned-center">
-					<h3 style="margin-bottom: 0;"><?php _e('Un intuitivo', 'fakturo'); ?></h3>
-					<h2><?php _e('Dashboard Principal', 'fakturo'); ?></h2>
-					<p><?php _e('Una vez instalado el plugin con la ayuda de un increíble el asistente de instalación (Wizard) Podras acceder desde la pestaña de Wordpress al Escritorio principal de Fakturo. El Intuitivo Dashboard.', 'fakturo'); ?></p>
-					<p><?php _e('En el mismo podrás visualizar 7 grandes iconos de diferentes colores. Serán los accesos directos y rápidos hacia las principales funciones de tu nuevo Fakturo. Además también podrás ver un panel con una vista previa de tu resumen de Ventas del día, del mes actual y del mes anterior.', 'fakturo'); ?></p>
-					<p><?php _e('Desde estos vistosos accesos directos podras llegar fácilmente y muy rápido a gestionar la Venta que quieres facturar, cheques, recibos  y demás opciones de configuración.', 'fakturo'); ?></p>
-					<p><?php _e('¿Y si mis vendedores o a quien pongo en la caja a manejar el sistema alteran los valores de configuración que deje establecidos? Muy buena pregunta… Tranquil@!', 'fakturo'); ?></p>
-					<p><?php _e('Generalmente para los roles que asignes como “Vendedor” o “Supervisor Fakturo” no estarán disponibles estas opciones de configuración para que no puedan alterar los valores y configuraciones del sistema que ya tú has establecido, algo que solo podrá hacerse desde tu rol de administrador.', 'fakturo'); ?></p>
+					<h3 style="margin-bottom: 0;"><?php _e('An intuitive', 'fakturo'); ?></h3>
+					<h2><?php _e('Main Dashboard', 'fakturo'); ?></h2>
+					<p><?php _e('Once the plugin is installed, with the help of an amazing setup wizard, you can reach the main Fakturo desktop from the WordPress menu: the intuitive Dashboard.', 'fakturo'); ?></p>
+					<p><?php _e('There you will see 7 big colored icons. They are quick shortcuts to the main functions of your new Fakturo. You will also see a panel with a preview of your sales summary for today, the current month and the previous month.', 'fakturo'); ?></p>
+					<p><?php _e('From these shortcuts you can easily and quickly reach the sale you want to invoice, checks, receipts and other settings.', 'fakturo'); ?></p>
+					<p><?php _e('What if my sellers, or whoever I put at the cash register, change the settings I have established? Great question… Relax!', 'fakturo'); ?></p>
+					<p><?php _e('Usually the settings are not available to the roles you assign as “Seller” or “Fakturo Supervisor”, so they cannot change the values and configuration you already established. That can only be done from your administrator role.', 'fakturo'); ?></p>
 				</div>
 			</div>
 
 			<div class="about__section about__section_height has-2-columns">
 				<div class="column is-vertically-aligned-center">
-					<h2><?php _e('Facturación', 'fakturo'); ?></h2>
-					<p><?php _e('La facturación engloba todos los pasos relacionados con la elaboración, registro, envío y cobro de las facturas de débito y crédito.', 'fakturo'); ?></p>
-					<p><?php _e('Este software de gestión, incorpora documentos acreditativos de una transacción comercial además de plantillas de factura con todos los contenidos esenciales que dicta la normativa de facturación.', 'fakturo'); ?></p>
+					<h2><?php _e('Invoicing', 'fakturo'); ?></h2>
+					<p><?php _e('Invoicing covers all the steps related to preparing, recording, sending and collecting debit and credit invoices.', 'fakturo'); ?></p>
+					<p><?php _e('This management software includes the documents that support a commercial transaction, plus invoice templates with all the essential content required by invoicing regulations.', 'fakturo'); ?></p>
 
-					<h4><?php _e('Múltiples puntos de venta', 'fakturo'); ?></h4>
-					<p class="text"><?php _e('Numeraciones diferentes para emitir comprobantes desde distintas sucursales o distintos puntos de venta usando el mismo sistema.', 'fakturo'); ?></p>
+					<h4><?php _e('Multiple sale points', 'fakturo'); ?></h4>
+					<p class="text"><?php _e('Different numbering to issue vouchers from different branches or sale points using the same system.', 'fakturo'); ?></p>
 
-					<h4><?php _e('Formato personalizado del Nro de la factura', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Establece un formato personalizado para el Nro de la factura con los atributos de punto de venta, tipo y número de factura, cantidad de dígitos, etc.", 'fakturo'); ?></p>
+					<h4><?php _e('Custom invoice number format', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Set a custom format for the invoice number using the sale point, type and invoice number attributes, number of digits, etc.", 'fakturo'); ?></p>
 
-					<h4><?php _e('Personalización total de la factura por plantillas', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Diseña la estructura de las facturas de tu empresa a traves de plantillas personalizadas y variables pre-definidas que puedes utilizar para incluir la información que necesites por medio de un editor de código enriquecido que además incluye un pre visualizador.", 'fakturo'); ?></p>
+					<h4><?php _e('Full invoice customization with templates', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Design the layout of your company's invoices with custom templates and predefined variables to include the information you need, using a rich code editor that also includes a preview.", 'fakturo'); ?></p>
 
-					<h4><?php _e('Impresiones sobre hoja pre-impresas', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Permite impresiones sobre hoja pre-impresas o en blanco dependiendo de la estructura de los recibos.", 'fakturo'); ?></p>
+					<h4><?php _e('Printing on pre-printed sheets', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Print on pre-printed or blank sheets depending on the structure of your receipts.", 'fakturo'); ?></p>
 
-					<h4><?php _e('Personalización de emails con plantillas', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Define la estructura de los emails a través de plantillas para envío de documentos adjuntos.", 'fakturo'); ?></p>
+					<h4><?php _e('Email customization with templates', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Define the structure of the emails used to send attached documents.", 'fakturo'); ?></p>
 
-					<h4><?php _e('Envio de archivos PDF', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Permite enviar archivos PDF de forma individual por cliente o por lotes, seleccionando a cuales clientes del listado.", 'fakturo'); ?></p>
+					<h4><?php _e('Sending PDF files', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Send PDF files individually per client or in batches, choosing which clients from the list.", 'fakturo'); ?></p>
 					
-					<h4><?php _e('Múltiples medios de pago', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Multiples medios de pago por cada cliente, como depósitos bancarios, efectivo, e incluso cheques y además del seguimiento de los mismos.", 'fakturo'); ?></p>
+					<h4><?php _e('Multiple payment methods', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Multiple payment methods for each client, like bank deposits, cash and even checks, with their follow-up.", 'fakturo'); ?></p>
 					
-					<h4><?php _e('Condiciones de impuestos', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Gestiona los impuestos y la condición de impuestos predeterminada por cada cliente, por tipos de factura o por producto.", 'fakturo'); ?></p>
+					<h4><?php _e('Tax conditions', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Manage taxes and the default tax condition of each client, by invoice type or by product.", 'fakturo'); ?></p>
 					
-					<h4><?php _e('Facturas electrónicas', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Fakturo está desarrollado y preparado para emitir facturas electrónicas adquiriendo una extensión adicional.", 'fakturo'); ?></p>
+					<h4><?php _e('Electronic invoices', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Fakturo is built and ready to issue electronic invoices with an additional extension.", 'fakturo'); ?></p>
 
-					<h4><?php _e('Facturación automática mensual', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("A través de la extensión Suscripciones puedes emitir facturas de forma automática mediante suscripciones periódicas a clientes", 'fakturo'); ?></p>
+					<h4><?php _e('Automatic monthly invoicing', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("With the Subscriptions extension you can issue invoices automatically through recurring subscriptions to clients.", 'fakturo'); ?></p>
 				</div>
 				<div class="column wpe-flex is-edge-to-edge has-accent-background-color">
 					<div class="about__image is-vertically-aligned-center">
@@ -493,57 +484,57 @@ class fktr_welcome {
 					</div>
 				</div>
 				<div class="column is-vertically-aligned-center">
-					<h2><?php _e('Clientes', 'fakturo'); ?></h2>
-					<p><?php _e('La gestión de los clientes es imprescindible para llevar un control no sólo de la facturación sino también de la contabilidad.', 'fakturo'); ?></p>
+					<h2><?php _e('Clients', 'fakturo'); ?></h2>
+					<p><?php _e('Client management is essential to keep control not only of invoicing but also of accounting.', 'fakturo'); ?></p>
 					
-					<h4><?php _e('Cuentas corrientes', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Reportes, resumen de cuentas o detallados de entradas y salidas por facturación de créditos, débitos y recibos con los saldos actuales de cada cliente.", 'fakturo'); ?></p>
+					<h4><?php _e('Current accounts', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Summary or detailed reports of incoming and outgoing movements from credit and debit invoices and receipts, with the current balance of each client.", 'fakturo'); ?></p>
 					
-					<h4><?php _e('Fotografías al instante desde la webcam', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Utiliza la webcam de tu ordenador para tomar fotografías de los clientes directamente desde el sistema para agregarla junto a sus datos.", 'fakturo'); ?></p>
+					<h4><?php _e('Instant photos from the webcam', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Use your computer's webcam to take photos of your clients right from the system and add them to their data.", 'fakturo'); ?></p>
 					
-					<h4><?php _e('Contactos del cliente', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("En casos de que tu cliente sea una empresa o compañía puedes registrar información de contacto de dicho cliente, esta información será útil para contactar a los representantes de la empresa cliente.", 'fakturo'); ?></p>
+					<h4><?php _e('Client contacts', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("If your client is a company you can record its contact information, which is useful to reach the company's representatives.", 'fakturo'); ?></p>
 					
-					<h4><?php _e('Pre configuraciones para carga automática en la facturación', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Durante el proceso de facturación al seleccionar el cliente su información previamente registrada se cargará de forma automática en la factura, agilizando la creación de la misma.", 'fakturo'); ?></p>
+					<h4><?php _e('Preset values loaded automatically when invoicing', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("When you select the client while invoicing, the information previously recorded is loaded into the invoice automatically, speeding up its creation.", 'fakturo'); ?></p>
 					
-					<h4><?php _e('Tipo de pago/Cuenta bancaria', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Gestiona el tipo de pago predeterminado y la cuenta bancaria por cada cliente durante el proceso de registro, además también puedes cambiar el tipo de pago del cliente por uno diferente en el proceso de facturación.", 'fakturo'); ?></p>
+					<h4><?php _e('Payment type / Bank account', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Manage the default payment type and bank account of each client during registration. You can also choose a different payment type for the client while invoicing.", 'fakturo'); ?></p>
 					
-					<h4><?php _e('Condición de impuestos', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Gestiona la condición de impuestos predeterminada por cada cliente durante el proceso de registro, además también puedes cambiarlo por uno diferente en el proceso de facturación.", 'fakturo'); ?></p>
+					<h4><?php _e('Tax condition', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Manage the default tax condition of each client during registration. You can also choose a different one while invoicing.", 'fakturo'); ?></p>
 					
-					<h4><?php _e('Escala de precios y moneda del cliente', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Establece las escalas de precios diferentes por producto y clientes basados en el costo más un porcentaje, facilitando la modificación masiva de todas las escalas por familia de productos.", 'fakturo'); ?></p>
+					<h4><?php _e('Client price scale and currency', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Set different price scales per product and client based on the cost plus a percentage, making it easy to change all the scales at once by product family.", 'fakturo'); ?></p>
 
-					<h4><?php _e('Límite de crédito', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Asigna el límite de crédito que necesita algún cliente para realizar operaciones comerciales a lo largo del año y cubrir sus necesidades crediticias en todo momento. En caso de sumar saldos negativos se avisará al vendedor antes de facturar.", 'fakturo'); ?></p>
+					<h4><?php _e('Credit limit', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Assign the credit limit a client needs to operate along the year and cover their credit needs at any time. If the balance goes negative, the seller is warned before invoicing.", 'fakturo'); ?></p>
 				</div>
 			</div>
 
 			<div class="about__section about__section_height has-2-columns">
 				<div class="column is-vertically-aligned-center">
-					<h2><?php _e('Productos', 'fakturo'); ?></h2>
-					<p><?php _e('El inventario de productos es la función que se ocupa de llevar el control de existencias de cada producto en cada ubicación dada.', 'fakturo'); ?></p>
+					<h2><?php _e('Products', 'fakturo'); ?></h2>
+					<p><?php _e('Product inventory controls the stock of each product in each location.', 'fakturo'); ?></p>
 
-					<h4><?php _e('Tipos de productos, separados en categorías y/o modelos', 'fakturo'); ?></h4>
-					<p class="text"><?php _e('Permite ordenar tus productos en conjuntos de “familia” para tenerlos agrupados a través de tipos de producto, categorías y/o modelos. El orden es necesario en cualquier inventario. Si conocemos donde pertenece cada producto, lo encontraremos con mayor facilidad.', 'fakturo'); ?></p>
+					<h4><?php _e('Product types, separated into categories and/or models', 'fakturo'); ?></h4>
+					<p class="text"><?php _e('Sort your products into “families” grouped by product type, category and/or model. Order is necessary in any inventory: if we know where each product belongs, we find it more easily.', 'fakturo'); ?></p>
 
-					<h4><?php _e('Entradas y salidas automáticas de stock', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Gestiona la entrada y salida de los productos en el almacén, cualquier entrada a inventario o salida del mismo deberá tener un número de remisión que puede ser una factura de compra, un número de remisión o un documento soporte.", 'fakturo'); ?></p>
+					<h4><?php _e('Automatic stock entries and exits', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Manage the entry and exit of products in the warehouse. Every stock entry or exit must have a reference number, which can be a purchase invoice, a delivery note or a supporting document.", 'fakturo'); ?></p>
 
-					<h4><?php _e('Stocks diferentes por depósito', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("El sistema permite gestionar varios stocks diferentes por depósitos al mismo tiempo.", 'fakturo'); ?></p>
+					<h4><?php _e('Different stocks per warehouse', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("The system can manage several different stocks per warehouse at the same time.", 'fakturo'); ?></p>
 
-					<h4><?php _e('Depósitos para productos', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Registra la cantidad de depósitos que necesites, para llevar un control del almacenamiento y la ubicación de tus productos, se recomienda crear al menos uno.", 'fakturo'); ?></p>
+					<h4><?php _e('Warehouses for products', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Register as many warehouses as you need to control the storage and location of your products. Creating at least one is recommended.", 'fakturo'); ?></p>
 
-					<h4><?php _e('Fotografías al instante desde la webcam', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Utiliza la webcam de tu ordenador para tomar fotografías de los productos directamente desde el sistema para agregarla junto al resto de su información.", 'fakturo'); ?></p>
+					<h4><?php _e('Instant photos from the webcam', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Use your computer's webcam to take photos of your products right from the system and add them to the rest of their information.", 'fakturo'); ?></p>
 
-					<h4><?php _e('Gestión de proveedores, impuestos, embalajes y orígenes de productos', 'fakturo'); ?></h4>
-					<p class="text"><?php _e("Gestionar los proveedores es un factor clave en los procesos de toma de decisiones de la empresa, además de esto, durante el proceso de registro puedes establecer los impuestos, el embalaje, las unidades por paquetes y el origen de los productos.", 'fakturo'); ?></p>
+					<h4><?php _e('Management of providers, taxes, packaging and product origins', 'fakturo'); ?></h4>
+					<p class="text"><?php _e("Managing providers is a key factor in the company's decision making. Besides that, while registering a product you can set its taxes, packaging, units per package and origin.", 'fakturo'); ?></p>
 				</div>
 				<div class="column wpe-flex is-edge-to-edge has-accent-background-color">
 					<div class="about__image is-vertically-aligned-center">
@@ -559,20 +550,20 @@ class fktr_welcome {
 					</div>
 				</div>
 				<div class="column is-vertically-aligned-center">
-					<h2><?php _e('Extensiones', 'fakturo'); ?></h2>
-					<p><?php _e('Preparado para agregarle funciones mediante extensiones, con algunas ya creadas como Suscripciones o Facturación Electrónica.', 'fakturo'); ?></p>
+					<h2><?php _e('Extensions', 'fakturo'); ?></h2>
+					<p><?php _e('Ready to add features through extensions, with some already built like Subscriptions or Electronic Invoicing.', 'fakturo'); ?></p>
 
-					<h3><?php _e('Suscripciones', 'fakturo'); ?></h3>
-					<p><?php _e('- Permite la facturación automática mediante suscripciones periódicas a clientes.', 'fakturo'); ?></p>
-					<p><?php _e('- Totalmente configurable se establece el periodo de la suscripción a mensual, semanal, etc.', 'fakturo'); ?></p>
-					<p><?php _e('- Según la fecha determinada en la suscripción, se genera la factura automáticamente.', 'fakturo'); ?></p>
-					<p><?php _e('- Se puede generar en modo borrador o ya finalizada y aprobada con envío por email al cliente.', 'fakturo'); ?></p>
+					<h3><?php _e('Subscriptions', 'fakturo'); ?></h3>
+					<p><?php _e('- Automatic invoicing through recurring subscriptions to clients.', 'fakturo'); ?></p>
+					<p><?php _e('- Fully configurable: set the subscription period to monthly, weekly, etc.', 'fakturo'); ?></p>
+					<p><?php _e('- The invoice is generated automatically on the date set in the subscription.', 'fakturo'); ?></p>
+					<p><?php _e('- It can be generated as a draft, or already finished and approved and sent by email to the client.', 'fakturo'); ?></p>
 
-					<h3><?php _e('Facturación Electrónica', 'fakturo'); ?></h3>
-					<p><?php _e('- Permite la facturación electrónica de Argentina.', 'fakturo'); ?></p>
-					<p><?php _e('- Emití tu factura electrónica de AFIP muy fácilmente.', 'fakturo'); ?></p>
-					<p><?php _e('- Hace todas las pruebas necesarias en borrador y completa electrónicamente cuando estás seguro.', 'fakturo'); ?></p>
-					<p><?php _e('- A tu elección envía automáticamente por email al cliente.', 'fakturo'); ?></p>
+					<h3><?php _e('Electronic Invoicing', 'fakturo'); ?></h3>
+					<p><?php _e('- Allows electronic invoicing for Argentina.', 'fakturo'); ?></p>
+					<p><?php _e('- Issue your AFIP electronic invoice very easily.', 'fakturo'); ?></p>
+					<p><?php _e('- Runs all the necessary tests as a draft and completes it electronically when you are sure.', 'fakturo'); ?></p>
+					<p><?php _e('- If you choose, it emails the invoice to the client automatically.', 'fakturo'); ?></p>
 				</div>
 			</div>
 
@@ -590,21 +581,10 @@ class fktr_welcome {
 				</div>
 			</div>
 			<div class="about__section has-2-columns has-subtle-background-color">
-				<h2 class="is-section-header"><?php _e('Stay Up to Date', 'fakturo'); ?></h2>
-				<div class="column">
-					<h3><?php _e('Get Notified of Extension Releases', 'fakturo'); ?></h3>
-					<p><?php echo __('New extensions that make WPeMatico even more powerful are released nearly every single week. Subscribe to the newsletter to stay up to date with our latest releases. ', 'fakturo') . '<a href="http://eepurl.com/bX2ANz" target="_blank">' . __('Sign up now', 'fakturo') . '</a>' . __(' to ensure you do not miss a release!', 'fakturo'); ?></p>
-				</div>
-				<div class="column">
-					<h3><?php _e('Get Alerted About New Tutorials', 'fakturo'); ?></h3>
-					<p><?php echo '<a href="http://eepurl.com/bX2ANz" target="_blank">' . __('Sign up now', 'fakturo') . '</a>' . __(' to hear about the latest tutorial releases that explain how to take WPeMatico further.', 'fakturo'); ?></p>
-				</div>
-			</div>
-			<div class="about__section has-2-columns has-subtle-background-color">
 				<h2 class="is-section-header"><?php _e('Fakturo Add-ons', 'fakturo'); ?></h2>
 				<div class="column">
 					<h3><?php _e('Extend the plugin features', 'fakturo'); ?></h3>
-					<p><?php _e('Existen plugins complementarios que amplían en gran medida la funcionalidad por defecto de Fakturo. Como Suscripciones y AFIP.', 'fakturo'); ?></p>
+					<p><?php _e('There are companion plugins that greatly extend the default features of Fakturo, like Subscriptions and AFIP.', 'fakturo'); ?></p>
 				</div>
 				<div class="column">
 					<h3><?php _e('Visit the Extension Store', 'fakturo'); ?></h3>
@@ -614,160 +594,6 @@ class fktr_welcome {
 
 		</div>
 		<?php
-	}
-
-	/**
-	 * Render Subscription Screen
-	 *
-	 * @access public
-	 * @since 1.0
-	 * @return void
-	 */
-	public function subscription_form() {
-		?>
-		<?php
-		$current_user	 = wp_get_current_user();
-		?>
-		<style type="text/css">
-			.subscription {
-			}
-			.form-group label{
-				display: block;
-				margin-bottom: .5em;
-				font-size: 1rem;
-				font-weight: 600;
-				color: #fff;
-			}
-			.two-form-group{
-				display: flex;
-				flex-wrap: wrap;
-				align-items: flex-end;
-				margin-left: -7.5px;
-				margin-right: -7.5px;
-			}
-			.two-form-group .form-group{
-				-ms-flex: 0 0 50%;
-				flex: 0 0 50%;
-				max-width: 50%;
-				padding-left: 7.5px;
-				padding-right: 7.5px;
-				box-sizing: border-box;
-				margin-bottom: 1em;
-			}
-			.subscription #wpsubscription_form .form-control{
-				padding: 7.5px 15px;
-				box-shadow: none!important;
-				display: block;
-				width: 100%;
-				border-radius: 0;
-				border: 2px solid #d3741c;
-			}
-			.wpbutton-submit-subscription{
-				margin-top: 32px;
-				text-align: right;
-			}
-			.wpbutton-submit-subscription .button-primary{
-				padding: 10px 20px;
-				border-radius: 0;
-				font-size: 15px;
-				background: #222;
-				border-color: #222;
-			}
-			.wpbutton-submit-subscription .button-primary:hover{
-				background: #111;
-				border-color: #111;
-			}
-		</style>
-		<?php
-		$suscripted_user = get_option('fakturo_subscription_email_' . md5($current_user->ID), false);
-		$classes		 = "";
-		if($suscripted_user === false) {
-			$classes = "about__section_height-2 has-2-columns";
-		}
-		?>
-		<div class="about__section <?php echo $classes; ?> subscription">
-			<div class="column is-vertically-aligned-center">
-				<h2><?php _e('¡Últimas novedades en esta versión!', 'fakturo'); ?></h2>
-				<p><?php _e('Luego de años de estar en versión Beta, Fakturo se lanza oficialmente en su primera versión 1.0. Este increíble plugin para WordPress seguirá mejorando e innovando con cada actualización. Una vez más incluimos nuevas características con el fin de mejorar la experiencia del usuario en el sistema de gestión de ventas de su empresa y cubrir todas sus necesidades.', 'fakturo'); ?></p>
-				<p><?php _e('En breve estaremos lanzando su propio sitio web <a href="https://www.fakturo.org/">www.fakturo.org</a> desde el cual se podrá acceder a sus actualizaciones, diferentes extensiones, soporte técnico y algunos servicios Premium muy innovadores de los que pronto sabrán más 😉.','fakturo')?></p>
-				<p><?php _e('Para quien esté leyendo esto y se esté preguntando ¿Qué rayos es "Fakturo"?, o ¿Cómo rayos comienzo entre tantas opciones?', 'fakturo'); ?></p>
-				<h3><strong><?php _e('Tranquilo amig@, no te vayas a electrocutar... ¡Aquí te lo contamos todo!', 'fakturo'); ?></strong></h3>
-				<p><?php _e('Fakturo es un sistema completo de gestión de Medianas y Pequeñas empresas gratuito, lanzado como plugin de WordPress con múltiples funciones para la gestión diaria de ventas y facturación. Es totalmente configurable, personalizable y actualizable a través de filtros de WordPress y también mediante AddOns o soporte personalizado.', 'fakturo'); ?></p>
-			</div>
-			<?php if($suscripted_user === false) { ?>
-				<div class="column wpe-flex is-edge-to-edge has-accent-background-color">
-					<div class="about__image is-vertically-aligned-center">
-						<p></p>
-						<h2><strong><?php _e('Stay Informed!', 'fakturo'); ?></strong></h2>
-						<h3 class="wpsubscription_info"><?php _e('Subscribe to our Newsletter and be the first to receive our news.', 'fakturo'); ?> 
-							<?php _e('We send around 4 or 5 emails per year. Really.', 'fakturo'); ?></h3>
-						<form action="<?php echo admin_url('admin-post.php'); ?>" id="wpsubscription_form" method="post" class="wpcf7-form">
-							<input type="hidden" name="action" value="save_subscription_fakturo"/>
-							<?php wp_nonce_field('save_subscription_fakturo'); ?>
-							<div class="two-form-group">
-								<div class="form-group">
-									<label><?php _e("Name", "fakturo"); ?></label>
-									<input type="text" id="" name="fakturo_subscription[fname]" value="<?php echo $current_user->user_firstname; ?>" size="40" class="form-control" placeholder="<?php _e("First Name", "fakturo"); ?>">
-								</div>
-								<div class="form-group">
-									<input type="text" id="" name="fakturo_subscription[lname]" value="<?php echo $current_user->user_lastname; ?>" size="40" class="form-control" placeholder="<?php _e("Last Name", "fakturo"); ?>">
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label><?php _e("Email", "fakturo"); ?> <span>(*)</span></label>
-								<input type="text" id="" name="fakturo_subscription[email]" value="<?php echo $current_user->user_email; ?>" size="40" class="form-control" placeholder="<?php _e("Email", "fakturo"); ?>">
-							</div>
-
-							<div class="wpbutton-submit-subscription">
-								<input type="submit" class="button button-primary"  value="<?php _e('Subscribe', 'fakturo'); ?>">
-							</div>
-						</form>
-					</div>
-				</div>
-			<?php } ?>
-		</div>
-		<?php
-	}
-
-	/**
-	 * Static function save_subscription
-	 * @access public
-	 * @return void
-	 * @since 1.0
-	 */
-	public function save_subscription() {
-		if(!wp_verify_nonce($_POST['_wpnonce'], 'save_subscription_fakturo')) {
-			wp_die(__('Security check', 'fakturo'));
-		}
-		$fname	 = sanitize_text_field($_POST['fakturo_subscription']['fname']);
-		$lname	 = sanitize_text_field($_POST['fakturo_subscription']['lname']);
-		$email	 = sanitize_email($_POST['fakturo_subscription']['email']);
-		$redir	 = wp_sanitize_redirect($_POST['_wp_http_referer']);
-
-		if(empty($fname) || empty($lname) || empty($email) || !is_email($email)) {
-			wp_redirect($redir);
-			exit;
-		}
-		$current_user	 = wp_get_current_user();
-		$response		 = wp_remote_post($this->api_url_subscription, array(
-			'method'		 => 'POST',
-			'timeout'		 => 45,
-			'redirection'	 => 2,
-			'httpversion'	 => '1.0',
-			'blocking'		 => true,
-			'headers'		 => array(),
-			'body'			 => array('FNAME' => $fname, 'LNAME' => $lname, 'EMAIL' => $email),
-			'cookies'		 => array()
-			)
-		);
-		if(!is_wp_error($response)) {
-			update_option('fakturo_subscription_email_' . md5($current_user->ID), $email);
-			WPeMatico::add_wp_notice(array('text' => __('Subscription saved', 'fakturo'), 'below-h2' => true));
-		}
-
-		wp_redirect($redir);
-		exit;
 	}
 
 	/**
