@@ -90,6 +90,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 * PDFs of invoices, receipts and reports keep every character, including accents, symbols and non-Latin alphabets.
 * Faster and more robust invoice and receipt number validation, product search and report queries.
 * Webcam snapshots work again in Chrome: they use the browser camera instead of the long-gone Flash. The plugin is also lighter, without the unused webcam demos, Flash file and sample dashboard widgets.
+* Webcam library updated to WebcamJS 1.0.26 (adds iOS Safari support); the unminified script loads when SCRIPT_DEBUG is on.
 
 = 1.0.10 (Oct 23, 2026) =
 * New Add-ons screen: activate, license and manage auto-updates of each add-on from its own row, with bulk actions and live search.
