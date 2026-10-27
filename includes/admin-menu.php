@@ -81,6 +81,10 @@ class fktrAdminMenu {
                 }
             }
         }
+        public static function hidden_page_title() {
+		global $title;
+		$title = __( 'Settings', 'fakturo' );
+	}
         public static function add_menu() {
 		global $submenu;
 		
@@ -152,6 +156,7 @@ class fktrAdminMenu {
 			'fakturo-settings-system',
 			array('fktrSettings','fakturo_settings_system')
                 );
+		add_action('load-' . $page, array(__CLASS__, 'hidden_page_title'));
 		$page = add_submenu_page(
 			'',
 			__( 'Settings', 'fakturo' ), 
@@ -160,6 +165,7 @@ class fktrAdminMenu {
 			'fakturo-settings-dashboard',
 			array('fktrSettings','fakturo_settings_dashboard')
 		);	
+		add_action('load-' . $page, array(__CLASS__, 'hidden_page_title'));
 		$page = add_submenu_page(
 			'',
 			__( 'Settings', 'fakturo' ), 
@@ -168,6 +174,7 @@ class fktrAdminMenu {
 			'fakturo-license-page',
 			array('fktr_licenses_handlers','license_page')
                 );
+		add_action('load-' . $page, array(__CLASS__, 'hidden_page_title'));
                 
                 /**
                  * Sales Invoices Menu items

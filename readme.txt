@@ -92,6 +92,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Webcam snapshots work again in Chrome: they use the browser camera instead of the long-gone Flash. The plugin is also lighter, without the unused webcam demos, Flash file and sample dashboard widgets.
 * Webcam library updated to WebcamJS 1.0.26 (adds iOS Safari support); the unminified script loads when SCRIPT_DEBUG is on.
 * PDF engine updated to Dompdf 3.1.6 (with the security fixes of the 2.x series), and PHP 7.4 to 8.3 compatible. Invoices, receipts, print templates, emails and reports keep rendering exactly the same.
+* Settings, system and Licenses screens no longer show a PHP notice in the page header on PHP 8.1 and later.
 
 = 1.0.10 (Oct 23, 2026) =
 * New Add-ons screen: activate, license and manage auto-updates of each add-on from its own row, with bulk actions and live search.
