@@ -7,23 +7,13 @@ jQuery(document).ready(function($) {
 			$('#remove-post-thumbnail').css('display', 'none');
 			$('#snapshot_cancel').css('display', 'block');
 			
-			if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
-				Webcam.set({
-					width: 230,
-					height: 150,
-					image_format: 'jpeg',
-					jpeg_quality: 90,
-					force_flash: true
-				})
-			} else {
-				Webcam.set({
-					width: 230,
-					height: 150,
-					image_format: 'jpeg',
-					jpeg_quality: 90,
-					force_flash: false
-				});
-			}
+			Webcam.set({
+				width: 230,
+				height: 150,
+				image_format: 'jpeg',
+				jpeg_quality: 90,
+				force_flash: false
+			});
 			Webcam.attach( '#my_camera' );
 		}
 

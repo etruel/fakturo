@@ -40,56 +40,8 @@ function fktr_default_dashboard_widgets() {
         __( 'Fakturo - Sales Summary', 'fakturo' ),         // Title.
         'fktr_widget_dashboard_sale_summary' // Display function.
     );
-	/* fktr_add_dashboard_widget(
-        'fktr_dashboard_widget_news',         // Widget slug.
-        'Fakturo News',         // Title.
-        'fktr_widget_dashboard_news' // Display function.
-    );
-	
-    fktr_add_dashboard_widget(
-        'fktr_dashboard_widget_test',         // Widget slug.
-        'Fakturo - Test 1',         // Title.
-        'fktr_widget_dashboard_test' // Display function.
-    );
-    fktr_add_dashboard_widget(
-        'fktr_dashboard_widget_testtow',         // Widget slug.
-        'Fakturo - Test 2',         // Title.
-        'fktr_widget_dashboard_testtow' // Display function.
-    );
-     fktr_add_dashboard_widget(
-        'fktr_dashboard_widget_testtheree',         // Widget slug.
-        'Fakturo - Test 3',         // Title.
-        'fktr_widget_dashboard_testtow' // Display function.
-    );*/
-}
-function fktr_widget_dashboard_test() {
-	echo 'content';
-}
-function fktr_widget_dashboard_testtow() {
-	echo 'content';
 }
 add_action( 'fktr_dashboard_setup', 'fktr_default_dashboard_widgets' );
-
-function fktr_widget_dashboard_news() {
-	echo '<ul>
-            <li>
-                <span class="dashicons dashicons-admin-settings"></span>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                       tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                        consequat...</p>
-                        <div style="clear: both;"></div>
-                </li>
-            <li>
-                <span class="dashicons dashicons-admin-settings"></span>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                       tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                        consequat...</p>
-                        <div style="clear: both;"></div>
-                </li>
-        </ul>';
-}
 
 function fktr_widget_dashboard_sale_summary() {
 	

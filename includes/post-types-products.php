@@ -299,7 +299,6 @@ if (!class_exists('fktrPostTypeProducts')) :
 		}
 
 		public static function meta_boxes() {
-			//add_action('wp_ajax_webcam_shot', 'fakturo_ajax_webcam_shot');
 			// Remove Custom Fields Metabox
 			add_meta_box('fakturo-price-box', __('Price', 'fakturo'), array('fktrPostTypeProducts', 'price_box'), 'fktr_product', 'side', 'high');
 			add_meta_box('fakturo-prices', __('Prices', 'fakturo'), array('fktrPostTypeProducts', 'prices_box'), 'fktr_product', 'normal', 'default');

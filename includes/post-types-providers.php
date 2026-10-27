@@ -92,8 +92,6 @@ class fktrPostTypeProviders {
 	
 	public static function meta_boxes() {
 		
-		add_action('wp_ajax_webcam_shot', 'fakturo_ajax_webcam_shot');
-	
 		add_meta_box('fakturo-active-box', __('Active provider', 'fakturo' ), array('fktrPostTypeProviders', 'active'), 'fktr_provider', 'side', 'high');
 		// Remove Custom Fields Metabox
 		remove_meta_box('postimagediv', 'fktr_provider', 'side' );
