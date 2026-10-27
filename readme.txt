@@ -97,6 +97,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Choosing the object of a new template fills in its default content and subject, and "Reset to default" no longer leaves a template empty.
 * A warning shows when several published templates are assigned to the same object; the newest one is always the one used.
 * Template titles and totals are now always available to print and e-mail templates, and the editor fields are escaped.
+* The default invoice template no longer overlaps the product lines when an invoice has several items.
 
 = 1.0.10 (Oct 23, 2026) =
 * New Add-ons screen: activate, license and manage auto-updates of each add-on from its own row, with bulk actions and live search.
