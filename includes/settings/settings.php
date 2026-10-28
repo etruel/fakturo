@@ -26,6 +26,17 @@ class fktrSettings {
 	}
 
 	/**
+	 * The date formats of the "Default date format" select, by PHP format.
+	 */
+	public static function date_formats() {
+		$formats = array(
+			'd/m/Y'	 => __( 'dd/mm/YYYY', 'fakturo' ),
+			'm/d/Y'	 => __( 'mm/dd/YYYY', 'fakturo' ),
+		);
+		return apply_filters('fktr_default_format_date_array', $formats);
+	}
+
+	/**
 	 * Installs created before 1.1 stored the label (dd/mm/YYYY) instead of a PHP date format.
 	 */
 	public static function fix_date_format($options) {
@@ -745,11 +756,8 @@ class fktrSettings {
 		}
 		$echoSelectDefaultDescription .= '</select>';		
 			
-		$selectDefaultDate = array();
-		$selectDefaultDate['d/m/Y'] = __( 'dd/mm/YYYY', 'fakturo' );
-		$selectDefaultDate['m/d/Y'] = __( 'mm/dd/YYYY', 'fakturo' );						
-		$selectDefaultDate = apply_filters('fktr_default_format_date_array', $selectDefaultDate);
-		
+		$selectDefaultDate = self::date_formats();
+
 		$echoSelectDefaultDate = '<select id="fakturo_system_options_group_dateformat" name="fakturo_system_options_group[dateformat]">';
 		foreach ($selectDefaultDate as $key => $txt) {
 			$echoSelectDefaultDate .= '<option value="'.$key.'"'.selected($key, $options['dateformat'], false).'>'.$txt.'</option>';
@@ -1088,6 +1096,11 @@ class fktrSettings {
 			))
 		);
 		
+		// In a network the licenses are managed from the network admin.
+		if (is_multisite()) {
+			unset($sections_tabs['licenses']);
+		}
+
 		// Condicionalmente agregar la página 'Custom Form' a la sección 'system'
 		if ($options['commissions_for_salespeople'] == 1) {
 			$sections_tabs['tables']['fktr_products'] = array(

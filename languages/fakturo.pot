@@ -6896,3 +6896,56 @@ msgstr ""
 #: includes/post-types-email-templates.php
 msgid "E-mail template: {$email_template.post_title}"
 msgstr ""
+
+#: includes/network.php:46
+msgid "Global settings"
+msgstr ""
+
+#: includes/network.php:104
+msgid "Fakturo global settings"
+msgstr ""
+
+#: includes/network.php:106
+msgid "The Fakturo of every new site of the network starts with these values. Sites that are already set up keep their own settings."
+msgstr ""
+
+#: includes/network.php:197
+#: includes/network.php:195
+msgid "The thousand and decimal separators must be different."
+msgstr ""
+
+#: includes/libs/licenses_handlers.php:445
+msgid "The license keys are activated for the whole network, with its address (%s). Updates are installed from the network admin for every site."
+msgstr ""
+
+#: includes/libs/licenses_handlers.php:577
+msgid "License activated for this network!"
+msgstr ""
+
+#: includes/addons_page.php:617
+msgid "The network administrator manages the license of this add-on."
+msgstr ""
+
+#: includes/network.php
+msgid "Main site"
+msgstr ""
+
+#: includes/network.php
+msgid "Fakturo on the main site"
+msgstr ""
+
+#: includes/network.php
+msgid "Do not show Fakturo on the main site"
+msgstr ""
+
+#: includes/network.php
+msgid "Hides the Fakturo menus and its widget on the main site of the network. Fakturo and its add-ons stay active there so the licenses can be managed from this network admin."
+msgstr ""
+
+#: includes/network.php
+msgid "Default values for new sites"
+msgstr ""
+
+#: includes/network.php
+msgid "Settings saved."
+msgstr ""

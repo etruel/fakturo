@@ -24,6 +24,8 @@ class fktr_licenses_handlers {
 	const CHECKOUT_URL	 = 'https://etruel.com/checkout/';
 	const LICENSES_URL	 = 'https://etruel.com/my-account/licenses/';
 
+	private static $api_urls = array();
+
 	public static function hooks() {
 		add_action('init', array(__CLASS__, 'plugin_updater'), 0);
 		add_action('fktr_licenses_forms', array(__CLASS__, 'license_page'));
@@ -43,6 +45,10 @@ class fktr_licenses_handlers {
 		if (empty($plugins_args)) {
 			return;
 		}
+		self::migrate();
+		if (is_multisite() && !has_filter('http_request_args', array(__CLASS__, 'network_url'))) {
+			add_filter('http_request_args', array(__CLASS__, 'network_url'), 10, 2);
+		}
 		if (!class_exists('EDD_SL_Plugin_Updater')) {
 			$lib = FAKTURO_PLUGIN_DIR . 'includes/libs/Plugin_Updater.php';
 			if (!file_exists($lib)) {
@@ -51,6 +57,7 @@ class fktr_licenses_handlers {
 			require_once $lib;
 		}
 		foreach ($plugins_args as $plugin_name => $args) {
+			self::$api_urls[] = $args['api_url'];
 			$data = array(
 				'version'	 => $args['api_data']['version'],
 				'license'	 => self::get_key($plugin_name),
@@ -69,7 +76,7 @@ class fktr_licenses_handlers {
 
 	public static function enqueue() {
 		$screen = get_current_screen();
-		if (!$screen || $screen->id !== self::SCREEN) {
+		if (!$screen || ( $screen->id !== self::SCREEN && strpos($screen->id, fktrNetwork::LICENSES_SLUG) === false )) {
 			return;
 		}
 		$css = FAKTURO_PLUGIN_DIR . 'assets/css/licenses_handlers.css';
@@ -86,9 +93,74 @@ class fktr_licenses_handlers {
 
 	/* ---------- Stored data ---------- */
 
+	/**
+	 * Keys, status and account data are kept per network in a multisite (one license activates the whole network),
+	 * and per site otherwise; on a single site the site options are the regular ones.
+	 */
 	private static function get_map($option) {
-		$map = get_option($option, array());
+		$map = get_site_option($option, array());
 		return is_array($map) ? $map : array();
+	}
+
+	private static function set_map($option, $map, $autoload = true) {
+		if (is_multisite()) {
+			update_site_option($option, $map);
+		} else {
+			update_option($option, $map, $autoload);
+		}
+	}
+
+	/**
+	 * The keys a multisite had on its main site, from before they were kept per network, are moved once.
+	 */
+	private static function migrate() {
+		if (!is_multisite() || get_site_option('fktr_licenses_network')) {
+			return;
+		}
+		foreach (array('fktr_license_keys', 'fktr_license_status', 'fktr_license_info') as $option) {
+			$old = get_blog_option(get_main_site_id(), $option, array());
+			if (!empty($old) && is_array($old) && !get_site_option($option)) {
+				update_site_option($option, $old);
+			}
+		}
+		update_site_option('fktr_licenses_network', 1);
+	}
+
+	/**
+	 * Who may handle the keys: the super admin of a network, the settings managers of a single site.
+	 */
+	public static function allowed() {
+		return is_multisite() ? current_user_can('manage_network_options') : current_user_can(self::CAPABILITY);
+	}
+
+	/**
+	 * The address the store knows this install by: the network, not each of its sites.
+	 */
+	public static function license_url() {
+		return is_multisite() ? untrailingslashit(network_home_url()) : home_url();
+	}
+
+	/**
+	 * The license screen: in the network admin of a multisite.
+	 */
+	public static function page_url() {
+		return is_multisite() ? fktrNetwork::page_url(fktrNetwork::LICENSES_SLUG) : admin_url('admin.php?page=' . self::SLUG);
+	}
+
+	/**
+	 * The store gets the address of the network for the update checks the sites make.
+	 */
+	public static function network_url($args, $url) {
+		if (!is_array($args) || !isset($args['body']) || !is_array($args['body']) || !isset($args['body']['url']) || $args['body']['url'] !== home_url()) {
+			return $args;
+		}
+		foreach (self::$api_urls as $api_url) {
+			if (strpos($url, $api_url) === 0) {
+				$args['body']['url'] = self::license_url();
+				break;
+			}
+		}
+		return $args;
 	}
 
 	public static function get_key($plugin_name) {
@@ -104,7 +176,7 @@ class fktr_licenses_handlers {
 	public static function set_license_status($plugin_name, $status) {
 		$map				 = self::get_map('fktr_license_status');
 		$map[$plugin_name]	 = sanitize_key($status);
-		update_option('fktr_license_status', $map);
+		self::set_map('fktr_license_status', $map);
 	}
 
 	public static function get_license_info($plugin_name) {
@@ -156,7 +228,7 @@ class fktr_licenses_handlers {
 			$caption = __('Check license', 'fakturo');
 			$title	 = __('Check the license key of this add-on to enable automatic updates.', 'fakturo');
 		}
-		return array('caption' => $caption, 'title' => $title, 'url' => admin_url('admin.php?page=' . self::SLUG));
+		return array('caption' => $caption, 'title' => $title, 'url' => self::page_url());
 	}
 
 	/**
@@ -181,7 +253,7 @@ class fktr_licenses_handlers {
 		);
 		$all				 = self::get_map('fktr_license_info');
 		$all[$plugin_name]	 = $info;
-		update_option('fktr_license_info', $all, false);
+		self::set_map('fktr_license_info', $all, false);
 	}
 
 	/* ---------- Talking to the store ---------- */
@@ -200,7 +272,7 @@ class fktr_licenses_handlers {
 			'edd_action' => $action,
 			'license'	 => $license,
 			'item_name'	 => rawurlencode($args['api_data']['item_name']),
-			'url'		 => home_url(),
+			'url'		 => self::license_url(),
 		);
 		if (!empty($args['api_data']['item_id'])) {
 			$body['item_id'] = $args['api_data']['item_id'];
@@ -362,12 +434,21 @@ class fktr_licenses_handlers {
 	}
 
 	public static function license_page() {
-		if (!current_user_can(self::CAPABILITY)) {
+		if (!self::allowed()) {
 			wp_die(esc_html__('You are not allowed to do this.', 'fakturo'));
 		}
-		$plugins_args = apply_filters('fktr_plugins_updater_args', array());
+		$plugins_args	 = apply_filters('fktr_plugins_updater_args', array());
+		$network		 = is_multisite();
 
-		echo '<div id="tab_container"><br/><h1>' . esc_html__('Licenses', 'fakturo') . '</h1>';
+		echo $network ? '<div class="wrap" id="tab_container"><h1>' : '<div id="tab_container"><br/><h1>';
+		echo esc_html__('Licenses', 'fakturo') . '</h1>';
+		if ($network) {
+			fktrNetwork::show_notice();
+			echo '<p>' . esc_html(sprintf(
+				/* translators: %s: address of the network. */
+				__('The license keys are activated for the whole network, with its address (%s). Updates are installed from the network admin for every site.', 'fakturo'), self::license_url()
+			)) . '</p>';
+		}
 		if (empty($plugins_args)) {
 			echo '<div class="msg"><p>' . esc_html__('This is where you would enter the license keys for one of our premium plugins, should you activate one.', 'fakturo') . '</p>';
 			echo '<p>' . esc_html__('See some of the Fakturo Add-ons in the', 'fakturo') . ' <a href="' . esc_url(admin_url('plugins.php?page=fakturo')) . '">' . esc_html__('Extensions list', 'fakturo') . '</a>.</p></div></div>';
@@ -401,15 +482,13 @@ class fktr_licenses_handlers {
 
 	/* ---------- Actions ---------- */
 
-	private static function allowed() {
-		return current_user_can(self::CAPABILITY);
-	}
-
 	private static function done($message, $error = false) {
-		if (class_exists('fktrNotices')) {
+		if (is_multisite()) {
+			fktrNetwork::notice($message, $error);
+		} elseif (class_exists('fktrNotices')) {
 			fktrNotices::add(array('text' => esc_html($message), 'error' => $error, 'screen' => self::SCREEN));
 		}
-		wp_safe_redirect(admin_url('admin.php?page=' . self::SLUG));
+		wp_safe_redirect(self::page_url());
 		exit;
 	}
 
@@ -439,12 +518,12 @@ class fktr_licenses_handlers {
 				continue;
 			}
 			$keys[$plugin_name] = $new;
-			update_option('fktr_license_keys', $keys);
+			self::set_map('fktr_license_keys', $keys);
 			$data	 = self::refresh($plugin_name, 'activate_license', $new);
 			$msg	 = self::activation_message($data);
 			$error	 = !( $data && isset($data->license) && $data->license === 'valid' );
 		}
-		update_option('fktr_license_keys', $keys);
+		self::set_map('fktr_license_keys', $keys);
 		self::done($msg !== '' ? $msg : __('License keys saved.', 'fakturo'), $error);
 	}
 
@@ -453,7 +532,7 @@ class fktr_licenses_handlers {
 			return __('The license server did not answer. Save again in a moment.', 'fakturo');
 		}
 		if (!empty($data->license) && $data->license === 'valid') {
-			return __('License activated for this site!', 'fakturo');
+			return is_multisite() ? __('License activated for this network!', 'fakturo') : __('License activated for this site!', 'fakturo');
 		}
 		$errors = array(
 			'expired'				 => __('This license has expired.', 'fakturo'),
@@ -472,7 +551,7 @@ class fktr_licenses_handlers {
 		foreach (array('fktr_license_status', 'fktr_license_info') as $option) {
 			$map = self::get_map($option);
 			unset($map[$plugin_name]);
-			update_option($option, $map, false);
+			self::set_map($option, $map, false);
 		}
 	}
 

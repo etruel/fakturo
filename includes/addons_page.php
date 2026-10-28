@@ -373,8 +373,8 @@ class fktr_admin_page {
 			return $memo;
 		}
 
-		$cached = get_transient(self::TRANSIENT);
-		if (!is_array($cached) && !get_transient(self::TRANSIENT . '_backoff')) {
+		$cached = get_site_transient(self::TRANSIENT);
+		if (!is_array($cached) && !get_site_transient(self::TRANSIENT . '_backoff')) {
 			include_once ABSPATH . WPINC . '/feed.php';
 			add_action('wp_feed_options', array(__CLASS__, 'feed_options'));
 			$addonitems = fetch_feed(self::FEED_URL);
@@ -429,9 +429,9 @@ class fktr_admin_page {
 			$addons = array_filter($addon);
 
 			if (empty($addons)) {
-				set_transient(self::TRANSIENT . '_backoff', 1, apply_filters('fakturo_addons_feed_backoff', 15 * MINUTE_IN_SECONDS));
+				set_site_transient(self::TRANSIENT . '_backoff', 1, apply_filters('fakturo_addons_feed_backoff', 15 * MINUTE_IN_SECONDS));
 			} else {
-				set_transient(self::TRANSIENT, $addons, apply_filters('fakturo_addons_transient_length', DAY_IN_SECONDS));
+				set_site_transient(self::TRANSIENT, $addons, apply_filters('fakturo_addons_transient_length', DAY_IN_SECONDS));
 				$cached = $addons;
 			}
 		}
@@ -445,7 +445,7 @@ class fktr_admin_page {
 	 * have changed, so the next visit asks the store again.
 	 */
 	public static function flush_feed_backoff() {
-		delete_transient(self::TRANSIENT . '_backoff');
+		delete_site_transient(self::TRANSIENT . '_backoff');
 	}
 
 	/**
@@ -613,6 +613,9 @@ class fktr_admin_page {
 		// An add-on with no license slot (a free one) keeps the switch.
 		$license_name = class_exists('fktr_licenses_handlers') ? fktr_licenses_handlers::name_by_file($plugin_file) : false;
 		if ($license_name && !fktr_licenses_handlers::has_valid_license($license_name)) {
+			if (!fktr_licenses_handlers::allowed()) {
+				return self::installed_button($store_url, __('The network administrator manages the license of this add-on.', 'fakturo'));
+			}
 			$prompt = fktr_licenses_handlers::license_prompt($license_name);
 			return sprintf(
 				'<a class="button fktr-btn-license" title="%s" href="%s">%s</a>',

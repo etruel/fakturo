@@ -57,6 +57,9 @@ class fktrNotices {
 	}
 	public static function settings_notices() {
 		
+		if (class_exists('fktrNetwork') && fktrNetwork::hidden_here()) {
+			return false;
+		}
 		if (current_user_can('fktr_manage_wizard')) {
 			$first_time_wizard = get_option('fktr_first_time_wizard', false);
 			if (!$first_time_wizard) {

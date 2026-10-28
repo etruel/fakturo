@@ -7418,6 +7418,59 @@ msgstr "Plantilla de impresión: {$print_template.post_title}"
 msgid "E-mail template: {$email_template.post_title}"
 msgstr "Plantilla de correo electrónico: {$email_template.post_title}"
 
+#: includes/network.php:46
+msgid "Global settings"
+msgstr "Ajustes globales"
+
+#: includes/network.php:104
+msgid "Fakturo global settings"
+msgstr "Ajustes globales de Fakturo"
+
+#: includes/network.php:106
+msgid "The Fakturo of every new site of the network starts with these values. Sites that are already set up keep their own settings."
+msgstr "El Fakturo de cada sitio nuevo de la red arranca con estos valores. Los sitios que ya están configurados conservan los suyos."
+
+#: includes/network.php:197
+#: includes/network.php:195
+msgid "The thousand and decimal separators must be different."
+msgstr "Los separadores de miles y de decimales deben ser distintos."
+
+#: includes/libs/licenses_handlers.php:445
+msgid "The license keys are activated for the whole network, with its address (%s). Updates are installed from the network admin for every site."
+msgstr "Las claves de licencia se activan para toda la red, con su dirección (%s). Las actualizaciones se instalan desde el administrador de la red para todos los sitios."
+
+#: includes/libs/licenses_handlers.php:577
+msgid "License activated for this network!"
+msgstr "¡Licencia activada para esta red!"
+
+#: includes/addons_page.php:617
+msgid "The network administrator manages the license of this add-on."
+msgstr "El administrador de la red gestiona la licencia de esta extensión."
+
+#: includes/network.php
+msgid "Main site"
+msgstr "Sitio principal"
+
+#: includes/network.php
+msgid "Fakturo on the main site"
+msgstr "Fakturo en el sitio principal"
+
+#: includes/network.php
+msgid "Do not show Fakturo on the main site"
+msgstr "No mostrar Fakturo en el sitio principal"
+
+#: includes/network.php
+msgid "Hides the Fakturo menus and its widget on the main site of the network. Fakturo and its add-ons stay active there so the licenses can be managed from this network admin."
+msgstr "Oculta los menús de Fakturo y su widget en el sitio principal de la red. Fakturo y sus extensiones siguen activos ahí para poder gestionar las licencias desde este administrador de la red."
+
+#: includes/network.php
+msgid "Default values for new sites"
+msgstr "Valores por defecto para sitios nuevos"
+
+#: includes/network.php
+msgid "Settings saved."
+msgstr "Ajustes guardados."
+
 #~ msgid "Save as PDF"
 #~ msgstr "Guardar PDF"
 
