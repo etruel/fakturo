@@ -99,6 +99,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Template titles and totals are now always available to print and e-mail templates, and the editor fields are escaped.
 * The default invoice template no longer overlaps the product lines when an invoice has several items.
 * The stock report no longer shows PHP notices when it is opened without filters.
+* Dates in invoices, receipts and subscriptions follow the date format chosen in Settings (no more "2727/1010/2026" on installs that never saved it).
 
 = 1.0.10 (Oct 23, 2026) =
 * New Add-ons screen: activate, license and manage auto-updates of each add-on from its own row, with bulk actions and live search.

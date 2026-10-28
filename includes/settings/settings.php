@@ -22,6 +22,17 @@ class fktrSettings {
 		add_action('admin_print_scripts', array('fktrSettings', 'scripts'));
 		add_action('admin_print_styles', array('fktrSettings', 'styles'));
 		add_action('wp_ajax_get_states', array('fktrSettings', 'get_states'));
+		add_filter('option_fakturo_system_options_group', array(__CLASS__, 'fix_date_format'));
+	}
+
+	/**
+	 * Installs created before 1.1 stored the label (dd/mm/YYYY) instead of a PHP date format.
+	 */
+	public static function fix_date_format($options) {
+		if (is_array($options) && isset($options['dateformat']) && preg_match('/dd|mm|YYYY/', $options['dateformat'])) {
+			$options['dateformat'] = str_replace(array('YYYY', 'dd', 'mm'), array('Y', 'd', 'm'), $options['dateformat']);
+		}
+		return $options;
 	}
 	// highlight the proper top level menu
 	static function tax_menu_correction($parent_file) {
@@ -150,7 +161,7 @@ class fktrSettings {
 			$value_system['search_code'] = array('reference');
 			$value_system['default_code'] = 'reference';
 			$value_system['default_description'] = 'short_description';
-			$value_system['dateformat'] = 'dd/mm/YYYY';
+			$value_system['dateformat'] = 'd/m/Y';
 			$value_system['payment_type'] = 0;
 			$value_system['bank_entity'] = 0;
 			$value_system['tax'] = 0;
