@@ -3,8 +3,8 @@ Contributors: etruel,sniuk,khaztiel,axellourenco
 Donate link:
 Tags: invoice,sales,inventory,billing,receipt
 Requires at least: 4.9
-Tested up to: 6.8
-Requires PHP: 7.0
+Tested up to: 7.1
+Requires PHP: 7.4
 Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -99,6 +99,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Template titles and totals are now always available to print and e-mail templates, and the editor fields are escaped.
 * The default invoice template no longer overlaps the product lines when an invoice has several items.
 * The stock report no longer shows PHP notices when it is opened without filters.
+* Requires PHP 7.4 or later (tested up to PHP 8.3) and tested with WordPress 7.1.
 * Dates in invoices, receipts and subscriptions follow the date format chosen in Settings (no more "2727/1010/2026" on installs that never saved it).
 
 = 1.0.10 (Oct 23, 2026) =
