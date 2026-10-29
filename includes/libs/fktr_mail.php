@@ -78,7 +78,7 @@ if (!class_exists('fktr_mail')) :
 			$tpl		 = new fktr_tpl;
 			$tpl		 = apply_filters('fktr_email_template_assignment', $tpl, $object, false);
 			$mailbody	 = $tpl->fromString($email_template['content']);
-			$subject	 = $tpl->fromString($email_template['subject']);
+			$subject	 = sanitize_text_field($tpl->fromString($email_template['subject'], false));
 			$headers	 = array();
 			$headers[]	 = 'Content-Type: ' . apply_filters('fktr_mail_content_type', 'text/html', self::$sending) . '; charset=' . apply_filters('fktr_mail_charset', 'UTF-8', self::$sending);
 
@@ -195,7 +195,7 @@ if (!class_exists('fktr_mail')) :
 			$tpl		 = new fktr_tpl;
 			$tpl		 = apply_filters('fktr_email_template_assignment', $tpl, $object, false);
 			$mailbody	 = $tpl->fromString($email_template['content']);
-			$subject	 = $tpl->fromString($email_template['subject']);
+			$subject	 = sanitize_text_field($tpl->fromString($email_template['subject'], false));
 			$headers	 = array();
 			$headers[]	 = 'Content-Type: ' . apply_filters('fktr_mail_content_type', 'text/html', self::$sending) . '; charset=' . apply_filters('fktr_mail_charset', 'UTF-8', self::$sending);
 

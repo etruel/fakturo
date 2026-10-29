@@ -7,7 +7,10 @@ require_once FAKTURO_PLUGIN_DIR . 'includes/libs/rain.tpl.class.php';
 
 class fktr_tpl extends RainTPL {
 
-	function fromString($template_code) {
+	/**
+	 * Variables are HTML-escaped before the template runs, so a client name or an address cannot inject markup into the PDF or the e-mail. $html = false is for plain text (e-mail subjects).
+	 */
+	function fromString($template_code, $html = true) {
 		//tag list
 		$template_code = preg_replace("/<\?xml(.*?)\?>/s", "##XML\\1XML##", $template_code);
 
@@ -46,10 +49,17 @@ class fktr_tpl extends RainTPL {
 		$compiled_code = $this->compileCode($template_code);
 		//return the compiled code
 		ob_start();
-		extract($this->var);
+		extract(($html && apply_filters('fktr_tpl_escape_variables', true)) ? self::escape($this->var) : $this->var);
 		eval('?>' . $compiled_code . '<?php ');
 		$raintpl_contents = ob_get_clean();
 		return $raintpl_contents;
+	}
+
+	public static function escape($value) {
+		if (is_array($value)) {
+			return array_map(array(__CLASS__, 'escape'), $value);
+		}
+		return is_string($value) ? esc_html($value) : $value;
 	}
 
 }

@@ -128,12 +128,16 @@ function activate_search_products() {
 
 }
 
+function fktrEsc(text) {
+	return String(text == null ? '' : text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
 function getSymbolFromCurrencyId(term_id) {
 	var r = '$';
 	var currencies = jQuery.parseJSON(term_id);
 	for (var i = 0; i < currencies.length; i++) {
 		if (currencies[i].term_id == term_id) {
-			r = currencies[i].symbol;
+			r = fktrEsc(currencies[i].symbol);
 			break;
 		}
 	}
@@ -157,9 +161,9 @@ function formatRepo(repo) {
 	}
 
 	var markup = "<div class='select2-result-product clearfix'>" +
-		"<div class='select2-result-product__avatar'><img src='" + repo.img + "' /></div>" +
+		"<div class='select2-result-product__avatar'><img src='" + fktrEsc(repo.img) + "' /></div>" +
 		"<div class='select2-result-product__meta'>" +
-		"<div class='select2-result-product__title'>" + repo.title + "</div>";
+		"<div class='select2-result-product__title'>" + fktrEsc(repo.title) + "</div>";
 
 
 	if (system_setting.default_code == 'internal_code' && repo.id) {
@@ -168,21 +172,21 @@ function formatRepo(repo) {
 	if (repo.datacomplete) {
 
 		if (system_setting.default_code == 'reference' && repo.datacomplete.reference) {
-			code_search = '<strong>(' + repo.datacomplete.reference + ')</strong> ';
+			code_search = '<strong>(' + fktrEsc(repo.datacomplete.reference) + ')</strong> ';
 		}
 		if (system_setting.default_code == 'manufacturers_code' && repo.datacomplete.manufacturers) {
-			code_search = '<strong>(' + repo.datacomplete.manufacturers + ')</strong> ';
+			code_search = '<strong>(' + fktrEsc(repo.datacomplete.manufacturers) + ')</strong> ';
 		}
 
 		if (code_search == '' && repo.datacomplete.reference) {
-			code_search = '<strong>(' + repo.datacomplete.reference + ')</strong> ';
+			code_search = '<strong>(' + fktrEsc(repo.datacomplete.reference) + ')</strong> ';
 		}
 	}
 
 
 	if (repo.description) {
 
-		markup += "<div class='select2-result-product__description'>" + code_search + '' + repo.description + " </div>";
+		markup += "<div class='select2-result-product__description'>" + code_search + '' + fktrEsc(repo.description) + " </div>";
 	}
 	else {
 		markup += "<div class='select2-result-product__description'>" + code_search + " </div>";
@@ -198,5 +202,5 @@ function formatRepo(repo) {
 }
 
 function formatRepoSelection(repo) {
-	return repo.title || repo.text;
+	return fktrEsc(repo.title || repo.text);
 }

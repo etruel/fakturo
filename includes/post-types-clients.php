@@ -293,7 +293,7 @@ class fktrPostTypeClients {
 					<tr class="tr_fktr">
 						<th><label for="taxpayer">'.__('Taxpayer ID', 'fakturo' ).'	</label></th>
 						<td>
-							<input id="taxpayer" type="text" name="taxpayer" value="'.$client_data['taxpayer'].'" class="regular-text">
+							<input id="taxpayer" type="text" name="taxpayer" value="'.esc_attr($client_data['taxpayer']).'" class="regular-text">
 							<span id="cuit_validation"></span>
 							<div style="font-size:0.85em;" id="cuit_validation_note">'.__("Cuit number's validation only. Check www.afip.gov.ar", 'fakturo' ).'</div>
 						</td>
@@ -308,7 +308,7 @@ class fktrPostTypeClients {
 					</tr>
 					<tr class="tr_fktr">
 						<th><label for="bank_account">'.__('Bank Account', 'fakturo' ) .'	</label></th>
-						<td><input id="bank_account" type="text" name="bank_account" value="'.$client_data['bank_account'].'" class="regular-text"></td>
+						<td><input id="bank_account" type="text" name="bank_account" value="'.esc_attr($client_data['bank_account']).'" class="regular-text"></td>
 					</tr>
 					<tr class="tr_fktr">
 						<th><label for="selected_tax_condition">'.__('Tax Condition', 'fakturo' ).'	</label></th>
@@ -325,12 +325,12 @@ class fktrPostTypeClients {
 					
 					<tr class="tr_fktr">
 						<th><label for="credit_limit">'.__('Credit Limit', 'fakturo' ).'	</label></th>
-						<td><input id="credit_limit" type="number" name="credit_limit" value="'.$client_data['credit_limit'].'" class="small-text"/></td>
+						<td><input id="credit_limit" type="number" name="credit_limit" value="'.esc_attr($client_data['credit_limit']).'" class="small-text"/></td>
 					</tr>
 					
 					<tr class="tr_fktr">
 						<th><label for="credit_limit_interval">'.__('Credit Limit Interval', 'fakturo' ).'	</label></th>
-						<td><input id="credit_limit_interval" type="number" name="credit_limit_interval" value="'.$client_data['credit_limit_interval'].'" class="small-text"/></td>
+						<td><input id="credit_limit_interval" type="number" name="credit_limit_interval" value="'.esc_attr($client_data['credit_limit_interval']).'" class="small-text"/></td>
 					</tr>
 					
 					</tbody>
@@ -415,7 +415,7 @@ class fktrPostTypeClients {
 					
 					<tr class="user-address-wrap">
 						<th><label for="address">'.__('Address', 'fakturo' ).'	</label></th>
-						<td><input type="text" name="address" id="address" value="'.$client_data['address'].'" class="regular-text"></td>
+						<td><input type="text" name="address" id="address" value="'.esc_attr($client_data['address']).'" class="regular-text"></td>
 					</tr>
 					<tr class="tr_fktr">
 						<th><label for="country">'. __('Country', 'fakturo' ).'	</label></th>
@@ -429,32 +429,32 @@ class fktrPostTypeClients {
 					</tr>
 					<tr class="tr_fktr">
 						<th><label for="city">'.__('City', 'fakturo' ) .'	</label></th>
-						<td><input id="city" type="text" name="city" value="'.$client_data['city'].'" class="regular-text"></td>
+						<td><input id="city" type="text" name="city" value="'.esc_attr($client_data['city']).'" class="regular-text"></td>
 					</tr>
 					<tr class="tr_fktr">
 						<th><label for="postcode">'.__('Postcode', 'fakturo' ) .'	</label></th>
-						<td><input id="postcode" type="text" name="postcode" value="'.$client_data['postcode'].'" class="regular-text"></td>
+						<td><input id="postcode" type="text" name="postcode" value="'.esc_attr($client_data['postcode']).'" class="regular-text"></td>
 					</tr>
 					
 					<tr class="tr_fktr">
 						<th><label for="phone">'.__('Phone', 'fakturo' ) .'	</label></th>
-						<td><input id="phone" type="text" name="phone" value="'.$client_data['phone'].'" class="regular-text"></td>
+						<td><input id="phone" type="text" name="phone" value="'.esc_attr($client_data['phone']).'" class="regular-text"></td>
 					</tr>
 					<tr class="tr_fktr">
 						<th><label for="cell_phone">'.__('Cell phone', 'fakturo' ) .'	</label></th>
-						<td><input id="cell_phone" type="text" name="cell_phone" value="'.$client_data['cell_phone'].'" class="regular-text"></td>
+						<td><input id="cell_phone" type="text" name="cell_phone" value="'.esc_attr($client_data['cell_phone']).'" class="regular-text"></td>
 					</tr>
 					<tr class="user-email-wrap">
 						<th><label for="email">'.__('E-mail', 'fakturo' ) .'</label></th>
-						<td><input type="email" name="email" id="email" value="'.$client_data['email'].'" class="regular-text ltr"></td>
+						<td><input type="email" name="email" id="email" value="'.esc_attr($client_data['email']).'" class="regular-text ltr"></td>
 					</tr>
 					<tr class="tr_fktr">
 						<th><label for="facebook_url">'.__('Facebook URL', 'fakturo' ).'</label></th>
-						<td><input id="facebook_url" type="text" name="facebook_url" value="'.$client_data['facebook_url'].'" class="regular-text"></td>
+						<td><input id="facebook_url" type="text" name="facebook_url" value="'.esc_attr($client_data['facebook_url']).'" class="regular-text"></td>
 					</tr>
 					<tr class="tr_fktr">
 						<th><label for="web">'.__('Web', 'fakturo' ).'</label></th>
-						<td><input id="web" type="text" name="web" value="'.$client_data['web'].'" class="regular-text"></td>
+						<td><input id="web" type="text" name="web" value="'.esc_attr($client_data['web']).'" class="regular-text"></td>
 					</tr>
 					
 					</tbody>
@@ -479,19 +479,19 @@ class fktrPostTypeClients {
 			$echoContacts .= '<div id="uc_ID'.$i.'" class="sortitem '.((($i % 2) == 0) ? 'bw' :  'lightblue').' '.(($lastitem)?'uc_new_field':'').'" '.(($lastitem)?'style="display:none;"':'').' > 
 						<div class="sorthandle"> </div> <!-- sort handle -->
 						<div class="uc_column" id="">
-							<input name="uc_description[]" type="text" value="'.stripslashes(@$user_contacts['uc_description'][$i]).'" class="large-text"/>
+							<input name="uc_description[]" type="text" value="'.esc_attr(stripslashes(@$user_contacts['uc_description'][$i])).'" class="large-text"/>
 						</div>
 						<div class="uc_column" id="">
-							<input name="uc_phone[]" type="text" value="'.stripslashes(@$user_contacts['uc_phone'][$i]).'" class="large-text"/>
+							<input name="uc_phone[]" type="text" value="'.esc_attr(stripslashes(@$user_contacts['uc_phone'][$i])).'" class="large-text"/>
 						</div>
 						<div class="uc_column" id="">
-							<input name="uc_email[]" type="text" value="'.stripslashes(@$user_contacts['uc_email'][$i]).'" class="large-text"/>
+							<input name="uc_email[]" type="text" value="'.esc_attr(stripslashes(@$user_contacts['uc_email'][$i])).'" class="large-text"/>
 						</div>
 						<div class="uc_column" id="">
-							<input name="uc_position[]" type="text" value="'.stripslashes(@$user_contacts['uc_position'][$i]).'" class="large-text"/>
+							<input name="uc_position[]" type="text" value="'.esc_attr(stripslashes(@$user_contacts['uc_position'][$i])).'" class="large-text"/>
 						</div>
 						<div class="uc_column" id="">
-							<input name="uc_address[]" type="text" value="'.stripslashes(@$user_contacts['uc_address'][$i]).'" class="large-text"/>
+							<input name="uc_address[]" type="text" value="'.esc_attr(stripslashes(@$user_contacts['uc_address'][$i])).'" class="large-text"/>
 						</div>
 						<div class="" id="uc_actions">
 							<label title="'. __('Delete this item',  'fakturo'  ).'" data-id="'.$i.'" class="delete"></label>
@@ -517,7 +517,7 @@ class fktrPostTypeClients {
 							<div id="user_contacts"> 
 								'.$echoContacts.'
 							</div>
-							<input id="ucfield_max" value="'.$a.'" type="hidden" name="ucfield_max"/>
+							<input id="ucfield_max" value="'.esc_attr($a).'" type="hidden" name="ucfield_max"/>
 							<div id="paging-box">		  
 								<a href="#" class="button-primary add" id="addmoreuc" style="font-weight: bold; text-decoration: none;"> '.__('Add User Contact', 'fakturo'  ).'</a>
 								<label id="msgdrag"></label>

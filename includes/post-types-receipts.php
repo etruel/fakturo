@@ -73,7 +73,7 @@ class fktrPostTypeReceipts {
 				if ( ! empty($receipt_data['check_invs']) )  {
 					foreach ($receipt_data['check_invs'] as $kc => $invoice_id) {
 						$data_inv = fktrPostTypeSales::get_sale_data($invoice_id);
-						echo '<a href="'.get_edit_post_link($invoice_id).'">'.$data_inv['post_title'].'</a><br/>';
+						echo '<a href="'.get_edit_post_link($invoice_id).'">'.esc_html($data_inv['post_title']).'</a><br/>';
 					}
 				} else {
 					echo '<p>' . __('No invoices affected.', 'fakturo') . '</p>';
@@ -521,7 +521,7 @@ class fktrPostTypeReceipts {
 		
 		foreach ($currencies as $cur) {
 			$echoHtml .= '<tr>
-							<td>'.((empty($cur->reference))?'':'<a href="'.$cur->reference.'" target="_blank">').''.$cur->name.''.((empty($cur->reference))?'':'</a>').'</td>'.(($setting_system['currency_position'] == 'before')?'<td><label for="receipt_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'<td>'.(($post->post_status != 'publish' && $post->post_status != 'cancelled')?'<input type="text" style="text-align: right; width: 120px;" value="'.$cur->rate.'" name="receipt_currencies['.$cur->term_id.']" id="receipt_currencies_'.$cur->term_id.'" class="receipt_currencies"/> ':number_format($cur->rate, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand'])).''.(($setting_system['currency_position'] == 'after')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.$cur->symbol.'</label></td>':'').'</td>
+							<td>'.((empty($cur->reference))?'':'<a href="'.esc_url($cur->reference).'" target="_blank">').''.esc_html($cur->name).''.((empty($cur->reference))?'':'</a>').'</td>'.(($setting_system['currency_position'] == 'before')?'<td><label for="receipt_currencies_'.$cur->term_id.'">'.esc_html($cur->symbol).'</label></td>':'').'<td>'.(($post->post_status != 'publish' && $post->post_status != 'cancelled')?'<input type="text" style="text-align: right; width: 120px;" value="'.esc_attr($cur->rate).'" name="receipt_currencies['.$cur->term_id.']" id="receipt_currencies_'.$cur->term_id.'" class="receipt_currencies"/> ':number_format($cur->rate, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand'])).''.(($setting_system['currency_position'] == 'after')?'<td><label for="invoice_currencies_'.$cur->term_id.'">'.esc_html($cur->symbol).'</label></td>':'').'</td>
 						</tr>';
 			
 		}
@@ -644,9 +644,9 @@ class fktrPostTypeReceipts {
 						}
 						
 						$checksHtml .= '<tr class="tr_check_list tr_gray" id="tr_ck_id_'.$term_id.'">
-							<td class="ck_column">'.$term_check->name.'</td>
-							<td class="ck_column">'.$bank_text.'</td>
-							<td class="ck_column">'.(($setting_system['currency_position'] == 'before')?''.$symbol.' ':'').''.number_format($term_check->value, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$symbol.'':'').'</td>
+							<td class="ck_column">'.esc_html($term_check->name).'</td>
+							<td class="ck_column">'.esc_html($bank_text).'</td>
+							<td class="ck_column">'.(($setting_system['currency_position'] == 'before')?''.esc_html($symbol).' ':'').''.number_format($term_check->value, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.esc_html($symbol).'':'').'</td>
 						</tr>';
 					}
 					
@@ -680,11 +680,11 @@ class fktrPostTypeReceipts {
 					$in_total_curr = fakturo_transform_money($data_inv['invoice_currency'], $term_currency->term_id, $data_inv['in_total']);
 					
 					$invsHtml .= '<tr id="in_'.$kc.'" class="tr_gray">
-						<td class="in_column">'.$data_inv['date'].'</td>
-						<td class="in_column">'.$data_inv['post_title'].'</td>
-						<td class="in_column">'.(($setting_system['currency_position'] == 'before')?''.$symbol.' ':'').''.number_format($data_inv['in_total'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$symbol.'':'').'</td>
-						<td class="in_column">'.(($setting_system['currency_position'] == 'before')?''.$term_currency->symbol.' ':'').''.number_format($in_total_curr, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$term_currency->symbol.'':'').'</td>
-						<td class="in_column">'.(($setting_system['currency_position'] == 'before')?''.$term_currency->symbol.' ':'').''.number_format($affected, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$term_currency->symbol.'':'').'</td>
+						<td class="in_column">'.esc_html($data_inv['date']).'</td>
+						<td class="in_column">'.esc_html($data_inv['post_title']).'</td>
+						<td class="in_column">'.(($setting_system['currency_position'] == 'before')?''.esc_html($symbol).' ':'').''.number_format($data_inv['in_total'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.esc_html($symbol).'':'').'</td>
+						<td class="in_column">'.(($setting_system['currency_position'] == 'before')?''.esc_html($term_currency->symbol).' ':'').''.number_format($in_total_curr, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.esc_html($term_currency->symbol).'':'').'</td>
+						<td class="in_column">'.(($setting_system['currency_position'] == 'before')?''.esc_html($term_currency->symbol).' ':'').''.number_format($affected, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.esc_html($term_currency->symbol).'':'').'</td>
 					</tr>';
 				}
 			} else {
@@ -706,11 +706,11 @@ class fktrPostTypeReceipts {
 					</tr>
 					<tr class="tr_fktr">
 						<th><label for="receipt_number">'.__('Receipt Number', 'fakturo' ).'	</label></th>
-						<td>'.(($post->post_status != 'publish' && $post->post_status != 'cancelled')?' <input type="text" name="receipt_number" id="receipt_number" value="'.$receipt_data['receipt_number'].'"/>': $receipt_data['receipt_number']).'</td>
+						<td>'.(($post->post_status != 'publish' && $post->post_status != 'cancelled')?' <input type="text" name="receipt_number" id="receipt_number" value="'.esc_attr($receipt_data['receipt_number']).'"/>': $receipt_data['receipt_number']).'</td>
 					</tr>
 					<tr class="tr_fktr">
 						<th><label for="available_to_include">'.__('Available to include', 'fakturo' ).'	</label></th>
-						<td>'.(($post->post_status != 'publish' && $post->post_status != 'cancelled')?'<div id="client_available_to_include" data-available="0">No money available to include</div>   <input type="text" name="available_to_include" id="available_to_include" value="'.$receipt_data['available_to_include'].'"/>':''.(($setting_system['currency_position'] == 'before')?''.$defaultCurrency->symbol.' ':'').''.number_format($receipt_data['available_to_include'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$defaultCurrency->symbol.'':'').'').'</td>
+						<td>'.(($post->post_status != 'publish' && $post->post_status != 'cancelled')?'<div id="client_available_to_include" data-available="0">No money available to include</div>   <input type="text" name="available_to_include" id="available_to_include" value="'.esc_attr($receipt_data['available_to_include']).'"/>':''.(($setting_system['currency_position'] == 'before')?''.$defaultCurrency->symbol.' ':'').''.number_format($receipt_data['available_to_include'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$defaultCurrency->symbol.'':'').'').'</td>
 					</tr>
 					<tr class="tr_fktr">
 						<th><label for="payment_type_id">'.__('Payment Type', 'fakturo' ).'	</label></th>
@@ -722,7 +722,7 @@ class fktrPostTypeReceipts {
 					</tr>
 					<tr class="tr_fktr">
 						<th><label for="cash">'.__('Cash', 'fakturo' ).'	</label></th>
-						<td>'.(($post->post_status != 'publish' && $post->post_status != 'cancelled')?' <input type="text" name="cash" id="cash" value="'.$receipt_data['cash'].'"/>': ''.(($setting_system['currency_position'] == 'before')?''.$term_currency->symbol.' ':'').''.number_format($receipt_data['cash'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$term_currency->symbol.'':'').'').'</td>
+						<td>'.(($post->post_status != 'publish' && $post->post_status != 'cancelled')?' <input type="text" name="cash" id="cash" value="'.esc_attr($receipt_data['cash']).'"/>': ''.(($setting_system['currency_position'] == 'before')?''.esc_html($term_currency->symbol).' ':'').''.number_format($receipt_data['cash'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.esc_html($term_currency->symbol).'':'').'').'</td>
 					</tr>
 					
 			</tbody>
@@ -769,28 +769,28 @@ class fktrPostTypeReceipts {
 			<table class="form-table">
 				<tr class="tr_fktr">
 					<th><label>'.__('Current account balance', 'fakturo' ).'	</label></th>
-					<td id="receipt_acc_current_balance"><input type="hidden" id="current_acc_balance" name="current_acc_balance" value="'.$receipt_data['current_acc_balance'].'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['current_acc_balance'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
+					<td id="receipt_acc_current_balance"><input type="hidden" id="current_acc_balance" name="current_acc_balance" value="'.esc_attr($receipt_data['current_acc_balance']).'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['current_acc_balance'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
 				</tr>
 				<tr class="tr_fktr">
 					<th><label>'.__('Total to impute', 'fakturo' ).'	</label></th>
-					<td id="receipt_total_to_impute"><input type="hidden" id="total_to_impute" name="total_to_impute" value="'.$receipt_data['total_to_impute'].'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['total_to_impute'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
+					<td id="receipt_total_to_impute"><input type="hidden" id="total_to_impute" name="total_to_impute" value="'.esc_attr($receipt_data['total_to_impute']).'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['total_to_impute'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
 				</tr>
 				<tr class="tr_fktr">
 					<th><label>'.__('Total to pay', 'fakturo' ).'	</label></th>
-					<td id="receipt_total_to_pay"><input type="hidden" id="total_to_pay" name="total_to_pay" value="'.$receipt_data['total_to_pay'].'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['total_to_pay'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
+					<td id="receipt_total_to_pay"><input type="hidden" id="total_to_pay" name="total_to_pay" value="'.esc_attr($receipt_data['total_to_pay']).'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['total_to_pay'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
 				</tr>
 				<tr class="tr_fktr">
 					<th><label>'.__('Available to include', 'fakturo' ).'	</label></th>
-					<td id="receipt_available_to_include"><input type="hidden" id="total_available_to_include" name="total_available_to_include" value="'.$receipt_data['total_available_to_include'].'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['total_available_to_include'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
+					<td id="receipt_available_to_include"><input type="hidden" id="total_available_to_include" name="total_available_to_include" value="'.esc_attr($receipt_data['total_available_to_include']).'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['total_available_to_include'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
 				</tr>
 				<tr id="tr_positive_balance" class="tr_fktr">
 					<th><label>'.__('Positive balance', 'fakturo' ).'	</label></th>
-					<td id="receipt_positive_balance"><input type="hidden" id="positive_balance" name="positive_balance" value="'.$receipt_data['positive_balance'].'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['positive_balance'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
+					<td id="receipt_positive_balance"><input type="hidden" id="positive_balance" name="positive_balance" value="'.esc_attr($receipt_data['positive_balance']).'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['positive_balance'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
 				</tr>
 				
 				<tr class="tr_fktr">
 					<th><label>'.__('Future account balance', 'fakturo' ).'	</label></th>
-					<td id="receipt_acc_future_balance"><input type="hidden" id="future_balance" name="future_balance" value="'.$receipt_data['future_balance'].'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['future_balance'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
+					<td id="receipt_acc_future_balance"><input type="hidden" id="future_balance" name="future_balance" value="'.esc_attr($receipt_data['future_balance']).'"/>'.(($setting_system['currency_position'] == 'before')?''.$receiptSymbol.' ':'').''.number_format($receipt_data['future_balance'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$receiptSymbol.'':'').'</td>
 				</tr>
 			</table>	
 					
@@ -898,7 +898,7 @@ class fktrPostTypeReceipts {
 			$last_receipt_numbers = 0;
 			update_option('last_receipt_number', $last_receipt_numbers);
 		}
-		$retorno = $last_receipt_numbers+1;
+		$retorno = (int) $last_receipt_numbers + 1;
 		return $retorno;
 	}
 	public static function updateSuggestReceiptNumber($receipt_number = 0) {
@@ -908,9 +908,10 @@ class fktrPostTypeReceipts {
 		if (!$last_receipt_numbers) {
 			$last_receipt_numbers = 0;
 		}
-		if ($last_receipt_numbers < $receipt_number) {
-			$last_receipt_numbers = $receipt_number;
+		if (is_numeric($receipt_number) && $last_receipt_numbers < $receipt_number) {
+			$last_receipt_numbers = (int) $receipt_number;
 		}
+		$last_receipt_numbers = (int) $last_receipt_numbers;
 		update_option('last_receipt_number', $last_receipt_numbers);
 		
 	}

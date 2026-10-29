@@ -1,8 +1,19 @@
 var count_products = 0;
 
+function fktrEsc(text) {
+	return String(text == null ? '' : text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
 
 var product_data = new Array();
 var DefaultMaskNumbers = '';
+function fillClientField(selector, text, inputs) {
+	var cell = jQuery(selector).text(text == null ? '' : String(text));
+	jQuery.each(inputs, function(i, input) {
+		jQuery('<input type="hidden"/>').attr({name: input[0], id: input[1]}).val(input[2] == null ? '' : input[2]).appendTo(cell);
+	});
+}
+
 jQuery(document).ready(function($) {
 
 
@@ -133,13 +144,13 @@ jQuery(document).ready(function($) {
 
 			jQuery.post(sales_object.ajax_url, data, function(data) {
 				var data_client = jQuery.parseJSON(data);
-				jQuery("#client_data_id").html(data_client.ID);
-				jQuery("#client_name").html(data_client.post_title + '<input type="hidden" name="client_data[name]" value="' + data_client.post_title + '" id="client_data_name"/>');
-				jQuery("#client_address").html(data_client.address + '<input type="hidden" name="client_data[address]" value="' + data_client.address + '" id="client_data_address"/>');
-				jQuery("#client_city").html(data_client.city + '<input type="hidden" name="client_data[city]" value="' + data_client.city + '" id="client_data_city"/>');
-				jQuery("#client_state").html(data_client.selected_state_name + '<input type="hidden" name="client_data[state][id]" value="' + data_client.selected_state + '" id="client_data_state_id"/><input type="hidden" name="client_data[state][name]" value="' + data_client.selected_state_name + '" id="client_data_state_name"/>');
-				jQuery("#client_country").html(data_client.selected_country_name + '<input type="hidden" name="client_data[country][id]" value="' + data_client.selected_country + '" id="client_data_country_id"/><input type="hidden" name="client_data[country][name]" value="' + data_client.selected_country_name + '" id="client_data_country_name"/>');
-				jQuery("#client_taxpayer").html(data_client.taxpayer + '<input type="hidden" name="client_data[taxpayer]" value="' + data_client.taxpayer + '" id="client_data_taxpayer"/>');
+				fillClientField("#client_data_id", data_client.ID, []);
+				fillClientField("#client_name", data_client.post_title, [["client_data[name]", "client_data_name", data_client.post_title]]);
+				fillClientField("#client_address", data_client.address, [["client_data[address]", "client_data_address", data_client.address]]);
+				fillClientField("#client_city", data_client.city, [["client_data[city]", "client_data_city", data_client.city]]);
+				fillClientField("#client_state", data_client.selected_state_name, [["client_data[state][id]", "client_data_state_id", data_client.selected_state], ["client_data[state][name]", "client_data_state_name", data_client.selected_state_name]]);
+				fillClientField("#client_country", data_client.selected_country_name, [["client_data[country][id]", "client_data_country_id", data_client.selected_country], ["client_data[country][name]", "client_data_country_name", data_client.selected_country_name]]);
+				fillClientField("#client_taxpayer", data_client.taxpayer, [["client_data[taxpayer]", "client_data_taxpayer", data_client.taxpayer]]);
 
 				jQuery("#client_tax_condition").fadeIn();
 				jQuery("#client_data_tax_condition").val(data_client.selected_tax_condition);
@@ -152,8 +163,8 @@ jQuery(document).ready(function($) {
 				jQuery("#client_data_payment_type").val(data_client.selected_payment_type);
 				jQuery("#client_data_payment_type").select2();
 
-				jQuery("#client_price_scale").html(data_client.selected_price_scale_name + '<input type="hidden" name="client_data[price_scale][id]" value="' + data_client.selected_price_scale + '" id="client_data_price_scale_id"/><input type="hidden" name="client_data[price_scale][name]" value="' + data_client.selected_price_scale_name + '" id="client_data_price_scale_name"/>');
-				jQuery("#client_credit_limit").html(data_client.credit_limit + '<input type="hidden" name="client_data[credit_limit]" value="' + data_client.credit_limit + '" id="client_data_credit_limit"/>');
+				fillClientField("#client_price_scale", data_client.selected_price_scale_name, [["client_data[price_scale][id]", "client_data_price_scale_id", data_client.selected_price_scale], ["client_data[price_scale][name]", "client_data_price_scale_name", data_client.selected_price_scale_name]]);
+				fillClientField("#client_credit_limit", data_client.credit_limit, [["client_data[credit_limit]", "client_data_credit_limit", data_client.credit_limit]]);
 
 				if (data_client.selected_currency > 0) {
 					jQuery('#invoice_currency').val(data_client.selected_currency);
@@ -342,7 +353,7 @@ function addStockMessageRed(productId, location_id, max) {
 		}
 		else {
 			productLocation = getLocation(location_id);
-			jQuery('#errors_stocks').prepend('<div id="error_stock_' + productId + '_' + location_id + '" class="error_stock_red">' + sales_object.txt_no_stock + ' ( ' + productId + ' / ' + productLocation.name + ' - ' + sales_object.txt_max + ': ' + max + ') </div>');
+			jQuery('#errors_stocks').prepend('<div id="error_stock_' + productId + '_' + location_id + '" class="error_stock_red">' + sales_object.txt_no_stock + ' ( ' + productId + ' / ' + fktrEsc(productLocation.name) + ' - ' + sales_object.txt_max + ': ' + max + ') </div>');
 		}
 	}
 	jQuery('#errors_stocks').fadeIn();
@@ -530,7 +541,7 @@ function openPopPupStockProduct(identifier) {
 				valReal = parseInt(valStock);
 			}
 			length_stocks_locations++;
-			stocksHtml += '<tr><td class="stock_td_name">' + productLocation.name + ' (max:' + (getCurrentProductStock(current_product.id, location_id) + valReal) + '): </td><td class="stock_td_input"><input type="text" name="product_stock_location_popup[]" value="' + valStock + '" id="product_stock_input_popup_' + location_id + '" class="product_stock_input_popup"/> </td></tr>';
+			stocksHtml += '<tr><td class="stock_td_name">' + fktrEsc(productLocation.name) + ' (max:' + (getCurrentProductStock(current_product.id, location_id) + valReal) + '): </td><td class="stock_td_input"><input type="text" name="product_stock_location_popup[]" value="' + valStock + '" id="product_stock_input_popup_' + location_id + '" class="product_stock_input_popup"/> </td></tr>';
 		}
 	}
 	stocksHtml += '</table>';
@@ -900,14 +911,14 @@ function add_selected_product() {
 	}
 
 	var price = getPriceProduct(current_product).formatMoney(sales_object.decimal_numbers, sales_object.decimal, sales_object.thousand);
-	var code = getCodeProduct(current_product);
-	var description = getDescriptionProduct(current_product);
+	var code = fktrEsc(getCodeProduct(current_product));
+	var description = fktrEsc(getDescriptionProduct(current_product));
 
 	var percentage_tax = getPorcentTaxProduct(current_product);
 	var tax_with_mask = percentage_tax.formatMoney(2, sales_object.decimal, sales_object.thousand);
 	var discriminates_taxes = getDescriminateTaxes();
 
-	var newHTML = '<div id="uc_ID' + count_products + '" class="sortitem" data-identifier="' + count_products + '"><div class="sorthandle"> </div> <div class="uc_column" id=""><label class="code_product" id="label_code_' + count_products + '">' + code + '</label>' + stocksHtml + '<input name="uc_code[]" type="hidden" id="code_' + count_products + '" value="' + code + '" class="large-text"/> <input name="uc_id[]" type="hidden" id="id_' + count_products + '" value="' + current_product.id + '"/></div><div class="uc_column" id=""><input name="uc_description[]" type="text" id="description_' + count_products + '" value="' + description + '" class="large-text"/></div><div class="uc_column" id=""><input name="uc_quality[]" class="product_quality" id="quality_' + count_products + '" type="text" value="1" class="large-text"/></div><div class="uc_column" id=""><input name="uc_unit_price[]" id="unit_price_' + count_products + '" type="text" value="' + price + '" class="unit_price_products large-text"/></div><div class="uc_column taxes_column" ' + ((discriminates_taxes == 1) ? '' : 'style="display:none;"') + '><label class="code_product" id="label_tax_product_' + count_products + '">' + tax_with_mask + '%</label><input name="uc_tax[]" type="hidden" id="tax_product_' + count_products + '" value="' + current_product.datacomplete.tax + '" class="product_taxs large-text"/><input name="uc_tax_porcent[]" type="hidden" id="tax_porcent_product_' + count_products + '" value="' + percentage_tax + '" class="product_tax_porcent"/></div><div class="uc_column" id=""><input name="uc_amount[]" id="amount_' + count_products + '" type="text" value="' + price + '" class="products_amounts large-text"/></div><div class="" id="uc_actions"><label title="" data-id="' + count_products + '" class="delete"></label></div></div>';
+	var newHTML = '<div id="uc_ID' + count_products + '" class="sortitem" data-identifier="' + count_products + '"><div class="sorthandle"> </div> <div class="uc_column" id=""><label class="code_product" id="label_code_' + count_products + '">' + code + '</label>' + stocksHtml + '<input name="uc_code[]" type="hidden" id="code_' + count_products + '" value="' + code + '" class="large-text"/> <input name="uc_id[]" type="hidden" id="id_' + count_products + '" value="' + current_product.id + '"/></div><div class="uc_column" id=""><input name="uc_description[]" type="text" id="description_' + count_products + '" value="' + description + '" class="large-text"/></div><div class="uc_column" id=""><input name="uc_quality[]" class="product_quality" id="quality_' + count_products + '" type="text" value="1" class="large-text"/></div><div class="uc_column" id=""><input name="uc_unit_price[]" id="unit_price_' + count_products + '" type="text" value="' + price + '" class="unit_price_products large-text"/></div><div class="uc_column taxes_column" ' + ((discriminates_taxes == 1) ? '' : 'style="display:none;"') + '><label class="code_product" id="label_tax_product_' + count_products + '">' + tax_with_mask + '%</label><input name="uc_tax[]" type="hidden" id="tax_product_' + count_products + '" value="' + fktrEsc(current_product.datacomplete.tax) + '" class="product_taxs large-text"/><input name="uc_tax_porcent[]" type="hidden" id="tax_porcent_product_' + count_products + '" value="' + percentage_tax + '" class="product_tax_porcent"/></div><div class="uc_column" id=""><input name="uc_amount[]" id="amount_' + count_products + '" type="text" value="' + price + '" class="products_amounts large-text"/></div><div class="" id="uc_actions"><label title="" data-id="' + count_products + '" class="delete"></label></div></div>';
 
 	jQuery('#invoice_products').append(newHTML);
 	jQuery('#uc_actions label').click(function() {
@@ -1008,7 +1019,7 @@ function updateProductFromIdentifier(identifier) {
 	var tax_with_mask = percentage_tax.formatMoney(2, sales_object.decimal, sales_object.thousand);
 	var discriminates_taxes = getDescriminateTaxes();
 
-	jQuery('#label_code_' + identifier).html(code);
+	jQuery('#label_code_' + identifier).text(code);
 	jQuery('#code_' + identifier).val(code);
 	jQuery('#id_' + identifier).val(current_product.id);
 
@@ -1052,7 +1063,7 @@ function updateProductFromIdentifierOnLoad(identifier) {
 	var tax_with_mask = percentage_tax.formatMoney(2, sales_object.decimal, sales_object.thousand);
 	var discriminates_taxes = getDescriminateTaxes();
 
-	jQuery('#label_code_' + identifier).html(code);
+	jQuery('#label_code_' + identifier).text(code);
 	jQuery('#code_' + identifier).val(code);
 	jQuery('#id_' + identifier).val(current_product.id);
 
@@ -1210,10 +1221,10 @@ function updateSubTotals() {
 					var old_val = parseFloat(jQuery('#taxes_in_products_' + tax.term_id).val());
 					newTaxMoney = newTaxMoney + old_val;
 					jQuery('#taxes_in_products_' + tax.term_id).val(newTaxMoney);
-					jQuery('#label_tax_in_' + tax.term_id).html('' + tax.name + ' ' + parseFloat(porcent).formatMoney(2, sales_object.decimal, sales_object.thousand) + '%:' + ((sales_object.currency_position == 'before') ? getSymbolFromCurrencyId(getCurrentCurrencyId()) + ' ' : '') + '' + newTaxMoney.formatMoney(sales_object.decimal_numbers, sales_object.decimal, sales_object.thousand) + '' + ((sales_object.currency_position == 'after') ? ' ' + getSymbolFromCurrencyId(getCurrentCurrencyId()) : '') + '');
+					jQuery('#label_tax_in_' + tax.term_id).html('' + fktrEsc(tax.name) + ' ' + parseFloat(porcent).formatMoney(2, sales_object.decimal, sales_object.thousand) + '%:' + ((sales_object.currency_position == 'before') ? getSymbolFromCurrencyId(getCurrentCurrencyId()) + ' ' : '') + '' + newTaxMoney.formatMoney(sales_object.decimal_numbers, sales_object.decimal, sales_object.thousand) + '' + ((sales_object.currency_position == 'after') ? ' ' + getSymbolFromCurrencyId(getCurrentCurrencyId()) : '') + '');
 				}
 				else {
-					var html_taxs = '<label id="label_tax_in_' + tax.term_id + '">' + tax.name + ' ' + parseFloat(porcent).formatMoney(2, sales_object.decimal, sales_object.thousand) + '%:' + ((sales_object.currency_position == 'before') ? getSymbolFromCurrencyId(getCurrentCurrencyId()) + ' ' : '') + '' + newTaxMoney.formatMoney(sales_object.decimal_numbers, sales_object.decimal, sales_object.thousand) + '' + ((sales_object.currency_position == 'after') ? ' ' + getSymbolFromCurrencyId(getCurrentCurrencyId()) : '') + '</label> <input type="hidden" id="taxes_in_products_' + tax.term_id + '" name="taxes_in_products[' + tax.term_id + ']" value="' + newTaxMoney + '"/><br/>';
+					var html_taxs = '<label id="label_tax_in_' + tax.term_id + '">' + fktrEsc(tax.name) + ' ' + parseFloat(porcent).formatMoney(2, sales_object.decimal, sales_object.thousand) + '%:' + ((sales_object.currency_position == 'before') ? getSymbolFromCurrencyId(getCurrentCurrencyId()) + ' ' : '') + '' + newTaxMoney.formatMoney(sales_object.decimal_numbers, sales_object.decimal, sales_object.thousand) + '' + ((sales_object.currency_position == 'after') ? ' ' + getSymbolFromCurrencyId(getCurrentCurrencyId()) : '') + '</label> <input type="hidden" id="taxes_in_products_' + tax.term_id + '" name="taxes_in_products[' + tax.term_id + ']" value="' + newTaxMoney + '"/><br/>';
 					jQuery('#tax_total').append(html_taxs);
 				}
 
@@ -1403,7 +1414,7 @@ function getSymbolFromCurrencyId(term_id) {
 	var currencies = jQuery.parseJSON(sales_object.currencies);
 	for (var i = 0; i < currencies.length; i++) {
 		if (currencies[i].term_id == term_id) {
-			r = currencies[i].symbol;
+			r = fktrEsc(currencies[i].symbol);
 			break;
 		}
 	}
@@ -1461,9 +1472,9 @@ function formatRepo(repo) {
 	}
 
 	var markup = "<div class='select2-result-product clearfix'>" +
-		"<div class='select2-result-product__avatar'><img src='" + repo.img + "' /></div>" +
+		"<div class='select2-result-product__avatar'><img src='" + fktrEsc(repo.img) + "' /></div>" +
 		"<div class='select2-result-product__meta'>" +
-		"<div class='select2-result-product__title'>" + repo.title + "</div>";
+		"<div class='select2-result-product__title'>" + fktrEsc(repo.title) + "</div>";
 
 	var code_search = '';
 
@@ -1475,14 +1486,14 @@ function formatRepo(repo) {
 	if (repo.datacomplete) {
 
 		if (sales_object.default_code == 'reference' && repo.datacomplete.reference) {
-			code_search = '<strong>(' + repo.datacomplete.reference + ')</strong> ';
+			code_search = '<strong>(' + fktrEsc(repo.datacomplete.reference) + ')</strong> ';
 		}
 		if (sales_object.default_code == 'manufacturers_code' && repo.datacomplete.manufacturers) {
-			code_search = '<strong>(' + repo.datacomplete.manufacturers + ')</strong> ';
+			code_search = '<strong>(' + fktrEsc(repo.datacomplete.manufacturers) + ')</strong> ';
 		}
 
 		if (code_search == '' && repo.datacomplete.reference) {
-			code_search = '<strong>(' + repo.datacomplete.reference + ')</strong> ';
+			code_search = '<strong>(' + fktrEsc(repo.datacomplete.reference) + ')</strong> ';
 		}
 
 	}
@@ -1494,7 +1505,7 @@ function formatRepo(repo) {
 
 	if (repo.description) {
 
-		markup += "<div class='select2-result-product__description'>" + code_search + '' + repo.description + " </div>";
+		markup += "<div class='select2-result-product__description'>" + code_search + '' + fktrEsc(repo.description) + " </div>";
 	}
 	else {
 		markup += "<div class='select2-result-product__description'>" + code_search + " </div>";
@@ -1510,5 +1521,5 @@ function formatRepo(repo) {
 }
 
 function formatRepoSelection(repo) {
-	return repo.title || repo.text;
+	return fktrEsc(repo.title || repo.text);
 }

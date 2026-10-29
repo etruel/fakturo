@@ -248,7 +248,7 @@ class fktr_tax_check {
 				if ($key === 0) {
 					continue;
 				}
-				$echoSelectStatus .= '<option value="'.$key.'"'.selected($key, 0, false).'>'.$txt.'</option>';
+				$echoSelectStatus .= '<option value="'.esc_attr($key).'"'.selected($key, 0, false).'>'.$txt.'</option>';
 			}
 			$echoSelectStatus .= '</optgroup>';
 		}
@@ -290,12 +290,12 @@ class fktr_tax_check {
 		
 		<div class="form-field" id="date_div">
 			<label for="term_meta[date]">'.__( 'Date', 'fakturo' ).'</label>
-			<input type="text" name="term_meta[date]" id="term_meta_date" value="'.date_i18n($setting_system['dateformat'], $date ).'" style="width: 150px; ">
+			<input type="text" name="term_meta[date]" id="term_meta_date" value="'.esc_attr(date_i18n($setting_system['dateformat'], $date )).'" style="width: 150px; ">
 			<p class="description">'.__( 'Enter a date', 'fakturo' ).'</p>
 		</div>
 		<div class="form-field" id="cashing_date_div">
 			<label for="term_meta[cashing_date]">'.__( 'Cashing Date', 'fakturo' ).'</label>
-			<input type="text" name="term_meta[cashing_date]" id="term_meta_cashing_date" value="'.date_i18n($setting_system['dateformat'], $date ).'" style="width: 150px; ">
+			<input type="text" name="term_meta[cashing_date]" id="term_meta_cashing_date" value="'.esc_attr(date_i18n($setting_system['dateformat'], $date )).'" style="width: 150px; ">
 			<p class="description">'.__( 'Enter a cashing date.', 'fakturo' ).'</p>
 		</div>
 		
@@ -306,7 +306,7 @@ class fktr_tax_check {
 		</div>
 		<div class="form-field" id="date_status_div" style="display:none;">
 			<label for="term_meta[date]">'.__( 'Date', 'fakturo' ).'</label>
-			<input type="text" name="term_meta[date_status]" id="term_meta_date_status" value="'.date_i18n($setting_system['dateformat'], $date ).'" style="width: 150px; ">
+			<input type="text" name="term_meta[date_status]" id="term_meta_date_status" value="'.esc_attr(date_i18n($setting_system['dateformat'], $date )).'" style="width: 150px; ">
 			<p class="description">'.__( 'Enter a date', 'fakturo' ).'</p>
 		</div>
 		<div class="form-field" id="provider_div" style="display:none;">
@@ -412,7 +412,7 @@ class fktr_tax_check {
 				if ($key === 0) {
 					continue;
 				}
-				$echoSelectStatus .= '<option value="'.$key.'"'.selected($key, $term_meta->status, false).'>'.$txt.'</option>';
+				$echoSelectStatus .= '<option value="'.esc_attr($key).'"'.selected($key, $term_meta->status, false).'>'.$txt.'</option>';
 			}
 			$echoSelectStatus .= '</optgroup>';
 		}
@@ -452,7 +452,7 @@ class fktr_tax_check {
 				<label for="term_meta[value]">'.__( 'Value', 'fakturo' ).'</label>
 			</th>
 			<td>
-				<input type="text" name="term_meta[value]" id="term_meta_value" value="'.$term_meta->value.'" style="width: 150px;text-align: right; padding-right: 0px; ">
+				<input type="text" name="term_meta[value]" id="term_meta_value" value="'.esc_attr($term_meta->value).'" style="width: 150px;text-align: right; padding-right: 0px; ">
 				<p class="description">'.__( 'Enter a value.', 'fakturo' ).'</p>
 			</td>
 		</tr>
@@ -461,7 +461,7 @@ class fktr_tax_check {
 				<label for="term_meta[date]">'.__( 'Date', 'fakturo' ).'</label>
 			</th>
 			<td>
-				<input type="text" name="term_meta[date]" id="term_meta_date" value="'.date_i18n($setting_system['dateformat'], $term_meta->date ).'" style="width: 150px;"/>
+				<input type="text" name="term_meta[date]" id="term_meta_date" value="'.esc_attr(date_i18n($setting_system['dateformat'], $term_meta->date )).'" style="width: 150px;"/>
 				<p class="description">'.__( 'Enter a date.', 'fakturo' ).'</p>
 			</td>
 		</tr>
@@ -470,7 +470,7 @@ class fktr_tax_check {
 				<label for="term_meta[cashing_date]">'.__( 'Cashing Date', 'fakturo' ).'</label>
 			</th>
 			<td>
-				<input type="text" name="term_meta[cashing_date]" id="term_meta_cashing_date" value="'.date_i18n($setting_system['dateformat'],  $term_meta->cashing_date ).'" style="width: 150px; ">
+				<input type="text" name="term_meta[cashing_date]" id="term_meta_cashing_date" value="'.esc_attr(date_i18n($setting_system['dateformat'],  $term_meta->cashing_date )).'" style="width: 150px; ">
 				<p class="description">'.__( 'Enter a cashing date.', 'fakturo' ).'</p>
 			</td>
 		</tr>
@@ -488,7 +488,7 @@ class fktr_tax_check {
 				<label for="term_meta[date_status]">'.__( 'Date', 'fakturo' ).'</label>
 			</th>
 			<td>
-				<input type="text" name="term_meta[date_status]" id="term_meta_date_status" value="'.date_i18n($setting_system['dateformat'],  $term_meta->date_status ).'" style="width: 150px; ">
+				<input type="text" name="term_meta[date_status]" id="term_meta_date_status" value="'.esc_attr(date_i18n($setting_system['dateformat'],  $term_meta->date_status )).'" style="width: 150px; ">
 				<p class="description">'.__( 'Enter a date.', 'fakturo' ).'</p>
 			</td>
 		</tr>
@@ -506,7 +506,7 @@ class fktr_tax_check {
 				<label for="term_meta[notes]">'.__( 'Notes', 'fakturo' ).'</label>
 			</th>
 			<td>
-				<textarea style="width:95%;" rows="4" name="term_meta[notes]" id="term_meta_notes">'. $term_meta->notes.'</textarea>
+				<textarea style="width:95%;" rows="4" name="term_meta[notes]" id="term_meta_notes">'. esc_textarea($term_meta->notes).'</textarea>
 				<p class="description">'.__( 'Enter the notes.', 'fakturo' ).'</p>
 			</td>
 		</tr>

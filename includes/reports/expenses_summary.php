@@ -143,15 +143,11 @@ class expenses_summary_report {
             GROUP_CONCAT(p.post_date SEPARATOR ', ') AS post_date,
             GROUP_CONCAT(p.post_excerpt SEPARATOR 'Cliente:') AS post_excerpt 
             FROM {$wpdb->posts} p 
-            LEFT JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id 
-                AND pm1.meta_key = 'post_type' 
-                AND pm1.meta_value = 'fktr_sale' 
             LEFT JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id 
                 AND pm2.meta_key = 'invoice_saleman' 
             LEFT JOIN {$wpdb->users} u ON pm2.meta_value = u.ID
             WHERE p.post_status = 'publish' 
             AND p.post_type = 'fktr_sale' 
-            AND pm1.meta_key IS NOT NULL 
             AND pm2.meta_key IS NOT NULL
             {$date_condition}
             {$seller_condition}
@@ -404,7 +400,7 @@ class expenses_summary_report {
         
         $select_range_html = '<select name="range" id="range">';
         foreach ($array_range as $key => $value) {
-            $select_range_html .= '<option value="' . $key . '" ' . selected($key, $request['range'], false) . '>' . $value . '</option>';
+            $select_range_html .= '<option value="' . esc_attr($key) . '" ' . selected($key, $request['range'], false) . '>' . $value . '</option>';
         }
         $select_range_html .= '</select>';
 
@@ -424,16 +420,16 @@ class expenses_summary_report {
 
         $date_inputs_html = '<div id="custom_dates" class="fktr_date-ranges" style="display:none;">';
 		$date_inputs_html .= '<div class="fktr_date-from"><label for="from_date">' . __( 'From', 'fakturo' ) . '</label>';
-		$date_inputs_html .= '<input type="date" name="from_date" id="from_date" value="'.$from_date.'" /></div>';
+		$date_inputs_html .= '<input type="date" name="from_date" id="from_date" value="'.esc_attr($from_date).'" /></div>';
 		$date_inputs_html .= '<div class="fktr_date-from"><label for="to_date">' . __( 'To', 'fakturo' ) . '</label>';
-		$date_inputs_html .= '<input type="date" name="to_date" id="to_date" value="'.$to_date.'" /></div>';
+		$date_inputs_html .= '<input type="date" name="to_date" id="to_date" value="'.esc_attr($to_date).'" /></div>';
 		$date_inputs_html .= '</div>';
 
         echo '<div id="div_filter_form" class="fktr_filter-form">
             <form name="filter_form" method="get" action="' . admin_url('admin.php') . '">
                 <div class="fktr_filter-options">
                     <input type="hidden" name="page" value="fakturo_reports"/>
-                    <input type="hidden" name="sec" value="' . $request['sec'] . '"/>
+                    <input type="hidden" name="sec" value="' . esc_attr($request['sec']) . '"/>
                     <div class="fktr_filter-row">
                         <div class="fktr_filter-item">
                             <label for="range">' . __('Date Range', 'fakturo') . '</label>

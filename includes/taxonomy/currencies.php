@@ -158,7 +158,7 @@ class fktr_tax_currency {
 				<label for="term_meta[plural]">'.__( 'Plural', 'fakturo' ).'</label>
 			</th>
 			<td>
-				<input type="text" name="term_meta[plural]" id="term_meta[plural]" value="'.$term_meta->plural.'">
+				<input type="text" name="term_meta[plural]" id="term_meta[plural]" value="'.esc_attr($term_meta->plural).'">
 				<p class="description">'.__( 'Enter name plural of the currency', 'fakturo' ).'</p>
 			</td>
 		</tr>
@@ -167,7 +167,7 @@ class fktr_tax_currency {
 				<label for="term_meta[symbol]">'.__( 'Symbol', 'fakturo' ).'</label>
 			</th>
 			<td>
-				<input type="text" style="width: 60px;text-align: center; padding-right: 0px; " name="term_meta[symbol]" id="term_meta_symbol" value="'.$term_meta->symbol.'">
+				<input type="text" style="width: 60px;text-align: center; padding-right: 0px; " name="term_meta[symbol]" id="term_meta_symbol" value="'.esc_attr($term_meta->symbol).'">
 				<p class="description">'.__( 'Enter a symbol like $', 'fakturo' ).'</p>
 			</td>
 		</tr>
@@ -176,7 +176,7 @@ class fktr_tax_currency {
 				<label for="term_meta[rate]">'.__( 'Rate', 'fakturo' ).'</label>
 			</th>
 			<td>
-				<input style="width: 60px;text-align: right; padding-right: 0px; " type="text" name="term_meta[rate]" id="term_meta_rate" value="'.number_format($term_meta->rate, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).'">
+				<input style="width: 60px;text-align: right; padding-right: 0px; " type="text" name="term_meta[rate]" id="term_meta_rate" value="'.esc_attr(number_format($term_meta->rate, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand'])).'">
 				<p class="description">'.__( 'Enter a rate', 'fakturo' ).'</p>
 			</td>
 		</tr>
@@ -185,7 +185,7 @@ class fktr_tax_currency {
 				<label for="term_meta[reference]">'.__( 'Reference', 'fakturo' ).'</label>
 			</th>
 			<td>
-				<input type="text" name="term_meta[reference]" id="term_meta_reference" value="'.$term_meta->reference.'">
+				<input type="text" name="term_meta[reference]" id="term_meta_reference" value="'.esc_attr($term_meta->reference).'">
 				<p class="description">'.__( 'Enter a reference website to find the conversion rate', 'fakturo' ).'</p>
 			</td>
 		</tr>

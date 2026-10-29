@@ -163,7 +163,7 @@ class fktr_tax_nvoice_types {
 				<label for="term_meta[short_name]">'.__( 'Short Name', 'fakturo' ).'</label>
 			</th>
 			<td>
-				<input type="text" name="term_meta[short_name]" id="term_meta_short_name" value="'.$term_meta->short_name.'">
+				<input type="text" name="term_meta[short_name]" id="term_meta_short_name" value="'.esc_attr($term_meta->short_name).'">
 				<p class="description">'.__( 'Enter a short name of the invoice types', 'fakturo' ).'</p>
 			</td>
 		</tr>
@@ -172,7 +172,7 @@ class fktr_tax_nvoice_types {
 				<label for="term_meta[symbol]">'.__( 'Symbol', 'fakturo' ).'</label>
 			</th>
 			<td>
-				<input style="width: 60px;text-align: center; padding-right: 0px; " maxlength="1" type="text" name="term_meta[symbol]" id="term_meta_symbol" value="'.$term_meta->symbol.'">
+				<input style="width: 60px;text-align: center; padding-right: 0px; " maxlength="1" type="text" name="term_meta[symbol]" id="term_meta_symbol" value="'.esc_attr($term_meta->symbol).'">
 				<p class="description">'.__( 'Enter a symbol', 'fakturo' ).'</p>
 			</td>
 		</tr>

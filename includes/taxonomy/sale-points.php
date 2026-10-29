@@ -139,7 +139,7 @@ class fktr_tax_sale_points {
 				<label for="term_meta[code]">'.__( 'Code', 'fakturo' ).'</label>
 			</th>
 			<td>
-				<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="4" type="text" name="term_meta[code]" id="term_meta_code" value="'.$term_meta->code.'"/>
+				<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="4" type="text" name="term_meta[code]" id="term_meta_code" value="'.esc_attr($term_meta->code).'"/>
 				<p class="description">'.__( 'Enter a code', 'fakturo' ).'</p>
 			</td>
 			'.$extraHtml.'

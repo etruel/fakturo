@@ -250,7 +250,7 @@ class client_incomes {
 				$state_name = $state_data->name;
 			}
 	
-			$html_client_data = '<div class="fktr_info-item"><h3>'.__('Client', 'fakturo' ).': '.$client_data['post_title'].'</h3></div>';
+			$html_client_data = '<div class="fktr_info-item"><h3>'.__('Client', 'fakturo' ).': '.esc_html($client_data['post_title']).'</h3></div>';
 		}
 		echo '<div class="fktr_report-info">' . $html_client_data;
 		echo '<div class="fktr_info-item"><h3>'.sprintf(__('Date: since %s til %s', 'fakturo' ), date_i18n($setting_system['dateformat'].' '.get_option( 'time_format' ), $ranges['from']), date_i18n($setting_system['dateformat'].' '.get_option( 'time_format' ), $ranges['to'])).'</h3></div></div>';
@@ -321,7 +321,7 @@ class client_incomes {
 						'.$obj_type.'
 					</td>
 					<td>
-						<a href="'.$obj_link.'" target="_blank">'.$obj['post_title'].'</a>
+						<a href="'.$obj_link.'" target="_blank">'.esc_html($obj['post_title']).'</a>
 					</td>';
 					if (is_numeric($request['client_id']) && $request['client_id'] < 0){
 					$html_objects .='<td>
@@ -452,7 +452,7 @@ class client_incomes {
 
 		$select_range_html = '<select name="range" id="range">';
 		foreach ($array_range as $key => $value) {
-			$select_range_html .= '<option value="'.$key.'" '.selected($key, $request['range'], false).'>'.$value.'</option>';
+			$select_range_html .= '<option value="'.esc_attr($key).'" '.selected($key, $request['range'], false).'>'.$value.'</option>';
 		}
 		$select_range_html .= '</select>';
 	
@@ -462,16 +462,16 @@ class client_incomes {
 	
 		$date_inputs_html = '<div id="custom_dates" class="fktr_date-ranges" style="display:none;">';
 		$date_inputs_html .= '<div class="fktr_date-from"><label for="from_date">' . __( 'From', 'fakturo' ) . '</label>';
-		$date_inputs_html .= '<input type="date" name="from_date" id="from_date" value="'.$from_date.'" /></div>';
+		$date_inputs_html .= '<input type="date" name="from_date" id="from_date" value="'.esc_attr($from_date).'" /></div>';
 		$date_inputs_html .= '<div class="fktr_date-to"><label for="to_date">' . __( 'To', 'fakturo' ) . '</label>';
-		$date_inputs_html .= '<input type="date" name="to_date" id="to_date" value="'.$to_date.'" /></div>';
+		$date_inputs_html .= '<input type="date" name="to_date" id="to_date" value="'.esc_attr($to_date).'" /></div>';
 		$date_inputs_html .= '</div>';
 		
 	$return_html = '<div id="div_filter_form" class="fktr_filter-form">
         <form name="filter_form" method="get" action="'.admin_url('admin.php').'">
 			<div class="fktr_filter-options">
             <input type="hidden" name="page" value="fakturo_reports"/>
-            <input type="hidden" name="sec" value="'.$request['sec'].'"/>
+            <input type="hidden" name="sec" value="'.esc_attr($request['sec']).'"/>
             '.$select_range_html.'
             '.$selectClients.'
             <label>

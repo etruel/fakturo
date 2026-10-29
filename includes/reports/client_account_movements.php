@@ -200,7 +200,7 @@ class client_account_movements {
 			$client_data = fktrPostTypeClients::get_client_data($request['client_id']);
 			
 			
-			$html_client_data = '<div style="width:50%; text-align: left; display: inline-block;"><h3>'.__('Client', 'fakturo' ).': '.$client_data['post_title'].'</h3></div>';
+			$html_client_data = '<div style="width:50%; text-align: left; display: inline-block;"><h3>'.__('Client', 'fakturo' ).': '.esc_html($client_data['post_title']).'</h3></div>';
 		} else {
 			$total_html_print = '<div style="margin-left:15px;"><h3>'.__('Select a client please.', 'fakturo' ).'</h3></div>';
 			echo $total_html_print;
@@ -280,7 +280,7 @@ class client_account_movements {
 						'.$obj_type.'
 					</td>
 					<td>
-						'.$obj['post_title'].'
+						'.esc_html($obj['post_title']).'
 					</td>
 					<td>
 						'.$debit_print.'
@@ -353,7 +353,7 @@ class client_account_movements {
 			$client_data = fktrPostTypeClients::get_client_data($request['client_id']);
 			
 			
-			$html_client_data = '<div class="fktr_info-item"><h3>'.__('Client', 'fakturo' ).': '.$client_data['post_title'].'</h3></div>';
+			$html_client_data = '<div class="fktr_info-item"><h3>'.__('Client', 'fakturo' ).': '.esc_html($client_data['post_title']).'</h3></div>';
 		} else {
 			echo '<div class="fktr_report-info"><div class="fktr_info-item"><h3>'.__('Select a client please.', 'fakturo' ).'</h3></div></div>';
 			return false;
@@ -432,7 +432,7 @@ class client_account_movements {
 						'.$obj_type.'
 					</td>
 					<td>
-						<a href="'.$obj_link.'" target="_blank">'.$obj['post_title'].'</a>
+						<a href="'.$obj_link.'" target="_blank">'.esc_html($obj['post_title']).'</a>
 					</td>
 					<td>
 						'.$debit_print.'
@@ -487,7 +487,7 @@ class client_account_movements {
 
 		$select_range_html = '<select name="range" id="range">';
 		foreach ($array_range as $key => $value) {
-			$select_range_html .= '<option value="'.$key.'" '.selected($key, $request['range'], false).'>'.$value.'</option>';
+			$select_range_html .= '<option value="'.esc_attr($key).'" '.selected($key, $request['range'], false).'>'.$value.'</option>';
 		}
 		$select_range_html .= '</select>';
 	
@@ -497,16 +497,16 @@ class client_account_movements {
 	
 		$date_inputs_html = '<div id="custom_dates" class="fktr_date-ranges" style="display:none;">';
 		$date_inputs_html .= '<div class="fktr_date-from"><label for="from_date">' . __( 'From', 'fakturo' ) . '</label>';
-		$date_inputs_html .= '<input type="date" name="from_date" id="from_date" value="'.$from_date.'" /></div>';
+		$date_inputs_html .= '<input type="date" name="from_date" id="from_date" value="'.esc_attr($from_date).'" /></div>';
 		$date_inputs_html .= '<div class="fktr_date-to"><label for="to_date">' . __( 'To', 'fakturo' ) . '</label>';
-		$date_inputs_html .= '<input type="date" name="to_date" id="to_date" value="'.$to_date.'" /></div>';
+		$date_inputs_html .= '<input type="date" name="to_date" id="to_date" value="'.esc_attr($to_date).'" /></div>';
 		$date_inputs_html .= '</div>';
 	
 		$return_html = '<div id="div_filter_form" class="fktr_filter-form">
         <form name="filter_form" method="get" action="'.admin_url('admin.php').'">
 			<div class="fktr_filter-options">
             <input type="hidden" name="page" value="fakturo_reports"/>
-            <input type="hidden" name="sec" value="'.$request['sec'].'"/>
+            <input type="hidden" name="sec" value="'.esc_attr($request['sec']).'"/>
             '.$select_range_html.'
             '.$selectClients.'
             '.$date_inputs_html.'

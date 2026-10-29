@@ -142,7 +142,7 @@ if (!class_exists('fktrPostTypeSales')) :
 								return false;
 							}
 							$receipt_data = fktrPostTypeReceipts::get_receipt_data($receipt_id);
-							echo $receipt_data['post_title'] . ': ' . (($setting_system['currency_position'] == 'before') ? $currencyDefault->symbol . ' ' : '') . '' . number_format($affected, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (($setting_system['currency_position'] == 'after') ? ' ' . $currencyDefault->symbol : '') . '';
+							echo esc_html($receipt_data['post_title']) . ': ' . (($setting_system['currency_position'] == 'before') ? $currencyDefault->symbol . ' ' : '') . '' . number_format($affected, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (($setting_system['currency_position'] == 'after') ? ' ' . $currencyDefault->symbol : '') . '';
 						}
 					}
 					break;
@@ -151,13 +151,13 @@ if (!class_exists('fktrPostTypeSales')) :
 					if ($sale_data['client_id'] == "0") {
 						_e('No Client', 'fakturo');
 					} else {
-						echo $sale_data['client_data']['name'];
+						echo esc_html($sale_data['client_data']['name']);
 					}
 					break;
 
 				case 'saledate':
 					if (isset($sale_data['date']) && !is_numeric($sale_data['date'])) {
-						echo $sale_data['date'];
+						echo esc_html($sale_data['date']);
 					} else {
 						echo date_i18n($setting_system['dateformat'], $sale_data['date']);
 					}
@@ -774,7 +774,7 @@ if (!class_exists('fktrPostTypeSales')) :
 								$value = array_shift($sale_data['product_stock_location'][$product_id][$loc->term_id]);
 							}
 						}
-						$htmlStocksLocations .= '<input type="hidden" name="product_stock_location[' . $product_id . '][' . $loc->term_id . '][]" value="' . $value . '" id="product_stock_' . $key . '_' . $loc->term_id . '" class="product_stock_input">';
+						$htmlStocksLocations .= '<input type="hidden" name="product_stock_location[' . $product_id . '][' . $loc->term_id . '][]" value="' . esc_attr($value) . '" id="product_stock_' . $key . '_' . $loc->term_id . '" class="product_stock_input">';
 					}
 
 
@@ -790,30 +790,30 @@ if (!class_exists('fktrPostTypeSales')) :
 				<div id="uc_ID' . $key . '" class="sortitem" data-identifier="' . $key . '">
 					<div class="sorthandle"></div> 
 					<div class="uc_column" id="">
-						<label class="code_product" id="label_code_' . $key . '">' . $codeProduct . '</label>
+						<label class="code_product" id="label_code_' . $key . '">' . esc_html($codeProduct) . '</label>
 						' . $htmlStocksLocations . '
-						<input name="uc_code[]" type="hidden" id="code_' . $key . '" value="' . $codeProduct . '" class="large-text"/> 
-						<input name="uc_id[]" type="hidden" id="id_' . $key . '" value="' . $product_id . '"/>
+						<input name="uc_code[]" type="hidden" id="code_' . $key . '" value="' . esc_attr($codeProduct) . '" class="large-text"/> 
+						<input name="uc_id[]" type="hidden" id="id_' . $key . '" value="' . esc_attr($product_id) . '"/>
 					</div>
 					<div class="uc_column" id="">
-					' . (($post->post_status != 'publish') ? '<input name="uc_description[]" type="text" id="description_' . $key . '" value="' . $descriptionProduct . '" class="large-text"/>' : '<label class="code_product">' . $descriptionProduct . '</label>') . '
+					' . (($post->post_status != 'publish') ? '<input name="uc_description[]" type="text" id="description_' . $key . '" value="' . esc_attr($descriptionProduct) . '" class="large-text"/>' : '<label class="code_product">' . esc_html($descriptionProduct) . '</label>') . '
 						
 					</div>
 					<div class="uc_column" id="">
-						' . (($post->post_status != 'publish') ? '<input name="uc_quality[]" class="product_quality" id="quality_' . $key . '" type="text" value="' . $quantityProduct . '" class="large-text"/>' : '<label class="code_product">' . $quantityProduct . '</label>') . '
+						' . (($post->post_status != 'publish') ? '<input name="uc_quality[]" class="product_quality" id="quality_' . $key . '" type="text" value="' . esc_attr($quantityProduct) . '" class="large-text"/>' : '<label class="code_product">' . esc_html($quantityProduct) . '</label>') . '
 						
 					</div>
 					<div class="uc_column" id="">
-						' . (($post->post_status != 'publish') ? '<input name="uc_unit_price[]" id="unit_price_' . $key . '" type="text" value="' . $unitPriceProduct . '" class="unit_price_products large-text"/>' : '<label class="code_product">' . $unitPriceProduct . '</label>') . '
+						' . (($post->post_status != 'publish') ? '<input name="uc_unit_price[]" id="unit_price_' . $key . '" type="text" value="' . esc_attr($unitPriceProduct) . '" class="unit_price_products large-text"/>' : '<label class="code_product">' . $unitPriceProduct . '</label>') . '
 						
 					</div>
 					<div class="uc_column taxes_column"' . (($discriminates_taxes) ? '' : ' style="display:none;"') . '>
-						<label class="code_product" id="label_tax_product_' . $key . '">' . $taxPorcentProduct . '%</label>
-						<input name="uc_tax_porcent[]" type="hidden" id="tax_porcent_product_' . $key . '" value="' . $taxPorcentProduct . '" class="product_tax_porcent"/>
-						<input name="uc_tax[]" type="hidden" id="tax_product_' . $key . '" value="' . $taxProduct . '" class="product_taxs large-text"/>
+						<label class="code_product" id="label_tax_product_' . $key . '">' . esc_html($taxPorcentProduct) . '%</label>
+						<input name="uc_tax_porcent[]" type="hidden" id="tax_porcent_product_' . $key . '" value="' . esc_attr($taxPorcentProduct) . '" class="product_tax_porcent"/>
+						<input name="uc_tax[]" type="hidden" id="tax_product_' . $key . '" value="' . esc_attr($taxProduct) . '" class="product_taxs large-text"/>
 					</div>
 					<div class="uc_column" id="">
-						' . (($post->post_status != 'publish') ? '<input name="uc_amount[]" id="amount_' . $key . '" type="text" value="' . $amountProduct . '" class="products_amounts large-text"/>' : '<label class="code_product">' . $amountProduct . '</label>') . '
+						' . (($post->post_status != 'publish') ? '<input name="uc_amount[]" id="amount_' . $key . '" type="text" value="' . esc_attr($amountProduct) . '" class="products_amounts large-text"/>' : '<label class="code_product">' . $amountProduct . '</label>') . '
 						
 					
 					</div>
@@ -860,7 +860,7 @@ if (!class_exists('fktrPostTypeSales')) :
 						}
 					}
 
-					$htmltaxes .= '<label id="label_tax_in_' . $key . '">' . $taxName . ' ' . fakturo_porcent_to_mask($taxPorcent) . '%:' . (($setting_system['currency_position'] == 'before') ? $currencyDefault->symbol . ' ' : '') . '' . number_format((float)($value ?? 0), $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (($setting_system['currency_position'] == 'after') ? ' ' . $currencyDefault->symbol : '') . '</label> <input type="hidden" name="taxes_in_products[' . $key . ']" value="' . $value . '"/>';
+					$htmltaxes .= '<label id="label_tax_in_' . $key . '">' . esc_html($taxName) . ' ' . fakturo_porcent_to_mask($taxPorcent) . '%:' . (($setting_system['currency_position'] == 'before') ? $currencyDefault->symbol . ' ' : '') . '' . number_format((float)($value ?? 0), $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (($setting_system['currency_position'] == 'after') ? ' ' . $currencyDefault->symbol : '') . '</label> <input type="hidden" name="taxes_in_products[' . $key . ']" value="' . esc_attr($value) . '"/>';
 				}
 			}
 
@@ -899,14 +899,14 @@ if (!class_exists('fktrPostTypeSales')) :
 							) . '' . number_format($sub_total, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (
 								($setting_system['currency_position'] == 'after' && isset($currencyDefault->symbol))
 								? ' ' . $currencyDefault->symbol : ''
-							) . '</label><input type="hidden" name="in_sub_total" id="in_sub_total" value="' . $sub_total . '"/>  </div>
+							) . '</label><input type="hidden" name="in_sub_total" id="in_sub_total" value="' . esc_attr($sub_total) . '"/>  </div>
 							<div id="discount_total"' . (($discount > 0) ? '' : ' style="display:none;"') . '>Discount: <label id="label_discount">' . (
 								($setting_system['currency_position'] == 'before' && isset($currencyDefault->symbol))
 								? $currencyDefault->symbol . ' ' : ''
 							) . '' . number_format($discount, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (
 								($setting_system['currency_position'] == 'after' && isset($currencyDefault->symbol))
 								? ' ' . $currencyDefault->symbol : ''
-							) . '</label><input type="hidden" name="in_discount" id="in_discount" value="' . $discount . '"/> </div>
+							) . '</label><input type="hidden" name="in_discount" id="in_discount" value="' . esc_attr($discount) . '"/> </div>
 							<div id="tax_total"' . (($discriminates_taxes) ? '' : ' style="display:none;"') . '>' . $htmltaxes . '</div>
 							<div id="total">Total: <label id="label_total">' . (
 								($setting_system['currency_position'] == 'before' && isset($currencyDefault->symbol))
@@ -914,7 +914,7 @@ if (!class_exists('fktrPostTypeSales')) :
 							) . '' . number_format($total, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '' . (
 								($setting_system['currency_position'] == 'after' && isset($currencyDefault->symbol))
 								? ' ' . $currencyDefault->symbol : ''
-							) . '</label><input type="hidden" name="in_total" id="in_total" value="' . $total . '"/>  </div>
+							) . '</label><input type="hidden" name="in_total" id="in_total" value="' . esc_attr($total) . '"/>  </div>
 							</div>
 						</td>
 						</tr>
@@ -944,7 +944,7 @@ if (!class_exists('fktrPostTypeSales')) :
 					$selectInvoiceTypes = '<select name="invoice_type" id="invoice_type">';
 					foreach ($invoice_types as $invT) {
 						if ($invT->sum == $term_invoice_type->sum) {
-							$selectInvoiceTypes .= '<option value="' . $invT->term_id . '" ' . selected($sale_data['invoice_type'], $invT->term_id, false) . '>' . esc_html($invT->name) . '</option>';
+							$selectInvoiceTypes .= '<option value="' . esc_attr($invT->term_id) . '" ' . selected($sale_data['invoice_type'], $invT->term_id, false) . '>' . esc_html($invT->name) . '</option>';
 						}
 					}
 					$selectInvoiceTypes .= '</select>';
@@ -1046,9 +1046,9 @@ if (!class_exists('fktrPostTypeSales')) :
 				$alladmins = get_users(array('role' => 'administrator'));
 				$allsellers = array_merge($allsellers, $allmanagers, $alladmins);
 				$select_sale_mans = '<select name="invoice_saleman" id="invoice_saleman">';
-				$select_sale_mans .= '<option value="' . (($sale_data['invoice_saleman'] == 0) ? ' selected="selected"' : '') . '">' . __('Choose a Salesman', 'fakturo') . '</option>';
+				$select_sale_mans .= '<option value=""' . (($sale_data['invoice_saleman'] == 0) ? ' selected="selected"' : '') . '>' . __('Choose a Salesman', 'fakturo') . '</option>';
 				foreach ($allsellers as $suser) {
-					$select_sale_mans .= '<option value="' . $suser->ID . '" ' . selected($sale_data['invoice_saleman'], $suser->ID, false) . '>' . esc_html($suser->display_name) . '</option>';
+					$select_sale_mans .= '<option value="' . esc_attr($suser->ID) . '" ' . selected($sale_data['invoice_saleman'], $suser->ID, false) . '>' . esc_html($suser->display_name) . '</option>';
 				}
 				$select_sale_mans .= '</select>';
 			} else {
@@ -1161,51 +1161,51 @@ if (!class_exists('fktrPostTypeSales')) :
 									<tr class="client_data"' . ($show_client_data ? '' : ' style="display:none;"') . '>
 										<th style="text-align:left;">' . __('Client ID', 'fakturo') . '</th>
 										<td style="text-align:right;" id="client_data_id">
-											' . $sale_data['client_id'] . '
+											' . esc_html($sale_data['client_id']) . '
 										</td>		
 									</tr>
 									<tr class="client_data"' . ($show_client_data ? '' : ' style="display:none;"') . '>
 										<th style="text-align:left;">' . __('Client name', 'fakturo') . '</th>
 										<td style="text-align:right;" id="client_name">
-											' . $sale_data['client_data']['name'] . '
-											<input type="hidden" name="client_data[name]" value="' . $sale_data['client_data']['name'] . '" id="client_data_name"/>
+											' . esc_html($sale_data['client_data']['name']) . '
+											<input type="hidden" name="client_data[name]" value="' . esc_attr($sale_data['client_data']['name']) . '" id="client_data_name"/>
 										</td>		
 									</tr>
 									<tr class="client_data"' . ($show_client_data ? '' : ' style="display:none;"') . '>
 										<th style="text-align:left;">' . __('Client address', 'fakturo') . '</th>
 										<td style="text-align:right;" id="client_address">
-											' . $sale_data['client_data']['address'] . '
-											<input type="hidden" name="client_data[address]" value="' . $sale_data['client_data']['address'] . '" id="client_data_address"/>
+											' . esc_html($sale_data['client_data']['address']) . '
+											<input type="hidden" name="client_data[address]" value="' . esc_attr($sale_data['client_data']['address']) . '" id="client_data_address"/>
 										</td>		
 									</tr>
 									<tr class="client_data"' . ($show_client_data ? '' : ' style="display:none;"') . '>
 										<th style="text-align:left;">' . __('City', 'fakturo') . '</th>
 										<td style="text-align:right;" id="client_city">
-											' . $sale_data['client_data']['city'] . '
-											<input type="hidden" name="client_data[city]" value="' . $sale_data['client_data']['city'] . '" id="client_data_city"/>
+											' . esc_html($sale_data['client_data']['city']) . '
+											<input type="hidden" name="client_data[city]" value="' . esc_attr($sale_data['client_data']['city']) . '" id="client_data_city"/>
 										</td>		
 									</tr>
 									<tr class="client_data"' . ($show_client_data ? '' : ' style="display:none;"') . '>
 										<th style="text-align:left;">' . __('State', 'fakturo') . '</th>
 										<td style="text-align:right;" id="client_state">
-											' . $sale_data['client_data']['state']['name'] . '
-											<input type="hidden" name="client_data[state][id]" value="' . $sale_data['client_data']['state']['id'] . '" id="client_data_state_id"/>
-											<input type="hidden" name="client_data[state][name]" value="' . $sale_data['client_data']['state']['name'] . '" id="client_data_state_name"/>
+											' . esc_html($sale_data['client_data']['state']['name']) . '
+											<input type="hidden" name="client_data[state][id]" value="' . esc_attr($sale_data['client_data']['state']['id']) . '" id="client_data_state_id"/>
+											<input type="hidden" name="client_data[state][name]" value="' . esc_attr($sale_data['client_data']['state']['name']) . '" id="client_data_state_name"/>
 										</td>		
 									</tr>
 									<tr class="client_data"' . ($show_client_data ? '' : ' style="display:none;"') . '>
 										<th style="text-align:left;">' . __('Country', 'fakturo') . '</th>
 										<td style="text-align:right;" id="client_country">
-											' . $sale_data['client_data']['country']['name'] . '
-											<input type="hidden" name="client_data[country][id]" value="' . $sale_data['client_data']['country']['id'] . '" id="client_data_country_id"/>
-											<input type="hidden" name="client_data[country][name]" value="' . $sale_data['client_data']['country']['name'] . '" id="client_data_country_name"/>
+											' . esc_html($sale_data['client_data']['country']['name']) . '
+											<input type="hidden" name="client_data[country][id]" value="' . esc_attr($sale_data['client_data']['country']['id']) . '" id="client_data_country_id"/>
+											<input type="hidden" name="client_data[country][name]" value="' . esc_attr($sale_data['client_data']['country']['name']) . '" id="client_data_country_name"/>
 										</td>		
 									</tr>
 									<tr class="client_data"' . ($show_client_data ? '' : ' style="display:none;"') . '>
 										<th style="text-align:left;">' . __('Taxpayer ID', 'fakturo') . '</th>
 										<td style="text-align:right;" id="client_taxpayer">
-											' . $sale_data['client_data']['taxpayer'] . '
-											<input type="hidden" name="client_data[taxpayer]" value="' . $sale_data['client_data']['taxpayer'] . '" id="client_data_taxpayer"/>
+											' . esc_html($sale_data['client_data']['taxpayer']) . '
+											<input type="hidden" name="client_data[taxpayer]" value="' . esc_attr($sale_data['client_data']['taxpayer']) . '" id="client_data_taxpayer"/>
 										</td>		
 									</tr>
 									<tr class="client_data"' . ($show_client_data ? '' : ' style="display:none;"') . '>
@@ -1223,16 +1223,16 @@ if (!class_exists('fktrPostTypeSales')) :
 									<tr class="client_data"' . ($show_client_data ? '' : ' style="display:none;"') . '>
 										<th style="text-align:left;">' . __('Price scale', 'fakturo') . '</th>
 										<td style="text-align:right;" id="client_price_scale">
-											' . $sale_data['client_data']['price_scale']['name'] . '
-											<input type="hidden" name="client_data[price_scale][id]" value="' . $sale_data['client_data']['price_scale']['id'] . '" id="client_data_price_scale_id"/>
-											<input type="hidden" name="client_data[price_scale][name]" value="' . $sale_data['client_data']['price_scale']['name'] . '" id="client_data_price_scale_name"/>
+											' . esc_html($sale_data['client_data']['price_scale']['name']) . '
+											<input type="hidden" name="client_data[price_scale][id]" value="' . esc_attr($sale_data['client_data']['price_scale']['id']) . '" id="client_data_price_scale_id"/>
+											<input type="hidden" name="client_data[price_scale][name]" value="' . esc_attr($sale_data['client_data']['price_scale']['name']) . '" id="client_data_price_scale_name"/>
 										</td>		
 									</tr>
 									<tr class="client_data"' . ($show_client_data ? '' : ' style="display:none;"') . '>
 										<th style="text-align:left;">' . __('Credit limit', 'fakturo') . '</th>
 										<td style="text-align:right;" id="client_credit_limit">
-											' . $sale_data['client_data']['credit_limit'] . '
-											<input type="hidden" name="client_data[credit_limit]" value="' . $sale_data['client_data']['credit_limit'] . '" id="client_data_credit_limit"/>
+											' . esc_html($sale_data['client_data']['credit_limit']) . '
+											<input type="hidden" name="client_data[credit_limit]" value="' . esc_attr($sale_data['client_data']['credit_limit']) . '" id="client_data_credit_limit"/>
 										</td>		
 									</tr>
 									</tbody>
@@ -1257,14 +1257,14 @@ if (!class_exists('fktrPostTypeSales')) :
 										<tr>
 											<th><label for="invoice_number">' . __('Invoice Number', 'fakturo') . '</label></th>
 											<td>
-												' . (($post->post_status != 'publish') ? '<input type="text" name="invoice_number" id="invoice_number" value="' . $sale_data['invoice_number'] . '"/>' : $sale_data['invoice_number']) . '
+												' . (($post->post_status != 'publish') ? '<input type="text" name="invoice_number" id="invoice_number" value="' . esc_attr($sale_data['invoice_number']) . '"/>' : esc_html($sale_data['invoice_number'])) . '
 											</td>		
 										</tr>
 										
 										<tr>
 											<th><label for="date">' . __('Date', 'fakturo') . '</label></th>
 											<td>
-												' . (($post->post_status != 'publish') ? '<input type="text" name="date" id="date" value="' . date_i18n($setting_system['dateformat'], $date) . '"/>' : date_i18n($setting_system['dateformat'], $date)) . '
+												' . (($post->post_status != 'publish') ? '<input type="text" name="date" id="date" value="' . esc_attr(date_i18n($setting_system['dateformat'], $date)) . '"/>' : date_i18n($setting_system['dateformat'], $date)) . '
 											</td>		
 										</tr>
 										<tr>
@@ -1309,7 +1309,7 @@ if (!class_exists('fktrPostTypeSales')) :
 
 			foreach ($currencies as $cur) {
 				$echoHtml .= '<tr>
-                        <td>' . ((empty($cur->reference)) ? '' : '<a href="' . $cur->reference . '" target="_blank">') . '' . $cur->name . '' . ((empty($cur->reference)) ? '' : '</a>') . '</td>' . (($setting_system['currency_position'] == 'before') ? '<td><label for="invoice_currencies_' . $cur->term_id . '">' . $cur->symbol . '</label></td>' : '') . '<td>' . (($post->post_status != 'publish') ? '<input type="text" style="text-align: right; width: 120px;" value="' . $cur->rate . '" name="invoice_currencies[' . $cur->term_id . ']" id="invoice_currencies_' . $cur->term_id . '" class="invoice_currencies"/> ' : number_format($cur->rate, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand'])) . '' . (($setting_system['currency_position'] == 'after') ? '<td><label for="invoice_currencies_' . $cur->term_id . '">' . $cur->symbol . '</label></td>' : '') . '</td>
+                        <td>' . ((empty($cur->reference)) ? '' : '<a href="' . esc_url($cur->reference) . '" target="_blank">') . '' . esc_html($cur->name) . '' . ((empty($cur->reference)) ? '' : '</a>') . '</td>' . (($setting_system['currency_position'] == 'before') ? '<td><label for="invoice_currencies_' . $cur->term_id . '">' . esc_html($cur->symbol) . '</label></td>' : '') . '<td>' . (($post->post_status != 'publish') ? '<input type="text" style="text-align: right; width: 120px;" value="' . esc_attr($cur->rate) . '" name="invoice_currencies[' . $cur->term_id . ']" id="invoice_currencies_' . $cur->term_id . '" class="invoice_currencies"/> ' : number_format($cur->rate, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand'])) . '' . (($setting_system['currency_position'] == 'after') ? '<td><label for="invoice_currencies_' . $cur->term_id . '">' . esc_html($cur->symbol) . '</label></td>' : '') . '</td>
                 </tr>';
 			}
 
@@ -1327,7 +1327,7 @@ if (!class_exists('fktrPostTypeSales')) :
                     <tbody>
                             <td>%</td>
                             <td>
-                                    ' . (($post->post_status != 'publish') ? '<input type="text" name="invoice_discount" value="' . $sale_data['invoice_discount'] . '" id="invoice_discount"/>' : $sale_data['invoice_discount']) . '
+                                    ' . (($post->post_status != 'publish') ? '<input type="text" name="invoice_discount" value="' . esc_attr($sale_data['invoice_discount']) . '" id="invoice_discount"/>' : esc_html($sale_data['invoice_discount'])) . '
                             </td>
                     </tbody>
             </table>';

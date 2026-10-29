@@ -112,6 +112,9 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Security: the three Settings screens validate every value they save (numbers, separators, lists, links and texts), drop unknown fields, and a new site, or an upgrade that adds an option, always gets every setting with its default instead of PHP notices. Opening a Settings screen no longer rewrites the saved options.
 * Security: the setup wizard only works for users who can manage it: its steps and the three loaders of countries, states and currencies check the permission together with the token, accept only valid ids, and no longer show PHP notices when a step arrives incomplete or with apostrophes in the data.
 * Receipts now record their own number on the invoices they pay, and a cancelled or deleted receipt disappears from the payment status of its invoices, which show Unpaid again.
+* Security: client, provider, product, invoice and settings data is escaped when it is shown in the edit screens, lists, reports, PDFs and e-mails, so text with quotes or HTML can no longer break a form or run code in another user's session.
+* Invoices keep the client name exactly as typed when it contains quotes.
+* A receipt number with letters no longer breaks the new receipt screen.
 
 = 1.0.10 (Oct 23, 2026) =
 * New Add-ons screen: activate, license and manage auto-updates of each add-on from its own row, with bulk actions and live search.

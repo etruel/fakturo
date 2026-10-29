@@ -286,18 +286,18 @@ class stock_products_report {
 					
 						$html_objects .= '<tr>
 							<td>
-								<a href="'.$obj_link.'">'.$product_data['post_title'].'</a>
+								<a href="'.$obj_link.'">'.esc_html($product_data['post_title']).'</a>
 							</td>';
 
 							foreach($options['search_code'] as $key => $value){
 								if($value == 'reference'){
-									$html_objects .= '<td>'.$product_data['reference'].'</td>';
+									$html_objects .= '<td>'.esc_html($product_data['reference']).'</td>';
 								}
 								if($value == 'internal_code'){
-									$html_objects .= '<td>'.$product_data['ID'].'</td>';
+									$html_objects .= '<td>'.esc_html($product_data['ID']).'</td>';
 								}
 								if($value == 'manufacturers_code'){
-									$html_objects .= '<td>'.$product_data['manufacturers'].'</td>';
+									$html_objects .= '<td>'.esc_html($product_data['manufacturers']).'</td>';
 								}
 							}
 
@@ -333,18 +333,18 @@ class stock_products_report {
 						
 							$html_objects .= '<tr>
 							<td>
-								<a href="'.$obj_link.'">'.$testval->timestamp_value.'</a>
+								<a href="'.$obj_link.'">'.esc_html($testval->timestamp_value).'</a>
 							</td>
 								';
 								foreach($options['search_code'] as $key => $value){
 									if($value == 'reference'){
-										$html_objects .= '<td>'.$product_data['reference'].'</td>';
+										$html_objects .= '<td>'.esc_html($product_data['reference']).'</td>';
 									}
 									if($value == 'internal_code'){
-										$html_objects .= '<td>'.$product_data['ID'].'</td>';
+										$html_objects .= '<td>'.esc_html($product_data['ID']).'</td>';
 									}
 									if($value == 'manufacturers_code'){
-										$html_objects .= '<td>'.$product_data['manufacturers'].'</td>';
+										$html_objects .= '<td>'.esc_html($product_data['manufacturers']).'</td>';
 									}
 								}
 							$html_objects .= '<td>
@@ -463,7 +463,7 @@ class stock_products_report {
 			
 			$product_data = fktrPostTypeProducts::get_product_data($request['product_id']);
 		
-			$html_client_data = '<div style="float:left; margin-left:15px;"><h3>'.__('Producto', 'fakturo' ).': '.$product_data['post_title'].'</h3></div>';
+			$html_client_data = '<div style="float:left; margin-left:15px;"><h3>'.__('Producto', 'fakturo' ).': '.esc_html($product_data['post_title']).'</h3></div>';
 		}
 		
 		echo $html_client_data;
@@ -521,18 +521,18 @@ class stock_products_report {
 				
 					$html_objects .= '<tr>
 						<td>
-							<a href="'.$obj_link.'" >'.$product_data['post_title'].'</a>
+							<a href="'.$obj_link.'" >'.esc_html($product_data['post_title']).'</a>
 						</td>';
 
 						foreach($options['search_code'] as $key => $value){
 							if($value == 'reference'){
-								$html_objects .= '<td>'.$product_data['reference'].'</td>';
+								$html_objects .= '<td>'.esc_html($product_data['reference']).'</td>';
 							}
 							if($value == 'internal_code'){
-								$html_objects .= '<td>'.$product_data['ID'].'</td>';
+								$html_objects .= '<td>'.esc_html($product_data['ID']).'</td>';
 							}
 							if($value == 'manufacturers_code'){
-								$html_objects .= '<td>'.$product_data['manufacturers'].'</td>';
+								$html_objects .= '<td>'.esc_html($product_data['manufacturers']).'</td>';
 							}
 						}
 
@@ -568,18 +568,18 @@ class stock_products_report {
 				
 					$html_objects .= '<tr>
 						<td>
-							<a href="'.$obj_link.'" target="_blank">'.$testval->timestamp_value.'</a>
+							<a href="'.$obj_link.'" target="_blank">'.esc_html($testval->timestamp_value).'</a>
 						</td>
 							';
 							foreach($options['search_code'] as $key => $value){
 								if($value == 'reference'){
-									$html_objects .= '<td>'.$product_data['reference'].'</td>';
+									$html_objects .= '<td>'.esc_html($product_data['reference']).'</td>';
 								}
 								if($value == 'internal_code'){
-									$html_objects .= '<td>'.$product_data['ID'].'</td>';
+									$html_objects .= '<td>'.esc_html($product_data['ID']).'</td>';
 								}
 								if($value == 'manufacturers_code'){
-									$html_objects .= '<td>'.$product_data['manufacturers'].'</td>';
+									$html_objects .= '<td>'.esc_html($product_data['manufacturers']).'</td>';
 								}
 							}
 						$html_objects .= '<td>
@@ -688,10 +688,10 @@ class stock_products_report {
 		
 		if($last != 1){
 
-			$id_product = (isset($_REQUEST['product_id']) ? $_REQUEST['product_id'] : '-1');
-			$letter_from = (isset($_REQUEST['letter_from']) ? $_REQUEST['letter_from'] : 'A');
-			$letter_to = (isset($_REQUEST['letter_to']) ? $_REQUEST['letter_to'] : 'Z');
-			$show_pagination = (isset($_REQUEST['show_pagination']) ? $_REQUEST['show_pagination'] : '10');
+			$id_product = (isset($_REQUEST['product_id']) ? intval($_REQUEST['product_id']) : -1);
+			$letter_from = (isset($_REQUEST['letter_from']) ? urlencode(sanitize_text_field(wp_unslash($_REQUEST['letter_from']))) : 'A');
+			$letter_to = (isset($_REQUEST['letter_to']) ? urlencode(sanitize_text_field(wp_unslash($_REQUEST['letter_to']))) : 'Z');
+			$show_pagination = (isset($_REQUEST['show_pagination']) ? absint($_REQUEST['show_pagination']) : 10);
 
 			
 			if ($pagenum > 1) {
@@ -739,14 +739,14 @@ class stock_products_report {
 			<form name="filter_form" method="get" action="<?php echo admin_url('admin.php') ?>">
 				<div class="fktr_filter-options">
 					<input type="hidden" name="page" value="fakturo_reports"/>
-					<input type="hidden" name="sec" value="<?php echo $request['sec'] ?>"/>
+					<input type="hidden" name="sec" value="<?php echo esc_attr($request['sec']) ?>"/>
 					<?php echo $selectClients ?>
 					<span><?php echo __('Range from:', 'fakturo'); ?></span>
 					<select name="letter_from" id="letter_from">
 						<?php
 							for ($i = 65; $i <= 90; $i++) {  
 								$letter = chr($i);  
-								echo '<option value="' . $letter . '" ' . ((isset($request['letter_from']) && $letter == $request['letter_from']) ? 'selected' : '') . '>' . $letter . '</option>';
+								echo '<option value="' . esc_attr($letter) . '" ' . ((isset($request['letter_from']) && $letter == $request['letter_from']) ? 'selected' : '') . '>' . $letter . '</option>';
 							}
 						?>
 					</select>
@@ -755,7 +755,7 @@ class stock_products_report {
 						<?php
 							for ($i = 65; $i <= 90; $i++) {
 								$letter = chr($i);
-								echo '<option value="' . $letter . '" ' . (($letter == (isset($request['letter_to']) ? $request['letter_to'] : 'Z')) ? 'selected' : '') . '>' . $letter . '</option>';
+								echo '<option value="' . esc_attr($letter) . '" ' . (($letter == (isset($request['letter_to']) ? $request['letter_to'] : 'Z')) ? 'selected' : '') . '>' . $letter . '</option>';
 							}
 						?>
 					</select>
@@ -764,7 +764,7 @@ class stock_products_report {
 					<select name="show_pagination" id="show_pagination">
 						<?php
 							for ($i = 0; $i <= 50; $i += 5) {
-								echo '<option value="' . $i . '" ' . (($i == (isset($request['show_pagination']) ? $request['show_pagination'] : 10)) ? 'selected' : '') . '>' . $i . '</option>';
+								echo '<option value="' . esc_attr($i) . '" ' . (($i == (isset($request['show_pagination']) ? $request['show_pagination'] : 10)) ? 'selected' : '') . '>' . $i . '</option>';
 							}
 						?>
 					</select>
@@ -831,15 +831,13 @@ class stock_products_report {
 		$letter_to   = is_scalar($letter_to) ? (string) $letter_to : 'Y';
 		$product_id  = isset($request['product_id']) ? absint($request['product_id']) : 0;
 		
-		$sql = $wpdb->prepare("SELECT p.ID, pm.meta_key, pm.meta_value as timestamp_value, p.post_type as post_type FROM {$wpdb->posts} as p
-				LEFT JOIN {$wpdb->postmeta} as pm ON p.ID = pm.post_id
+		$sql = $wpdb->prepare("SELECT p.ID, 'post_title' as meta_key, p.post_title as timestamp_value, p.post_type as post_type FROM {$wpdb->posts} as p
 		        WHERE 
-		        pm.meta_key = 'post_title'
-				AND p.post_status = 'publish'
+		        p.post_status = 'publish'
 				AND (p.post_type = 'fktr_product' OR p.post_type = 'fktr_receipt')
 
-				AND pm.meta_value between %s and char(ascii(%s) + 1)
-				OR p.ID = %d ORDER BY pm.meta_value ASC  $show_pagination
+				AND p.post_title between %s and char(ascii(%s) + 1)
+				OR p.ID = %d ORDER BY p.post_title ASC  $show_pagination
 				 ", $letter_from, $letter_to, $product_id);
 				
 		$results = $wpdb->get_results($sql, OBJECT);

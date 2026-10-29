@@ -287,7 +287,7 @@ class fktr_tax_commission_scales {
                 $to_value = ($range->to == PHP_INT_MAX) ? '' : esc_attr($range->to);
                 $echoHtml .= '<div class="range-row">
                     <input type="number" name="term_meta[ranges]['.$index.'][from]" value="'.esc_attr($range->from).'" placeholder="'.__('From', 'fakturo').'" class="small-text">
-                    <input type="number" name="term_meta[ranges]['.$index.'][to]" value="'.$to_value.'" placeholder="'.__('To', 'fakturo').'" class="small-text">
+                    <input type="number" name="term_meta[ranges]['.$index.'][to]" value="'.esc_attr($to_value).'" placeholder="'.__('To', 'fakturo').'" class="small-text">
                     <input type="number" name="term_meta[ranges]['.$index.'][percentage]" value="'.esc_attr($range->percentage).'" placeholder="%" class="small-text">
                     '.($is_last ? '<button type="button" class="button button-secondary add-range">+</button>' : '').'
                     '.($index > 0 ? '<button type="button" class="button button-secondary remove-range">-</button>' : '').'

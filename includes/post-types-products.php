@@ -99,7 +99,7 @@ if (!class_exists('fktrPostTypeProducts')) :
 					if ($product_data['reference'] == "") {
 						_e('', 'fakturo');
 					} else {
-						echo $product_data['reference'];
+						echo esc_html($product_data['reference']);
 					}
 					break;
 			}
@@ -370,7 +370,7 @@ if (!class_exists('fktrPostTypeProducts')) :
 				<tbody>
 				<tr class="user-address-wrap">
 					<th><label for="cost">' . __('Cost', 'fakturo') . '	</label></th>
-					<td><input type="text" name="cost" id="cost" value="' . number_format($product_data['cost'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) . '"></td>
+					<td><input type="text" name="cost" id="cost" value="' . esc_attr(number_format($product_data['cost'], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand'])) . '"></td>
 				</tr>
 				<tr class="user-address-wrap">
 					<th><label for="currency">' . __('Currency', 'fakturo') . '</label></th>
@@ -420,11 +420,11 @@ if (!class_exists('fktrPostTypeProducts')) :
 						$product_data['prices_final'][$t->term_id] = ($product_data['prices'][$t->term_id] != 0) ? ((($product_data['prices'][$t->term_id] / 100) * $tax_porcent) + $product_data['prices'][$t->term_id]) : 0;
 					}
 
-					$echoHtml .= '<tr class="pricestr" data-id="' . $t->term_id . '" data-porcentage="' . $t->percentage . '">
-						<td style="text-align: center;">' . $t->name . ' (' . $t->percentage . '%)</td>
-						<td style="text-align: center;"><input type="text" value="' . (isset($product_data['prices'][$t->term_id]) ? number_format($product_data['prices'][$t->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) : '') . '"  id="prices_' . $t->term_id . '" class="prices" name="prices[' . $t->term_id . ']"/></td>
+					$echoHtml .= '<tr class="pricestr" data-id="' . $t->term_id . '" data-porcentage="' . esc_attr($t->percentage) . '">
+						<td style="text-align: center;">' . esc_html($t->name) . ' (' . esc_html($t->percentage) . '%)</td>
+						<td style="text-align: center;"><input type="text" value="' . esc_attr((isset($product_data['prices'][$t->term_id]) ? number_format($product_data['prices'][$t->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) : '')) . '"  id="prices_' . $t->term_id . '" class="prices" name="prices[' . $t->term_id . ']"/></td>
 						<td style="text-align: center;" id="suggested_' . $t->term_id . '"></td>
-						<td style="text-align: center;"><input type="text" value="' . (isset($product_data['prices_final'][$t->term_id]) ? number_format($product_data['prices_final'][$t->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) : '') . '" id="prices_final_' . $t->term_id . '" class="prices_final" name="prices_final[' . $t->term_id . ']"/>
+						<td style="text-align: center;"><input type="text" value="' . esc_attr((isset($product_data['prices_final'][$t->term_id]) ? number_format($product_data['prices_final'][$t->term_id], $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']) : '')) . '" id="prices_final_' . $t->term_id . '" class="prices_final" name="prices_final[' . $t->term_id . ']"/>
 						</td>
 					</tr>';
 				}
@@ -457,13 +457,13 @@ if (!class_exists('fktrPostTypeProducts')) :
 			foreach ($terms as $t) {
 				$total = $total + (isset($product_data['stocks'][$t->term_id]) ? $product_data['stocks'][$t->term_id] : 0);
 				$echoHtml .= '<tr>
-					<td>' . $t->name . ': </td>
-					<td style="text-align: center;">' . (isset($product_data['stocks'][$t->term_id]) ? $product_data['stocks'][$t->term_id] : '0') . '</td>
+					<td>' . esc_html($t->name) . ': </td>
+					<td style="text-align: center;">' . esc_html(isset($product_data['stocks'][$t->term_id]) ? $product_data['stocks'][$t->term_id] : '0') . '</td>
 				</tr>';
 			}
 			$echoHtml .= '<tr>
 					<td>' . __('Total', 'fakturo') . ':</td>
-					<td style="text-align: center;">' . $total . '</td>
+					<td style="text-align: center;">' . esc_html($total) . '</td>
 				</tr>
 			</table>';
 
@@ -625,20 +625,20 @@ if (!class_exists('fktrPostTypeProducts')) :
 			</tr>
 			<tr class="user-address-wrap">
 				<th><label for="reference">' . __('Reference', 'fakturo') . '</label></th>
-				<td><input type="text" name="reference" id="reference" value="' . $product_data['reference'] . '" class="regular-text"></td>
+				<td><input type="text" name="reference" id="reference" value="' . esc_attr($product_data['reference']) . '" class="regular-text"></td>
 			</tr>
 			<tr class="user-address-wrap">
 				<th><label for="internal">' . __('Internal code', 'fakturo') . '</label></th>
-				<td id="td_internal_code">' . (isset($product_data['ID']) ? $product_data['ID'] : '') . '</td>
+				<td id="td_internal_code">' . esc_html(isset($product_data['ID']) ? $product_data['ID'] : '') . '</td>
 			</tr>
 			<tr class="user-address-wrap">
 				<th><label for="manufacturers">' . __('Manufacturers code', 'fakturo') . '</label></th>
-				<td><input type="text" name="manufacturers" id="manufacturers" value="' . $product_data['manufacturers'] . '" class="regular-text"></td>
+				<td><input type="text" name="manufacturers" id="manufacturers" value="' . esc_attr($product_data['manufacturers']) . '" class="regular-text"></td>
 			</tr>
 			<tr class="user-address-wrap">
 				<th><label for="description">' . __('Description', 'fakturo') . '</label></th>
 				<td>
-				<textarea class="mw-95" rows="4" name="description" id="description">' . $product_data['description'] . '</textarea>
+				<textarea class="mw-95" rows="4" name="description" id="description">' . esc_textarea($product_data['description']) . '</textarea>
 				</td>
 			</tr>';
 
@@ -646,7 +646,7 @@ if (!class_exists('fktrPostTypeProducts')) :
 
 				$echoHtml .= '<tr class="user-address-wrap">
 					<th><label for="min">' . __('Minimal stock', 'fakturo') . '</label></th>
-					<td><input type="number" name="min" id="min" value="' . $product_data['min'] . '" class="regular-text"></td>
+					<td><input type="number" name="min" id="min" value="' . esc_attr($product_data['min']) . '" class="regular-text"></td>
 				</tr>
 				<tr class="tr_fktr">
 					<th><label for="min_alert">' . __('Minimal stock alert', 'fakturo') . '</label></th>
@@ -662,11 +662,11 @@ if (!class_exists('fktrPostTypeProducts')) :
 			</tr>
 			<tr class="user-address-wrap">
 				<th><label for="unit">' . __('Units per package', 'fakturo') . '</label></th>
-				<td><input type="text" name="unit" id="unit" value="' . $product_data['unit'] . '" class="regular-text"></td>
+				<td><input type="text" name="unit" id="unit" value="' . esc_attr($product_data['unit']) . '" class="regular-text"></td>
 			</tr>
 			<tr class="user-address-wrap">
 				<th><label for="note">' . __('Notes', 'fakturo') . '</label></th>
-				<td><textarea class="mw-95" rows="4" name="note" id="note">' . $product_data['note'] . '</textarea></td>
+				<td><textarea class="mw-95" rows="4" name="note" id="note">' . esc_textarea($product_data['note']) . '</textarea></td>
 			</tr>
 			<tr class="user-address-wrap">
 				<th><label for="origin">' . __('Origin', 'fakturo') . '</label></th>

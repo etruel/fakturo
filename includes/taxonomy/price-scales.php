@@ -140,7 +140,7 @@ class fktr_tax_price_scales {
 				<label for="term_meta[percentage]">'.__( 'Percentage', 'fakturo' ).'</label>
 			</th>
 			<td>
-				<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[percentage]" id="term_meta_percentage" value="'.$term_meta->percentage.'"/>%
+				<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[percentage]" id="term_meta_percentage" value="'.esc_attr($term_meta->percentage).'"/>%
 				<p class="description">'.__( 'Enter a percentage', 'fakturo' ).'</p>
 			</td>
 		</tr>

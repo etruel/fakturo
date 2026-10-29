@@ -106,7 +106,7 @@ class fktr_popup_taxonomy {
 		}
 		
 		//print_r($taxonomy);
-		$button_html = '<input type="button" class="'.$r['class'].'" value="'.$add_new_item_text.'" data-taxonomy="'.$r['taxonomy'].'"'.$parent_selector.$data_selector.$opcional_add_new_item.'/>';
+		$button_html = '<input type="button" class="'.$r['class'].'" value="'.esc_attr($add_new_item_text).'" data-taxonomy="'.$r['taxonomy'].'"'.$parent_selector.$data_selector.$opcional_add_new_item.'/>';
 		if ($r['echo']) {
 			echo $button_html;
 		} else {

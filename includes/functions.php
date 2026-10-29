@@ -39,7 +39,7 @@ function fakturo_get_select_post($args = null) {
 		$select .= '<option value="-1" ' . selected($r['selected'], -1, false) . '>' . $r['show_option_none'] . '</option>';
 	}
 	foreach ($itemsPosts as $post) {
-		$select .= '<option value="' . $post->ID . '" ' . selected($r['selected'], $post->ID, false) . '>' . esc_html(get_the_title($post->ID)) . '</option>';
+		$select .= '<option value="' . esc_attr($post->ID) . '" ' . selected($r['selected'], $post->ID, false) . '>' . esc_html(get_the_title($post->ID)) . '</option>';
 	}
 
 	$select .= '</select>';

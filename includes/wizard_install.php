@@ -318,7 +318,7 @@ class fktr_wizard {
 		$ret = '<form method="post" action="'.admin_url('admin-post.php').'">
 					'.wp_nonce_field('fktr_wizard_nonce').'
 					<input type="hidden" name="action" value="fktr_wizard_post"/>
-					<input type="hidden" name="step_action" value="'.self::$current_request['step'].'"/>';
+					<input type="hidden" name="step_action" value="'.esc_attr(self::$current_request['step']).'"/>';
 		return $ret;
 	}
 	/**
@@ -360,7 +360,7 @@ class fktr_wizard {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/country-states.php';
 		$html_select_countries = '<select name="selected_country" id="selected_country">';
 		foreach ($countries as $kc => $country) {
-			$html_select_countries .= '<option value="' . $kc . '">' . esc_html($country[2]) . '</option>';
+			$html_select_countries .= '<option value="' . esc_attr($kc) . '">' . esc_html($country[2]) . '</option>';
 		}
 		$html_select_countries .= '</select>';
 
@@ -671,37 +671,37 @@ class fktr_wizard {
 						<tr valign="top">
 							<th scope="row">'. __( 'Name', 'fakturo' ) .'</th>
 							<td>
-								<input type="text" size="36" name="fakturo_info_options_group[name]" value="'.$options['name'].'"/>
+								<input type="text" size="36" name="fakturo_info_options_group[name]" value="'.esc_attr($options['name']).'"/>
 	                        </td>
 	                    </tr>
 						<tr valign="top">
 							<th scope="row">'. __( 'Taxpayer ID', 'fakturo' ) .'</th>
 							<td>
-								<input type="text" size="36" id="fakturo_info_options_group_taxpayer" name="fakturo_info_options_group[taxpayer]" value="'.$options['taxpayer'].'"/>
+								<input type="text" size="36" id="fakturo_info_options_group_taxpayer" name="fakturo_info_options_group[taxpayer]" value="'.esc_attr($options['taxpayer']).'"/>
 	                        </td>
 	                    </tr>
 						<tr valign="top">
 							<th scope="row">'. __( 'Gross income tax ID', 'fakturo' ) .'</th>
 							<td>
-								<input type="text" size="36" name="fakturo_info_options_group[tax]" value="'.$options['tax'].'"/>
+								<input type="text" size="36" name="fakturo_info_options_group[tax]" value="'.esc_attr($options['tax']).'"/>
 	                        </td>
 	                    </tr>
 						<tr valign="top">
 							<th scope="row">'. __( 'Start of activities', 'fakturo' ) .'</th>
 							<td>
-								<input type="text" size="36" name="fakturo_info_options_group[start]" id="start" value="'.$options['start'].'"/>
+								<input type="text" size="36" name="fakturo_info_options_group[start]" id="start" value="'.esc_attr($options['start']).'"/>
 	                        </td>
 	                    </tr>
 						<tr valign="top">
 							<th scope="row">'. __( 'Address', 'fakturo' ) .'</th>
 							<td>
-								<textarea name="fakturo_info_options_group[address]" cols="36" rows="4">'.$options['address'].'</textarea>
+								<textarea name="fakturo_info_options_group[address]" cols="36" rows="4">'.esc_textarea($options['address']).'</textarea>
 							</td>
 	                    </tr>
 						<tr valign="top">
 							<th scope="row">'. __( 'Telephone', 'fakturo' ) .'</th>
 							<td>
-								<input type="text" size="36" name="fakturo_info_options_group[telephone]" value="'.$options['telephone'].'"/>
+								<input type="text" size="36" name="fakturo_info_options_group[telephone]" value="'.esc_attr($options['telephone']).'"/>
 							</td>
 	                    </tr>
 						
@@ -746,19 +746,19 @@ class fktr_wizard {
 	                    <tr valign="top">
 							<th scope="row">'. __( 'City', 'fakturo' ) .'</th>
 							<td>
-								<input type="text" size="36" name="fakturo_info_options_group[city]" value="'.$options['city'].'"/>
+								<input type="text" size="36" name="fakturo_info_options_group[city]" value="'.esc_attr($options['city']).'"/>
 							</td>
 	                    </tr>
 	                    <tr valign="top">
 							<th scope="row">'. __( 'Postcode', 'fakturo' ) .'</th>
 							<td>
-								<input type="text" size="36" name="fakturo_info_options_group[postcode]" value="'.$options['postcode'].'"/>
+								<input type="text" size="36" name="fakturo_info_options_group[postcode]" value="'.esc_attr($options['postcode']).'"/>
 							</td>
 	                    </tr>
 						<tr valign="top">
 							<th scope="row">'. __( 'Website', 'fakturo' ) .'</th>
 							<td>
-								<input type="text" size="36" name="fakturo_info_options_group[website]" value="'.$options['website'].'"/>
+								<input type="text" size="36" name="fakturo_info_options_group[website]" value="'.esc_attr($options['website']).'"/>
 							</td>
 	                    </tr>
 	                    <tr valign="top">
@@ -778,12 +778,12 @@ class fktr_wizard {
 							<th scope="row">'. __( 'Company Logo', 'fakturo' ) .'</th>
 							<td>
 								<label for="upload_image">
-									<input id="url" type="text" size="36" value="'.$options['url'].'" name="fakturo_info_options_group[url]" />
+									<input id="url" type="text" size="36" value="'.esc_attr($options['url']).'" name="fakturo_info_options_group[url]" />
 									<input id="upload_logo_button" class="button button-orange" type="button" value="Upload Image" />
 									<br />'.__( 'Enter an URL or upload an image for the company logo.', 'fakturo' ).'
 								</label>
 								
-								<p style="padding-top: 5px;">'. __( 'This is your current logo', 'fakturo' ) .'</p><img id="setting_img_log" src="'. $options['url'] .'" style="padding:5px;" />
+								<p style="padding-top: 5px;">'. __( 'This is your current logo', 'fakturo' ) .'</p><img id="setting_img_log" src="'. esc_url($options['url']) .'" style="padding:5px;" />
 							</td>
 	                    </tr>
 					</table>
@@ -814,7 +814,7 @@ class fktr_wizard {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/currencies.php';
 		$html_select_currencies = '<select name="selected_currency" id="selected_currency">';
 		foreach ($currencies as $kc => $currency) {
-			$html_select_currencies .= '<option value="' . $kc . '">' . esc_html($currency['name']) . '</option>';
+			$html_select_currencies .= '<option value="' . esc_attr($kc) . '">' . esc_html($currency['name']) . '</option>';
 		}
 		$html_select_currencies .= '</select>';
 		$print_html = '
@@ -989,7 +989,7 @@ class fktr_wizard {
 									  <tr>
 											<td>'. __( 'Thousands Separator', 'fakturo' ) .'</td>
 											<td>
-												<input id="fakturo_system_options_group_thousand" name="fakturo_system_options_group[thousand]" type="text" size="5" value="'.$options['thousand'].'">
+												<input id="fakturo_system_options_group_thousand" name="fakturo_system_options_group[thousand]" type="text" size="5" value="'.esc_attr($options['thousand']).'">
 												
 									
 											</td>
@@ -999,7 +999,7 @@ class fktr_wizard {
 									  <tr>
 											<td>'. __( 'Decimal Separator', 'fakturo' ) .'</td>
 											<td>
-												<input id="fakturo_system_options_group_decimal" name="fakturo_system_options_group[decimal]" type="text" size="5" value="'.$options['decimal'].'">
+												<input id="fakturo_system_options_group_decimal" name="fakturo_system_options_group[decimal]" type="text" size="5" value="'.esc_attr($options['decimal']).'">
 												
 									
 											</td>
@@ -1009,7 +1009,7 @@ class fktr_wizard {
 									  <tr>
 											<td>'. __( 'Decimal numbers', 'fakturo' ) .'</td>
 											<td>
-												<input id="fakturo_system_options_group_decimal_numbers" type="number" min="0" max="9" maxlength="1" name="fakturo_system_options_group[decimal_numbers]" value="'.$options['decimal_numbers'].'">
+												<input id="fakturo_system_options_group_decimal_numbers" type="number" min="0" max="9" maxlength="1" name="fakturo_system_options_group[decimal_numbers]" value="'.esc_attr($options['decimal_numbers']).'">
 												
 											</td>
 										
@@ -1108,14 +1108,14 @@ class fktr_wizard {
 		foreach ($options['list_invoice_number'] as $k => $key) {
 			if (isset($selectListInvoiceNumber[$key])) {
 				$txt = $selectListInvoiceNumber[$key];
-				$echoSelectListInvoiceNumber .= '<option value="'.$key.'"'.selected($key, (array_search($key, $options['list_invoice_number'])!==false) ? $key : '' , false).'>'.$txt.'</option>';
+				$echoSelectListInvoiceNumber .= '<option value="'.esc_attr($key).'"'.selected($key, (array_search($key, $options['list_invoice_number'])!==false) ? $key : '' , false).'>'.$txt.'</option>';
 				unset($selectListInvoiceNumber[$key]);
 			}
 			
 		}
 
 		foreach ($selectListInvoiceNumber as $key => $txt) {
-			$echoSelectListInvoiceNumber .= '<option value="'.$key.'"'.selected($key, (array_search($key, $options['list_invoice_number'])!==false) ? $key : '' , false).'>'.$txt.'</option>';
+			$echoSelectListInvoiceNumber .= '<option value="'.esc_attr($key).'"'.selected($key, (array_search($key, $options['list_invoice_number'])!==false) ? $key : '' , false).'>'.$txt.'</option>';
 		}
 		$echoSelectListInvoiceNumber .= '</select>';	
 
@@ -1132,7 +1132,7 @@ class fktr_wizard {
 		
 		$echoSelectDefaultDate = '<select id="fakturo_system_options_group_dateformat" name="fakturo_system_options_group[dateformat]">';
 		foreach ($selectDefaultDate as $key => $txt) {
-			$echoSelectDefaultDate .= '<option value="'.$key.'"'.selected($key, $options['dateformat'], false).'>'.$txt.'</option>';
+			$echoSelectDefaultDate .= '<option value="'.esc_attr($key).'"'.selected($key, $options['dateformat'], false).'>'.$txt.'</option>';
 		}
 		$echoSelectDefaultDate .= '</select>';		
 
@@ -1183,7 +1183,7 @@ class fktr_wizard {
 					   <tr>
 							<td style="width: 200px;">'. __( 'Number of digits of the invoice number', 'fakturo' ) .'</td>
 							<td class="italic-label">
-								<input id="fakturo_system_options_group_digits_invoice_number" name="fakturo_system_options_group[digits_invoice_number]" type="number" maxlength="2" min=2 max=20 value="'.$options['digits_invoice_number'].'">
+								<input id="fakturo_system_options_group_digits_invoice_number" name="fakturo_system_options_group[digits_invoice_number]" type="number" maxlength="2" min=2 max=20 value="'.esc_attr($options['digits_invoice_number']).'">
 								<p class="description">
 									'. __( 'Choose the default number of digits of the invoice number.', 'fakturo' ) .'           
 								</p>
@@ -1244,7 +1244,7 @@ class fktr_wizard {
 									<tr>
 										<td style="width: 200px;">'. __( 'Number of digits of the receipt number', 'fakturo' ) .'<br/><br/></td>
 										<td class="italic-label">
-											<input id="fakturo_system_options_group_digits_receipt_number" name="fakturo_system_options_group[digits_receipt_number]" type="number" maxlength="2" min=2 max=20 value="'.$options['digits_receipt_number'].'">
+											<input id="fakturo_system_options_group_digits_receipt_number" name="fakturo_system_options_group[digits_receipt_number]" type="number" maxlength="2" min=2 max=20 value="'.esc_attr($options['digits_receipt_number']).'">
 											 <p class="description">
 												'. __( 'Choose the default number of digits of the receipt number.', 'fakturo' ) .'           
 											</p>
@@ -1501,7 +1501,7 @@ class fktr_wizard {
 
 		$echoSelectSearchCode = '<select id="fakturo_system_options_group_search_code" name="fakturo_system_options_group[search_code][]" multiple="multiple" >';
 		foreach ($selectSearchCode as $key => $txt) {
-			$echoSelectSearchCode .= '<option value="'.$key.'"'.selected($key, (array_search($key, $options['search_code'])!==false) ? $key : '' , false).'>'.$txt.'</option>';
+			$echoSelectSearchCode .= '<option value="'.esc_attr($key).'"'.selected($key, (array_search($key, $options['search_code'])!==false) ? $key : '' , false).'>'.$txt.'</option>';
 		}
 		$echoSelectSearchCode .= '</select>';	
 
@@ -1514,7 +1514,7 @@ class fktr_wizard {
 		
 		$echoSelectDefaultCode = '<select id="fakturo_system_options_group_default_code" name="fakturo_system_options_group[default_code]">';
 		foreach ($selectDefaultCode as $key => $txt) {
-			$echoSelectDefaultCode .= '<option value="'.$key.'"'.selected($key, $options['default_code'], false).'>'.$txt.'</option>';
+			$echoSelectDefaultCode .= '<option value="'.esc_attr($key).'"'.selected($key, $options['default_code'], false).'>'.$txt.'</option>';
 		}
 		$echoSelectDefaultCode .= '</select>';		
 		
@@ -1526,7 +1526,7 @@ class fktr_wizard {
 		
 		$echoSelectDefaultDescription = '<select id="fakturo_system_options_group_default_description" name="fakturo_system_options_group[default_description]">';
 		foreach ($selectDefaultDescription as $key => $txt) {
-			$echoSelectDefaultDescription .= '<option value="'.$key.'"'.selected($key, $options['default_description'], false).'>'.$txt.'</option>';
+			$echoSelectDefaultDescription .= '<option value="'.esc_attr($key).'"'.selected($key, $options['default_description'], false).'>'.$txt.'</option>';
 		}
 		$echoSelectDefaultDescription .= '</select>';	
 

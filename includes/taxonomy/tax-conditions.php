@@ -215,7 +215,7 @@ class fktr_tax_tax_conditions {
 				<label for="term_meta[tax_percentage]">'.__( 'Tax Percentage', 'fakturo' ).'</label>
 			</th>
 			<td>
-				<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[tax_percentage]" id="term_meta_tax_percentage" value="'.$term_meta->tax_percentage.'"/>%
+				<input style="width: 60px;text-align: right; padding-right: 0px; " maxlength="6" type="text" name="term_meta[tax_percentage]" id="term_meta_tax_percentage" value="'.esc_attr($term_meta->tax_percentage).'"/>%
 				<p class="description">'.__( 'Enter a tax percentage', 'fakturo' ).'</p>
 			</td>
 		</tr>

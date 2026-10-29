@@ -255,7 +255,7 @@ class fktr_tax_stock {
 		
 		<div class="form-field" id="date_div">
 			<label for="term_meta[date]">'.__('Date', 'fakturo' ).'</label>
-			<input style="width: 100px;text-align: center; padding-right: 0px; "  type="text" name="term_meta[date]" id="term_meta_date" value="'.date_i18n($setting_system['dateformat'], $date ).'"/>
+			<input style="width: 100px;text-align: center; padding-right: 0px; "  type="text" name="term_meta[date]" id="term_meta_date" value="'.esc_attr(date_i18n($setting_system['dateformat'], $date )).'"/>
 			<p class="description">'.__( 'Enter a date.', 'fakturo' ).'</p>
 		</div>
 		<div class="form-field" id="location_div">
