@@ -1551,13 +1551,17 @@ if (!class_exists('fktrPostTypeSales')) :
 
 			// 0 - 0 is the invoice number general
 			if (!empty($last_invoice_numbers[$keySale][$keyInvNum])) {
-				$retorno = $last_invoice_numbers[$keySale][$keyInvNum];
+				$retorno = (int) $last_invoice_numbers[$keySale][$keyInvNum];
 			}
 			$retorno = $retorno + 1;
 			return $retorno;
 		}
 
 		public static function updateSuggestInvoiceNumber($sale_point = 0, $invoice_type = 0, $invoice_number = 0) {
+			if (!is_numeric($invoice_number)) {
+				return;
+			}
+			$invoice_number = (int) $invoice_number;
 
 			if ($sale_point < 0) {
 				$sale_point = 0;

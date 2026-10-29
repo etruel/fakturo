@@ -3,7 +3,7 @@ Contributors: etruel,sniuk,khaztiel,axellourenco
 Donate link:
 Tags: invoice,sales,inventory,billing,receipt
 Requires at least: 4.9
-Tested up to: 7.1
+Tested up to: 7.2
 Requires PHP: 7.4
 Stable tag: 1.1
 License: GPLv2 or later
@@ -99,7 +99,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Template titles and totals are now always available to print and e-mail templates, and the editor fields are escaped.
 * The default invoice template no longer overlaps the product lines when an invoice has several items.
 * The stock report no longer shows PHP notices when it is opened without filters.
-* Requires PHP 7.4 or later (tested up to PHP 8.3) and tested with WordPress 7.1.
+* Requires PHP 7.4 or later (tested up to PHP 8.3) and tested with WordPress 7.2.
 * Multisite: license keys of the add-ons are managed once for the whole network by the super admin, in the new Fakturo menu of the network admin, and the sites no longer show the Licenses screen.
 * Multisite: the Fakturo menu of the network admin also holds the global settings: default values for new sites (date format, separators, decimals, digits of numbers and stock) and an option to keep Fakturo out of sight on the main site. The add-ons list is downloaded once for the network.
 * Dates in invoices, receipts and subscriptions follow the date format chosen in Settings (no more "2727/1010/2026" on installs that never saved it).
