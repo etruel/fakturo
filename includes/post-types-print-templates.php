@@ -925,6 +925,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 			}
 
 			$custom_field_keys = apply_filters('fktr_clean_print_template_fields', $custom_field_keys);
+			$custom_field_keys = fktr_post_columns($custom_field_keys, $template_id);
 			return $custom_field_keys;
 		}
 
@@ -939,7 +940,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				return false;
 			}
 
-			if (!current_user_can('manage_options', $post_id)) {
+			if (!fktr_guard::can_save($post_id, 'manage_options')) {
 				return false;
 			}
 			if (( defined('FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION)) {
@@ -950,7 +951,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 			$fields			 = apply_filters('fktr_clean_print_template_fields', $_POST);
 			$fields			 = apply_filters('fktr_print_template_before_save', $fields);
 
-			foreach ($fields as $field => $value) {
+			foreach (fktr_guard::fields($fields, 'print_template') as $field => $value) {
 
 				if (!is_null($value)) {
 					$new = apply_filters('fktr_print_template_metabox_save_' . $field, $value);  //filtra cada campo antes de grabar

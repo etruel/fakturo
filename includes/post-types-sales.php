@@ -1360,7 +1360,11 @@ if (!class_exists('fktrPostTypeSales')) :
 			if (!is_array($sale_data['receipts'])) {
 				$sale_data['receipts'] = array();
 			}
-			$sale_data['receipts'][$receipt_id] = $affected_in_sale;
+			if ($affected_in_sale > 0) {
+				$sale_data['receipts'][$receipt_id] = $affected_in_sale;
+			} else {
+				unset($sale_data['receipts'][$receipt_id]);
+			}
 			$new = apply_filters('fktr_sale_metabox_save_receipts', $sale_data['receipts']);
 			update_post_meta($sale_id, 'receipts', $new);
 		}
@@ -1859,6 +1863,7 @@ if (!class_exists('fktrPostTypeSales')) :
 			$custom_field_keys = array_merge($custom_field_keys, $client_data);
 
 			$custom_field_keys = apply_filters('fktr_clean_sale_fields', $custom_field_keys);
+			$custom_field_keys = fktr_post_columns($custom_field_keys, $sale_id);
 			return $custom_field_keys;
 		}
 
@@ -1882,7 +1887,7 @@ if (!class_exists('fktrPostTypeSales')) :
 				return false;
 			}
 
-			if (!current_user_can('edit_post', $post_id)) {
+			if (!fktr_guard::can_save($post_id)) {
 				return false;
 			}
 			if (( defined('FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION)) {
@@ -1912,7 +1917,8 @@ if (!class_exists('fktrPostTypeSales')) :
 			}
 
 
-			foreach ($fields as $field => $value) {
+			$lines = array('uc_amount', 'uc_code', 'uc_description', 'uc_quality', 'uc_tax', 'uc_tax_porcent', 'uc_unit_price');
+			foreach (fktr_guard::fields($fields, 'sale', $lines) as $field => $value) {
 
 				if (!is_null($value)) {
 					$new = apply_filters('fktr_sale_metabox_save_' . $field, $value);  //filtra cada campo antes de grabar

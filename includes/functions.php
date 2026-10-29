@@ -822,4 +822,19 @@ function fktr_asset_version($src) {
 add_filter('script_loader_src', 'fktr_asset_version');
 add_filter('style_loader_src', 'fktr_asset_version');
 
+/**
+ * The data arrays of the post types carry the live columns of the post (ID, post_title, post_status, post_type, post_author), never a copy saved as meta.
+ */
+function fktr_post_columns($data, $post_id) {
+	$post = get_post($post_id);
+	if ($post) {
+		$data['ID'] = $post->ID;
+		$data['post_title'] = $post->post_title;
+		$data['post_status'] = $post->post_status;
+		$data['post_type'] = $post->post_type;
+		$data['post_author'] = $post->post_author;
+	}
+	return $data;
+}
+
 ?>

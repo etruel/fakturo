@@ -108,6 +108,8 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Deactivating the plugin takes its permissions away from administrators again, and role changes reach existing sites without waiting for a new version.
 * Security: every AJAX call and link of the admin (print, e-mail, cancel, preview, copy and reset of invoices, receipts and templates) now checks the permission of the user, the item it acts on and a security token that belongs to that item. Cancelling a receipt twice no longer gives the balance back twice.
 * Scripts and styles of the plugin are reloaded by the browser as soon as they change, so an update never leaves old files in the cache.
+* Security: the edit screens of clients, providers, products, invoices, receipts and templates only save with their own security token and keep only the fields that belong to each type, instead of storing the whole form. Updating one of these items from code or an import no longer wipes its data, and old copies of the title, status and form leftovers are removed from the saved data.
+* Receipts now record their own number on the invoices they pay, and a cancelled or deleted receipt disappears from the payment status of its invoices, which show Unpaid again.
 
 = 1.0.10 (Oct 23, 2026) =
 * New Add-ons screen: activate, license and manage auto-updates of each add-on from its own row, with bulk actions and live search.

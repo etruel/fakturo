@@ -563,6 +563,7 @@ class fktrPostTypeProviders {
 			$custom_field_keys[$key] = maybe_unserialize($value[0]);
 		}
 		$custom_field_keys = apply_filters('fktr_clean_provider_fields', $custom_field_keys );
+		$custom_field_keys = fktr_post_columns($custom_field_keys, $provider_id);
 		return $custom_field_keys;
 	}
 	public static function save($post_id, $post) {
@@ -575,7 +576,7 @@ class fktrPostTypeProviders {
 			return false;
 		}
 
-		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		if ( ! fktr_guard::can_save( $post_id ) ) {
 			return false;
 		}
 		if ( ( defined( 'FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION ) ) {
@@ -613,7 +614,7 @@ class fktrPostTypeProviders {
 		
 		
 
-		foreach ($fields as $field => $value ) {
+		foreach (fktr_guard::fields($fields, 'provider', array('uc_address', 'uc_email', 'uc_phone', 'uc_position')) as $field => $value ) {
 			
 			if ( !is_null( $value ) ) {
 				$new = apply_filters('fktr_provider_metabox_save_' . $field, $value );  //filtra cada campo antes de grabar

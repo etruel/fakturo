@@ -602,6 +602,9 @@ class fktrPostTypeEmailTemplates {
 		if (!isset($fields['subject'])) {
 			$fields['subject'] = '';
 		}
+		if (!isset($fields['content'])) {
+			$fields['content'] = '';
+		}
 		if (!isset($fields['assigned'])) {
 			$fields['assigned'] = -1;
 		}
@@ -687,6 +690,7 @@ class fktrPostTypeEmailTemplates {
 		}
 		
 		$custom_field_keys = apply_filters('fktr_clean_email_template_fields', $custom_field_keys );
+		$custom_field_keys = fktr_post_columns($custom_field_keys, $template_id);
 		return $custom_field_keys;
 	}
 	public static function save($post_id, $post) {
@@ -701,7 +705,7 @@ class fktrPostTypeEmailTemplates {
 			return false;
 		}
 		
-		if ( ! current_user_can( 'manage_options', $post_id ) ) {
+		if ( ! fktr_guard::can_save( $post_id, 'manage_options' ) ) {
 			return false;
 		}
 		if ( ( defined( 'FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION ) ) {
@@ -713,7 +717,7 @@ class fktrPostTypeEmailTemplates {
 		$fields = apply_filters('fktr_email_template_before_save',$fields);
 		
 		
-		foreach ($fields as $field => $value ) {
+		foreach (fktr_guard::fields($fields, 'email_template') as $field => $value ) {
 			
 			if ( !is_null( $value ) ) {
 				$new = apply_filters('fktr_email_template_metabox_save_' . $field, $value );  //filtra cada campo antes de grabar

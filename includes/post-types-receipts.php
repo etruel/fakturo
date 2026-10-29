@@ -1120,6 +1120,7 @@ class fktrPostTypeReceipts {
 		}
 		
 		$custom_field_keys = apply_filters('fktr_clean_receipt_fields', $custom_field_keys );
+		$custom_field_keys = fktr_post_columns($custom_field_keys, $receipt_id);
 		return $custom_field_keys;
 	}
 	
@@ -1139,7 +1140,7 @@ class fktrPostTypeReceipts {
 			return false;
 		}
 		
-		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		if ( ! fktr_guard::can_save( $post_id ) ) {
 			return false;
 		}
 		if ( ( defined( 'FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION ) ) {
@@ -1148,14 +1149,12 @@ class fktrPostTypeReceipts {
 		if ($post->post_status == 'auto-draft') {
 			return false;
 		}
-		if ($_REQUEST['action'] == 'cancel_receipt') {
-			return false;
-		}
 		
 		
 		
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$fields = apply_filters('fktr_clean_receipt_fields',$_POST);
+		$fields['ID'] = $post_id;
 		$fields = apply_filters('fktr_receipt_before_save',$fields);
 		
 		$fields['date'] = current_time('timestamp');
@@ -1167,7 +1166,7 @@ class fktrPostTypeReceipts {
 		*/
 	
 		
-		foreach ($fields as $field => $value ) {
+		foreach (fktr_guard::fields($fields, 'receipt', array('check_invs', 'to_pay', 'date')) as $field => $value ) {
 			
 			if ( !is_null( $value ) ) {
 				$new = apply_filters('fktr_receipt_metabox_save_' . $field, $value );  //filtra cada campo antes de grabar

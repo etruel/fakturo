@@ -862,6 +862,7 @@ if (!class_exists('fktrPostTypeProducts')) :
 				$custom_field_keys[$key] = maybe_unserialize($value[0]);
 			}
 			$custom_field_keys = apply_filters('fktr_clean_product_fields', $custom_field_keys);
+			$custom_field_keys = fktr_post_columns($custom_field_keys, $product_id);
 			return $custom_field_keys;
 		}
 
@@ -872,7 +873,7 @@ if (!class_exists('fktrPostTypeProducts')) :
 			if (isset($post->post_type) && $post->post_type == 'revision' || $post->post_type != 'fktr_product') {
 				return false;
 			}
-			if (!current_user_can('edit_post', $post_id)) {
+			if (!fktr_guard::can_save($post_id)) {
 				return false;
 			}
 			if (( defined('FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION)) {
@@ -906,7 +907,7 @@ if (!class_exists('fktrPostTypeProducts')) :
 				}
 			}
 
-			foreach ($fields as $field => $value) {
+			foreach (fktr_guard::fields($fields, 'product') as $field => $value) {
 
 				if (!is_null($value)) {
 
