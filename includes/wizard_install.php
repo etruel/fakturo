@@ -150,11 +150,14 @@ class fktr_wizard {
 	* @since 0.7
 	*/
 	public static function post_actions() {
-		if (!wp_verify_nonce($_POST['_wpnonce'], 'fktr_wizard_nonce' ) ) {
-		    wp_die(__( 'Security check', 'fakturo' )); 
+		$nonce = isset($_POST['_wpnonce']) ? sanitize_text_field(wp_unslash($_POST['_wpnonce'])) : '';
+		if (!wp_verify_nonce($nonce, 'fktr_wizard_nonce') || !current_user_can('fktr_manage_wizard')) {
+		    wp_die(__( 'Security check', 'fakturo' ), '', 403); 
 		}
+		$_POST = wp_unslash($_POST);
+		$_POST['step_action'] = isset($_POST['step_action']) ? absint($_POST['step_action']) : 0;
 		
-		if (!empty($_POST['step_action']) && is_numeric($_POST['step_action'])) {
+		if (!empty($_POST['step_action'])) {
 			do_action('fktr_wizard_action_'.$_POST['step_action']);
 		} else {
 			$output = ''.__('A problem please try again.').'<br/><br/> <a href="'.admin_url('admin-post.php?action=fktr_wizard').'" class="button">'.__('Back.').'</a>';
@@ -168,6 +171,14 @@ class fktr_wizard {
 			// redirect to dashboard
 			wp_redirect(admin_url('admin.php?page=fakturo_dashboard'));
 		}
+	}
+	/**
+	* Static function post_value
+	* A value of a posted option group, or the default when the step did not send it.
+	* @access public
+	*/
+	public static function post_value($group, $key, $default = '') {
+		return (isset($_POST[$group]) && is_array($_POST[$group]) && isset($_POST[$group][$key])) ? $_POST[$group][$key] : $default;
 	}
 	/**
 	* Static function scripts
@@ -291,6 +302,7 @@ class fktr_wizard {
 		if (current_user_can('fktr_manage_wizard')) {
 			update_option('fktr_first_time_wizard', true);
 			self::$current_request = wp_parse_args($_GET, self::default_request_values());
+			self::$current_request['step'] = max(1, absint(self::$current_request['step']));
 			do_action('fktr_wizard_install_step_'.self::$current_request['step']);
 		} else {
 			wp_die(__('A security problem occurred, Please contact the admin.', 'fakturo'));
@@ -403,17 +415,17 @@ class fktr_wizard {
 	* @since 0.7
 	*/
 	public static function load_countries_states_ajax() {
-		check_ajax_referer('fktr_wizard_ajax_nonce', 'nonce');
+		fktr_guard::ajax('fktr_manage_wizard', 'fktr_wizard_ajax_nonce', 'nonce');
 		$country_id = 0;
 		if (!empty($_REQUEST['country_id']) && is_numeric($_REQUEST['country_id'])) {
-			$country_id = $_REQUEST['country_id'];
+			$country_id = absint($_REQUEST['country_id']);
 		}
 		if (empty($country_id)) {
 			wp_die('error');
 		}
 		$state_index = 0;
 		if (isset($_REQUEST['state_index']) && is_numeric($_REQUEST['state_index'])) {
-			$state_index = $_REQUEST['state_index'];
+			$state_index = absint($_REQUEST['state_index']);
 		}
 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/country-states.php';
@@ -478,30 +490,26 @@ class fktr_wizard {
 	* @since 0.7
 	*/
 	public static function load_countries_ajax() {
-		check_ajax_referer('fktr_wizard_ajax_nonce', 'nonce');
+		fktr_guard::ajax('fktr_manage_wizard', 'fktr_wizard_ajax_nonce', 'nonce');
 		$r_countries = array();
-		if (!empty($_REQUEST['countries'])) {
-			$r_countries = $_REQUEST['countries'];
+		if (!empty($_REQUEST['countries']) && is_array($_REQUEST['countries'])) {
+			$r_countries = array_unique(array_map('absint', $_REQUEST['countries']));
 		}
-		if (!is_array($r_countries)) {
-			$r_countries = array();
-		}
+		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/country-states.php';
+		$r_countries = array_filter($r_countries, function ($key_country) use ($countries) {
+			return isset($countries[$key_country]);
+		});
 		if (empty($r_countries)) {
 			wp_die('error');
 		}
 		ignore_user_abort(true);
-		set_time_limit(0);
+		set_time_limit(300);
 		$country_id = 999;
 		$start_time = microtime(true);
-		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/country-states.php';
 		$count_insert = 0;
 		foreach ($r_countries as $kc => $key_country) {
 			
-			if (isset($countries[(int)$key_country]) || array_key_exists($key_country, $countries)) {
-				$country = $countries[(int)$key_country];
-			} else {
-				continue;
-			}
+			$country = $countries[$key_country];
 
 
 			$country_id = $country[0];
@@ -792,7 +800,9 @@ class fktr_wizard {
 	* @since 0.7
 	*/
 	public static function action_two() {
-		update_option('fakturo_info_options_group', $_POST['fakturo_info_options_group']);
+		if (isset($_POST['fakturo_info_options_group']) && is_array($_POST['fakturo_info_options_group'])) {
+			update_option('fakturo_info_options_group', $_POST['fakturo_info_options_group']);
+		}
 	}
 	/**
 	* Static function page_step_three
@@ -854,10 +864,10 @@ class fktr_wizard {
 	* @since 0.7
 	*/
 	public static function load_currencies_ajax() {
-		check_ajax_referer('fktr_wizard_ajax_nonce', 'nonce');
+		fktr_guard::ajax('fktr_manage_wizard', 'fktr_wizard_ajax_nonce', 'nonce');
 		$currency_id = 0;
 		if (isset($_REQUEST['currency_id']) && is_numeric($_REQUEST['currency_id'])) {
-			$currency_id = $_REQUEST['currency_id'];
+			$currency_id = absint($_REQUEST['currency_id']);
 		}
 		
 		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/currencies.php';
@@ -1027,11 +1037,11 @@ class fktr_wizard {
 	*/
 	public static function action_four() {
 		$new_options = get_option('fakturo_system_options_group', array());
-		$new_options['currency'] = $_POST['fakturo_system_options_group']['currency'];
-		$new_options['currency_position'] = $_POST['fakturo_system_options_group']['currency_position'];
-		$new_options['thousand'] = $_POST['fakturo_system_options_group']['thousand'];
-		$new_options['decimal'] = $_POST['fakturo_system_options_group']['decimal'];
-		$new_options['decimal_numbers'] = $_POST['fakturo_system_options_group']['decimal_numbers'];
+		$new_options['currency'] = self::post_value('fakturo_system_options_group', 'currency');
+		$new_options['currency_position'] = self::post_value('fakturo_system_options_group', 'currency_position');
+		$new_options['thousand'] = self::post_value('fakturo_system_options_group', 'thousand');
+		$new_options['decimal'] = self::post_value('fakturo_system_options_group', 'decimal');
+		$new_options['decimal_numbers'] = self::post_value('fakturo_system_options_group', 'decimal_numbers');
 		update_option('fakturo_system_options_group', $new_options);
 	}
 	/**
@@ -1295,24 +1305,15 @@ class fktr_wizard {
 	*/
 	public static function action_invoice_format() {
 		$new_options = get_option('fakturo_system_options_group', array());
-		$new_options['invoice_type'] = $_POST['fakturo_system_options_group']['invoice_type'];
-		$new_options['sale_point'] = $_POST['fakturo_system_options_group']['sale_point'];
-		$new_options['digits_invoice_number'] = $_POST['fakturo_system_options_group']['digits_invoice_number'];
+		$new_options['invoice_type'] = self::post_value('fakturo_system_options_group', 'invoice_type');
+		$new_options['sale_point'] = self::post_value('fakturo_system_options_group', 'sale_point');
+		$new_options['digits_invoice_number'] = self::post_value('fakturo_system_options_group', 'digits_invoice_number');
 		
-		if (!isset($_POST['fakturo_system_options_group']['list_invoice_number'])){
-			$_POST['fakturo_system_options_group']['list_invoice_number'] = array();
-		}
-		$new_options['list_invoice_number'] = $_POST['fakturo_system_options_group']['list_invoice_number'];
-		if (!isset($_POST['fakturo_system_options_group']['individual_numeration_by_invoice_type'])){
-			$_POST['fakturo_system_options_group']['individual_numeration_by_invoice_type'] = 0;
-		}
-		if (!isset($_POST['fakturo_system_options_group']['individual_numeration_by_sale_point'])){
-			$_POST['fakturo_system_options_group']['individual_numeration_by_sale_point'] = 0;
-		}
-		$new_options['individual_numeration_by_invoice_type'] = $_POST['fakturo_system_options_group']['individual_numeration_by_invoice_type'];
-		$new_options['individual_numeration_by_sale_point'] = $_POST['fakturo_system_options_group']['individual_numeration_by_sale_point'];
-		$new_options['digits_receipt_number'] = $_POST['fakturo_system_options_group']['digits_receipt_number'];
-		$new_options['dateformat'] = $_POST['fakturo_system_options_group']['dateformat'];
+		$new_options['list_invoice_number'] = self::post_value('fakturo_system_options_group', 'list_invoice_number', array());
+		$new_options['individual_numeration_by_invoice_type'] = self::post_value('fakturo_system_options_group', 'individual_numeration_by_invoice_type', 0);
+		$new_options['individual_numeration_by_sale_point'] = self::post_value('fakturo_system_options_group', 'individual_numeration_by_sale_point', 0);
+		$new_options['digits_receipt_number'] = self::post_value('fakturo_system_options_group', 'digits_receipt_number');
+		$new_options['dateformat'] = self::post_value('fakturo_system_options_group', 'dateformat');
 		update_option('fakturo_system_options_group', $new_options);
 	}
 	
@@ -1742,23 +1743,14 @@ class fktr_wizard {
 	*/
 	public static function action_products() {
 		$new_options = get_option('fakturo_system_options_group', array());
-		if (!isset($_POST['fakturo_system_options_group']['use_stock_product'])){
-			$_POST['fakturo_system_options_group']['use_stock_product'] = 0;
-		}
-		if (!isset($_POST['fakturo_system_options_group']['stock_less_zero'])){
-			$_POST['fakturo_system_options_group']['stock_less_zero'] = 0;
-		}
-		if (!isset($_POST['fakturo_system_options_group']['search_code'])){
-			$_POST['fakturo_system_options_group']['search_code'] = array();
-		}
 		
 
-		$new_options['default_description'] = $_POST['fakturo_system_options_group']['default_description'];
-		$new_options['default_code'] = $_POST['fakturo_system_options_group']['default_code'];
-		$new_options['search_code'] = $_POST['fakturo_system_options_group']['search_code'];
+		$new_options['default_description'] = self::post_value('fakturo_system_options_group', 'default_description');
+		$new_options['default_code'] = self::post_value('fakturo_system_options_group', 'default_code');
+		$new_options['search_code'] = self::post_value('fakturo_system_options_group', 'search_code', array());
 		
-		$new_options['use_stock_product'] = $_POST['fakturo_system_options_group']['use_stock_product'];
-		$new_options['stock_less_zero'] = $_POST['fakturo_system_options_group']['stock_less_zero'];
+		$new_options['use_stock_product'] = self::post_value('fakturo_system_options_group', 'use_stock_product', 0);
+		$new_options['stock_less_zero'] = self::post_value('fakturo_system_options_group', 'stock_less_zero', 0);
 		update_option('fakturo_system_options_group', $new_options);
 	}
 	/**
@@ -1832,7 +1824,7 @@ class fktr_wizard {
 	*/
 	public static function action_payments() {
 		$new_options = get_option('fakturo_system_options_group', array());
-		$new_options['payment_type'] = $_POST['fakturo_system_options_group']['payment_type'];
+		$new_options['payment_type'] = self::post_value('fakturo_system_options_group', 'payment_type');
 		update_option('fakturo_system_options_group', $new_options);
 		fktrDefaultTemplates::create_all(array('print', 'email'), false);
 	}

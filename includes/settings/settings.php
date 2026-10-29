@@ -282,7 +282,7 @@ class fktrSettings {
 		$form = self::is_form('fakturo-settings-system');
 
 		foreach (array('currency', 'payment_type', 'bank_entity', 'sale_point', 'invoice_type', 'price_scale', 'tax') as $key) {
-			if (isset($input[$key])) {
+			if (isset($input[$key]) && $input[$key] !== '') {
 				$new[$key] = (int) self::term_id($input[$key]);
 			}
 		}
@@ -304,11 +304,11 @@ class fktrSettings {
 			}
 			add_settings_error('fakturo_system_options_group', 'fktr_separators', __('The thousands and the decimal separators must be different.', 'fakturo'));
 		}
-		if (isset($input['decimal_numbers'])) {
+		if (isset($input['decimal_numbers']) && $input['decimal_numbers'] !== '') {
 			$new['decimal_numbers'] = (string) min(9, max(0, (int) $input['decimal_numbers']));
 		}
 		foreach (array('digits_invoice_number', 'digits_receipt_number') as $key) {
-			if (isset($input[$key])) {
+			if (isset($input[$key]) && $input[$key] !== '') {
 				$new[$key] = min(20, max(2, (int) $input[$key]));
 			}
 		}

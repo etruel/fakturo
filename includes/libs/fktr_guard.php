@@ -43,9 +43,10 @@ class fktr_guard {
 
 	/**
 	 * AJAX handlers: ends the request with a 403 unless the call has its nonce and the user has one of the capabilities.
+	 * A screen with its own nonce (the wizard) passes its action and field.
 	 */
-	public static function ajax($caps) {
-		if (!check_ajax_referer(self::AJAX_NONCE, self::AJAX_FIELD, false) || !self::can($caps)) {
+	public static function ajax($caps, $action = self::AJAX_NONCE, $field = self::AJAX_FIELD) {
+		if (!check_ajax_referer($action, $field, false) || !self::can($caps)) {
 			wp_send_json_error(array('message' => __('Sorry, you are not allowed to do that.', 'fakturo')), 403);
 		}
 	}
