@@ -83,13 +83,11 @@ class fktrPostTypeReceipts {
 		}
 	}
 	public static function print_receipt() {
-    if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'fktr_receipts_action_nonce')) {
-        wp_die('A security issue has occurred.');
-    }
+    $post = fktr_guard::item('print_receipt', 'fktr_receipt');
 
     $object = new stdClass();
     $object->type = 'post';
-    $object->id = intval($_REQUEST['id']);
+    $object->id = $post->ID;
     $object->assgined = 'fktr_receipt';
 
     if ($object->id) {
@@ -148,17 +146,15 @@ class fktrPostTypeReceipts {
 	}
 	public static function row_actions($actions, $post) {
 		if ($post->post_type == 'fktr_receipt' && ($post->post_status != 'cancelled' && $post->post_status != 'trash')) {
-			$action_nonce = wp_create_nonce('fktr_receipts_action_nonce');
-			$actions['cancelled'] = '<a class="submit_cancel_receipt" href="'.admin_url('admin-post.php?post='.$post->ID.'&action=cancel_receipt&nonce='.$action_nonce).'" onclick="return confirm(\''.__('Do you want cancel this receipt?', 'fakturo' ).'\');">Cancel this receipt</a>';
-			$actions['print_receipt'] = '<a href="'.admin_url('admin-post.php?id='.$post->ID.'&action=print_receipt&nonce='.$action_nonce).'" class="btn_print_receipt" target="_new">'.__( 'Print Receipt', 'fakturo' ).'</a>';
+			$actions['cancelled'] = '<a class="submit_cancel_receipt" href="'.fktr_guard::url('cancel_receipt', $post->ID, array(), 'admin-post.php', 'post').'" onclick="return confirm(\''.__('Do you want cancel this receipt?', 'fakturo' ).'\');">Cancel this receipt</a>';
+			$actions['print_receipt'] = '<a href="'.fktr_guard::url('print_receipt', $post->ID).'" class="btn_print_receipt" target="_new">'.__( 'Print Receipt', 'fakturo' ).'</a>';
 
 
 			if (empty($actions['send_receipt_to_client'])) {
 				$sale_data = self::get_receipt_data($post->ID);
 				$client_data = fktrPostTypeClients::get_client_data($sale_data['client_id']);
 				if (!empty($client_data['email'])) {
-					$url = admin_url('admin-post.php?id='.$post->ID.'&action=send_receipt_to_client');
-					$url = wp_nonce_url($url, 'send_receipt_to_client', '_wpnonce');
+					$url = fktr_guard::url('send_receipt_to_client', $post->ID);
 					$actions['send_receipt_to_client'] = '<a href="'.$url.'" class="btn_send_receipt">'.__( 'email PDF to Client', 'fakturo' ).'</a>';
 				}
 			}
@@ -167,16 +163,14 @@ class fktrPostTypeReceipts {
 		return $actions;
 	}
 	public static function cancel_receipt() {
-		if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'fktr_receipts_action_nonce')) {
-			wp_die('A security issue has occurred.');
-		}
-		if (is_numeric($_REQUEST['post'])) {
-			$my_post = array(
-				'ID'           => $_REQUEST['post'],
+		$post = fktr_guard::item('cancel_receipt', 'fktr_receipt', 'edit_post', 'post');
+		// Cancelling gives the balance back, so it only happens once.
+		if (!in_array($post->post_status, array('cancelled', 'trash'), true)) {
+			wp_update_post(array(
+				'ID'           => $post->ID,
 				'post_status'   => 'cancelled',
-			);
-			wp_update_post($my_post);
-			self::action_on_delete($_REQUEST['post']);
+			));
+			self::action_on_delete($post->ID);
 		}
 		wp_redirect(admin_url('edit.php?post_status=cancelled&post_type=fktr_receipt'));
 		exit();
@@ -340,11 +334,10 @@ class fktrPostTypeReceipts {
 	}
 	public static function get_client_data() {
 		global $wpdb;
-		if (!is_numeric($_POST['client_id'])) {
-			$_POST['client_id'] = 0;
-		}
+		fktr_guard::ajax('edit_fktr_receipts');
+		$client_id = fktr_guard::post_id(isset($_POST['client_id']) ? $_POST['client_id'] : 0, 'fktr_client');
 		$setting_system = get_option('fakturo_system_options_group', false);
-		$client_data = fktrPostTypeClients::get_client_data($_POST['client_id']);
+		$client_data = fktrPostTypeClients::get_client_data($client_id);
 		$client_data['invoice_sales'] = array();
 		$sqlInvoices = $wpdb->prepare("SELECT p.ID FROM {$wpdb->postmeta} pm
 				 INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
@@ -352,7 +345,7 @@ class fktrPostTypeReceipts {
 				 AND pm.meta_value = %s
 				 AND p.post_status = 'publish'
 				 AND p.post_type = 'fktr_sale'
-			 ", $_POST['client_id']);
+			 ", $client_id);
 		$r = $wpdb->get_results($sqlInvoices);
 		if (!empty($r)) {
 			foreach ($r as $inv) {
@@ -496,15 +489,13 @@ class fktrPostTypeReceipts {
 	}
 
 	public static function print_receipt_button_box($post) {
-		$nonce = wp_create_nonce('fktr_receipts_action_nonce');
-	
-		$print_url = admin_url('admin-post.php?id=' . $post->ID . '&action=print_receipt&nonce=' . $nonce);
+		$print_url = fktr_guard::url('print_receipt', $post->ID);
 	
 		echo '<a href="' . $print_url . '" class="button button-secondary" id="print_receipt_button"  target="_blank">' . __('Print Receipt', 'fakturo') . '</a>';
 	}
 	public static function cancel_box() {
 		global $post;
-		$echoHtml = '<a class="submit_cancel_receipt" href="'.admin_url('admin-post.php?post='.$post->ID.'&action=cancel_receipt').'" onclick="return confirm(\''.__('Do you want cancel this receipt?', 'fakturo' ).'\');">Cancel this receipt</a>';
+		$echoHtml = '<a class="submit_cancel_receipt" href="'.fktr_guard::url('cancel_receipt', $post->ID, array(), 'admin-post.php', 'post').'" onclick="return confirm(\''.__('Do you want cancel this receipt?', 'fakturo' ).'\');">Cancel this receipt</a>';
 		$echoHtml = apply_filters('fktr_receipt_cancel_box', $echoHtml);
 		echo $echoHtml;
 		do_action('add_fktr_receipt_cancel_box', $echoHtml);
@@ -840,6 +831,7 @@ class fktrPostTypeReceipts {
 	}
 	
 	public static function ajax_validate_receipt() {
+		fktr_guard::ajax('edit_fktr_receipts');
 		$setting_system = get_option('fakturo_system_options_group', false);
 		$response = new WP_Ajax_Response;
 		$fields = array();
@@ -873,6 +865,7 @@ class fktrPostTypeReceipts {
 		$response->send();//		wp_die();
 	}
 	public static function get_suggest_receipt_number() {
+		fktr_guard::ajax('edit_fktr_receipts');
 		$setting_system = get_option('fakturo_system_options_group', false);
 		
 		$suggested = self::suggestReceiptNumber();

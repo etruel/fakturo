@@ -16,23 +16,8 @@ if (!class_exists('fktr_mail')) :
 		public static function send_invoice_2_client() {
 			self::$sending = __FUNCTION__;
 
-			if (!isset($_REQUEST['_wpnonce']) || !wp_verify_nonce($_REQUEST['_wpnonce'], 'send_invoice_to_client')) {
-				fktrNotices::add(__('WP-NONCE violation or expired.', 'fakturo'));
-				wp_redirect(admin_url('edit.php?post_type=fktr_sale'));
-				exit;
-			}
-			if (empty($_REQUEST['id'])) {
-				fktrNotices::add(__('A problem has been occurred on trying send the email.', 'fakturo'));
-				wp_redirect(admin_url('edit.php?post_type=fktr_sale'));
-				exit;
-			}
-			if (!is_numeric($_REQUEST['id'])) {
-				fktrNotices::add(__('A problem has been occurred on trying send the email.', 'fakturo'));
-				wp_redirect(admin_url('edit.php?post_type=fktr_sale'));
-				exit;
-			}
-
-			self::send_sale_invoice_pdf_to_client($_REQUEST['id']);
+			$post = fktr_guard::item('send_invoice_to_client', 'fktr_sale');
+			self::send_sale_invoice_pdf_to_client($post->ID);
 			wp_redirect(admin_url('edit.php?post_type=fktr_sale'));
 			exit;
 		}
@@ -162,23 +147,8 @@ if (!class_exists('fktr_mail')) :
 		public static function send_receipt_2_client() {
 			self::$sending = __FUNCTION__;
 
-			if (!isset($_REQUEST['_wpnonce']) || !wp_verify_nonce($_REQUEST['_wpnonce'], 'send_receipt_to_client')) {
-				fktrNotices::add(__('WP-NONCE violation or expired.', 'fakturo'));
-				wp_redirect(admin_url('edit.php?post_type=fktr_receipt'));
-				exit;
-			}
-			if (empty($_REQUEST['id'])) {
-				fktrNotices::add(__('A problem has been occurred on trying send the email.', 'fakturo'));
-				wp_redirect(admin_url('edit.php?post_type=fktr_receipt'));
-				exit;
-			}
-			if (!is_numeric($_REQUEST['id'])) {
-				fktrNotices::add(__('A problem has been occurred on trying send the email.', 'fakturo'));
-				wp_redirect(admin_url('edit.php?post_type=fktr_receipt'));
-				exit;
-			}
-
-			self::send_receipt_pdf_to_client($_REQUEST['id']);
+			$post = fktr_guard::item('send_receipt_to_client', 'fktr_receipt');
+			self::send_receipt_pdf_to_client($post->ID);
 			wp_redirect(admin_url('edit.php?post_type=fktr_receipt'));
 			exit;
 		}

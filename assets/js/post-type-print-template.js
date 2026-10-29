@@ -59,6 +59,7 @@ jQuery(document).ready(function() {
             });
         }
         var data_sended = {
+            fktr_nonce: fktr_ajax_nonce,
             action: 'get_vars_assigned_print',
             template_id: jQuery('#post_ID').val(),
             assigned: this.value,

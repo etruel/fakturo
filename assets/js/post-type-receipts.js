@@ -97,6 +97,7 @@ jQuery(document).ready(function($) {
 			jQuery('#client_available_to_include').html(''+receipts_object.txt_loading+'...');
 			
 			var data = {
+				fktr_nonce: fktr_ajax_nonce,
 				action: 'receipt_client_data',
 				client_id: this.value
 			}
@@ -199,6 +200,7 @@ jQuery(document).ready(function($) {
 			selector = '';
 			functionEx = '';
 			var data = {
+   				fktr_nonce: fktr_ajax_nonce,
    				action: 'validate_receipt',
 				inputs: jQuery("#post").serialize()
    			};
@@ -242,6 +244,7 @@ function listCurrencieshiden(lim){
 function updateSuggestReceiptNumber() {
 	
 	var data = {
+				fktr_nonce: fktr_ajax_nonce,
 				action: 'get_suggest_receipt_number',
 			}
 	

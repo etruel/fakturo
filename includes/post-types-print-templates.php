@@ -44,18 +44,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 
 		public static function reset_print_template() {
 
-			if (!isset($_GET['_nonce']) || !wp_verify_nonce($_GET['_nonce'], 'reset_print_to_default')) {
-				fktrNotices::add(array('below-h2' => false, 'text' => __('A problem, please try again.', 'fakturo')));
-				wp_redirect(admin_url('edit.php?post_type=fktr_print_template'));
-				exit;
-			}
-
-			$template_id = $_REQUEST['id'];
-			if (empty($template_id)) {
-				fktrNotices::add(array('below-h2' => false, 'text' => __('Invalid print template id.', 'fakturo')));
-				wp_redirect(admin_url('edit.php?post_type=fktr_print_template'));
-				exit;
-			}
+			$template_id = fktr_guard::item('reset_print_template', 'fktr_print_template', 'manage_options')->ID;
 
 			$print_template = self::get_print_template_data($template_id);
 			if (!isset($print_template['assigned'])) {
@@ -86,20 +75,15 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 			//check for your post type
 			if ($post->post_type == "fktr_print_template") {
 
-				$actions['show_print_template']	 = '<a href="' . admin_url('admin-post.php?id=' . $post->ID . '&action=show_print_template') . '" target="_new">' . __('Preview', 'fakturo') . '</a>';
-				$actions['copy']				 = '<a href="' . admin_url('admin.php?action=copy_print_template&post=' . $post->ID . '') . '" title="' . esc_attr(__("Clone this item", 'fakturo')) . '">' . __('Copy', 'fakturo') . '</a>';
+				$actions['show_print_template']	 = '<a href="' . fktr_guard::url('show_print_template', $post->ID) . '" target="_new">' . __('Preview', 'fakturo') . '</a>';
+				$actions['copy']				 = '<a href="' . fktr_guard::url('copy_print_template', $post->ID, array(), 'admin.php', 'post') . '" title="' . esc_attr(__("Clone this item", 'fakturo')) . '">' . __('Copy', 'fakturo') . '</a>';
 			}
 			return $actions;
 		}
 
 		public static function copy_print_template() {
-			if (!( isset($_GET['post']) || isset($_POST['post']) || ( isset($_REQUEST['action']) && 'copy_print_template' == $_REQUEST['action'] ) )) {
-				wp_die(__('No print template ID has been supplied!', 'fakturo'));
-			}
-
 			// Get the original post
-			$id		 = (isset($_GET['post']) ? $_GET['post'] : $_POST['post']);
-			$post	 = get_post($id);
+			$post = fktr_guard::item('copy_print_template', 'fktr_print_template', 'manage_options', 'post');
 
 			// Copy the post and insert it
 			if (isset($post) && $post != null) {
@@ -418,11 +402,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 		}
 
 		public static function show_print_template() {
-			$template_id = $_REQUEST['id'];
-			if (empty($template_id)) {
-				echo 'Invalid print template id.';
-				wp_die();
-			}
+			$template_id = fktr_guard::item('show_print_template', 'fktr_print_template')->ID;
 
 			$print_template = self::get_print_template_data($template_id);
 			if (!isset($print_template['assigned'])) {
@@ -688,8 +668,8 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				wp_enqueue_script('wpecf7vb-css', FAKTURO_PLUGIN_URL . 'assets/codemirror/js/css.js', array('wpecf7vb-mirrorcode'), WPE_FAKTURO_VERSION, true);
 				wp_enqueue_script('wpecf7vb-htmlmixed', FAKTURO_PLUGIN_URL . 'assets/codemirror/js/htmlmixed.js', array('wpecf7vb-mirrorcode', 'wpecf7vb-xml'), WPE_FAKTURO_VERSION, true);
 
-				$preview_button	 = '<a  id="preview_button" class="button button-large" href="' . admin_url('admin-post.php?id=' . $post->ID . '&action=show_print_template') . '" target="_new" style="margin:5px;">' . __('Preview', 'fakturo') . '</a>';
-				$pdf_button		 = '<a  id="pdf_button" class="button button-large" href="' . admin_url('admin-post.php?id=' . $post->ID . '&action=show_print_template&pdf=true') . '" target="_new" style="margin:5px;">' . __('See PDF', 'fakturo') . '</a>';
+				$preview_button	 = '<a  id="preview_button" class="button button-large" href="' . fktr_guard::url('show_print_template', $post->ID) . '" target="_new" style="margin:5px;">' . __('Preview', 'fakturo') . '</a>';
+				$pdf_button		 = '<a  id="pdf_button" class="button button-large" href="' . fktr_guard::url('show_print_template', $post->ID, array('pdf' => 'true')) . '" target="_new" style="margin:5px;">' . __('See PDF', 'fakturo') . '</a>';
 				wp_localize_script('post-type-print-template', 'print_template_object',
 						array(
 							'ajax_url'			 => admin_url('admin-ajax.php'),
@@ -777,8 +757,9 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 		}
 
 		public static function get_vars_assigned() {
-			$email_template				 = self::get_print_template_data($_POST['template_id']);
-			$email_template['assigned']	 = $_POST['assigned'];
+			fktr_guard::ajax('edit_fktr_print_templates');
+			$email_template				 = self::get_print_template_data(fktr_guard::post_id(isset($_POST['template_id']) ? $_POST['template_id'] : 0, 'fktr_print_template'));
+			$email_template['assigned']	 = isset($_POST['assigned']) ? sanitize_key($_POST['assigned']) : -1;
 			$object						 = new stdClass();
 			$object->type				 = self::get_object_type($email_template);
 			$object->id					 = self::get_rand_object_id($object->type, $email_template);
@@ -875,10 +856,10 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				return true;
 			}
 
-			$preview_button	 = '<a  id="preview_button" class="button button-large" href="' . admin_url('admin-post.php?id=' . $post->ID . '&action=show_print_template') . '" target="_new" style="margin:5px;">' . __('Preview', 'fakturo') . '</a>';
-			$pdf_button		 = '<a  id="pdf_button" class="button button-large" href="' . admin_url('admin-post.php?id=' . $post->ID . '&action=show_print_template&pdf=true') . '" target="_new" style="margin:5px;">' . __('See PDF', 'fakturo') . '</a>';
+			$preview_button	 = '<a  id="preview_button" class="button button-large" href="' . fktr_guard::url('show_print_template', $post->ID) . '" target="_new" style="margin:5px;">' . __('Preview', 'fakturo') . '</a>';
+			$pdf_button		 = '<a  id="pdf_button" class="button button-large" href="' . fktr_guard::url('show_print_template', $post->ID, array('pdf' => 'true')) . '" target="_new" style="margin:5px;">' . __('See PDF', 'fakturo') . '</a>';
 
-			$reset_url		 = wp_nonce_url(admin_url('admin-post.php?id=' . $post->ID . '&action=reset_print_template'), 'reset_print_to_default', '_nonce');
+			$reset_url		 = fktr_guard::url('reset_print_template', $post->ID);
 			$reset_button	 = '<a  id="reset_button" class="button button-large" href="' . $reset_url . '" style="margin:5px;">' . __('Reset to default', 'fakturo') . '</a>';
 
 			$echoHtml = '

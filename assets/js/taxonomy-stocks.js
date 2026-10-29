@@ -96,6 +96,7 @@ function activate_search_products() {
 			delay: 250,
 			data: function(params) {
 				return {
+					fktr_nonce: fktr_ajax_nonce,
 					action: 'get_products',
 					s: params.term, // search term
 					paged: params.page

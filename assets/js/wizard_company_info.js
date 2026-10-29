@@ -23,6 +23,7 @@ jQuery(document).ready(function() {
 	jQuery("#fakturo_info_options_group_country").on("change", function (e) {
 	
 		var data = {
+			fktr_nonce: backend_object.fktr_nonce,
 			action: 'get_states',
 			country_id: this.value
 		}

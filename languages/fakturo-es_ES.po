@@ -7471,6 +7471,14 @@ msgstr "Valores por defecto para sitios nuevos"
 msgid "Settings saved."
 msgstr "Ajustes guardados."
 
+#: includes/libs/fktr_guard.php:41
+msgid "Sorry, you are not allowed to do that."
+msgstr "Lo siento, no tienes permiso para hacer eso."
+
+#: includes/libs/fktr_guard.php:58
+msgid "The link has expired. Go back and try again."
+msgstr "El enlace ha caducado. Vuelve atrás e inténtalo de nuevo."
+
 #~ msgid "Save as PDF"
 #~ msgstr "Guardar PDF"
 

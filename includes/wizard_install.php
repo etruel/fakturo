@@ -190,6 +190,7 @@ class fktr_wizard {
 				'loading_states_text' => __('Loading states...', 'fakturo' ),
 				'loading_currencies_text' => __('Loading currencies...', 'fakturo' ),
 				'ajax_nonce' => wp_create_nonce('fktr_wizard_ajax_nonce'),
+				'fktr_nonce' => fktr_guard::ajax_nonce(),
 				'loading_text' => __('Loading...', 'fakturo' ),
 			)
 		);

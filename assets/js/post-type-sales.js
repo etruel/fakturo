@@ -126,6 +126,7 @@ jQuery(document).ready(function($) {
 
 
 			var data = {
+				fktr_nonce: fktr_ajax_nonce,
 				action: 'get_client_data',
 				client_id: this.value
 			}
@@ -263,6 +264,7 @@ jQuery(document).ready(function($) {
 		selector = '';
 		functionEx = '';
 		var data = {
+			fktr_nonce: fktr_ajax_nonce,
 			action: 'validate_sale',
 			inputs: jQuery("#post").serialize()
 		};
@@ -670,6 +672,7 @@ function updateSuggestInvoiceNumber() {
 	var sale_point = getCurrentSalePoint();
 	var invoice_type = getCurrentInvoiceType();
 	var data = {
+		fktr_nonce: fktr_ajax_nonce,
 		action: 'get_suggest_invoice_number',
 		sale_point: sale_point.term_id,
 		invoice_type: invoice_type.term_id,
@@ -1238,6 +1241,7 @@ function activate_search_products() {
 			delay: 250,
 			data: function(params) {
 				return {
+					fktr_nonce: fktr_ajax_nonce,
 					action: 'get_products',
 					s: params.term, // search term
 					paged: params.page

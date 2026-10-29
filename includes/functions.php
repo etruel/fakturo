@@ -807,4 +807,19 @@ function fktr_insert_country_states($term, $taxonomy, $args = array()) {
 	return array('term_id' => $term_id, 'term_taxonomy_id' => $tt_id);
 }
 
+/**
+ * Scripts and styles of Fakturo are versioned with the modification time of their file, so a browser never keeps an old copy after an update.
+ */
+function fktr_asset_version($src) {
+	if (strpos($src, FAKTURO_PLUGIN_URL . 'assets/') !== 0) {
+		return $src;
+	}
+	$url = strtok($src, '?');
+	$file = FAKTURO_PLUGIN_DIR . substr($url, strlen(FAKTURO_PLUGIN_URL));
+	$time = is_readable($file) ? filemtime($file) : false;
+	return $time ? add_query_arg('ver', $time, $url) : $src;
+}
+add_filter('script_loader_src', 'fktr_asset_version');
+add_filter('style_loader_src', 'fktr_asset_version');
+
 ?>

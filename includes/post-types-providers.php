@@ -402,10 +402,9 @@ class fktrPostTypeProviders {
 	}
 	
 	public static function get_provider_states() {
+		fktr_guard::ajax('edit_fakturo_dashboard');
 		
-		if (!is_numeric($_POST['country_id'])) {
-			$_POST['country_id']= 0;
-		}
+		$_POST['country_id'] = isset($_POST['country_id']) ? absint($_POST['country_id']) : 0;
 		
 		$selectState = wp_dropdown_categories( array(
 			'show_option_all'    => __('Choose a state', 'fakturo' ),

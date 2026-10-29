@@ -24,6 +24,7 @@ jQuery(document).ready(function($) {
 	jQuery("#selected_country").on("change", function (e) {
 		
 		var data = {
+			fktr_nonce: fktr_ajax_nonce,
 			action: 'get_client_states',
 			country_id: this.value
 		}

@@ -166,12 +166,10 @@ if (!class_exists('fktrPostTypeSales')) :
 		}
 
 		public static function print_invoice() {
-			if (!isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'fktr_sale_action_nonce')) {
-				wp_die('A security issue has occurred.');
-			}
+			$post = fktr_guard::item(sanitize_key($_REQUEST['action']), 'fktr_sale');
 			$object = new stdClass();
 			$object->type = 'post';
-			$object->id = $_REQUEST['id'];
+			$object->id = $post->ID;
 			$object->assgined = 'fktr_sale';
 			if ($object->id) {
 				$id_print_template = fktrPostTypePrintTemplates::get_id_by_assigned($object->assgined);
@@ -282,7 +280,6 @@ if (!class_exists('fktrPostTypeSales')) :
 
 		public static function action_row($actions, $post) {
 			if ($post->post_type == 'fktr_sale') {
-				$action_nonce = wp_create_nonce('fktr_sale_action_nonce');
 				$setting_system = get_option('fakturo_system_options_group', false);
 
 				$sale_data = self::get_sale_data($post->ID);
@@ -290,14 +287,13 @@ if (!class_exists('fktrPostTypeSales')) :
 					unset($actions['trash']);
 					// Replace the original but translated WP text: 'Edit' by 'View' also translated
 					$actions['edit'] = str_replace(__('Edit'), __('View', 'fakturo'), $actions['edit']);
-					$actions['print_invoice'] = '<a href="' . admin_url('admin-post.php?id=' . $post->ID . '&action=print_invoice&nonce=' . $action_nonce) . '" class="btn_print_invoice" target="_new">' . __('Print', 'fakturo') . '</a>';
+					$actions['print_invoice'] = '<a href="' . fktr_guard::url('print_invoice', $post->ID) . '" class="btn_print_invoice" target="_new">' . __('Print', 'fakturo') . '</a>';
 
 					if (empty($actions['send_invoice_to_client'])) {
 
 						$client_data = fktrPostTypeClients::get_client_data($sale_data['client_id']);
 						if (!empty($client_data['email'])) {
-							$url = admin_url('admin-post.php?id=' . $post->ID . '&action=send_invoice_to_client');
-							$url = wp_nonce_url($url, 'send_invoice_to_client', '_wpnonce');
+							$url = fktr_guard::url('send_invoice_to_client', $post->ID);
 							$actions['send_invoice_to_client'] = '<a href="' . $url . '" class="btn_send_invoice">' . __('email to Client', 'fakturo') . '</a>';
 						}
 					}
@@ -316,12 +312,12 @@ if (!class_exists('fktrPostTypeSales')) :
 						$invoice_type = get_fakturo_term($sale_data['invoice_type'], 'fktr_invoice_types');
 						if (!is_wp_error($invoice_type)) {
 							if (!empty($invoice_type->print_on_draft)) {
-								$actions['print_invoice'] = '<a href="' . admin_url('admin-post.php?id=' . $post->ID . '&action=print_invoice&nonce=' . $action_nonce) . '" class="btn_print_invoice" target="_new">' . __('Print', 'fakturo') . '</a>';
+								$actions['print_invoice'] = '<a href="' . fktr_guard::url('print_invoice', $post->ID) . '" class="btn_print_invoice" target="_new">' . __('Print', 'fakturo') . '</a>';
 							}
 						}
 					}
 
-					$actions['invoice_demo'] = '<a href="' . admin_url('admin-post.php?id=' . $post->ID . '&action=print_demo_invoice&nonce=' . $action_nonce) . '" class="btn_print_demo_invoice" target="_new">' . __('Preview', 'fakturo') . '</a>';
+					$actions['invoice_demo'] = '<a href="' . fktr_guard::url('print_demo_invoice', $post->ID) . '" class="btn_print_demo_invoice" target="_new">' . __('Preview', 'fakturo') . '</a>';
 				}
 
 				unset($actions['inline hide-if-no-js']);
@@ -439,6 +435,7 @@ if (!class_exists('fktrPostTypeSales')) :
 			return $product_data;
 		}
 		public static function get_products() {
+			fktr_guard::ajax(array('edit_fktr_sales', 'edit_fktr_products', 'edit_fakturo_settings'));
 			global $wpdb;
 			$search = (isset($_GET['s']) && is_scalar($_GET['s'])) ? wp_unslash((string) $_GET['s']) : '';
 			$search = esc_sql($wpdb->esc_like($search));
@@ -577,11 +574,10 @@ if (!class_exists('fktrPostTypeSales')) :
 		}
 
 		public static function get_client_data() {
-			if (!is_numeric($_POST['client_id'])) {
-				$_POST['client_id'] = 0;
-			}
+			fktr_guard::ajax('edit_fktr_sales');
+			$client_id = fktr_guard::post_id(isset($_POST['client_id']) ? $_POST['client_id'] : 0, 'fktr_client');
 
-			$client_data = fktrPostTypeClients::get_client_data($_POST['client_id']);
+			$client_data = fktrPostTypeClients::get_client_data($client_id);
 
 			$country_name = __('No country', 'fakturo');
 			$country_data = get_fakturo_term($client_data['selected_country'], 'fktr_countries');
@@ -1394,6 +1390,7 @@ if (!class_exists('fktrPostTypeSales')) :
 		}
 
 		public static function ajax_validate_sale() {
+			fktr_guard::ajax('edit_fktr_sales');
 			$setting_system = get_option('fakturo_system_options_group', false);
 			$response = new WP_Ajax_Response;
 			$fields = array();
@@ -1513,15 +1510,11 @@ if (!class_exists('fktrPostTypeSales')) :
 		}
 
 		public static function get_suggest_invoice_number() {
+			fktr_guard::ajax('edit_fktr_sales');
 			$setting_system = get_option('fakturo_system_options_group', false);
-			if (!isset($_POST['sale_point'])) {
-				$_POST['sale_point'] = $setting_system['sale_point'];
-			}
-			if (!isset($_POST['invoice_type'])) {
-				$_POST['invoice_type'] = $setting_system['invoice_type'];
-				;
-			}
-			$suggested = self::suggestInvoiceNumber($_POST['sale_point'], $_POST['invoice_type']);
+			$sale_point = isset($_POST['sale_point']) ? absint($_POST['sale_point']) : $setting_system['sale_point'];
+			$invoice_type = isset($_POST['invoice_type']) ? absint($_POST['invoice_type']) : $setting_system['invoice_type'];
+			$suggested = self::suggestInvoiceNumber($sale_point, $invoice_type);
 			wp_die($suggested);
 		}
 

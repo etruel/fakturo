@@ -106,6 +106,8 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Security: Fakturo sellers can no longer open the Settings or Licenses screens, and saving a client, provider, product, invoice or receipt now checks the permission of that very item.
 * Security: Fakturo managers can only edit, remove or delete users who are managers or sellers, never the site administrator, and can no longer edit files. Managers can now save the Settings screens.
 * Deactivating the plugin takes its permissions away from administrators again, and role changes reach existing sites without waiting for a new version.
+* Security: every AJAX call and link of the admin (print, e-mail, cancel, preview, copy and reset of invoices, receipts and templates) now checks the permission of the user, the item it acts on and a security token that belongs to that item. Cancelling a receipt twice no longer gives the balance back twice.
+* Scripts and styles of the plugin are reloaded by the browser as soon as they change, so an update never leaves old files in the cache.
 
 = 1.0.10 (Oct 23, 2026) =
 * New Add-ons screen: activate, license and manage auto-updates of each add-on from its own row, with bulk actions and live search.

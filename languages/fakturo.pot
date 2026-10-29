@@ -6949,3 +6949,11 @@ msgstr ""
 #: includes/network.php
 msgid "Settings saved."
 msgstr ""
+
+#: includes/libs/fktr_guard.php:41
+msgid "Sorry, you are not allowed to do that."
+msgstr ""
+
+#: includes/libs/fktr_guard.php:58
+msgid "The link has expired. Go back and try again."
+msgstr ""
