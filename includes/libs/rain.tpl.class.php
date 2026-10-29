@@ -827,7 +827,7 @@ class RainTPL{
 
                 // replace back the @double_dot@ with ::
                 $function = str_replace( "@double_dot@", "::", $function );
-                $params = str_replace( "@double_dot@", "::", $params );
+                $params = str_replace( "@double_dot@", "::", (string) $params );
 
 
 			}
@@ -930,7 +930,7 @@ class RainTPL{
 
                                     // replace back the @double_dot@ with ::
                                     $function = str_replace( "@double_dot@", "::", $function );
-                                    $params = str_replace( "@double_dot@", "::", $params );
+                                    $params = str_replace( "@double_dot@", "::", (string) $params );
                             }
                             else
                                     $function = $params = null;
@@ -982,7 +982,7 @@ class RainTPL{
 			// find the line of the error
 			$line = 0;
 			$rows=explode("\n",$this->tpl['source']);
-			while( !strpos($rows[$line],$code) )
+			while( $line < count($rows) - 1 && strpos($rows[$line],$code) === false )
 				$line++;
 
 			// stop the execution of the script

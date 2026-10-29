@@ -6961,3 +6961,16 @@ msgstr ""
 #: includes/settings/settings.php:305
 msgid "The thousands and the decimal separators must be different."
 msgstr ""
+
+#: includes/libs/fktr_tpl.php
+#, php-format
+msgid "This template uses something that is not allowed: %s"
+msgstr ""
+
+#: includes/libs/fktr_tpl.php
+msgid "PHP syntax error"
+msgstr ""
+
+#: includes/post-types-print-templates.php
+msgid "The template is saved but it will not be used until you fix it."
+msgstr ""

@@ -7509,3 +7509,16 @@ msgstr "Los separadores de miles y de decimales deben ser distintos."
 #, php-format
 #~ msgid "Welcome to Fakturo %s"
 #~ msgstr "Bienvenido a Fakturo %s"
+
+#: includes/libs/fktr_tpl.php
+#, php-format
+msgid "This template uses something that is not allowed: %s"
+msgstr "Esta plantilla usa algo que no está permitido: %s"
+
+#: includes/libs/fktr_tpl.php
+msgid "PHP syntax error"
+msgstr "Error de sintaxis PHP"
+
+#: includes/post-types-print-templates.php
+msgid "The template is saved but it will not be used until you fix it."
+msgstr "La plantilla se guardó pero no se usará hasta que la corrijas."

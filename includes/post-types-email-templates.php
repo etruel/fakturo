@@ -127,6 +127,9 @@ class fktrPostTypeEmailTemplates {
 
 			$htmlContent = $tpl->fromString($email_template['content']);
 			$htmlSubject = $tpl->fromString($email_template['subject']);
+			if ($tpl->error) {
+				wp_die(esc_html($tpl->error));
+			}
 			echo '<div style="padding: 15px 10px; font-size: 14px; border-radius: 2px; border: 1px solid #ddd;">'.__('E-mail template', 'fakturo' ).': '.esc_html(get_post_field('post_title', $template_id)).'</div><br/>';
 			echo '<div style="padding: 15px 10px; font-size: 14px; border-radius: 2px; border: 1px solid #ddd;">'.__('E-mail Subject', 'fakturo' ).': ['.$htmlSubject.']</div><br/>';
 			echo '<div style="padding: 15px 10px; font-size: 14px; border-radius: 2px; border: 1px solid #ddd;">'.__('E-mail Body', 'fakturo' ).': ['.$htmlContent.']</div><br/>';
@@ -725,6 +728,13 @@ class fktrPostTypeEmailTemplates {
 				
 			}
 			
+		}
+		foreach (array('content', 'subject') as $tpl_field) {
+			$tpl_error = fktr_tpl::validate((string) get_post_meta($post_id, $tpl_field, true));
+			if ($tpl_error) {
+				fktrNotices::add(array('text' => esc_html($tpl_error) . '. ' . esc_html__('The template is saved but it will not be used until you fix it.', 'fakturo'), 'error' => true));
+				break;
+			}
 		}
 		
 		do_action( 'fktr_save_email_template', $post_id, $post );

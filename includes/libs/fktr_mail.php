@@ -79,6 +79,16 @@ if (!class_exists('fktr_mail')) :
 			$tpl		 = apply_filters('fktr_email_template_assignment', $tpl, $object, false);
 			$mailbody	 = $tpl->fromString($email_template['content']);
 			$subject	 = sanitize_text_field($tpl->fromString($email_template['subject'], false));
+			if ($tpl->error) {
+				if ($notices) {
+					fktrNotices::add(esc_html($tpl->error));
+				}
+				if ($redirect) {
+					wp_redirect(admin_url('edit.php?post_type=fktr_sale'));
+					exit;
+				}
+				return false;
+			}
 			$headers	 = array();
 			$headers[]	 = 'Content-Type: ' . apply_filters('fktr_mail_content_type', 'text/html', self::$sending) . '; charset=' . apply_filters('fktr_mail_charset', 'UTF-8', self::$sending);
 
@@ -98,6 +108,16 @@ if (!class_exists('fktr_mail')) :
 			$tpl_print	 = new fktr_tpl;
 			$tpl_print	 = apply_filters('fktr_print_template_assignment', $tpl_print, $object, false);
 			$html		 = $tpl_print->fromString($print_template['content']);
+			if ($tpl_print->error) {
+				if ($notices) {
+					fktrNotices::add(esc_html($tpl_print->error));
+				}
+				if ($redirect) {
+					wp_redirect(admin_url('edit.php?post_type=fktr_sale'));
+					exit;
+				}
+				return false;
+			}
 
 			$options = [
 				'isRemoteEnabled' => true,
@@ -196,6 +216,14 @@ if (!class_exists('fktr_mail')) :
 			$tpl		 = apply_filters('fktr_email_template_assignment', $tpl, $object, false);
 			$mailbody	 = $tpl->fromString($email_template['content']);
 			$subject	 = sanitize_text_field($tpl->fromString($email_template['subject'], false));
+			if ($tpl->error) {
+				fktrNotices::add(esc_html($tpl->error));
+				if ($redirect) {
+					wp_redirect(admin_url('edit.php?post_type=fktr_receipt'));
+					exit;
+				}
+				return false;
+			}
 			$headers	 = array();
 			$headers[]	 = 'Content-Type: ' . apply_filters('fktr_mail_content_type', 'text/html', self::$sending) . '; charset=' . apply_filters('fktr_mail_charset', 'UTF-8', self::$sending);
 
@@ -213,6 +241,14 @@ if (!class_exists('fktr_mail')) :
 			$tpl_print	 = new fktr_tpl;
 			$tpl_print	 = apply_filters('fktr_print_template_assignment', $tpl_print, $object, false);
 			$html		 = $tpl_print->fromString($print_template['content']);
+			if ($tpl_print->error) {
+				fktrNotices::add(esc_html($tpl_print->error));
+				if ($redirect) {
+					wp_redirect(admin_url('edit.php?post_type=fktr_receipt'));
+					exit;
+				}
+				return false;
+			}
 			$pdf		 = fktr_pdf::getInstance();
 			try {
 				$pdf->getOptions()->set('isRemoteEnabled', true);

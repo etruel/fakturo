@@ -103,6 +103,9 @@ class fktrPostTypeReceipts {
         $tpl = new fktr_tpl;
         $tpl = apply_filters('fktr_print_template_assignment', $tpl, $object, false);
         $html = $tpl->fromString($print_template['content']);
+        if ($tpl->error) {
+            wp_die(esc_html($tpl->error));
+        }
 
         if (isset($_REQUEST['pdf'])) {
             // Si se solicita el PDF

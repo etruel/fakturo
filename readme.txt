@@ -115,6 +115,8 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Security: client, provider, product, invoice and settings data is escaped when it is shown in the edit screens, lists, reports, PDFs and e-mails, so text with quotes or HTML can no longer break a form or run code in another user's session.
 * Invoices keep the client name exactly as typed when it contains quotes.
 * A receipt number with letters no longer breaks the new receipt screen.
+* Print and e-mail templates can only call an approved list of functions; anything else is rejected with a message when the template is saved, printed or sent, and the include tag is disabled.
+* PDFs only load images and styles from the site's own address.
 
 = 1.0.10 (Oct 23, 2026) =
 * New Add-ons screen: activate, license and manage auto-updates of each add-on from its own row, with bulk actions and live search.

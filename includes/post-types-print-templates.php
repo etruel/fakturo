@@ -421,6 +421,9 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				$tpl	 = new fktr_tpl;
 				$tpl	 = apply_filters('fktr_print_template_assignment', $tpl, $object, $print_template);
 				$html	 = $tpl->fromString($print_template['content']);
+				if ($tpl->error) {
+					wp_die(esc_html($tpl->error));
+				}
 				if (isset($_REQUEST['pdf'])) {
 					$pdf = fktr_pdf::getInstance();
 
@@ -957,6 +960,10 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 					$new = apply_filters('fktr_print_template_metabox_save_' . $field, $value);  //filtra cada campo antes de grabar
 					update_post_meta($post_id, $field, $new);
 				}
+			}
+			$tpl_error = fktr_tpl::validate((string) get_post_meta($post_id, 'content', true));
+			if ($tpl_error) {
+				fktrNotices::add(array('text' => esc_html($tpl_error) . '. ' . esc_html__('The template is saved but it will not be used until you fix it.', 'fakturo'), 'error' => true));
 			}
 
 			do_action('fktr_save_print_template', $post_id, $post);
