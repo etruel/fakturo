@@ -6957,3 +6957,7 @@ msgstr ""
 #: includes/libs/fktr_guard.php:58
 msgid "The link has expired. Go back and try again."
 msgstr ""
+
+#: includes/settings/settings.php:305
+msgid "The thousands and the decimal separators must be different."
+msgstr ""

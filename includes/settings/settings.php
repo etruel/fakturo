@@ -23,6 +23,10 @@ class fktrSettings {
 		add_action('admin_print_styles', array('fktrSettings', 'styles'));
 		add_action('wp_ajax_get_states', array('fktrSettings', 'get_states'));
 		add_filter('option_fakturo_system_options_group', array(__CLASS__, 'fix_date_format'));
+		add_filter('option_fakturo_system_options_group', array(__CLASS__, 'complete_system_options'));
+		add_filter('default_option_fakturo_system_options_group', array(__CLASS__, 'system_defaults_option'));
+		add_filter('option_fakturo_info_options_group', array(__CLASS__, 'complete_info_options'));
+		add_filter('default_option_fakturo_info_options_group', array(__CLASS__, 'info_defaults_option'));
 	}
 
 	/**
@@ -118,72 +122,97 @@ class fktrSettings {
 		
 		
 	}
+	/**
+	 * Values of the company info for a site that has not saved them yet.
+	 */
+	public static function info_defaults() {
+		$values = array();
+		$values['name'] = '';
+		$values['taxpayer'] = '';
+		$values['tax'] = '';
+		$values['start'] = '';
+		$values['address'] = '';
+		$values['telephone'] = '';
+		$values['postcode'] = '';
+		$values['city'] = '';
+		$values['state'] = '';
+		$values['country'] = '';
+		$values['tax_condition'] = '';
+		$values['website'] = '';
+		$values['url'] = FAKTURO_PLUGIN_URL . 'assets/images/etruel-logo.png';
+		return apply_filters('fktr_info_options_init', $values);
+	}
+
+	/**
+	 * Values of the system settings for a site that has not saved them yet.
+	 */
+	public static function system_defaults() {
+		$values = array();
+		$values['currency'] = 0;
+		$values['currency_position'] = 'before';
+		$values['tax'] = 0;
+		$values['thousand'] = ',';
+		$values['decimal'] = '.';
+		$values['decimal_numbers'] = '2';
+		$values['invoice_type'] = -1;
+		$values['price_scale'] = -1;
+		$values['use_stock_product'] = 0;
+		$values['stock_less_zero'] = 0;
+		$values['sale_point'] = 0;
+		$values['digits_invoice_number'] = 8;
+		$values['list_invoice_number'] = array('sale_point', 'invoice_number');
+		$values['list_invoice_number_separator'] = ' ';
+		$values['individual_numeration_by_invoice_type'] = 1;
+		$values['individual_numeration_by_sale_point'] = 1;
+		$values['digits_receipt_number'] = 8;
+		$values['search_code'] = array('reference');
+		$values['default_code'] = 'reference';
+		$values['default_description'] = 'short_description';
+		$values['dateformat'] = 'd/m/Y';
+		$values['payment_type'] = 0;
+		$values['bank_entity'] = 0;
+		$values['commissions_for_salespeople'] = 0;
+		return apply_filters('fktr_system_options_init', $values);
+	}
+
+	public static function info_defaults_option() {
+		return self::info_defaults();
+	}
+
+	public static function system_defaults_option() {
+		return self::system_defaults();
+	}
+
+	/**
+	 * Every reader of the settings gets all the keys, also on a new site or when a later version added one.
+	 */
+	public static function complete_info_options($options) {
+		return array_merge(self::info_defaults(), is_array($options) ? $options : array());
+	}
+
+	public static function complete_system_options($options) {
+		return array_merge(self::system_defaults(), is_array($options) ? $options : array());
+	}
+
 	public static function register_settings() {
 		register_setting(
 			'fakturo-settings',  // settings section
-			'fakturo_info_options_group' // setting name
+			'fakturo_info_options_group', // setting name
+			array('sanitize_callback' => array(__CLASS__, 'sanitize_info_option'))
 		);
-		$value = get_option('fakturo_info_options_group', false);
+		add_option('fakturo_info_options_group', self::info_defaults());
 
-		if ($value===false) {
-			$values = array();
-			$values['name'] = '';
-			$values['taxpayer'] = '';
-			$values['tax'] = '';
-			$values['start'] = '';
-			$values['address'] = '';
-			$values['telephone'] = '';
-			$values['postcode'] = '';
-			$values['city'] = '';
-			$values['state'] = '';
-			$values['country'] = '';
-			$values['tax_condition'] = '';
-			$values['website'] = '';
-			$values['url'] = FAKTURO_PLUGIN_URL . 'assets/images/etruel-logo.png';
-			$values = apply_filters('fktr_info_options_init', $values);
-			update_option('fakturo_info_options_group' , $values);
-		} 
-		
 		register_setting(
 			'fakturo-settings-system',  // settings section
-			'fakturo_system_options_group' // setting name
+			'fakturo_system_options_group', // setting name
+			array('sanitize_callback' => array(__CLASS__, 'sanitize_system_option'))
 		);
-		$value_system = get_option('fakturo_system_options_group', false);
-		
-		if ($value_system===false) {
-			$value_system = array();
-			$value_system['currency'] = 0;
-			$value_system['currency_position'] = 'before';
-			$value_system['tax'] = '';
-			$value_system['thousand'] = ',';
-			$value_system['decimal'] = '.';
-			$value_system['decimal_numbers'] = '2';
-			$value_system['invoice_type'] = -1;
-			$value_system['price_scale'] = -1;
-			$value_system['use_stock_product'] = 0;
-			$value_system['stock_less_zero'] = 0;
-			$value_system['sale_point'] = 0;
-			$value_system['digits_invoice_number'] = 8;
-			$value_system['list_invoice_number'] = array('sale_point', 'invoice_number');
-			$value_system['list_invoice_number_separator'] = ' ';
-			$value_system['individual_numeration_by_invoice_type'] = 1;
-			$value_system['individual_numeration_by_sale_point'] = 1;
-			$value_system['digits_receipt_number'] = 8;
-			$value_system['search_code'] = array('reference');
-			$value_system['default_code'] = 'reference';
-			$value_system['default_description'] = 'short_description';
-			$value_system['dateformat'] = 'd/m/Y';
-			$value_system['payment_type'] = 0;
-			$value_system['bank_entity'] = 0;
-			$value_system['tax'] = 0;
-			
-			
-			$value_system = apply_filters('fktr_system_options_init', $value_system);
-			update_option('fakturo_system_options_group' , $value_system);
-		}
+		add_option('fakturo_system_options_group', self::system_defaults());
+
 		register_setting(
 			'fakturo-settings-dashboard',  // settings section
-			'fakturo_dashboard_options_group' // setting name
+			'fakturo_dashboard_options_group', // setting name
+			array('sanitize_callback' => array(__CLASS__, 'sanitize_dashboard_option'))
 		);
 		$value_dashboard = get_option('fakturo_dashboard_options_group', array());
 		if (empty($value_dashboard)) {
@@ -194,25 +223,142 @@ class fktrSettings {
 		}
 
 	}
-	public static function sanitize_info_option( $input ) {
-        $new_input = array();
-        
-        $new_input['name'] = ( !empty( $input['name'] ) ? $input['name']  : '' );
-        $new_input['taxpayer'] = ( !empty( $input['taxpayer'] ) ? $input['taxpayer']  : '' );
-        $new_input['tax'] = ( !empty( $input['tax'] ) ? $input['tax']  : '' );
-		$new_input['start'] = ( !empty( $input['start'] ) ? $input['start']  : '' );
-		$new_input['address'] = ( !empty( $input['address'] ) ? $input['address']  : '' );
-		$new_input['telephone'] = ( !empty( $input['telephone'] ) ? $input['telephone']  : '' );
-		$new_input['postcode'] = ( !empty( $input['postcode'] ) ? $input['postcode']  : '' );
-		$new_input['city'] = ( !empty( $input['city'] ) ? $input['city']  : '' );
-		$new_input['state'] = ( !empty( $input['state'] ) ? $input['state']  : '' );
-		$new_input['country'] = ( !empty( $input['country'] ) ? $input['country']  : '' );
-		$new_input['tax_condition'] = ( !empty( $input['tax_condition'] ) ? $input['tax_condition']  : '' );
-		$new_input['website'] = ( !empty( $input['website'] ) ? $input['website']  : '' );
-		$new_input['url'] = ( !empty( $input['url'] ) ? $input['url']  : FAKTURO_PLUGIN_URL . 'assets/images/etruel-logo.png' );
-		       
-        return $new_input;
-    }	
+
+	/**
+	 * True when the value comes from the Settings form of that group, where an unchecked checkbox is not sent.
+	 */
+	private static function is_form($page) {
+		return isset($_POST['option_page']) && $_POST['option_page'] === $page;
+	}
+
+	/**
+	 * A term id: a number (-1 is the "Choose..." option) or empty.
+	 */
+	private static function term_id($value) {
+		return (is_scalar($value) && is_numeric($value)) ? (int) $value : '';
+	}
+
+	private static function key_list($value) {
+		return array_values(array_unique(array_filter(array_map('sanitize_key', (array) $value), 'strlen')));
+	}
+
+	public static function sanitize_info_option($input) {
+		$old = get_option('fakturo_info_options_group', array());
+		if (!is_array($input)) {
+			return $old;
+		}
+		$new = $old;
+		foreach (array('name', 'taxpayer', 'tax', 'start', 'telephone', 'postcode', 'city') as $key) {
+			if (isset($input[$key])) {
+				$new[$key] = sanitize_text_field($input[$key]);
+			}
+		}
+		if (isset($input['address'])) {
+			$new['address'] = sanitize_textarea_field($input['address']);
+		}
+		foreach (array('country', 'state', 'tax_condition') as $key) {
+			if (isset($input[$key])) {
+				$new[$key] = self::term_id($input[$key]);
+			}
+		}
+		if (isset($input['website'])) {
+			$new['website'] = esc_url_raw(trim($input['website']));
+		}
+		if (isset($input['url'])) {
+			$new['url'] = esc_url_raw(trim($input['url']));
+			if ($new['url'] === '') {
+				$new['url'] = FAKTURO_PLUGIN_URL . 'assets/images/etruel-logo.png';
+			}
+		}
+		return apply_filters('fktr_sanitize_info_options', $new, $input, $old);
+	}
+
+	public static function sanitize_system_option($input) {
+		$old = get_option('fakturo_system_options_group', array());
+		if (!is_array($input)) {
+			return $old;
+		}
+		$new = $old;
+		$form = self::is_form('fakturo-settings-system');
+
+		foreach (array('currency', 'payment_type', 'bank_entity', 'sale_point', 'invoice_type', 'price_scale', 'tax') as $key) {
+			if (isset($input[$key])) {
+				$new[$key] = (int) self::term_id($input[$key]);
+			}
+		}
+		if (isset($input['currency_position'])) {
+			$new['currency_position'] = ($input['currency_position'] === 'after') ? 'after' : 'before';
+		}
+		foreach (array('thousand', 'decimal') as $key) {
+			if (isset($input[$key])) {
+				$sign = substr(sanitize_text_field($input[$key]), 0, 1);
+				$new[$key] = ($sign === false || $sign === '' || ctype_digit($sign)) ? $old[$key] : $sign;
+			}
+		}
+		if ($new['thousand'] === $new['decimal']) {
+			$new['thousand'] = $old['thousand'];
+			$new['decimal'] = $old['decimal'];
+			if ($new['thousand'] === $new['decimal']) {
+				$new['thousand'] = ',';
+				$new['decimal'] = '.';
+			}
+			add_settings_error('fakturo_system_options_group', 'fktr_separators', __('The thousands and the decimal separators must be different.', 'fakturo'));
+		}
+		if (isset($input['decimal_numbers'])) {
+			$new['decimal_numbers'] = (string) min(9, max(0, (int) $input['decimal_numbers']));
+		}
+		foreach (array('digits_invoice_number', 'digits_receipt_number') as $key) {
+			if (isset($input[$key])) {
+				$new[$key] = min(20, max(2, (int) $input[$key]));
+			}
+		}
+		foreach (array('use_stock_product', 'stock_less_zero', 'individual_numeration_by_invoice_type', 'individual_numeration_by_sale_point', 'commissions_for_salespeople') as $key) {
+			if (isset($input[$key])) {
+				$new[$key] = empty($input[$key]) ? 0 : 1;
+			} elseif ($form) {
+				$new[$key] = 0;
+			}
+		}
+		foreach (array('list_invoice_number', 'search_code') as $key) {
+			if (isset($input[$key])) {
+				$new[$key] = self::key_list($input[$key]);
+			} elseif ($form) {
+				$new[$key] = array();
+			}
+		}
+		foreach (array('default_code', 'default_description') as $key) {
+			if (isset($input[$key]) && sanitize_key($input[$key]) !== '') {
+				$new[$key] = sanitize_key($input[$key]);
+			}
+		}
+		if (isset($input['dateformat']) && isset(self::date_formats()[$input['dateformat']])) {
+			$new['dateformat'] = $input['dateformat'];
+		}
+		if (isset($input['list_invoice_number_separator'])) {
+			$new['list_invoice_number_separator'] = substr(str_replace(array('<', '>', '"', "'"), '', (string) $input['list_invoice_number_separator']), 0, 5);
+		}
+		return apply_filters('fktr_sanitize_system_options', $new, $input, $old);
+	}
+
+	public static function sanitize_dashboard_option($input) {
+		$old = get_option('fakturo_dashboard_options_group', array());
+		if (!is_array($input)) {
+			return $old;
+		}
+		$new = is_array($old) ? $old : array();
+		$new['show_dialer'] = !empty($input['show_dialer']);
+		$new['show_dialer_wp'] = !empty($input['show_dialer_wp']);
+		if (isset($input['dialer'])) {
+			$allowed = array_map('strval', array_keys(fktr_get_dialer_options()));
+			$new['dialer'] = array();
+			foreach (array_slice((array) $input['dialer'], 0, 7) as $item) {
+				$item = is_scalar($item) ? (string) $item : '0';
+				$new['dialer'][] = in_array($item, $allowed, true) ? $item : '0';
+			}
+		}
+		return $new;
+	}
+
 	public static function fakturo_settings_dashboard() {
             global $current_screen;
             $options = get_option('fakturo_dashboard_options_group');
@@ -264,12 +410,11 @@ class fktrSettings {
         public static function fakturo_settings() {  
 		global $current_screen;
 		
-		$options = self::sanitize_info_option( get_option('fakturo_info_options_group', array()) );
+		$options = get_option('fakturo_info_options_group', array());
 
 		if (empty($options['url'])) {
 			$options['url'] = FAKTURO_PLUGIN_URL . 'assets/images/etruel-logo.png';
 		}
-		update_option('fakturo_info_options_group' , $options);
 		$selectTaxCondition = wp_dropdown_categories( array(
 			'show_option_all'    => '',
 			'show_option_none'   => __('Choose a Tax Condition', 'fakturo' ),
@@ -565,8 +710,6 @@ class fktrSettings {
 			$options['tax'] = 0;
 		}
 		
-
-		update_option('fakturo_system_options_group' , $options);
 
 
 		$selectTax = wp_dropdown_categories( array(

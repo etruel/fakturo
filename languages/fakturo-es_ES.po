@@ -7479,6 +7479,10 @@ msgstr "Lo siento, no tienes permiso para hacer eso."
 msgid "The link has expired. Go back and try again."
 msgstr "El enlace ha caducado. Vuelve atrás e inténtalo de nuevo."
 
+#: includes/settings/settings.php:305
+msgid "The thousands and the decimal separators must be different."
+msgstr "Los separadores de miles y de decimales deben ser distintos."
+
 #~ msgid "Save as PDF"
 #~ msgstr "Guardar PDF"
 
