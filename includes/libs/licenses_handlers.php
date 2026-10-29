@@ -18,7 +18,7 @@ class fktr_licenses_handlers {
 	const SCREEN		 = 'admin_page_fakturo-license-page';
 	const SLUG			 = 'fakturo-license-page';
 	const NONCE			 = 'fktr_licenses';
-	const CAPABILITY	 = 'edit_fakturo_settings';
+	const CAPABILITY	 = 'manage_options';
 	const CHECK_EVERY	 = 12 * HOUR_IN_SECONDS;
 	const ACCOUNT_URL	 = 'https://etruel.com/my-account/purchase-history/';
 	const CHECKOUT_URL	 = 'https://etruel.com/checkout/';

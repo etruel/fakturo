@@ -1096,8 +1096,8 @@ class fktrSettings {
 			))
 		);
 		
-		// In a network the licenses are managed from the network admin.
-		if (is_multisite()) {
+		// In a network the licenses are managed from the network admin, otherwise only by who can manage the site.
+		if (is_multisite() || !current_user_can(fktr_licenses_handlers::CAPABILITY)) {
 			unset($sections_tabs['licenses']);
 		}
 

@@ -172,7 +172,7 @@ class fktrAdminMenu {
 				'',
 				__( 'Settings', 'fakturo' ),
 				__( 'Settings', 'fakturo' ),
-				'edit_fakturo_settings',
+				fktr_licenses_handlers::CAPABILITY,
 				'fakturo-license-page',
 				array('fktr_licenses_handlers','license_page')
 			);

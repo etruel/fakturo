@@ -80,13 +80,8 @@ class fktrUsersList {
 	}
 
 	public static function just_plugin_roles($editable_roles){
-		global $pagenow,$wp_query,$current_user;
-		if ( !is_admin() || (!$pagenow=='user-new.php' && !$pagenow=='user-edit.php') ) 
-			return $editable_roles;
-		$fakturo_role = (current_user_can('fakturo_manager') || current_user_can('fakturo_seller')) && !is_super_admin();
-		if($fakturo_role){
-			$fakturo_roles = array('fakturo_manager','fakturo_seller');
-			$editable_roles= array_intersect_key( $editable_roles, array_flip($fakturo_roles) );
+		if (fktrUserRoles::is_team_user(get_current_user_id())) {
+			$editable_roles = array_intersect_key($editable_roles, array_flip(array('fakturo_manager','fakturo_seller')));
 		}
 		return $editable_roles;
 	}
@@ -95,8 +90,7 @@ class fktrUsersList {
 		global $pagenow,$wp_query,$current_user;
 
 		if ( is_admin() && $pagenow=='users.php' ) {
-			$fakturo_role = (current_user_can('fakturo_manager') || current_user_can('fakturo_seller')) && !is_super_admin();
-			if($fakturo_role){
+			if(fktrUserRoles::is_team_user(get_current_user_id())){
 				global $wpdb;
 				$fakturo_roles = array('fakturo_manager','fakturo_seller');
 				if( $query->get('role')=="" ) {

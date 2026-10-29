@@ -872,7 +872,7 @@ if (!class_exists('fktrPostTypeProducts')) :
 			if (isset($post->post_type) && $post->post_type == 'revision' || $post->post_type != 'fktr_product') {
 				return false;
 			}
-			if (!current_user_can('edit_fakturo_settings', $post_id)) {
+			if (!current_user_can('edit_post', $post_id)) {
 				return false;
 			}
 			if (( defined('FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION)) {

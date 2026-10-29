@@ -21,6 +21,12 @@ class fktr_version {
 			}
 			
 		}
+		if ((int) get_option('fktr_roles_revision', 0) < fktrUserRoles::REVISION) {
+			update_option('fktr_roles_revision', fktrUserRoles::REVISION);
+			if (version_compare($current_version, WPE_FAKTURO_VERSION, '>=')) {
+				fktrUserRoles::regenerate(true);
+			}
+		}
 	}
 }
 fktr_version::hooks();

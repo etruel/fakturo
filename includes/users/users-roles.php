@@ -12,6 +12,8 @@
 	
 	if (!class_exists( 'fktrUserRoles' ) ) :
 	class fktrUserRoles {
+		// Raise it when the capabilities of the roles change: fktr_version regenerates the roles of the sites that have an older one.
+		const REVISION = 2;
 		//Plugin capabilities
 		private static $fakturo_manager_caps = array ();
 		private static $fakturo_seller_caps = array ();
@@ -24,7 +26,6 @@
 				'edit_fakturo_dashboard' => true,
 				'read' => true,
 				'upload_files' => true,
-				'edit_files' => true,
 				
 				'remove_users' => true,
 				'add_users' => true,
@@ -98,12 +99,10 @@
 		public static function get_fakturo_seller_caps(){ 
 			self::$fakturo_seller_caps = array (
 			// clients capabilities here
-			'edit_fakturo_settings' => true,
 			'edit_fakturo_dashboard' => true,
 			
 			'read' => true,
 			'upload_files' => true,
-			'edit_files' => true,
 			'list_users' => true,
 			
 			
@@ -133,47 +132,46 @@
 		}
 		
 		
-		public static function fakturo_map_meta_caps( $caps, $cap, $user_id, $args ) {
-			global $post;
-			//		if( is_null($post) ) return $caps;
-			/* If editing, deleting, or reading a fktr_product, get the post and post type object. */
-			if ( 'edit_fktr_product' == $cap || 'delete_fktr_product' == $cap || 'read_fktr_product' == $cap ) {
-				//$post = get_post($args[0]);
-				$post_type = get_post_type_object( $post->post_type );
-				
-				/* Set an empty array for the caps. */
-				$caps = array();
+		/**
+		 * Capabilities that WordPress gives to administrators on its own: never taken away from them.
+		 */
+		private static function core_caps() {
+			return array('read','upload_files','edit_files','manage_options',
+				'promote_users','remove_users','add_users','edit_users',
+				'list_users','create_users','delete_users');
+		}
+
+		/**
+		 * A Fakturo manager or seller who is not an administrator: the team members of a site.
+		 */
+		public static function is_team_user($user_id) {
+			return (user_can($user_id, 'fakturo_manager') || user_can($user_id, 'fakturo_seller'))
+				&& !user_can($user_id, 'manage_options') && !is_super_admin($user_id);
+		}
+
+		/**
+		 * A team user can only act on users who have no other role than the Fakturo ones.
+		 */
+		public static function map_user_caps($caps, $cap, $user_id, $args) {
+			if (!in_array($cap, array('edit_user', 'delete_user', 'remove_user', 'promote_user'), true) || empty($args[0])) {
+				return $caps;
 			}
-			
-			/* If editing a edit_fktr_product, assign the required capability. */
-			if ( 'edit_fktr_product' == $cap ) {
-				if ( $user_id == $post->post_author )
-				$caps[] = $post_type->cap->edit_posts;
-				else
-				$caps[] = $post_type->cap->edit_others_posts;
+			$target_id = (int) $args[0];
+			if ($target_id === (int) $user_id || !self::is_team_user($user_id)) {
+				return $caps;
 			}
-			
-			/* If deleting a fktr_product, assign the required capability. */
-			elseif ( 'delete_fktr_product' == $cap ) {
-				if ( $user_id == $post->post_author )
-				$caps[] = $post_type->cap->delete_posts;
-				else
-				$caps[] = $post_type->cap->delete_others_posts;
+			$target = get_userdata($target_id);
+			if (!$target || empty($target->roles) || is_super_admin($target_id) || array_diff($target->roles, array('fakturo_manager', 'fakturo_seller'))) {
+				return array('do_not_allow');
 			}
-			
-			/* If reading a private fktr_product, assign the required capability. */
-			elseif ( 'read_fktr_product' == $cap ) {
-				
-				if ( 'private' != $post->post_status )
-				$caps[] = 'read';
-				elseif ( $user_id == $post->post_author )
-				$caps[] = 'read';
-				else
-				$caps[] = $post_type->cap->read_private_posts;
-			}
-			
-			/* Return the capabilities required by the user. */
 			return $caps;
+		}
+
+		/**
+		 * Settings forms go through options.php, which asks for manage_options unless told otherwise.
+		 */
+		public static function settings_capability() {
+			return 'edit_fakturo_settings';
 		}
 		
 		
@@ -183,6 +181,10 @@
 			add_action('deactivated_plugin', array( __CLASS__,'deactivate' ), 10, 2 );
 			
 			add_filter('login_redirect', array( __CLASS__ ,'fakturo_login_redirect'), 10, 3);
+			add_filter('map_meta_cap', array( __CLASS__, 'map_user_caps'), 10, 4);
+			foreach (array('fakturo-settings', 'fakturo-settings-system', 'fakturo-settings-dashboard') as $option_page) {
+				add_filter('option_page_capability_' . $option_page, array( __CLASS__, 'settings_capability'));
+			}
 			
 			add_action('admin_init', array( __CLASS__,'admin_init' ), 10 );
 		}
@@ -199,8 +201,6 @@
 				add_action('wp_dashboard_setup',  array( __CLASS__, 'remove_dashboard_widgets' ));
 				//Remove Media Wordpress menu
 				add_action( 'admin_menu', array( __CLASS__, 'remove_menus' ) );
-				
-				//			add_filter( 'map_meta_cap', array( __CLASS__, 'fakturo_map_meta_caps'), 99, 4 );
 			}
 		}
 		
@@ -242,7 +242,6 @@
 			//Add capabilities to admin (if don't want to allow admins to edits Seller events can be disabled from Settings ;-)
 			foreach(self::$fakturo_manager_caps as $key => $value) {
 				$wp_roles->add_cap( 'administrator', $key, $value );
-				$wp_roles->add_cap( 'super', $key, $value );
 			}
 		}
 		
@@ -254,12 +253,10 @@
 			}
 			remove_role( 'fakturo_manager'); 
 			remove_role( 'fakturo_seller'); 
-			foreach(self::$fakturo_manager_caps as $key => $value) {
-				$adm_cap = array('read','upload_files','edit_files','manage_options',
-				'promote_users','remove_users','add_users','edit_users',
-				'list_users','create_users','delete_users',);
-				if(!in_array($key, $adm_cap )){
-					$wp_roles->remove_cap( 'administrator', $key, $value );
+			$manager_caps = array_merge((array) get_option('fktr_last_mananger_caps', array()), self::get_fakturo_manager_caps());
+			foreach($manager_caps as $key => $value) {
+				if(!in_array($key, self::core_caps())){
+					$wp_roles->remove_cap( 'administrator', $key );
 				}
 			}
 		}
@@ -275,11 +272,8 @@
 			}
 			
 			foreach($fktr_last_mananger_caps as $key => $value) {
-				$adm_cap = array('read','upload_files','edit_files','manage_options',
-				'promote_users','remove_users','add_users','edit_users',
-				'list_users','create_users','delete_users',);
-				if(!in_array($key, $adm_cap )) {
-					$wp_roles->remove_cap( 'administrator', $key, $value );
+				if(!in_array($key, self::core_caps())) {
+					$wp_roles->remove_cap( 'administrator', $key );
 				}
 			}
 			
