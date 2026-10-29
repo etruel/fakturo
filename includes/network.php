@@ -16,6 +16,7 @@ class fktrNetwork {
 	const LICENSES_SLUG	 = 'fakturo-network-licenses';
 	const OPTION		 = 'fktr_network_defaults';
 	const HIDE_MAIN		 = 'fktr_network_hide_main';
+	const WIZARD		 = 'fktr_network_new_site_wizard';
 	const NONCE			 = 'fktr_network_defaults';
 
 	public static function hooks() {
@@ -140,6 +141,12 @@ class fktrNetwork {
 		echo '<table class="form-table" role="presentation"><tr><th scope="row">' . esc_html__('Fakturo on the main site', 'fakturo') . '</th><td><label><input name="hide_main" type="checkbox" value="1"' . checked(1, (int) get_site_option(self::HIDE_MAIN), false) . '/> ' . esc_html__('Do not show Fakturo on the main site', 'fakturo') . '</label>
 				<p class="description">' . esc_html__('Hides the Fakturo menus and its widget on the main site of the network. Fakturo and its add-ons stay active there so the licenses can be managed from this network admin.', 'fakturo') . '</p></td></tr></table>';
 
+		echo '<table class="form-table" role="presentation"><tr><th scope="row">' . esc_html__('Setup wizard', 'fakturo') . '</th><td><label><input name="new_site_wizard" type="checkbox" value="1"' . checked(1, (int) get_site_option(self::WIZARD, 1), false) . '/> ' . esc_html__('Take the administrator of every new site to the setup wizard on the first visit', 'fakturo') . '</label></td></tr>';
+		if (!get_site_option('add_new_users')) {
+			echo '<tr><th scope="row">' . esc_html__('Users of the sites', 'fakturo') . '</th><td><p class="description">' . sprintf(esc_html__('Site administrators and Fakturo managers cannot create new users because "Add New Users" is off in %s.', 'fakturo'), '<a href="' . esc_url(network_admin_url('settings.php')) . '">' . esc_html__('Network Settings', 'fakturo') . '</a>') . '</p></td></tr>';
+		}
+		echo '</table>';
+
 		echo '<h2 class="title">' . esc_html__('Default values for new sites', 'fakturo') . '</h2>';
 		echo '<p>' . esc_html__('The Fakturo of every new site of the network starts with these values. Sites that are already set up keep their own settings.', 'fakturo') . '</p>';
 		echo '<table class="form-table" role="presentation">';
@@ -207,6 +214,7 @@ class fktrNetwork {
 		} else {
 			update_site_option(self::OPTION, $new);
 			update_site_option(self::HIDE_MAIN, empty($post['hide_main']) ? 0 : 1);
+			update_site_option(self::WIZARD, empty($post['new_site_wizard']) ? 0 : 1);
 			self::notice(__('Settings saved.', 'fakturo'));
 		}
 		wp_safe_redirect(self::page_url());

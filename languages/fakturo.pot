@@ -6974,3 +6974,24 @@ msgstr ""
 #: includes/post-types-print-templates.php
 msgid "The template is saved but it will not be used until you fix it."
 msgstr ""
+
+#: includes/network.php
+msgid "Setup wizard"
+msgstr ""
+
+#: includes/network.php
+msgid "Take the administrator of every new site to the setup wizard on the first visit"
+msgstr ""
+
+#: includes/network.php
+msgid "Users of the sites"
+msgstr ""
+
+#: includes/network.php
+#, php-format
+msgid "Site administrators and Fakturo managers cannot create new users because \"Add New Users\" is off in %s."
+msgstr ""
+
+#: includes/network.php
+msgid "Network Settings"
+msgstr ""

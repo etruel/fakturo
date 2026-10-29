@@ -7522,3 +7522,24 @@ msgstr "Error de sintaxis PHP"
 #: includes/post-types-print-templates.php
 msgid "The template is saved but it will not be used until you fix it."
 msgstr "La plantilla se guardó pero no se usará hasta que la corrijas."
+
+#: includes/network.php
+msgid "Setup wizard"
+msgstr "Asistente de configuración"
+
+#: includes/network.php
+msgid "Take the administrator of every new site to the setup wizard on the first visit"
+msgstr "Llevar al administrador de cada sitio nuevo al asistente de configuración en su primera visita"
+
+#: includes/network.php
+msgid "Users of the sites"
+msgstr "Usuarios de los sitios"
+
+#: includes/network.php
+#, php-format
+msgid "Site administrators and Fakturo managers cannot create new users because \"Add New Users\" is off in %s."
+msgstr "Los administradores de sitio y los gerentes de Fakturo no pueden crear usuarios nuevos porque «Añadir nuevos usuarios» está desactivado en %s."
+
+#: includes/network.php
+msgid "Network Settings"
+msgstr "Ajustes de la red"

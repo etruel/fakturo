@@ -82,6 +82,7 @@ class fakturo {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/fktr_popup_taxonomy.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/libs/licenses_handlers.php';
 		require_once FAKTURO_PLUGIN_DIR . 'includes/network.php';
+		require_once FAKTURO_PLUGIN_DIR . 'includes/site-setup.php';
 
 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/wizard_install.php'; 

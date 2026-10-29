@@ -117,6 +117,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 * A receipt number with letters no longer breaks the new receipt screen.
 * Print and e-mail templates can only call an approved list of functions; anything else is rejected with a message when the template is saved, printed or sent, and the include tag is disabled.
 * PDFs only load images and styles from the site's own address.
+* In a network, a new site is ready the moment Fakturo is switched on in it: roles and permissions exist before anybody signs in and its administrator lands on the setup wizard (the network can turn that off in Global settings).
 
 = 1.0.10 (Oct 23, 2026) =
 * New Add-ons screen: activate, license and manage auto-updates of each add-on from its own row, with bulk actions and live search.
