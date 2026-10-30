@@ -172,6 +172,7 @@ class fktrSettings {
 		$values['payment_type'] = 0;
 		$values['bank_entity'] = 0;
 		$values['commissions_for_salespeople'] = 0;
+		$values['delete_data_on_uninstall'] = 0;
 		return apply_filters('fktr_system_options_init', $values);
 	}
 
@@ -312,7 +313,7 @@ class fktrSettings {
 				$new[$key] = min(20, max(2, (int) $input[$key]));
 			}
 		}
-		foreach (array('use_stock_product', 'stock_less_zero', 'individual_numeration_by_invoice_type', 'individual_numeration_by_sale_point', 'commissions_for_salespeople') as $key) {
+		foreach (array('use_stock_product', 'stock_less_zero', 'individual_numeration_by_invoice_type', 'individual_numeration_by_sale_point', 'commissions_for_salespeople', 'delete_data_on_uninstall') as $key) {
 			if (isset($input[$key])) {
 				$new[$key] = empty($input[$key]) ? 0 : 1;
 			} elseif ($form) {
@@ -1177,6 +1178,14 @@ class fktrSettings {
 								 	 '. __( 'Choose your default Tax.', 'fakturo' ) .' 
 							      </p>
 						</td>
+					  </tr>
+					  <tr>
+							<th>'. __( 'Delete data on uninstall', 'fakturo' ) .'</th>
+							<td class="italic-label">
+								<input id="fakturo_system_options_group_delete_data_on_uninstall" class="slidercheck" type="checkbox" name="fakturo_system_options_group[delete_data_on_uninstall]" value="1" '.checked($options['delete_data_on_uninstall'], 1, false).'>
+								<label for="fakturo_system_options_group_delete_data_on_uninstall"><span class="ui"></span>'. __( 'Delete all the data of this site (invoices, receipts, clients, products, templates, settings and lists) when Fakturo is deleted from the Plugins screen.', 'fakturo' ).'	</label>
+								<p class="description">'. __( 'Off by default: deleting the plugin keeps your documents so they are there if you install it again.', 'fakturo' ) .'</p>
+							</td>
 					  </tr>
 					  ';
 				echo '</table>';

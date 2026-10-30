@@ -17,6 +17,7 @@ class fktrNetwork {
 	const OPTION		 = 'fktr_network_defaults';
 	const HIDE_MAIN		 = 'fktr_network_hide_main';
 	const WIZARD		 = 'fktr_network_new_site_wizard';
+	const DELETE_DATA	 = 'fktr_network_delete_data';
 	const NONCE			 = 'fktr_network_defaults';
 
 	public static function hooks() {
@@ -176,6 +177,10 @@ class fktrNetwork {
 		echo '<tr><th scope="row">' . esc_html__('Use stock for products', 'fakturo') . '</th><td><label><input name="use_stock_product" type="checkbox" value="1"' . checked(1, (int) $v['use_stock_product'], false) . '/> ' . esc_html__('Activate for use stock for products', 'fakturo') . '</label></td></tr>';
 
 		echo '</table>';
+		echo '<h2 class="title">' . esc_html__('Uninstall', 'fakturo') . '</h2>';
+		echo '<table class="form-table" role="presentation"><tr><th scope="row">' . esc_html__('Delete network data', 'fakturo') . '</th><td><label><input name="delete_data" type="checkbox" value="1"' . checked(1, (int) get_site_option(self::DELETE_DATA), false) . '/> ' . esc_html__('Delete the license keys and these settings when Fakturo is deleted from the network', 'fakturo') . '</label>
+				<p class="description">' . esc_html__('Off by default. The data of each site is kept or deleted according to the setting of that site in Fakturo → Settings.', 'fakturo') . '</p></td></tr></table>';
+
 		submit_button();
 		echo '</form></div>';
 	}
@@ -215,6 +220,7 @@ class fktrNetwork {
 			update_site_option(self::OPTION, $new);
 			update_site_option(self::HIDE_MAIN, empty($post['hide_main']) ? 0 : 1);
 			update_site_option(self::WIZARD, empty($post['new_site_wizard']) ? 0 : 1);
+			update_site_option(self::DELETE_DATA, empty($post['delete_data']) ? 0 : 1);
 			self::notice(__('Settings saved.', 'fakturo'));
 		}
 		wp_safe_redirect(self::page_url());

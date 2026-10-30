@@ -7538,8 +7538,36 @@ msgstr "Usuarios de los sitios"
 #: includes/network.php
 #, php-format
 msgid "Site administrators and Fakturo managers cannot create new users because \"Add New Users\" is off in %s."
-msgstr "Los administradores de sitio y los gerentes de Fakturo no pueden crear usuarios nuevos porque «Añadir nuevos usuarios» está desactivado en %s."
+msgstr "Los administradores de sitio y los supervisores de Fakturo no pueden crear usuarios nuevos porque «Añadir nuevos usuarios» está desactivado en %s."
 
 #: includes/network.php
 msgid "Network Settings"
 msgstr "Ajustes de la red"
+
+#: includes/settings/settings.php
+msgid "Delete data on uninstall"
+msgstr "Eliminar los datos al desinstalar"
+
+#: includes/settings/settings.php
+msgid "Delete all the data of this site (invoices, receipts, clients, products, templates, settings and lists) when Fakturo is deleted from the Plugins screen."
+msgstr "Eliminar todos los datos de este sitio (facturas, recibos, clientes, productos, plantillas, ajustes y listas) cuando se borre Fakturo desde la pantalla de Plugins."
+
+#: includes/settings/settings.php
+msgid "Off by default: deleting the plugin keeps your documents so they are there if you install it again."
+msgstr "Desactivado por defecto: al borrar el plugin se conservan tus documentos para tenerlos si lo vuelves a instalar."
+
+#: includes/network.php
+msgid "Uninstall"
+msgstr "Desinstalación"
+
+#: includes/network.php
+msgid "Delete network data"
+msgstr "Eliminar los datos de la red"
+
+#: includes/network.php
+msgid "Delete the license keys and these settings when Fakturo is deleted from the network"
+msgstr "Eliminar las claves de licencia y estos ajustes cuando se borre Fakturo de la red"
+
+#: includes/network.php
+msgid "Off by default. The data of each site is kept or deleted according to the setting of that site in Fakturo → Settings."
+msgstr "Desactivado por defecto. Los datos de cada sitio se conservan o se eliminan según el ajuste de ese sitio en Fakturo → Ajustes."

@@ -6995,3 +6995,31 @@ msgstr ""
 #: includes/network.php
 msgid "Network Settings"
 msgstr ""
+
+#: includes/settings/settings.php
+msgid "Delete data on uninstall"
+msgstr ""
+
+#: includes/settings/settings.php
+msgid "Delete all the data of this site (invoices, receipts, clients, products, templates, settings and lists) when Fakturo is deleted from the Plugins screen."
+msgstr ""
+
+#: includes/settings/settings.php
+msgid "Off by default: deleting the plugin keeps your documents so they are there if you install it again."
+msgstr ""
+
+#: includes/network.php
+msgid "Uninstall"
+msgstr ""
+
+#: includes/network.php
+msgid "Delete network data"
+msgstr ""
+
+#: includes/network.php
+msgid "Delete the license keys and these settings when Fakturo is deleted from the network"
+msgstr ""
+
+#: includes/network.php
+msgid "Off by default. The data of each site is kept or deleted according to the setting of that site in Fakturo → Settings."
+msgstr ""

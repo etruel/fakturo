@@ -118,6 +118,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 * Print and e-mail templates can only call an approved list of functions; anything else is rejected with a message when the template is saved, printed or sent, and the include tag is disabled.
 * PDFs only load images and styles from the site's own address.
 * In a network, a new site is ready the moment Fakturo is switched on in it: roles and permissions exist before anybody signs in and its administrator lands on the setup wizard (the network can turn that off in Global settings).
+* Deleting Fakturo from the Plugins screen now removes its roles, permissions and temporary data; the new setting *Delete data on uninstall* (in Fakturo settings, and in the network settings for the license keys) also removes the invoices, receipts, clients, products, templates, lists and settings. It is off by default, so a plugin deleted by mistake does not take the documents with it.
 
 = 1.0.10 (Oct 23, 2026) =
 * New Add-ons screen: activate, license and manage auto-updates of each add-on from its own row, with bulk actions and live search.
