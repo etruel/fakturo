@@ -13,7 +13,7 @@
 	if (!class_exists( 'fktrUserRoles' ) ) :
 	class fktrUserRoles {
 		// Raise it when the capabilities of the roles change: fktr_version regenerates the roles of the sites that have an older one.
-		const REVISION = 2;
+		const REVISION = 3;
 		//Plugin capabilities
 		private static $fakturo_manager_caps = array ();
 		private static $fakturo_seller_caps = array ();
@@ -229,6 +229,14 @@
 			return $redirect_url;
 		}
 		
+		/**
+		 * The lists of the last capabilities are only read when the roles are regenerated: they stay out of the options loaded on every request (update_option() keeps the old autoload flag when the value does not change).
+		 */
+		private static function keep_caps($name, $caps) {
+			delete_option($name);
+			add_option($name, $caps, '', 'no');
+		}
+
 		public static function activate($plugin, $network_activation) {
 			global $wp_roles;
 			if ($plugin != 'fakturo/fakturo.php') {
@@ -237,8 +245,8 @@
 			add_role( 'fakturo_manager', __( 'Fakturo Manager', 'fakturo' ), self::get_fakturo_manager_caps());
 			add_role( 'fakturo_seller', __( 'Fakturo Salesman', 'fakturo' ), self::get_fakturo_seller_caps());
 			
-			update_option('fktr_last_mananger_caps', self::$fakturo_manager_caps);
-			update_option('fktr_last_seller_caps', self::$fakturo_seller_caps);
+			self::keep_caps('fktr_last_mananger_caps', self::$fakturo_manager_caps);
+			self::keep_caps('fktr_last_seller_caps', self::$fakturo_seller_caps);
 			//Add capabilities to admin (if don't want to allow admins to edits Seller events can be disabled from Settings ;-)
 			foreach(self::$fakturo_manager_caps as $key => $value) {
 				$wp_roles->add_cap( 'administrator', $key, $value );

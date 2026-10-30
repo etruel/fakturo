@@ -119,6 +119,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 * PDFs only load images and styles from the site's own address.
 * In a network, a new site is ready the moment Fakturo is switched on in it: roles and permissions exist before anybody signs in and its administrator lands on the setup wizard (the network can turn that off in Global settings).
 * Deleting Fakturo from the Plugins screen now removes its roles, permissions and temporary data; the new setting *Delete data on uninstall* (in Fakturo settings, and in the network settings for the license keys) also removes the invoices, receipts, clients, products, templates, lists and settings. It is off by default, so a plugin deleted by mistake does not take the documents with it.
+* With a persistent object cache (Redis, Memcached), editing a tax, currency, sale point or any other list item shows the new values at once instead of the old ones until the cache expires.
 
 = 1.0.10 (Oct 23, 2026) =
 * New Add-ons screen: activate, license and manage auto-updates of each add-on from its own row, with bulk actions and live search.

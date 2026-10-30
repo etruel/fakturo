@@ -183,10 +183,8 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 			if ($object->assgined == 'fktr_sale') {
 				// assign vars to print template assgined to fktr_sale.
 
-				$imgfiles	 = scandir(FAKTURO_PLUGIN_DIR . 'assets/images/');
-				// echo '$imgfiles=' . '<pre>' . print_r($imgfiles, 1) . '</pre>' . '<br>';
 				$locale		 = substr(get_locale(), 0, 2); // en, es
-				if (in_array(('invoice_background_' . $locale . '.jpg'), $imgfiles)) {
+				if (file_exists(FAKTURO_PLUGIN_DIR . 'assets/images/' . 'invoice_background_' . $locale . '.jpg')) {
 					$backgroundimage = 'invoice_background_' . $locale . '.jpg';
 				} else {
 					// english by default if doesn't exist current language  
@@ -233,9 +231,8 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				 */
 			} else if ($object->assgined == 'fktr_receipt') {
 				// assign vars to print template assgined to fktr_receipt.
-				$imgfiles	 = scandir(FAKTURO_PLUGIN_DIR . 'assets/images/');
 				$locale		 = substr(get_locale(), 0, 2); // en, es
-				if (in_array(('receipt_background_' . $locale . '.jpg'), $imgfiles)) {
+				if (file_exists(FAKTURO_PLUGIN_DIR . 'assets/images/' . 'receipt_background_' . $locale . '.jpg')) {
 					$backgroundimage = 'receipt_background_' . $locale . '.jpg';
 				} else {
 					// english by default if doesn't exist current language  
@@ -350,9 +347,8 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				 */
 			} else if ($object->assgined == 'fktr_product') {
 				// assign vars to print template assgined to fktr_product.
-				$imgfiles	 = scandir(FAKTURO_PLUGIN_DIR . 'assets/images/');
 				$locale		 = substr(get_locale(), 0, 2); // en, es
-				if (in_array(('product_background_' . $locale . '.jpg'), $imgfiles)) {
+				if (file_exists(FAKTURO_PLUGIN_DIR . 'assets/images/' . 'product_background_' . $locale . '.jpg')) {
 					$backgroundimage = 'product_background_' . $locale . '.jpg';
 				} else {
 					// english by default if doesn't exist current language  
@@ -365,9 +361,8 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				$tpl->assign("product", $product);
 			} else if ($object->assgined == 'fktr_client') {
 				// assign vars to print template assgined to fktr_client.
-				$imgfiles	 = scandir(FAKTURO_PLUGIN_DIR . 'assets/images/');
 				$locale		 = substr(get_locale(), 0, 2); // en, es
-				if (in_array(('client_background_' . $locale . '.jpg'), $imgfiles)) {
+				if (file_exists(FAKTURO_PLUGIN_DIR . 'assets/images/' . 'client_background_' . $locale . '.jpg')) {
 					$backgroundimage = 'client_background_' . $locale . '.jpg';
 				} else {
 					// english by default if doesn't exist current language  
@@ -380,9 +375,8 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				$tpl->assign("client", $client);
 			} else if ($object->assgined == 'fktr_provider') {
 				// assign vars to print template assgined to fktr_provider.
-				$imgfiles	 = scandir(FAKTURO_PLUGIN_DIR . 'assets/images/');
 				$locale		 = substr(get_locale(), 0, 2); // en, es
-				if (in_array(('provider_background_' . $locale . '.jpg'), $imgfiles)) {
+				if (file_exists(FAKTURO_PLUGIN_DIR . 'assets/images/' . 'provider_background_' . $locale . '.jpg')) {
 					$backgroundimage = 'provider_background_' . $locale . '.jpg';
 				} else {
 					// english by default if doesn't exist current language  

@@ -130,6 +130,11 @@ function set_fakturo_term($term_id = null, $tt_id = null, $args = null) {
 	global $wpdb;
 	if (isset($args)) {
 		$wpdb->update($wpdb->term_taxonomy, array('description' => json_encode($args)), array('term_taxonomy_id' => $tt_id));
+		// The description is written straight to the table: without this get_term() keeps returning the old fields from the object cache (for good with a persistent one).
+		$row = $wpdb->get_row($wpdb->prepare("SELECT term_id, taxonomy FROM {$wpdb->term_taxonomy} WHERE term_taxonomy_id = %d", $tt_id));
+		if ($row) {
+			clean_term_cache((int) $row->term_id, $row->taxonomy);
+		}
 	}
 }
 
