@@ -20,6 +20,9 @@ class fktrAdminMenu {
 	
 	public static function add_fakturo_top_menu() {   
             global $current_screen;
+            if (is_network_admin() || fktrNetwork::hidden_here()) {
+                return;
+            }
             $value_dashboard = get_option('fakturo_dashboard_options_group', array());
             $value_dashboard['show_dialer'] = isset($value_dashboard['show_dialer'])? $value_dashboard['show_dialer'] : false;
             $value_dashboard['show_dialer_wp'] = isset($value_dashboard['show_dialer_wp'])? $value_dashboard['show_dialer_wp'] : false;
