@@ -1596,7 +1596,8 @@ if (!class_exists('fktrPostTypeSales')) :
 			$retorno = 0;
 			list($keySale, $keyInvNum) = self::number_keys($sale_point, $invoice_type);
 
-			$last_invoice_numbers = get_option('last_invoice_number', false);
+			// Read from the database, not from the options loaded at the start of the request: another request may have published an invoice meanwhile.
+			$last_invoice_numbers = fktr_atomic::option('last_invoice_number', false);
 			if (!$last_invoice_numbers) {
 				$last_invoice_numbers = array();
 				$last_invoice_numbers[0] = array();
@@ -1915,24 +1916,32 @@ if (!class_exists('fktrPostTypeSales')) :
 		}
 
 		public static function save($post_id, $post) {
-			global $wpdb;
 			if (isset($_POST['original_post_status']) && $_POST['original_post_status'] == 'publish') {
 				return false;
 			}
-		if (!fktr_guard::saving($post_id, $post, 'fktr_sale')) {
-			return false;
-		}
+			if (!fktr_guard::saving($post_id, $post, 'fktr_sale')) {
+				return false;
+			}
 
-			$setting_system = get_option('fakturo_system_options_group', false);
 			// WordPress adds slashes to $_POST: work with the real text and slash it again only for update_post_meta().
 			$fields = apply_filters('fktr_clean_sale_fields', wp_unslash($_POST));
 			$fields = apply_filters('fktr_sale_before_save', $fields, $post);
 
 			// A blocked invoice takes nothing from the stock: its lines stay as they were, so the stock still matches them.
-			if (self::$blocked) {
-				unset($fields['product_stock_location']);
-			} else {
+			self::store($post_id, $post, $fields, !self::$blocked);
+		}
+
+		/**
+		 * Writes an invoice: the stock, the client snapshot, the fields and the last number. $fields are the real text (not slashed) of an edit screen or of fktr_create_sale().
+		 */
+		public static function store($post_id, $post, $fields, $take_stock = true) {
+			global $wpdb;
+			$setting_system = get_option('fakturo_system_options_group', false);
+
+			if ($take_stock) {
 				self::updateStock($fields, $post);
+			} else {
+				unset($fields['product_stock_location']);
 			}
 
 			if (isset($fields['date']) && !is_numeric($fields['date'])) {
@@ -1949,6 +1958,8 @@ if (!class_exists('fktrPostTypeSales')) :
 							'post_excerpt' => $sale_summary,
 							'post_content' => json_encode($fields['client_data']),
 						), array('ID' => $post_id));
+				// Written straight to the table: without this the next wp_update_post() would save the old (empty) content over it.
+				clean_post_cache($post_id);
 				unset($fields['client_data']);
 			}
 

@@ -4207,6 +4207,62 @@ msgstr ""
 msgid "The check %s was not registered: a check with that number already exists."
 msgstr ""
 
+#: includes/sale-api.php:81
+msgid "The sale point does not exist."
+msgstr ""
+
+#: includes/sale-api.php:84
+msgid "The currency does not exist."
+msgstr ""
+
+#: includes/sale-api.php:88
+msgid "The discount must be a percentage between 0 and 100."
+msgstr ""
+
+#: includes/sale-api.php:116
+msgid "There is no stock location to take the products from."
+msgstr ""
+
+#: includes/sale-api.php:204
+msgid "The invoice was saved as a draft because it could not be completed."
+msgstr ""
+
+#: includes/sale-api.php:215
+msgid "The client does not exist."
+msgstr ""
+
+#: includes/sale-api.php:219
+msgid "A client id or a valid e-mail is needed."
+msgstr ""
+
+#: includes/sale-api.php:227
+msgid "There is no client with that e-mail."
+msgstr ""
+
+#: includes/sale-api.php:273
+msgid "The invoice needs at least one line."
+msgstr ""
+
+#. translators: %d: line number.
+#: includes/sale-api.php:281
+msgid "Line %d: the product does not exist."
+msgstr ""
+
+#. translators: %d: line number.
+#: includes/sale-api.php:286
+msgid "Line %d needs a quantity above zero and a price of zero or more."
+msgstr ""
+
+#. translators: %d: line number.
+#: includes/sale-api.php:299
+msgid "Line %d needs a description."
+msgstr ""
+
+#. translators: %d: line number.
+#: includes/sale-api.php:304
+msgid "Line %d: the tax does not exist."
+msgstr ""
+
 #: includes/post-types-sales.php:722
 msgid "Dismiss this notice."
 msgstr ""

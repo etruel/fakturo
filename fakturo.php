@@ -46,6 +46,7 @@ class fakturo {
 		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-providers.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-clients.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-sales.php'; 
+		require_once FAKTURO_PLUGIN_DIR . 'includes/sale-api.php';
 		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-receipts.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-print-templates.php'; 
 		require_once FAKTURO_PLUGIN_DIR . 'includes/post-types-email-templates.php'; 

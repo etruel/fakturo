@@ -139,13 +139,16 @@ $setting = get_option('fakturo_system_options_group');
 // ---------------------------------------------------------------- setup the test needs
 fktrSmoke::section('Setup');
 $types = get_fakturo_terms(array('taxonomy' => 'fktr_invoice_types', 'hide_empty' => false));
-$type_out = $type_in = $sale_point = $location = null;
+$type_out = $type_in = $type_tax = $sale_point = $location = null;
 foreach ((array) $types as $t) {
 	if (isset($t->sum) && !$t->sum && !$type_out) {
 		$type_out = $t->term_id;
 	}
 	if (isset($t->sum) && $t->sum && !$type_in) {
 		$type_in = $t->term_id;
+	}
+	if (!empty($t->discriminates_taxes) && !$type_tax) {
+		$type_tax = $t->term_id;
 	}
 }
 $points = get_fakturo_terms(array('taxonomy' => 'fktr_sale_points', 'hide_empty' => false));
@@ -306,6 +309,90 @@ fktrSmoke::clear_notices();
 $status = fktrSmoke::submit($receipt2, array('client_id' => $client, 'receipt_number' => $rnum, 'available_to_include' => '0', 'currency_id' => 0), 'publish');
 $rn2 = get_post_meta($receipt2, 'receipt_number', true);
 fktrSmoke::ok($status === 'publish' && $rn2 !== $rnum, 'a receipt number already in use gets the next free one', "$rnum -> $rn2");
+
+// ---------------------------------------------------------------- invoice API
+fktrSmoke::section('fktr_create_sale()');
+$mailbox = 'smoke-' . wp_generate_password(8, false) . '@fakturo-smoke.invalid';
+$api_lines = array(array('description' => 'Consulting', 'quantity' => 2, 'unit_price' => 100), array('product_id' => $product, 'quantity' => 3, 'unit_price' => 50.5));
+$api_client = array('email' => $mailbox, 'name' => $name, 'address' => 'Street 1', 'city' => 'Town', 'taxpayer' => '30-1');
+if ($type_tax) {
+	$api = fktr_create_sale($api_client, $api_lines, array('invoice_type' => $type_tax, 'discount' => 10, 'external_ref' => 'SMOKE-1', 'source' => 'smoke'));
+	if (fktrSmoke::ok(!is_wp_error($api), 'an invoice is created from code', is_wp_error($api) ? $api->get_error_message() : '')) {
+		fktrSmoke::$posts[] = $api;
+		$d = fktrPostTypeSales::get_sale_data($api);
+		fktrSmoke::$posts[] = (int) $d['client_id'];
+		fktrSmoke::ok(get_post_status($api) === 'publish', 'it is published');
+		fktrSmoke::ok((float) $d['in_sub_total'] === 351.5, 'the sub total is the sum of the lines', (string) $d['in_sub_total']);
+		$expected = fktr_round_money(351.5 - fktr_round_money(35.15) + fktr_round_money(200 * 0.21) + fktr_round_money(151.5 * 0.21));
+		$tax_line = get_fakturo_term($d['uc_tax'][0], 'fktr_tax');
+		$pct = is_wp_error($tax_line) ? 0 : (float) $tax_line->percentage;
+		$expected = fktr_round_money(351.5 - 35.15 + fktr_round_money(200 * $pct / 100) + fktr_round_money(151.5 * $pct / 100));
+		fktrSmoke::ok(abs((float) $d['in_total'] - $expected) < 0.005, 'the total has the discount and the taxes of an invoice type that shows them', $d['in_total'] . ' vs ' . $expected);
+		fktrSmoke::ok($d['client_data']['name'] === $name, 'the client created from the e-mail keeps its name exactly');
+		fktrSmoke::ok(get_the_title($api) !== '' && strpos(get_post_field('post_name', $api), '-') !== false, 'the invoice has its title and slug');
+		$before = get_option('last_invoice_number');
+		$again = fktr_create_sale($api_client, $api_lines, array('invoice_type' => $type_tax, 'discount' => 10, 'external_ref' => 'SMOKE-1', 'source' => 'smoke'));
+		fktrSmoke::ok($again === $api && $before === get_option('last_invoice_number'), 'the same external reference gives the same invoice and uses no number');
+		fktrSmoke::ok(fktr_find_sale_by_ref('SMOKE-1', 'smoke') === $api && fktr_find_sale_by_ref('SMOKE-1', 'other') === 0, 'an invoice is found by its reference and source');
+		$second = fktr_create_sale(array('email' => $mailbox), array(array('description' => 'More', 'quantity' => 1, 'unit_price' => 10)), array('invoice_type' => $type_tax, 'external_ref' => 'SMOKE-2', 'source' => 'smoke'));
+		if (fktrSmoke::ok(!is_wp_error($second), 'a second invoice for the same e-mail')) {
+			fktrSmoke::$posts[] = $second;
+			$d2 = fktrPostTypeSales::get_sale_data($second);
+			fktrSmoke::ok($d2['client_id'] === $d['client_id'], 'finds the same client instead of making another');
+			fktrSmoke::ok((int) $d2['invoice_number'] === (int) $d['invoice_number'] + 1, 'and takes the next number');
+		}
+		// e-mail with the PDF attached (the mail is stopped before it leaves)
+		$seen = array();
+		add_action('phpmailer_init', $hook = function ($m) use (&$seen) {
+			$seen[] = count($m->getAttachments());
+			$m->clearAllRecipients();
+		}, 99);
+		$third = fktr_create_sale($api_client, array(array('description' => 'Mailed', 'quantity' => 1, 'unit_price' => 5)), array('invoice_type' => $type_tax, 'send_email' => true));
+		remove_action('phpmailer_init', $hook, 99);
+		if (!is_wp_error($third)) {
+			fktrSmoke::$posts[] = $third;
+		}
+		fktrSmoke::ok($seen === array(1), 'send_email e-mails the invoice with its PDF', json_encode($seen));
+		// an add-on that sends the invoice back to draft (what fakturo_afip does when the tax office refuses it)
+		add_action('fktr_save_sale', $refuse = function ($post_id) {
+			global $wpdb;
+			$wpdb->update($wpdb->posts, array('post_status' => 'draft'), array('ID' => $post_id));
+		}, 99);
+		$refused = fktr_create_sale($api_client, array(array('description' => 'Refused', 'quantity' => 1, 'unit_price' => 5)), array('invoice_type' => $type_tax, 'external_ref' => 'SMOKE-3', 'source' => 'smoke'));
+		remove_action('fktr_save_sale', $refuse, 99);
+		fktrSmoke::ok(is_wp_error($refused) && $refused->get_error_code() === 'fktr_sale_not_published', 'an invoice that an add-on sends back to draft is reported, not hidden');
+		if (is_wp_error($refused)) {
+			$refused_id = (int) $refused->get_error_data()['sale_id'];
+			fktrSmoke::$posts[] = $refused_id;
+			fktrSmoke::ok(get_post_status($refused_id) === 'draft', 'and stays a draft (it is not published again behind the add-on)');
+		}
+	}
+} else {
+	fktrSmoke::skip('invoice from code with taxes', 'no invoice type shows the taxes apart');
+}
+$refusals = array(
+	'an invoice without lines' => array($api_client, array(), 'fktr_sale_no_lines'),
+	'a line with no quantity' => array($api_client, array(array('description' => 'x', 'quantity' => 0, 'unit_price' => 1)), 'fktr_sale_bad_line'),
+	'no client or e-mail' => array(array('name' => 'x'), $api_lines, 'fktr_sale_no_client'),
+	'more stock than there is' => array($api_client, array(array('product_id' => $product, 'quantity' => 100000, 'unit_price' => 1)), 'fktr_sale_invalid'),
+);
+foreach ($refusals as $label => $case) {
+	$r = fktr_create_sale($case[0], $case[1], array('invoice_type' => $type_out));
+	fktrSmoke::ok(is_wp_error($r) && $r->get_error_code() === $case[2], $label . ' is refused', is_wp_error($r) ? $r->get_error_code() : (string) $r);
+	if (!is_wp_error($r)) {
+		fktrSmoke::$posts[] = $r;
+	}
+}
+$counter = get_option('last_invoice_number');
+$draft = fktr_create_sale($api_client, array(array('description' => 'Draft', 'quantity' => 1, 'unit_price' => 5)), array('invoice_type' => $type_out, 'publish' => false));
+if (fktrSmoke::ok(!is_wp_error($draft) && get_post_status($draft) === 'draft', 'a draft can be made')) {
+	fktrSmoke::$posts[] = $draft;
+	fktrSmoke::ok($counter === get_option('last_invoice_number'), 'and does not use the numbering until it is published');
+}
+// the client made from the e-mail is one for the whole group above
+foreach (get_posts(array('post_type' => 'fktr_client', 'meta_key' => 'email', 'meta_value' => $mailbox, 'fields' => 'ids', 'numberposts' => -1, 'post_status' => 'any')) as $made_client) {
+	fktrSmoke::$posts[] = (int) $made_client;
+}
 
 // ---------------------------------------------------------------- subscriptions
 fktrSmoke::section('Subscriptions add-on');

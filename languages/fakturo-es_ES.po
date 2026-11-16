@@ -4550,6 +4550,62 @@ msgstr "El número de recibo %1$s ya estaba en uso, el recibo se guardó con el 
 msgid "The check %s was not registered: a check with that number already exists."
 msgstr "El cheque %s no se registró: ya existe un cheque con ese número."
 
+#: includes/sale-api.php:81
+msgid "The sale point does not exist."
+msgstr "El punto de venta no existe."
+
+#: includes/sale-api.php:84
+msgid "The currency does not exist."
+msgstr "La moneda no existe."
+
+#: includes/sale-api.php:88
+msgid "The discount must be a percentage between 0 and 100."
+msgstr "El descuento debe ser un porcentaje entre 0 y 100."
+
+#: includes/sale-api.php:116
+msgid "There is no stock location to take the products from."
+msgstr "No hay una ubicación de stock de la que tomar los productos."
+
+#: includes/sale-api.php:204
+msgid "The invoice was saved as a draft because it could not be completed."
+msgstr "La factura se guardó como borrador porque no pudo completarse."
+
+#: includes/sale-api.php:215
+msgid "The client does not exist."
+msgstr "El cliente no existe."
+
+#: includes/sale-api.php:219
+msgid "A client id or a valid e-mail is needed."
+msgstr "Hace falta el id de un cliente o un correo válido."
+
+#: includes/sale-api.php:227
+msgid "There is no client with that e-mail."
+msgstr "No hay ningún cliente con ese correo."
+
+#: includes/sale-api.php:273
+msgid "The invoice needs at least one line."
+msgstr "La factura necesita al menos una línea."
+
+#. translators: %d: line number.
+#: includes/sale-api.php:281
+msgid "Line %d: the product does not exist."
+msgstr "Línea %d: el producto no existe."
+
+#. translators: %d: line number.
+#: includes/sale-api.php:286
+msgid "Line %d needs a quantity above zero and a price of zero or more."
+msgstr "La línea %d necesita una cantidad mayor que cero y un precio de cero o más."
+
+#. translators: %d: line number.
+#: includes/sale-api.php:299
+msgid "Line %d needs a description."
+msgstr "La línea %d necesita una descripción."
+
+#. translators: %d: line number.
+#: includes/sale-api.php:304
+msgid "Line %d: the tax does not exist."
+msgstr "Línea %d: el impuesto no existe."
+
 #: includes/post-types-sales.php:722
 msgid "Dismiss this notice."
 msgstr "Descartar este aviso."

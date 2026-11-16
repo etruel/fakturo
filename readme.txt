@@ -81,6 +81,10 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 * Go To Fakturo settings and set up the plugin configurations. Is easy, but there are many options that must be setup following your country's standards.
 
+= Can another plugin create invoices? =
+
+Yes. `fktr_create_sale( $client, $lines, $args )` creates (and by default publishes) an invoice and returns its id, or a `WP_Error` that says why not. `$client` is a client id or an e-mail (the client is found by e-mail, or created from the data you give); `$lines` are `description`, `quantity` and `unit_price` (and optionally `product_id`, `code`, `tax_id`); `$args` can set `invoice_type`, `sale_point`, `currency`, `date`, `discount`, `publish`, `invoice_number`, `stock_location`, `external_ref` with `source` (the same transaction never makes a second invoice: the first one is returned; `fktr_find_sale_by_ref()` looks it up) and `send_email`. The numbering, the stock rules and the totals are the ones of the invoice screen. It is documented at the top of `includes/sale-api.php`.
+
 
 == Changelog ==
 
@@ -134,6 +138,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 * The print view of an invoice no longer shows PHP notices when the client has no tax condition or payment type (a draft, a new client) or the invoice has no currency yet.
 * License screen: the key is shown masked (only its last four characters) instead of in full, saving without touching the field keeps the key, and when the license server does not answer the screen asks again after five minutes instead of making you wait up to 15 seconds on every visit.
 * E-mails sent without an admin click behind them (the bulk action "Send PDF to clients" and the billing of subscriptions) now carry the PDF, which they were leaving out, and one e-mail no longer carries the attachments of the previous one; sending several invoices or receipts in a row no longer stops with a fatal error because each PDF now gets its own PDF engine.
+* New function `fktr_create_sale()` for other plugins and integrations: it creates an invoice from code with the same numbering, stock and tax rules as the invoice screen, finds or creates the client by e-mail, never invoices the same external transaction twice and can e-mail the PDF.
 
 = 1.0.10 (Oct 23, 2026) =
 * New Add-ons screen: activate, license and manage auto-updates of each add-on from its own row, with bulk actions and live search.

@@ -937,7 +937,7 @@ class fktrPostTypeReceipts {
 	public static function suggestReceiptNumber() {
 		$retorno = 0;
 		$setting_system = get_option('fakturo_system_options_group', false);
-		$last_receipt_numbers = get_option('last_receipt_number', false);
+		$last_receipt_numbers = fktr_atomic::option('last_receipt_number', false);
 		if (!$last_receipt_numbers) {
 			$last_receipt_numbers = 0;
 			update_option('last_receipt_number', $last_receipt_numbers);
