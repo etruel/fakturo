@@ -848,6 +848,7 @@ if (!class_exists('fktrPostTypeProducts')) :
 
 		public static function get_product_data($product_id) {
 			$custom_field_keys = get_post_custom($product_id);
+			if (!is_array($custom_field_keys)) { $custom_field_keys = array(); } // false for an id that is not a post
 			$custom_field_keys = is_array($custom_field_keys) ? $custom_field_keys : array($custom_field_keys);
 
 			foreach ($custom_field_keys as $key => $value) {

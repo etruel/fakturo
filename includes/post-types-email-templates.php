@@ -688,6 +688,7 @@ class fktrPostTypeEmailTemplates {
 
 	public static function get_email_template_data($template_id) {
 		$custom_field_keys = get_post_custom($template_id);
+		if (!is_array($custom_field_keys)) { $custom_field_keys = array(); } // false for an id that is not a post
 		foreach ( $custom_field_keys as $key => $value ) {
 			$custom_field_keys[$key] = maybe_unserialize($value[0]);
 		}

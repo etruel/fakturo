@@ -33,7 +33,10 @@ jQuery(document).ready(function() {
 	DefaultMaskNumbers = "#"+system_setting.thousand+"##0"+system_setting.decimal+decimal_ex;
 	jQuery('#term_meta_value').mask(DefaultMaskNumbers, {reverse: true});
 	
-	system_setting.datetimepicker = jQuery.parseJSON(system_setting.datetimepicker);
+	// It arrives as an object (wp_localize_script); only a JSON string needs to be parsed.
+	if (typeof system_setting.datetimepicker === 'string') {
+		system_setting.datetimepicker = jQuery.parseJSON(system_setting.datetimepicker);
+	}
 	jQuery.datetimepicker.setLocale(system_setting.datetimepicker.lang);
 	
 	jQuery('#term_meta_date').datetimepicker({

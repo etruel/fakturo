@@ -3,6 +3,9 @@ jQuery(document).ready(function() {
     jQuery('#term_meta_category').select2();
 
     const typeSelect = document.getElementById("term_meta_type");
+    if (!typeSelect) {
+        return;
+    }
     const button = document.getElementById("submit");
     const sellerContainer = document.getElementById("scale-seller-div") || document.querySelector('tr:has(#term_meta_seller)');
     const categoryContainer = document.getElementById("scale-category-div") || document.querySelector('tr:has(#term_meta_category)');

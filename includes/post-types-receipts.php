@@ -858,7 +858,7 @@ class fktrPostTypeReceipts {
 		fktr_guard::ajax('edit_fktr_receipts');
 		$response = new WP_Ajax_Response;
 		$fields = array();
-		parse_str($_POST['inputs'], $fields);
+		parse_str(isset($_POST['inputs']) && is_string($_POST['inputs']) ? $_POST['inputs'] : '', $fields);
 		$fields = apply_filters('fktr_clean_receipt_fields',$fields);
 		
 		$error = self::validate($fields);
@@ -1195,6 +1195,7 @@ class fktrPostTypeReceipts {
 	}
 	public static function get_receipt_data($receipt_id) {
 		$custom_field_keys = get_post_custom($receipt_id);
+		if (!is_array($custom_field_keys)) { $custom_field_keys = array(); } // false for an id that is not a post
 		foreach ( $custom_field_keys as $key => $value ) {
 			$custom_field_keys[$key] = maybe_unserialize($value[0]);
 		}

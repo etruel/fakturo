@@ -1472,7 +1472,7 @@ if (!class_exists('fktrPostTypeSales')) :
 			fktr_guard::ajax('edit_fktr_sales');
 			$response = new WP_Ajax_Response;
 			$fields = array();
-			parse_str($_POST['inputs'], $fields);
+			parse_str(isset($_POST['inputs']) && is_string($_POST['inputs']) ? $_POST['inputs'] : '', $fields);
 			$fields = apply_filters('fktr_clean_sale_fields', $fields);
 
 			$error = self::validate($fields);
@@ -1913,6 +1913,7 @@ if (!class_exists('fktrPostTypeSales')) :
 		 */
 		public static function get_sale_data($sale_id) {
 			$custom_field_keys = get_post_custom($sale_id);
+			if (!is_array($custom_field_keys)) { $custom_field_keys = array(); } // false for an id that is not a post
 			foreach ($custom_field_keys as $key => $value) {
 				$custom_field_keys[$key] = maybe_unserialize($value[0]);
 			}

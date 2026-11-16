@@ -26,6 +26,10 @@ class fktr_tax_commission_scales {
 	}
 
     public static function before_content($request) {
+		// Only on the screens of this taxonomy, not on every admin page.
+		if (!isset($_GET['taxonomy']) || $_GET['taxonomy'] !== 'fktr_commission_scales') {
+			return;
+		}
 		wp_enqueue_script('jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array('jquery'), WPE_FAKTURO_VERSION, true);
             wp_enqueue_script('fakturo_taxonomy_scales', FAKTURO_PLUGIN_URL . 'assets/js/taxonomy-scales.js', array('jquery'), WPE_FAKTURO_VERSION, true);
 	}
