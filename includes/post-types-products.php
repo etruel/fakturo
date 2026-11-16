@@ -705,39 +705,31 @@ if (!class_exists('fktrPostTypeProducts')) :
 		}
 
 		public static function addStock($product_id, $quantity, $location_id) {
-			$product_data = self::get_product_data($product_id);
-			if (!isset($product_data['stocks'])) {
-				$product_data['stocks'] = array();
-			}
-			if (!is_array($product_data['stocks'])) {
-				$product_data['stocks'] = array();
-			}
-			$quantity_total = 0;
-			if (!empty($product_data['stocks'][$location_id])) {
-				$quantity_total = $product_data['stocks'][$location_id];
-			}
-			$quantity_total = $quantity_total + $quantity;
-			$product_data['stocks'][$location_id] = $quantity_total;
-			$newQuantity = apply_filters('fktr_product_metabox_save_stocks', $product_data['stocks']);
-			update_post_meta($product_id, 'stocks', $newQuantity);
+			self::changeStock($product_id, $quantity, $location_id);
 		}
 
 		public static function removeStock($product_id, $quantity, $location_id) {
-			$product_data = self::get_product_data($product_id);
-			if (!isset($product_data['stocks'])) {
-				$product_data['stocks'] = array();
-			}
-			if (!is_array($product_data['stocks'])) {
-				$product_data['stocks'] = array();
-			}
-			$quantity_total = 0;
-			if (!empty($product_data['stocks'][$location_id])) {
-				$quantity_total = $product_data['stocks'][$location_id];
-			}
-			$quantity_total = $quantity_total - $quantity;
-			$product_data['stocks'][$location_id] = $quantity_total;
-			$newQuantity = apply_filters('fktr_product_metabox_save_stocks', $product_data['stocks']);
-			update_post_meta($product_id, 'stocks', $newQuantity);
+			self::changeStock($product_id, -$quantity, $location_id);
+		}
+
+		/**
+		 * Adds $difference to the stock of one location, reading the current stock under a lock so two requests do not overwrite each other.
+		 */
+		private static function changeStock($product_id, $difference, $location_id) {
+			fktr_atomic::run('stock_' . (int) $product_id, function () use ($product_id, $difference, $location_id) {
+				fktr_atomic::forget_meta($product_id);
+				$product_data = self::get_product_data($product_id);
+				if (!isset($product_data['stocks']) || !is_array($product_data['stocks'])) {
+					$product_data['stocks'] = array();
+				}
+				$quantity_total = 0;
+				if (!empty($product_data['stocks'][$location_id])) {
+					$quantity_total = $product_data['stocks'][$location_id];
+				}
+				$product_data['stocks'][$location_id] = $quantity_total + $difference;
+				$newQuantity = apply_filters('fktr_product_metabox_save_stocks', $product_data['stocks']);
+				update_post_meta($product_id, 'stocks', $newQuantity);
+			});
 		}
 
 		public static function clean_fields($fields) {

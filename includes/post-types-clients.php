@@ -696,25 +696,24 @@ class fktrPostTypeClients {
 		}
 	}
 	public static function remove_balance($client_id, $value) {
-		
-		$data_client = self::get_client_data($client_id);
-		if (!isset($data_client['balance'])) {
-			$data_client['balance'] = 0;
-		}
-		$data_client['balance'] = $data_client['balance']-$value;
-		$new = apply_filters('fktr_client_metabox_save_balance', $data_client['balance']);
-		update_post_meta($client_id, 'balance', $new);
-		return true;
+		return self::change_balance($client_id, -$value);
 	}
 	public static function add_balance($client_id, $value) {
-		
-		$data_client = self::get_client_data($client_id);
-		if (!isset($data_client['balance'])) {
-			$data_client['balance'] = 0;
-		}
-		$data_client['balance'] = $data_client['balance']+$value;
-		$new = apply_filters('fktr_client_metabox_save_balance', $data_client['balance']);
-		update_post_meta($client_id, 'balance', $new);
+		return self::change_balance($client_id, $value);
+	}
+	/**
+	 * Adds $difference to the balance, reading the current balance under a lock so two requests do not overwrite each other.
+	 */
+	private static function change_balance($client_id, $difference) {
+		fktr_atomic::run('balance_' . (int) $client_id, function () use ($client_id, $difference) {
+			fktr_atomic::forget_meta($client_id);
+			$data_client = self::get_client_data($client_id);
+			if (!isset($data_client['balance'])) {
+				$data_client['balance'] = 0;
+			}
+			$new = apply_filters('fktr_client_metabox_save_balance', $data_client['balance'] + $difference);
+			update_post_meta($client_id, 'balance', $new);
+		});
 		return true;
 	}
 	public static function get_client_data($client_id) {

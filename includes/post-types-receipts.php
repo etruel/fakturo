@@ -905,18 +905,17 @@ class fktrPostTypeReceipts {
 		return $retorno;
 	}
 	public static function updateSuggestReceiptNumber($receipt_number = 0) {
-		
-		$setting_system = get_option('fakturo_system_options_group', false);
-		$last_receipt_numbers = get_option('last_receipt_number', false);
-		if (!$last_receipt_numbers) {
-			$last_receipt_numbers = 0;
-		}
-		if (is_numeric($receipt_number) && $last_receipt_numbers < $receipt_number) {
-			$last_receipt_numbers = (int) $receipt_number;
-		}
-		$last_receipt_numbers = (int) $last_receipt_numbers;
-		update_option('last_receipt_number', $last_receipt_numbers);
-		
+		// The last number is read again under a lock, so a number saved at the same time is not overwritten with a lower one.
+		fktr_atomic::run('last_receipt_number', function () use ($receipt_number) {
+			$last_receipt_numbers = fktr_atomic::option('last_receipt_number', false);
+			if (!$last_receipt_numbers) {
+				$last_receipt_numbers = 0;
+			}
+			if (is_numeric($receipt_number) && $last_receipt_numbers < $receipt_number) {
+				$last_receipt_numbers = (int) $receipt_number;
+			}
+			update_option('last_receipt_number', (int) $last_receipt_numbers);
+		});
 	}
 	public static function action_on_delete($post_id) {
 		$post_type = get_post_type($post_id);

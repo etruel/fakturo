@@ -1525,34 +1525,35 @@ if (!class_exists('fktrPostTypeSales')) :
 			wp_die($suggested);
 		}
 
+		/**
+		 * Position of the last number in the `last_invoice_number` option: by sale point and/or invoice type, depending on the numbering settings. 0 - 0 is the general numbering.
+		 */
+		private static function number_keys($sale_point, $invoice_type) {
+			$setting_system = get_option('fakturo_system_options_group', false);
+			$keySale = 0;
+			$keyInvNum = 0;
+			if ($setting_system['individual_numeration_by_invoice_type'] && $setting_system['individual_numeration_by_sale_point']) {
+				$keySale = max(0, $sale_point);
+				$keyInvNum = max(0, $invoice_type);
+			} else if ($setting_system['individual_numeration_by_sale_point']) {
+				$keySale = max(0, $sale_point);
+			} else if ($setting_system['individual_numeration_by_invoice_type']) {
+				$keyInvNum = max(0, $invoice_type);
+			}
+			return array($keySale, $keyInvNum);
+		}
+
 		public static function suggestInvoiceNumber($sale_point = 0, $invoice_type = 0) {
 			$retorno = 0;
-			if ($sale_point < 0) {
-				$sale_point = 0;
-			}
-			if ($invoice_type < 0) {
-				$invoice_type = 0;
-			}
+			list($keySale, $keyInvNum) = self::number_keys($sale_point, $invoice_type);
 
-			$setting_system = get_option('fakturo_system_options_group', false);
 			$last_invoice_numbers = get_option('last_invoice_number', false);
 			if (!$last_invoice_numbers) {
 				$last_invoice_numbers = array();
 				$last_invoice_numbers[0] = array();
 				update_option('last_invoice_number', $last_invoice_numbers);
 			}
-			$keySale = 0;
-			$keyInvNum = 0;
-			if ($setting_system['individual_numeration_by_invoice_type'] && $setting_system['individual_numeration_by_sale_point']) {
-				$keySale = $sale_point;
-				$keyInvNum = $invoice_type;
-			} else if ($setting_system['individual_numeration_by_sale_point']) {
-				$keySale = $sale_point;
-			} else if ($setting_system['individual_numeration_by_invoice_type']) {
-				$keyInvNum = $invoice_type;
-			}
 
-			// 0 - 0 is the invoice number general
 			if (!empty($last_invoice_numbers[$keySale][$keyInvNum])) {
 				$retorno = (int) $last_invoice_numbers[$keySale][$keyInvNum];
 			}
@@ -1560,47 +1561,45 @@ if (!class_exists('fktrPostTypeSales')) :
 			return $retorno;
 		}
 
+		/**
+		 * Takes the next number and marks it as used in one step, for code that creates invoices on its own (suggestInvoiceNumber() followed by updateSuggestInvoiceNumber() lets two of them take the same number).
+		 */
+		public static function reserveInvoiceNumber($sale_point = 0, $invoice_type = 0) {
+			list($keySale, $keyInvNum) = self::number_keys($sale_point, $invoice_type);
+			return fktr_atomic::run('last_invoice_number', function () use ($keySale, $keyInvNum) {
+				$last_invoice_numbers = fktr_atomic::option('last_invoice_number', false);
+				if (!$last_invoice_numbers) {
+					$last_invoice_numbers = array(0 => array());
+				}
+				$number = (empty($last_invoice_numbers[$keySale][$keyInvNum]) ? 0 : (int) $last_invoice_numbers[$keySale][$keyInvNum]) + 1;
+				$last_invoice_numbers[$keySale][$keyInvNum] = $number;
+				update_option('last_invoice_number', $last_invoice_numbers);
+				return $number;
+			});
+		}
+
 		public static function updateSuggestInvoiceNumber($sale_point = 0, $invoice_type = 0, $invoice_number = 0) {
 			if (!is_numeric($invoice_number)) {
 				return;
 			}
 			$invoice_number = (int) $invoice_number;
+			list($keySale, $keyInvNum) = self::number_keys($sale_point, $invoice_type);
 
-			if ($sale_point < 0) {
-				$sale_point = 0;
-			}
-			if ($invoice_type < 0) {
-				$invoice_type = 0;
-			}
-			$setting_system = get_option('fakturo_system_options_group', false);
-			$last_invoice_numbers = get_option('last_invoice_number', false);
-			if (!$last_invoice_numbers) {
-				$last_invoice_numbers = array();
-				$last_invoice_numbers[0] = array();
-			}
-			$keySale = 0;
-			$keyInvNum = 0;
-			if ($setting_system['individual_numeration_by_invoice_type'] && $setting_system['individual_numeration_by_sale_point']) {
-				$keySale = $sale_point;
-				$keyInvNum = $invoice_type;
-			} else if ($setting_system['individual_numeration_by_sale_point']) {
-				$keySale = $sale_point;
-			} else if ($setting_system['individual_numeration_by_invoice_type']) {
-				$keyInvNum = $invoice_type;
-			}
-
-			if (empty($last_invoice_numbers[$keySale])) {
-				$last_invoice_numbers[$keySale] = array();
-			}
-			if (empty($last_invoice_numbers[$keySale][$keyInvNum])) {
-				$last_invoice_numbers[$keySale][$keyInvNum] = $invoice_number;
-			} else {
-				if ($last_invoice_numbers[$keySale][$keyInvNum] < $invoice_number) {
+			// The last numbers are read again under a lock, so a number saved at the same time is not overwritten with a lower one.
+			fktr_atomic::run('last_invoice_number', function () use ($keySale, $keyInvNum, $invoice_number) {
+				$last_invoice_numbers = fktr_atomic::option('last_invoice_number', false);
+				if (!$last_invoice_numbers) {
+					$last_invoice_numbers = array();
+					$last_invoice_numbers[0] = array();
+				}
+				if (empty($last_invoice_numbers[$keySale])) {
+					$last_invoice_numbers[$keySale] = array();
+				}
+				if (empty($last_invoice_numbers[$keySale][$keyInvNum]) || $last_invoice_numbers[$keySale][$keyInvNum] < $invoice_number) {
 					$last_invoice_numbers[$keySale][$keyInvNum] = $invoice_number;
 				}
-			}
-
-			update_option('last_invoice_number', $last_invoice_numbers);
+				update_option('last_invoice_number', $last_invoice_numbers);
+			});
 		}
 
 		public static function getTitleInvoiceNumber($id) {
