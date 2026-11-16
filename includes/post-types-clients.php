@@ -686,13 +686,7 @@ class fktrPostTypeClients {
 			$fields['uc_description'] = array();
 			$fields = apply_filters('fktr_clean_client_fields', $fields);
 
-			foreach ( $fields as $field => $value ) {
-				if ( !is_null( $value ) ) {
-					
-					$new = apply_filters( 'fktr_client_metabox_save_' . $field, $value );  //filtra cada campo antes de grabar
-					update_post_meta( $post->ID, $field, $new );
-				}
-			}
+			fktr_guard::write($post->ID, $fields, 'client', false);
 		}
 	}
 	public static function remove_balance($client_id, $value) {
@@ -717,70 +711,20 @@ class fktrPostTypeClients {
 		return true;
 	}
 	public static function get_client_data($client_id) {
-		$custom_field_keys = get_post_custom($client_id);
-		if (!is_array($custom_field_keys)) { $custom_field_keys = array(); } // false for an id that is not a post
-		foreach ( $custom_field_keys as $key => $value ) {
-			$custom_field_keys[$key] = maybe_unserialize($value[0]);
-		}
-		$custom_field_keys = apply_filters('fktr_clean_client_fields', $custom_field_keys );
-		$custom_field_keys = fktr_post_columns($custom_field_keys, $client_id);
-		return $custom_field_keys;
+		return fktr_get_post_data($client_id, 'client');
 	}
 	public static function save($post_id, $post) {
-		
-		if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ( defined( 'DOING_AJAX') && DOING_AJAX ) || isset( $_REQUEST['bulk_edit'] ) ) {
-			return false;
-		}
-
-		if ( isset( $post->post_type ) && $post->post_type == 'revision' || $post->post_type != 'fktr_client') {
-			return false;
-		}
-
-		if ( ! fktr_guard::can_save( $post_id ) ) {
-			return false;
-		}
-		if ( ( defined( 'FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION ) ) {
+		if (!fktr_guard::saving($post_id, $post, 'fktr_client')) {
 			return false;
 		}
 		$fields = apply_filters('fktr_clean_client_fields',$_POST);
 		$fields = apply_filters('fktr_client_before_save',$fields);
 		
-		if (isset($fields['webcam_image']) && $fields['webcam_image'] != NULL ) {
-			delete_post_meta($post_id, '_thumbnail_id');
-			$filename = 'webcam_image_'.microtime().'.jpg';
-			$file = wp_upload_bits($filename, null, base64_decode(substr($fields['webcam_image'], 23)));
-			if ($file['error'] == FALSE) {
-				$wp_filetype = wp_check_filetype($filename, null );
-				$attachment = array(
-					'post_mime_type' => $wp_filetype['type'],
-					'post_parent' => $post_id,
-					'post_title' => preg_replace('/\.[^.]+$/', '', $filename),
-					'post_content' => '',
-					'post_status' => 'inherit'
-				);
-				$attachment_id = wp_insert_attachment( $attachment, $file['file'], $post_id );
-				if (!is_wp_error($attachment_id)) {
-					require_once(ABSPATH . "wp-admin" . '/includes/image.php');
-					$attachment_data = wp_generate_attachment_metadata( $attachment_id, $file['file'] );
-					wp_update_attachment_metadata( $attachment_id,  $attachment_data );
-				}
-				$new = apply_filters('fktr_client_thumbnail_id', $attachment_id);
-				add_post_meta($post_id, '_thumbnail_id', $new);
-				unset($fields['webcam_image']);
-			}
-		}
+		$fields = fktr_save_webcam_image($post_id, $fields, 'client');
 		
 		
 		
-		foreach (fktr_guard::fields($fields, 'client', array('uc_address', 'uc_email', 'uc_phone', 'uc_position')) as $field => $value ) {
-			
-			if ( !is_null( $value ) ) {
-				$new = apply_filters('fktr_client_metabox_save_' . $field, $value );  //filtra cada campo antes de grabar
-				update_post_meta( $post_id, $field, $new );
-				
-			}
-			
-		}
+		fktr_guard::write($post_id, fktr_guard::fields($fields, 'client', array('uc_address', 'uc_email', 'uc_phone', 'uc_position')), 'client');
 		do_action( 'fktr_save_client', $post_id, $post );
 		
 	}

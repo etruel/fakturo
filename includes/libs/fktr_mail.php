@@ -119,16 +119,8 @@ if (!class_exists('fktr_mail')) :
 				return false;
 			}
 
-			$options = [
-				'isRemoteEnabled' => true,
-				'isHtml5ParserEnabled' => true
-			];
-			$pdf = fktr_pdf::getInstance($options);
-
 			try {
-				$pdf->setPaper("A4", "portrait");
-				$pdf->loadHtml(($html), 'UTF-8');
-				$pdf->render();
+				$pdf = fktr_pdf::render($html);
 			} catch (Exception $e) {
 				if ($notices) {
 					fktrNotices::add(__('A problem to generate the pdf.', 'fakturo'));
@@ -249,14 +241,8 @@ if (!class_exists('fktr_mail')) :
 				}
 				return false;
 			}
-			$pdf		 = fktr_pdf::getInstance();
 			try {
-				$pdf->getOptions()->set('isRemoteEnabled', true);
-				$pdf->getOptions()->set('isHtml5ParserEnabled', true);
-
-				$pdf->setPaper("A4", "portrait");
-				$pdf->loadHtml(($html), 'UTF-8');
-				$pdf->render();
+				$pdf = fktr_pdf::render($html);
 			} catch (Exception $e) {
 				fktrNotices::add(__('A problem to generate the pdf.', 'fakturo'));
 				if ($redirect) {

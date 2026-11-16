@@ -191,11 +191,7 @@ if (!class_exists('fktrPostTypeSales')) :
 					wp_die(esc_html($tpl->error));
 				}
 				if (isset($_REQUEST['pdf'])) {
-					$pdf = fktr_pdf::getInstance();
-					$pdf->setPaper("A4", "portrait");
-					$pdf->loadHtml($html);
-					$pdf->render();
-					$pdf->stream('pdf.pdf', array('Attachment' => 0));
+					fktr_pdf::stream($html);
 				} else {
 					echo $html;
 				}
@@ -1898,12 +1894,7 @@ if (!class_exists('fktrPostTypeSales')) :
 
 				$fields = apply_filters('fktr_clean_sale_fields', $fields);
 
-				foreach ($fields as $field => $value) {
-					if (!is_null($value)) {
-						$new = apply_filters('fktr_sale_metabox_save_' . $field, $value);  //filtra cada campo antes de grabar
-						update_post_meta($post->ID, $field, $new);
-					}
-				}
+				fktr_guard::write($post->ID, $fields, 'sale', false);
 			}
 		}
 
@@ -1913,18 +1904,7 @@ if (!class_exists('fktrPostTypeSales')) :
 		 * @return type array All invoice data
 		 */
 		public static function get_sale_data($sale_id) {
-			$custom_field_keys = get_post_custom($sale_id);
-			if (!is_array($custom_field_keys)) { $custom_field_keys = array(); } // false for an id that is not a post
-			foreach ($custom_field_keys as $key => $value) {
-				$custom_field_keys[$key] = maybe_unserialize($value[0]);
-			}
-			$client_data = array();
-			$client_data['client_data'] = json_decode(get_post_field('post_content', $sale_id), true);
-			$custom_field_keys = array_merge($custom_field_keys, $client_data);
-
-			$custom_field_keys = apply_filters('fktr_clean_sale_fields', $custom_field_keys);
-			$custom_field_keys = fktr_post_columns($custom_field_keys, $sale_id);
-			return $custom_field_keys;
+			return fktr_get_post_data($sale_id, 'sale', array('client_data' => json_decode(get_post_field('post_content', $sale_id), true)));
 		}
 
 		public static function fktr_save_sale_summary($sale_summary, $fields) {
@@ -1939,20 +1919,9 @@ if (!class_exists('fktrPostTypeSales')) :
 			if (isset($_POST['original_post_status']) && $_POST['original_post_status'] == 'publish') {
 				return false;
 			}
-			if (( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) || ( defined('DOING_AJAX') && DOING_AJAX ) || isset($_REQUEST['bulk_edit'])) {
-				return false;
-			}
-
-			if (isset($post->post_type) && $post->post_type == 'revision' || $post->post_type != 'fktr_sale') {
-				return false;
-			}
-
-			if (!fktr_guard::can_save($post_id)) {
-				return false;
-			}
-			if (( defined('FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION)) {
-				return false;
-			}
+		if (!fktr_guard::saving($post_id, $post, 'fktr_sale')) {
+			return false;
+		}
 
 			$setting_system = get_option('fakturo_system_options_group', false);
 			// WordPress adds slashes to $_POST: work with the real text and slash it again only for update_post_meta().
@@ -1985,13 +1954,7 @@ if (!class_exists('fktrPostTypeSales')) :
 
 
 			$lines = array('uc_amount', 'uc_code', 'uc_description', 'uc_quality', 'uc_tax', 'uc_tax_porcent', 'uc_unit_price');
-			foreach (fktr_guard::fields($fields, 'sale', $lines) as $field => $value) {
-
-				if (!is_null($value)) {
-					$new = apply_filters('fktr_sale_metabox_save_' . $field, $value);  //filtra cada campo antes de grabar
-					update_post_meta($post_id, $field, wp_slash($new));
-				}
-			}
+			fktr_guard::write($post_id, fktr_guard::fields($fields, 'sale', $lines), 'sale', false);
 			if ($post->post_status == 'publish') {
 				self::updateSuggestInvoiceNumber($fields['sale_point'], $fields['invoice_type'], $fields['invoice_number']);
 				fktr_atomic::release(self::PUBLISH_LOCK);

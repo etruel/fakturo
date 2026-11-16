@@ -419,15 +419,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 					wp_die(esc_html($tpl->error));
 				}
 				if (isset($_REQUEST['pdf'])) {
-					$pdf = fktr_pdf::getInstance();
-
-					$pdf->getOptions()->set('isRemoteEnabled', true);
-					$pdf->getOptions()->set('isHtml5ParserEnabled', true);
-
-					$pdf->setPaper("A4", "portrait");
-					$pdf->loadHtml($html);  // removed utf8_decode($html) for RTL
-					$pdf->render();
-					$pdf->stream('pdf.pdf', array('Attachment' => 0));
+					fktr_pdf::stream($html);
 				} else {
 					echo $html;
 				}
@@ -906,56 +898,25 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 
 				$fields = apply_filters('fktr_clean_print_template_fields', $fields);
 
-				foreach ($fields as $field => $value) {
-					if (!is_null($value)) {
-						$new = apply_filters('fktr_print_template_metabox_save_' . $field, $value);  //filtra cada campo antes de grabar
-						update_post_meta($post->ID, $field, $new);
-					}
-				}
+				fktr_guard::write($post->ID, $fields, 'print_template', false);
 			}
 		}
 
 		public static function get_print_template_data($template_id) {
-			$custom_field_keys = get_post_custom($template_id);
-			if (!is_array($custom_field_keys)) { $custom_field_keys = array(); } // false for an id that is not a post
-			foreach ($custom_field_keys as $key => $value) {
-				$custom_field_keys[$key] = maybe_unserialize($value[0]);
-			}
-
-			$custom_field_keys = apply_filters('fktr_clean_print_template_fields', $custom_field_keys);
-			$custom_field_keys = fktr_post_columns($custom_field_keys, $template_id);
-			return $custom_field_keys;
+			return fktr_get_post_data($template_id, 'print_template');
 		}
 
 		public static function save($post_id, $post) {
 			global $wpdb;
-
-			if (( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) || ( defined('DOING_AJAX') && DOING_AJAX ) || isset($_REQUEST['bulk_edit'])) {
-				return false;
-			}
-
-			if (isset($post->post_type) && $post->post_type == 'revision' || $post->post_type != 'fktr_print_template') {
-				return false;
-			}
-
-			if (!fktr_guard::can_save($post_id, 'manage_options')) {
-				return false;
-			}
-			if (( defined('FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION)) {
-				return false;
-			}
+		if (!fktr_guard::saving($post_id, $post, 'fktr_print_template', 'manage_options')) {
+			return false;
+		}
 
 			$setting_system	 = get_option('fakturo_system_options_group', false);
 			$fields			 = apply_filters('fktr_clean_print_template_fields', $_POST);
 			$fields			 = apply_filters('fktr_print_template_before_save', $fields);
 
-			foreach (fktr_guard::fields($fields, 'print_template') as $field => $value) {
-
-				if (!is_null($value)) {
-					$new = apply_filters('fktr_print_template_metabox_save_' . $field, $value);  //filtra cada campo antes de grabar
-					update_post_meta($post_id, $field, $new);
-				}
-			}
+			fktr_guard::write($post_id, fktr_guard::fields($fields, 'print_template'), 'print_template');
 			$tpl_error = fktr_tpl::validate((string) get_post_meta($post_id, 'content', true));
 			if ($tpl_error) {
 				fktrNotices::add(array('text' => esc_html($tpl_error) . '. ' . esc_html__('The template is saved but it will not be used until you fix it.', 'fakturo'), 'error' => true));

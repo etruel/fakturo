@@ -116,13 +116,7 @@ class fktrPostTypeReceipts {
 
         if (isset($_REQUEST['pdf'])) {
             // Si se solicita el PDF
-            $pdf = fktr_pdf::getInstance();
-            $pdf->getOptions()->set('isRemoteEnabled', true);
-            $pdf->getOptions()->set('isHtml5ParserEnabled', true);
-            $pdf->setPaper("A4", "portrait");
-            $pdf->loadHtml($html);
-            $pdf->render();
-            $pdf->stream('pdf.pdf', array('Attachment' => 0));
+            fktr_pdf::stream($html);
         } else {
             // Muestra el HTML si no se solicita PDF
             echo $html;
@@ -1186,24 +1180,11 @@ class fktrPostTypeReceipts {
 			
 			$fields = apply_filters('fktr_clean_receipt_fields', $fields);
 
-			foreach ( $fields as $field => $value ) {
-				if ( !is_null( $value ) ) {
-					$new = apply_filters( 'fktr_receipt_metabox_save_' . $field, $value );  //filtra cada campo antes de grabar
-					update_post_meta( $post->ID, $field, $new );
-				}
-			}
+			fktr_guard::write($post->ID, $fields, 'receipt', false);
 		}
 	}
 	public static function get_receipt_data($receipt_id) {
-		$custom_field_keys = get_post_custom($receipt_id);
-		if (!is_array($custom_field_keys)) { $custom_field_keys = array(); } // false for an id that is not a post
-		foreach ( $custom_field_keys as $key => $value ) {
-			$custom_field_keys[$key] = maybe_unserialize($value[0]);
-		}
-		
-		$custom_field_keys = apply_filters('fktr_clean_receipt_fields', $custom_field_keys );
-		$custom_field_keys = fktr_post_columns($custom_field_keys, $receipt_id);
-		return $custom_field_keys;
+		return fktr_get_post_data($receipt_id, 'receipt');
 	}
 	
 	
@@ -1214,18 +1195,7 @@ class fktrPostTypeReceipts {
 				return false;
 			}
 		}
-		if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ( defined( 'DOING_AJAX') && DOING_AJAX ) || isset( $_REQUEST['bulk_edit'] ) ) {
-			return false;
-		}
-
-		if ( isset( $post->post_type ) && $post->post_type == 'revision' || $post->post_type!= 'fktr_receipt') {
-			return false;
-		}
-		
-		if ( ! fktr_guard::can_save( $post_id ) ) {
-			return false;
-		}
-		if ( ( defined( 'FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION ) ) {
+		if (!fktr_guard::saving($post_id, $post, 'fktr_receipt')) {
 			return false;
 		}
 		if ($post->post_status == 'auto-draft') {
@@ -1247,15 +1217,7 @@ class fktrPostTypeReceipts {
 		
 			$fields['date'] = current_time('timestamp');
 	
-			foreach (fktr_guard::fields($fields, 'receipt', array('check_invs', 'to_pay', 'date')) as $field => $value ) {
-			
-				if ( !is_null( $value ) ) {
-					$new = apply_filters('fktr_receipt_metabox_save_' . $field, $value );  //filtra cada campo antes de grabar
-					update_post_meta( $post_id, $field, $new );
-				
-				}
-			
-			}
+			fktr_guard::write($post_id, fktr_guard::fields($fields, 'receipt', array('check_invs', 'to_pay', 'date')), 'receipt');
 			self::updateSuggestReceiptNumber($fields['receipt_number']);
 		} finally {
 			// The mark stays even if something failed half way: doing it all again would take the amount twice.

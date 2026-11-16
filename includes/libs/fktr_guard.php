@@ -70,6 +70,34 @@ class fktr_guard {
 	}
 
 	/**
+	 * True when a save_post call is the save of a form of $post_type by someone who may edit it: not an autosave, an AJAX call, a bulk edit, a revision or a post of another type, and not while another process turned propagation off (FKTR_STOP_PROPAGATION).
+	 */
+	public static function saving($post_id, $post, $post_type, $cap = 'edit_post') {
+		if (( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) || ( defined('DOING_AJAX') && DOING_AJAX ) || isset($_REQUEST['bulk_edit'])) {
+			return false;
+		}
+		if (!isset($post->post_type) || $post->post_type !== $post_type) {
+			return false;
+		}
+		if (!self::can_save($post_id, $cap)) {
+			return false;
+		}
+		return !( defined('FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION );
+	}
+
+	/**
+	 * Writes the fields to the post meta, each one through the fktr_{$type}_metabox_save_{field} filter. $fields come from fktr_guard::fields(). Values straight from $_POST are slashed as WordPress wants for update_post_meta(); pass $slashed = false for text that was already unslashed.
+	 */
+	public static function write($post_id, $fields, $type, $slashed = true) {
+		foreach ($fields as $field => $value) {
+			if (!is_null($value)) {
+				$new = apply_filters('fktr_' . $type . '_metabox_save_' . $field, $value);
+				update_post_meta($post_id, $field, $slashed ? $new : wp_slash($new));
+			}
+		}
+	}
+
+	/**
 	 * The posted fields that a post type may save: the ones its clean_fields() defaults (so add-ons that hook fktr_clean_{$type}_fields are included), $extra and fktr_{$type}_allowed_fields.
 	 */
 	public static function fields($fields, $type, $extra = array()) {

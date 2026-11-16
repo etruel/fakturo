@@ -23,6 +23,24 @@
 			}
 			return array_values(array_unique(array_filter((array) apply_filters('fktr_pdf_allowed_hosts', $hosts))));
 		}
+		/**
+		 * Renders HTML to PDF with the options every Fakturo document uses (remote files only from the allowed hosts, HTML5 parser). Returns the Dompdf object to call output() or stream() on; throws if dompdf fails.
+		 */
+		public static function render($html, $paper = 'A4', $orientation = 'portrait') {
+			$pdf = self::getInstance();
+			$pdf->getOptions()->set('isRemoteEnabled', true);
+			$pdf->getOptions()->set('isHtml5ParserEnabled', true);
+			$pdf->setPaper($paper, $orientation);
+			$pdf->loadHtml($html, 'UTF-8');
+			$pdf->render();
+			return $pdf;
+		}
+		/**
+		 * Sends the PDF to the browser to be shown in place.
+		 */
+		public static function stream($html, $filename = 'pdf.pdf') {
+			self::render($html)->stream($filename, array('Attachment' => 0));
+		}
 		public static function getInstance($options = null) {
 			if (is_null(self::$instance)) {
 				if(!class_exists('Dompdf\Dompdf'))

@@ -292,6 +292,56 @@ function fktr_to_utf8($text) {
 	return $text;
 }
 
+/**
+ * All the data of a Fakturo post as a flat array: its meta (unserialized), $extra on top, passed through fktr_clean_{$type}_fields so the defaults are always there, plus the columns of the post. Used by the get_*_data() of every post type.
+ */
+function fktr_get_post_data($post_id, $type, $extra = array()) {
+	$data = get_post_custom($post_id);
+	if (!is_array($data)) {
+		$data = array(); // false for an id that is not a post
+	}
+	foreach ($data as $key => $value) {
+		$data[$key] = maybe_unserialize($value[0]);
+	}
+	$data = array_merge($data, $extra);
+	$data = apply_filters('fktr_clean_' . $type . '_fields', $data);
+	return fktr_post_columns($data, $post_id);
+}
+
+/**
+ * Saves the snapshot taken with the webcam (a data URL in $fields['webcam_image']) as the featured image of the post and returns $fields without it. The old image is only replaced when the new one was saved. Filter fktr_{$type}_thumbnail_id.
+ */
+function fktr_save_webcam_image($post_id, $fields, $type) {
+	if (empty($fields['webcam_image']) || !is_string($fields['webcam_image']) || !preg_match('#^data:image/(jpeg|png);base64,(.+)$#s', $fields['webcam_image'], $image)) {
+		return $fields;
+	}
+	$bytes = base64_decode($image[2], true);
+	if ($bytes === false) {
+		return $fields;
+	}
+	$filename = 'webcam_image_' . time() . '_' . wp_generate_password(6, false) . ($image[1] == 'png' ? '.png' : '.jpg');
+	$file = wp_upload_bits($filename, null, $bytes);
+	if (!empty($file['error'])) {
+		return $fields;
+	}
+	$wp_filetype = wp_check_filetype($filename, null);
+	$attachment_id = wp_insert_attachment(array(
+		'post_mime_type' => $wp_filetype['type'],
+		'post_parent' => $post_id,
+		'post_title' => preg_replace('/\.[^.]+$/', '', $filename),
+		'post_content' => '',
+		'post_status' => 'inherit'
+	), $file['file'], $post_id);
+	if (!is_wp_error($attachment_id) && $attachment_id) {
+		require_once(ABSPATH . 'wp-admin/includes/image.php');
+		wp_update_attachment_metadata($attachment_id, wp_generate_attachment_metadata($attachment_id, $file['file']));
+		delete_post_meta($post_id, '_thumbnail_id');
+		add_post_meta($post_id, '_thumbnail_id', apply_filters('fktr_' . $type . '_thumbnail_id', $attachment_id));
+		unset($fields['webcam_image']);
+	}
+	return $fields;
+}
+
 function get_sales_on_range($from, $to) {
 	global $wpdb;
 	$sales_ids = array();
