@@ -1,0 +1,6 @@
+tests
+.git
+.DS_Store
+TODO.md
+CLAUDE.md
+.distignore

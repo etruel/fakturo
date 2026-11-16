@@ -200,8 +200,11 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 
 				$client_data									 = fktrPostTypeClients::get_client_data($sale_invoice['client_id']);
 				$sale_invoice['client_data']['phone']			 = $client_data['phone'];
-				$sale_invoice['client_data']['tax_condition']	 = (array) get_fakturo_term($sale_invoice['client_data']['tax_condition'], 'fktr_tax_conditions');
-				$sale_invoice['client_data']['payment_type']	 = (array) get_fakturo_term($sale_invoice['client_data']['payment_type'], 'fktr_payment_types');
+				// A client without tax condition or payment type (a draft, a new client) has no term: the template gets an empty name instead of a notice.
+				foreach (array('tax_condition' => 'fktr_tax_conditions', 'payment_type' => 'fktr_payment_types') as $client_key => $client_tax) {
+					$client_term = get_fakturo_term($sale_invoice['client_data'][$client_key], $client_tax);
+					$sale_invoice['client_data'][$client_key] = is_wp_error($client_term) ? array('name' => '') : (array) $client_term;
+				}
 				$sale_invoice['invoice_type']					 = (array) get_fakturo_term($sale_invoice['invoice_type'], 'fktr_invoice_types');
 				$sale_invoice['currency']						 = (array) get_fakturo_term($sale_invoice['invoice_currency'], 'fktr_currencies');
 				$sale_invoice['products']						 = array();
