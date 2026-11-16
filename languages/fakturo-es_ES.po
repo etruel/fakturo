@@ -4540,6 +4540,11 @@ msgstr "Futuro balance de la cuenta"
 msgid "This receipt number is already in use, Please try again."
 msgstr "Este número de recibo ya está en uso, inténtalo de nuevo."
 
+#. translators: 1: receipt number typed, 2: receipt number given.
+#: includes/post-types-receipts.php:910
+msgid "The receipt number %1$s was already in use, the receipt was saved with number %2$s."
+msgstr "El número de recibo %1$s ya estaba en uso, el recibo se guardó con el número %2$s."
+
 #: includes/post-types-sales.php:136
 msgid "Unpaid"
 msgstr "Sin pagar"

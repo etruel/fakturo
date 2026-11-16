@@ -194,7 +194,6 @@ jQuery(document).ready(function($) {
 			}
 			addNoticeMessage('<img width="12" src="'+receipts_object.url_loading_image+'" class="mt2"/> '+receipts_object.txt_loading+'...', 'updated');
 			
-   			jQuery.ajaxSetup({async:false});
    			status = 'error';
 			message = '';
 			selector = '';
@@ -204,7 +203,8 @@ jQuery(document).ready(function($) {
    				action: 'validate_receipt',
 				inputs: jQuery("#post").serialize()
    			};
-   			jQuery.post(receipts_object.ajax_url, data, function(data){  //si todo ok devuelve 1 sino el error
+   			// Only this call is synchronous: the form must wait for the answer, any other AJAX of the page must not.
+   			jQuery.ajax({type: 'POST', async: false, url: receipts_object.ajax_url, data: data, success: function(data){  //si todo ok devuelve 1 sino el error
 				status = jQuery(data).find('response_data').text();
 				message = jQuery(data).find('supplemental message').text();
 				selector = jQuery(data).find('supplemental inputSelector').text();
@@ -222,7 +222,7 @@ jQuery(document).ready(function($) {
 						e.preventDefault();
 					}
    				}
-   			});
+   			}});
 			if(status == 'error') {
 				e.preventDefault();
    				return false; 

@@ -10,6 +10,10 @@ if (!class_exists('fktrPostTypeSales')) :
 
 	class fktrPostTypeSales {
 
+		const PUBLISH_LOCK = 'sale_publish';
+
+		private static $blocked = false;
+
 		function __construct() {
 
 			add_action('init', array('fktrPostTypeSales', 'setup'), 1);
@@ -21,6 +25,8 @@ if (!class_exists('fktrPostTypeSales')) :
 			add_filter('views_edit-fktr_sale', array('fktrPostTypeSales', 'custom_draft_translation'), 10, 1);
 
 			add_action('save_post', array('fktrPostTypeSales', 'save'), 99, 2);
+			add_filter('wp_insert_post_data', array('fktrPostTypeSales', 'guard_publish'), 99, 2);
+			add_filter('redirect_post_location', array('fktrPostTypeSales', 'blocked_redirect'), 99, 1);
 
 			add_action('admin_print_scripts-post-new.php', array('fktrPostTypeSales', 'scripts'), 11);
 			add_action('admin_print_scripts-post.php', array('fktrPostTypeSales', 'scripts'), 11);
@@ -1396,38 +1402,28 @@ if (!class_exists('fktrPostTypeSales')) :
 			return $stocks;
 		}
 
-		public static function ajax_validate_sale() {
-			fktr_guard::ajax('edit_fktr_sales');
+		/**
+		 * Checks an invoice before it is published: number free, invoice type existing, enough stock. Returns null when all is well, otherwise the error for the screen.
+		 * $fields come from the form (original_post_status and post_ID included).
+		 */
+		public static function validate($fields) {
 			$setting_system = get_option('fakturo_system_options_group', false);
-			$response = new WP_Ajax_Response;
-			$fields = array();
-			parse_str($_POST['inputs'], $fields);
-			$fields = apply_filters('fktr_clean_sale_fields', $fields);
 
-			$invoiceNumberExiste = self::exist_a_invoice_number($fields['invoice_number'], $fields['sale_point'], $fields['invoice_type']);
-			if ($invoiceNumberExiste) {
-				$response->add(array(
-					'data' => 'error',
-					'supplemental' => array(
-						'message' => __('This invoice number is already in use, Please try again.', 'fakturo'),
-						'inputSelector' => '#invoice_number',
-						'function' => 'updateSuggestInvoiceNumber',
-					),
-				));
-				$response->send();
+			if (self::exist_a_invoice_number($fields['invoice_number'], $fields['sale_point'], $fields['invoice_type'])) {
+				return array(
+					'message' => __('This invoice number is already in use, Please try again.', 'fakturo'),
+					'inputSelector' => '#invoice_number',
+					'function' => 'updateSuggestInvoiceNumber',
+				);
 			}
 
 			$invoice_type = get_fakturo_term($fields['invoice_type'], 'fktr_invoice_types');
 			if (is_wp_error($invoice_type)) {
-				$response->add(array(
-					'data' => 'error',
-					'supplemental' => array(
-						'message' => __('This invoice type does not exist, try another.', 'fakturo'),
-						'inputSelector' => '#invoice_type',
-						'function' => '',
-					),
-				));
-				$response->send();
+				return array(
+					'message' => __('This invoice type does not exist, try another.', 'fakturo'),
+					'inputSelector' => '#invoice_type',
+					'function' => '',
+				);
 			}
 
 			if ($setting_system['use_stock_product'] && $invoice_type->sum == 0 && $setting_system['stock_less_zero'] == 0) {
@@ -1437,7 +1433,7 @@ if (!class_exists('fktrPostTypeSales')) :
 				}
 				$error = 0;
 				$productStocks = array();
-				foreach ($fields['product_stock_location'] as $product_id => $arr_locations) {
+				foreach ((array) $fields['product_stock_location'] as $product_id => $arr_locations) {
 					foreach ($arr_locations as $location_id => $array_quantity) {
 						foreach ($array_quantity as $key => $quantity) {
 							if (!empty($quantity)) {
@@ -1457,20 +1453,31 @@ if (!class_exists('fktrPostTypeSales')) :
 					}
 				}
 
-
-
 				if ($error > 0) {
-
-					$response->add(array(
-						'data' => 'error',
-						'supplemental' => array(
-							'message' => sprintf(__('The product (%s) does not have enough stock.', 'fakturo'), $error),
-							'inputSelector' => '',
-							'function' => '',
-						),
-					));
-					$response->send();
+					return array(
+						'message' => sprintf(__('The product (%s) does not have enough stock.', 'fakturo'), $error),
+						'inputSelector' => '',
+						'function' => '',
+					);
 				}
+			}
+			return null;
+		}
+
+		public static function ajax_validate_sale() {
+			fktr_guard::ajax('edit_fktr_sales');
+			$response = new WP_Ajax_Response;
+			$fields = array();
+			parse_str($_POST['inputs'], $fields);
+			$fields = apply_filters('fktr_clean_sale_fields', $fields);
+
+			$error = self::validate($fields);
+			if ($error) {
+				$response->add(array(
+					'data' => 'error',
+					'supplemental' => $error,
+				));
+				$response->send();
 			}
 
 			do_action('fktr_validate_sale', $fields);
@@ -1485,6 +1492,47 @@ if (!class_exists('fktrPostTypeSales')) :
 				),
 			));
 			$response->send(); //		wp_die();
+		}
+
+		/**
+		 * The server checks again what the screen asked the AJAX call (the form can be sent without it). An invoice that fails is kept as a draft with the reason in a notice. The lock stays until save() has written the number, so two invoices cannot be published with the same one.
+		 */
+		public static function guard_publish($data, $postarr) {
+			if ($data['post_type'] != 'fktr_sale' || $data['post_status'] != 'publish') {
+				return $data;
+			}
+			$post_id = isset($postarr['ID']) ? (int) $postarr['ID'] : 0;
+			if (!$post_id || self::skips_save()) {
+				return $data;
+			}
+			$old_status = get_post_status($post_id);
+			if ($old_status == 'publish' || !fktr_guard::can_save($post_id)) {
+				return $data;
+			}
+			self::$blocked = false;
+			fktr_atomic::acquire(self::PUBLISH_LOCK);
+			$fields = apply_filters('fktr_clean_sale_fields', wp_unslash($_POST));
+			$fields['post_ID'] = $post_id;
+			$fields['original_post_status'] = $old_status;
+			$error = self::validate($fields);
+			if ($error) {
+				fktr_atomic::release(self::PUBLISH_LOCK);
+				$data['post_status'] = 'draft';
+				self::$blocked = true;
+				fktrNotices::add(array('text' => esc_html($error['message']), 'error' => true));
+			}
+			return $data;
+		}
+
+		/**
+		 * After a blocked publish WordPress would say "published": say "saved" instead.
+		 */
+		public static function blocked_redirect($location) {
+			return self::$blocked ? add_query_arg('message', 7, $location) : $location;
+		}
+
+		private static function skips_save() {
+			return ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) || ( defined('DOING_AJAX') && DOING_AJAX ) || isset($_REQUEST['bulk_edit']) || ( defined('FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION );
 		}
 
 		public static function exist_a_invoice_number($invoice_number, $sale_point, $invoice_type) {
@@ -1904,7 +1952,12 @@ if (!class_exists('fktrPostTypeSales')) :
 			$fields = apply_filters('fktr_clean_sale_fields', $_POST);
 			$fields = apply_filters('fktr_sale_before_save', $fields, $post);
 
-			self::updateStock($fields, $post);
+			// A blocked invoice takes nothing from the stock: its lines stay as they were, so the stock still matches them.
+			if (self::$blocked) {
+				unset($fields['product_stock_location']);
+			} else {
+				self::updateStock($fields, $post);
+			}
 
 			if (isset($fields['date']) && !is_numeric($fields['date'])) {
 
@@ -1933,6 +1986,7 @@ if (!class_exists('fktrPostTypeSales')) :
 			}
 			if ($post->post_status == 'publish') {
 				self::updateSuggestInvoiceNumber($fields['sale_point'], $fields['invoice_type'], $fields['invoice_number']);
+				fktr_atomic::release(self::PUBLISH_LOCK);
 			}
 
 			do_action('fktr_save_sale', $post_id, $post, $fields);

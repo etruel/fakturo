@@ -4197,6 +4197,11 @@ msgstr ""
 msgid "This receipt number is already in use, Please try again."
 msgstr ""
 
+#. translators: 1: receipt number typed, 2: receipt number given.
+#: includes/post-types-receipts.php:910
+msgid "The receipt number %1$s was already in use, the receipt was saved with number %2$s."
+msgstr ""
+
 #: includes/post-types-sales.php:136
 msgid "Unpaid"
 msgstr ""

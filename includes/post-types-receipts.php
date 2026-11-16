@@ -9,6 +9,7 @@ if (!defined('ABSPATH'))  {
 
 if ( ! class_exists('fktrPostTypeReceipts') ) :
 class fktrPostTypeReceipts {
+	const PUBLISH_LOCK = 'receipt_publish';
 	function __construct() {
 		
 		add_action( 'init', array(__CLASS__, 'setup'), 1 );
@@ -40,6 +41,7 @@ class fktrPostTypeReceipts {
 		add_filter('attribute_escape', array(__CLASS__, 'change_button_texts'), 10, 2);
 		add_action('before_delete_post', array(__CLASS__, 'before_delete'), 10, 1);
 		add_filter('wp_insert_post_data' , array(__CLASS__, 'dont_draft'), 99, 2);  
+		add_filter('wp_insert_post_data', array(__CLASS__, 'guard_publish'), 100, 2);
 		
 		add_action( 'admin_post_cancel_receipt', array(__CLASS__, 'cancel_receipt'));
 		add_filter('post_row_actions', array(__CLASS__, 'row_actions'), 10, 2);
@@ -833,23 +835,32 @@ class fktrPostTypeReceipts {
 
 	}
 	
+	/**
+	 * Checks a receipt before it is published. Returns null when all is well, otherwise the error for the screen.
+	 */
+	public static function validate($fields) {
+		if (self::exist_a_receipt_number($fields['receipt_number'])) {
+			return array(
+				'message' => __('This receipt number is already in use, Please try again.', 'fakturo' ),
+				'inputSelector' => '#receipt_number',
+				'function' => 'updateSuggestReceiptNumber',
+			);
+		}
+		return null;
+	}
+
 	public static function ajax_validate_receipt() {
 		fktr_guard::ajax('edit_fktr_receipts');
-		$setting_system = get_option('fakturo_system_options_group', false);
 		$response = new WP_Ajax_Response;
 		$fields = array();
 		parse_str($_POST['inputs'], $fields);
 		$fields = apply_filters('fktr_clean_receipt_fields',$fields);
 		
-		$invoiceNumberExiste = self::exist_a_receipt_number($fields['receipt_number']);
-		if ($invoiceNumberExiste) {
+		$error = self::validate($fields);
+		if ($error) {
 			$response->add( array(
 				'data'	=> 'error',
-				'supplemental' => array(
-					'message' => __('This receipt number is already in use, Please try again.', 'fakturo' ),
-					'inputSelector' => '#receipt_number',
-					'function' => 'updateSuggestReceiptNumber',
-				),
+				'supplemental' => $error,
 			)); 
 			$response->send();
 		}
@@ -874,6 +885,36 @@ class fktrPostTypeReceipts {
 		$suggested = self::suggestReceiptNumber();
 		wp_die($suggested);
 	}
+	/**
+	 * The server checks again what the screen asked the AJAX call (the form can be sent without it). A receipt never stays as a draft, so one whose number is taken gets the next free number, with a notice. The lock stays until save() has written the number, so two receipts cannot be published with the same one.
+	 */
+	public static function guard_publish($data, $postarr) {
+		if ($data['post_type'] != 'fktr_receipt' || $data['post_status'] != 'publish') {
+			return $data;
+		}
+		$post_id = isset($postarr['ID']) ? (int) $postarr['ID'] : 0;
+		if (!$post_id || ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) || ( defined('DOING_AJAX') && DOING_AJAX ) || isset($_REQUEST['bulk_edit']) || ( defined('FKTR_STOP_PROPAGATION') && FKTR_STOP_PROPAGATION )) {
+			return $data;
+		}
+		$old_status = get_post_status($post_id);
+		if ($old_status == 'publish' || $old_status == 'cancelled' || !fktr_guard::can_save($post_id)) {
+			return $data;
+		}
+		fktr_atomic::acquire(self::PUBLISH_LOCK);
+		$fields = apply_filters('fktr_clean_receipt_fields', wp_unslash($_POST));
+		if (self::validate($fields)) {
+			$setting_system = get_option('fakturo_system_options_group', false);
+			$next = self::suggestReceiptNumber();
+			do {
+				$number = str_pad($next++, $setting_system['digits_receipt_number'], '0', STR_PAD_LEFT);
+			} while (self::exist_a_receipt_number($number));
+			$_POST['receipt_number'] = $_REQUEST['receipt_number'] = wp_slash($number);
+			/* translators: 1: receipt number typed, 2: receipt number given. */
+			fktrNotices::add(array('text' => esc_html(sprintf(__('The receipt number %1$s was already in use, the receipt was saved with number %2$s.', 'fakturo'), $fields['receipt_number'], $number))));
+		}
+		return $data;
+	}
+
 	public static function exist_a_receipt_number($receipt_number) {
 		global $wpdb;
 		$return = false;
@@ -1180,6 +1221,7 @@ class fktrPostTypeReceipts {
 		}
 		if ($post->post_status == 'publish') {
 		   self::updateSuggestReceiptNumber($fields['receipt_number']);
+		   fktr_atomic::release(self::PUBLISH_LOCK);
 		}
 		do_action( 'fktr_save_receipt', $post_id, $post );
 		
