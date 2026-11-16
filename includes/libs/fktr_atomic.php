@@ -92,5 +92,9 @@ class fktr_atomic {
 	public static function forget_meta($post_id) {
 		wp_cache_delete((int) $post_id, 'post_meta');
 	}
+
+	public static function forget_user_meta($user_id) {
+		wp_cache_delete((int) $user_id, 'user_meta');
+	}
 }
 endif;

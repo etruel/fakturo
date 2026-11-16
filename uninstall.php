@@ -45,6 +45,9 @@ class fktrUninstall {
 		foreach (self::SITE_CACHE_OPTIONS as $name) {
 			delete_option($name);
 		}
+		// Pending notices and redirects live in the meta of each user, one key per site.
+		delete_metadata('user', 0, $wpdb->get_blog_prefix() . 'fakturo_notices', '', true);
+		delete_metadata('user', 0, $wpdb->get_blog_prefix() . 'fakturo_redirects', '', true);
 		$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE 'edd\\_sl\\_%' OR option_name LIKE '\\_transient\\_%fktr\\_%' OR option_name LIKE '\\_transient\\_timeout\\_%fktr\\_%'");
 
 		$settings = get_option('fakturo_system_options_group');

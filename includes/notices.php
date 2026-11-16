@@ -9,10 +9,29 @@ if ( ! class_exists( 'fktrNotices' ) ) :
 
 class fktrNotices {
 	
+	// Legacy: one option with the notices of every user. They now live in the meta of each user, see meta_key().
 	public static $option_notices = 'fakturo_notices';
+	// Notices a user keeps waiting; the oldest go first.
+	const MAX = 50;
+
 	public static function hooks() {
 		add_action( 'admin_notices', array(__CLASS__, 'show'));
 	}
+
+	/**
+	 * The notices wait in the meta of the user they are for, one list per site (the key carries the table prefix), so users and sites never share a list.
+	 */
+	public static function meta_key() {
+		global $wpdb;
+		return $wpdb->get_blog_prefix() . 'fakturo_notices';
+	}
+
+	private static function read($user_id) {
+		fktr_atomic::forget_user_meta($user_id);
+		$list = get_user_meta($user_id, self::meta_key(), true);
+		return is_array($list) ? $list : array();
+	}
+
 	public static function add($new_notice) {
 		if(is_string($new_notice)) {
 			$adm_notice['text'] = $new_notice;
@@ -23,34 +42,54 @@ class fktrNotices {
 		$adm_notice['error'] = (!isset($new_notice['error'])) ? false : $new_notice['error'];
 		$adm_notice['below-h2'] = (!isset($new_notice['below-h2'])) ? true : $new_notice['below-h2'];
 		$adm_notice['is-dismissible'] = (!isset($new_notice['is-dismissible'])) ? true : $new_notice['is-dismissible'];
-		$adm_notice['user_ID'] = (!isset($new_notice['user_ID'])) ? get_current_user_id() : $new_notice['user_ID'];
+		$adm_notice['user_ID'] = (int) ((!isset($new_notice['user_ID'])) ? get_current_user_id() : $new_notice['user_ID']);
+		$adm_notice['id'] = wp_generate_uuid4();
+		if (!$adm_notice['user_ID']) {
+			return;
+		}
 		
-		$notice = get_option(self::$option_notices, array());
-		$notice[] = $adm_notice;
-		update_option(self::$option_notices, $notice);
+		fktr_atomic::run('notices_' . $adm_notice['user_ID'], function () use ($adm_notice) {
+			$notices = self::read($adm_notice['user_ID']);
+			$notices[] = $adm_notice;
+			update_user_meta($adm_notice['user_ID'], self::meta_key(), array_slice($notices, -self::MAX));
+		});
 	}
 
 	public static function show() {
 		$screen = get_current_screen();
-		$notice = get_option(self::$option_notices, array());
+		$user_id = get_current_user_id();
 
 		self::settings_notices();
 
+		if (false !== get_option(self::$option_notices)) {
+			delete_option(self::$option_notices);
+		}
+		$notice = $user_id ? get_user_meta($user_id, self::meta_key(), true) : array();
 
 		$admin_message = '';
-		if (!empty($notice)) {
-			foreach($notice as $key => $mess) {
-				if($mess['user_ID'] == get_current_user_id()) {
-					if ($mess['screen'] == 'all' || $mess['screen'] == $screen->id) {
-						$class = ($mess['error']) ? "notice notice-error" : "notice notice-success";
-						$class .= ($mess['is-dismissible']) ? " is-dismissible" : "";
-						$class .= ($mess['below-h2']) ? " below-h2" : "";
-						$admin_message .= '<div id="message" class="'.$class.'"><p>'.$mess['text'].'</p></div>';
-						unset( $notice[$key] );
-					}	
+		$shown = array();
+		if (!empty($notice) && is_array($notice)) {
+			foreach($notice as $mess) {
+				if ($mess['screen'] == 'all' || $mess['screen'] == $screen->id) {
+					$class = ($mess['error']) ? "notice notice-error" : "notice notice-success";
+					$class .= ($mess['is-dismissible']) ? " is-dismissible" : "";
+					$class .= ($mess['below-h2']) ? " below-h2" : "";
+					$admin_message .= '<div id="message" class="'.$class.'"><p>'.$mess['text'].'</p></div>';
+					$shown[] = $mess['id'];
 				}
 			}
-			update_option(self::$option_notices, $notice);
+			if ($shown) {
+				// Only the notices that were printed are removed; one added meanwhile stays.
+				fktr_atomic::run('notices_' . $user_id, function () use ($user_id, $shown) {
+					$left = array();
+					foreach (self::read($user_id) as $mess) {
+						if (!in_array($mess['id'], $shown, true)) {
+							$left[] = $mess;
+						}
+					}
+					update_user_meta($user_id, self::meta_key(), $left);
+				});
+			}
 		}
 		
 		echo $admin_message;
