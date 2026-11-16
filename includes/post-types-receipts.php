@@ -43,6 +43,8 @@ class fktrPostTypeReceipts {
 		add_filter('post_updated_messages', array(__CLASS__, 'updated_messages') );
 		add_filter('attribute_escape', array(__CLASS__, 'change_button_texts'), 10, 2);
 		add_action('before_delete_post', array(__CLASS__, 'before_delete'), 10, 1);
+		add_action('trashed_post', array(__CLASS__, 'after_trash'), 10, 1);
+		add_action('untrashed_post', array(__CLASS__, 'after_untrash'), 10, 1);
 		add_filter('wp_insert_post_data' , array(__CLASS__, 'dont_draft'), 99, 2);  
 		add_filter('wp_insert_post_data', array(__CLASS__, 'guard_publish'), 100, 2);
 		
@@ -996,6 +998,22 @@ class fktrPostTypeReceipts {
 			}
 		}
 		
+	}
+	/**
+	 * A receipt in the trash no longer pays anything: the balance, the checks and the invoices get back what it took.
+	 */
+	public static function after_trash($post_id) {
+		if (get_post_type($post_id) == 'fktr_receipt') {
+			self::action_on_delete($post_id);
+		}
+	}
+	/**
+	 * A receipt taken out of the trash returns as cancelled: it keeps its number and its data but does not apply its payment again, because the balance, the invoices or the number may have changed meanwhile. A receipt trashed before this existed was never given back, so it returns as it was.
+	 */
+	public static function after_untrash($post_id) {
+		if (get_post_type($post_id) == 'fktr_receipt' && get_post_meta($post_id, self::REVERTED, true) && get_post_status($post_id) != 'cancelled') {
+			wp_update_post(array('ID' => $post_id, 'post_status' => 'cancelled'));
+		}
 	}
 	public static function before_delete($post_id) {  // just permanent delete
 		$post_type = get_post_type($post_id);
