@@ -53,7 +53,10 @@ function fktr_widget_dashboard_sale_summary() {
 			return true;
 		}
 		
-		$sales_today = get_sales_on_range(strtotime('-1 day', time()), strtotime('+1 day', time()));
+		// The sales carry the wall clock of the site written as UTC, so the ranges start from current_time().
+		$now = current_time('timestamp');
+		$midnight = strtotime('midnight', $now);
+		$sales_today = get_sales_on_range($midnight, $midnight + DAY_IN_SECONDS - 1);
 	
 		$earning_today = 0;
 		$count_sales_today = 0;
@@ -63,7 +66,7 @@ function fktr_widget_dashboard_sale_summary() {
 			$earning_today = $earning_today+fakturo_transform_money($sales_data['invoice_currency'], $setting_system['currency'], $sales_data['in_total']);
 		}
 		$money_format_today = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($earning_today, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
-		$sales_current_month = get_sales_on_range(strtotime('first day of this month', time()), time());
+		$sales_current_month = get_sales_on_range(strtotime('first day of this month midnight', $now), $now);
 		
 		$earning_current_month = 0;
 		$count_sales_current_month = 0;
@@ -76,7 +79,7 @@ function fktr_widget_dashboard_sale_summary() {
 		$money_format_current_month = (($setting_system['currency_position'] == 'before')?$currencyDefault->symbol.' ':'').''.number_format($earning_current_month, $setting_system['decimal_numbers'], $setting_system['decimal'], $setting_system['thousand']).''.(($setting_system['currency_position'] == 'after')?' '.$currencyDefault->symbol:'');
 		
 		
-		$sales_last_month = get_sales_on_range(strtotime('first day of last month', time()), strtotime('last day of last month', time()));
+		$sales_last_month = get_sales_on_range(strtotime('first day of last month midnight', $now), strtotime('last day of last month 23:59:59', $now));
 
 		$earning_last_month = 0;
 		$count_sales_last_month = 0;

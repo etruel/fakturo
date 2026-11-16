@@ -164,13 +164,13 @@ class sales_report {
 			$from = strtotime('midnight', $t);
 			$to   = $from + ($labels_interval - 1);
 			if ($labels_by == 'month') {
-				$from = strtotime('first day of this month', $t);
-				$to = strtotime('last day of this month', $from);
-				$labels_interval = (strtotime('first day of next month', $t)-$from);
+				$from = strtotime('first day of this month midnight', $t);
+				$to = strtotime('last day of this month 23:59:59', $from);
+				$labels_interval = (strtotime('first day of next month midnight', $t)-$from);
 			}
-			$new_label = date($setting_system['dateformat'], $from);
+			$new_label = date_i18n($setting_system['dateformat'], $from);
 			if ($labels_by == 'month') {
-				$new_label = __(date('F', $from));
+				$new_label = date_i18n('F', $from);
 			}
 			$labels[] = $new_label;
 			$sec_objects = reports::get_objects($request, array('from' => $from, 'to' => $to));

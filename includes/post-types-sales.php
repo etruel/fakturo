@@ -1966,7 +1966,8 @@ if (!class_exists('fktrPostTypeSales')) :
 
 			if (isset($fields['date']) && !is_numeric($fields['date'])) {
 
-				$fields['date'] = fakturo_date2time($fields['date'], $setting_system['dateformat']);
+				$date = fakturo_date2time($fields['date'], $setting_system['dateformat']);
+				$fields['date'] = ($date === false) ? current_time('timestamp') : $date;
 			}
 
 			if (isset($fields['client_data'])) {

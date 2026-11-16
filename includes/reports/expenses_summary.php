@@ -121,8 +121,8 @@ class expenses_summary_report {
         if (!empty($ranges['from']) && !empty($ranges['to'])) {
             $date_condition = $wpdb->prepare(
                 " AND p.post_date BETWEEN %s AND %s",
-                date('Y-m-d H:i:s', $ranges['from']),
-                date('Y-m-d H:i:s', $ranges['to'])
+                gmdate('Y-m-d H:i:s', $ranges['from']),
+                gmdate('Y-m-d H:i:s', $ranges['to'])
             );
         }
 

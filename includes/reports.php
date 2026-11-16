@@ -147,23 +147,6 @@ class reports {
 	*/
 	public static function default_timestand_ranges($ranges, $request) {
 
-		$start_of_week = get_option('start_of_week', 0);
-		$start_of_week_str = 'Sunday';
-		if ($start_of_week == 0) {
-			$start_of_week_str = 'Sunday';
-		} else if ($start_of_week == 1) {
-			$start_of_week_str = 'Monday';
-		}  else if  ($start_of_week == 2) {
-			$start_of_week_str = 'Tuesday';
-		}  else if  ($start_of_week == 3) {
-			$start_of_week_str = 'Wednesday';
-		}  else if  ($start_of_week == 4) {
-			$start_of_week_str = 'Thursday';
-		}  else if  ($start_of_week == 5) {
-			$start_of_week_str = 'Friday';
-		}  else if  ($start_of_week == 6) {
-			$start_of_week_str = 'Saturday';
-		}
 		$current_time = current_time('timestamp');
 
 		if ($request['range'] == 'today') {
@@ -174,83 +157,47 @@ class reports {
 			$ranges['from'] = strtotime('midnight', strtotime('yesterday', $current_time));
 			$ranges['to'] =  $ranges['from']+(DAY_IN_SECONDS-1);
 		}
+		// The week starts on the day of the site settings: count back from today's midnight (PHP's "Sunday this week" is the end of a Monday-based week).
+		$days_into_week = ((int) gmdate('w', $current_time) - (int) get_option('start_of_week', 0) + 7) % 7;
+		$week_start = strtotime('midnight', $current_time) - $days_into_week * DAY_IN_SECONDS;
 		if ($request['range'] == 'this_week') {
-			$ranges['from'] = strtotime($start_of_week_str.' this week', $current_time);
+			$ranges['from'] = $week_start;
 			$ranges['to'] =  $current_time;
 		}
 		if ($request['range'] == 'last_week') {
-			$ranges['from'] = strtotime($start_of_week_str.' last week', $current_time);
-			$ranges['to'] =  $ranges['from']+(WEEK_IN_SECONDS-1);
+			$ranges['from'] = $week_start - WEEK_IN_SECONDS;
+			$ranges['to'] =  $week_start - 1;
 		}
 		if ($request['range'] == 'this_month') {
-			$ranges['from'] = strtotime('first day of this month', $current_time);
+			$ranges['from'] = strtotime('first day of this month midnight', $current_time);
 			$ranges['to'] = $current_time;
 		}
 		if ($request['range'] == 'last_month') {
-			$ranges['from'] = strtotime('first day of last month', $current_time);
-			$ranges['to'] = strtotime('last day of last month', $current_time);
+			$ranges['from'] = strtotime('first day of last month midnight', $current_time);
+			$ranges['to'] = strtotime('last day of last month 23:59:59', $current_time);
 		}
-		if ($request['range'] == 'this_quarter') {
-			$current_month = date_i18n('n', time());
-			$current_year = date_i18n('Y');
-			
-			// Determina el trimestre actual basado en el mes
-			if ($current_month >= 1 && $current_month <= 3) {
-				$current_quarter_start = 1; // Enero
-				$current_quarter_end = 3; // Marzo
-			} elseif ($current_month >= 4 && $current_month <= 6) {
-				$current_quarter_start = 4; // Abril
-				$current_quarter_end = 6; // Junio
-			} elseif ($current_month >= 7 && $current_month <= 9) {
-				$current_quarter_start = 7; // Julio
-				$current_quarter_end = 9; // Septiembre
-			} else {
-				$current_quarter_start = 10; // Octubre
-				$current_quarter_end = 12; // Diciembre
+		if ($request['range'] == 'this_quarter' || $request['range'] == 'last_quarter') {
+			// The dates are the wall clock of the site written as UTC, so $current_time is read with gmdate().
+			$current_month = (int) gmdate('n', $current_time);
+			$year = (int) gmdate('Y', $current_time);
+			$quarter_start = 3 * (int) floor(($current_month - 1) / 3) + 1;
+			if ($request['range'] == 'last_quarter') {
+				$quarter_start -= 3;
+				if ($quarter_start < 1) {
+					$quarter_start += 12;
+					$year--;
+				}
 			}
-		
-			// Usa date_i18n para el inicio y fin del trimestre actual
-			$start_date = date_i18n("Y-m-d H:i:s", mktime(0, 0, 0, $current_quarter_start, 1, $current_year));
-			$end_date = date_i18n("Y-m-d H:i:s", mktime(23, 59, 59, $current_quarter_end, date('t', mktime(0, 0, 0, $current_quarter_end, 1, $current_year)), $current_year));
-		
-			$ranges['from'] = strtotime($start_date);
-			$ranges['to'] = strtotime($end_date);
-		}
-		
-		if ($request['range'] == 'last_quarter') {
-			$current_month = date_i18n('n', time());
-			$current_year = date_i18n('Y');
-		
-			// Determina el trimestre actual
-			if ($current_month >= 1 && $current_month <= 3) {
-				$last_quarter_start = 10; // Octubre del año pasado
-				$last_quarter_end = 12;   // Diciembre del año pasado
-				$current_year = $current_year - 1; // Ajusta al año pasado
-			} elseif ($current_month >= 4 && $current_month <= 6) {
-				$last_quarter_start = 1; // Enero
-				$last_quarter_end = 3;   // Marzo
-			} elseif ($current_month >= 7 && $current_month <= 9) {
-				$last_quarter_start = 4; // Abril
-				$last_quarter_end = 6;   // Junio
-			} else {
-				$last_quarter_start = 7; // Julio
-				$last_quarter_end = 9;   // Septiembre
-			}
-		
-			// Usa date_i18n para el inicio y fin del trimestre anterior
-			$start_date = date_i18n("Y-m-d H:i:s", mktime(0, 0, 0, $last_quarter_start, 1, $current_year));
-			$end_date = date_i18n("Y-m-d H:i:s", mktime(23, 59, 59, $last_quarter_end, date('t', mktime(0, 0, 0, $last_quarter_end, 1, $current_year)), $current_year));
-		
-			$ranges['from'] = strtotime($start_date);
-			$ranges['to'] = strtotime($end_date);
+			$ranges['from'] = gmmktime(0, 0, 0, $quarter_start, 1, $year);
+			$ranges['to'] = gmmktime(23, 59, 59, $quarter_start + 2, (int) gmdate('t', gmmktime(0, 0, 0, $quarter_start + 2, 1, $year)), $year);
 		}
 		if ($request['range'] == 'this_year') {
-			$ranges['from'] =  strtotime('first day of January '.date_i18n('Y'), $current_time);
-			$ranges['to'] =   strtotime('last day of December '.date_i18n('Y'), $current_time);
+			$ranges['from'] = gmmktime(0, 0, 0, 1, 1, (int) gmdate('Y', $current_time));
+			$ranges['to'] = gmmktime(23, 59, 59, 12, 31, (int) gmdate('Y', $current_time));
 		}
 		if ($request['range'] == 'last_year') {
-			$ranges['from'] =  strtotime('first day of January '.(date_i18n('Y')-1), $current_time);
-			$ranges['to'] =   strtotime('last day of December '.(date_i18n('Y')-1), $current_time);
+			$ranges['from'] = gmmktime(0, 0, 0, 1, 1, (int) gmdate('Y', $current_time) - 1);
+			$ranges['to'] = gmmktime(23, 59, 59, 12, 31, (int) gmdate('Y', $current_time) - 1);
 		}
 		if ($request['range'] == 'other'){
 			   // Verificar si existen las fechas personalizadas
@@ -259,11 +206,15 @@ class reports {
 				$to_date = sanitize_text_field($request['to_date']);
 		
 				// Convertir las fechas a formato timestamp
-				$ranges['from'] = strtotime($from_date . ' 00:00:00');
-				$ranges['to'] = strtotime($to_date . ' 23:59:59');
+				$ranges['from'] = strtotime($from_date . ' 00:00:00 UTC');
+				$ranges['to'] = strtotime($to_date . ' 23:59:59 UTC');
+				if ($ranges['from'] === false || $ranges['to'] === false) {
+					$ranges['from'] = gmmktime(0, 0, 0, 1, 1, (int) gmdate('Y', $current_time));
+					$ranges['to'] = $current_time;
+				}
 			} else {
 				// Manejo en caso de que falte alguna de las fechas
-				$ranges['from'] = strtotime('first day of January ' . date_i18n('Y'), $current_time); // Valor por defecto si no se ingresan las fechas
+				$ranges['from'] = gmmktime(0, 0, 0, 1, 1, (int) gmdate('Y', $current_time)); // Valor por defecto si no se ingresan las fechas
 				$ranges['to'] = $current_time;
 			}
 		}

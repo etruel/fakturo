@@ -255,7 +255,7 @@ class fktr_tax_check {
 		$echoSelectStatus .= '</select>';
 
 		
-		$date = time();
+		$date = current_time('timestamp');
 		$echoHtml = '
 		<style type="text/css">
 		.form-field.term-parent-wrap,.form-field.term-slug-wrap, .form-field label[for="parent"], .form-field #parent {display: none;}  
@@ -586,13 +586,13 @@ class fktr_tax_check {
 		}
 		
 		if (isset($fields['date'])) {
-			$fields['date'] = fakturo_date2time($fields['date'], $setting_system['dateformat'] );
+			$fields['date'] = (int) fakturo_date2time($fields['date'], $setting_system['dateformat'] );
 		}
 		if (isset($fields['cashing_date'])) {
-			$fields['cashing_date'] = fakturo_date2time($fields['cashing_date'], $setting_system['dateformat'] );
+			$fields['cashing_date'] = (int) fakturo_date2time($fields['cashing_date'], $setting_system['dateformat'] );
 		}
 		if (isset($fields['date_status'])) {
-			$fields['date_status'] = fakturo_date2time($fields['date_status'], $setting_system['dateformat'] );
+			$fields['date_status'] = (int) fakturo_date2time($fields['date_status'], $setting_system['dateformat'] );
 		}
 		if (isset($fields['status'])) {
 			if ($fields['status'] == 'D' || $fields['status'] == 'P' || $fields['status'] == 'E') {

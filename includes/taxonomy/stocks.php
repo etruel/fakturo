@@ -190,7 +190,7 @@ class fktr_tax_stock {
 			'taxonomy'           => 'fktr_locations',
 			'hide_if_empty'      => false
 		));
-		$date = time();
+		$date = current_time('timestamp');
 		$echoHtml = '
 		<style type="text/css">
 		.form-field.term-parent-wrap,.form-field.term-slug-wrap, .form-field label[for="parent"], .form-field #parent {display: none;}  
@@ -370,8 +370,9 @@ class fktr_tax_stock {
 			$fields['cost'] = fakturo_mask_to_float($fields['cost']);
 		}
 		if (isset($fields['date'])) {
-			$fields['date'] = str_replace('/', '-', $fields['date']);
-			$fields['date'] = date('Y-m-d', strtotime($fields['date']));
+			$setting_system = get_option('fakturo_system_options_group', false);
+			$date = fakturo_date2time($fields['date'], $setting_system['dateformat']);
+			$fields['date'] = gmdate('Y-m-d', ($date === false) ? current_time('timestamp') : $date);
 		}
 		fktrPostTypeProducts::addStock($fields['product'], $fields['quantity'], $fields['location']);
 		

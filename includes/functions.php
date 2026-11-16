@@ -188,10 +188,44 @@ function fakturo_porcent_to_mask($value) {
  */
 
 function fakturo_date2time($value, $dateformat = 'd-m-Y') {
-	$date		 = date_parse_from_format($dateformat, $value);
-	$timestamp	 = mktime($date['hour'], $date['minute'], $date['second'], $date['month'], $date['day'], $date['year']);
-	
-	return $timestamp;
+	$date = date_parse_from_format($dateformat, (string) $value);
+	if (!empty($date['error_count']) || $date['year'] === false || $date['month'] === false || $date['day'] === false) {
+		return false;
+	}
+	// The date is kept as the wall clock of the site written as UTC (like current_time('timestamp')), so it is shown back with date_i18n() whatever the timezone of the server or of the site.
+	return gmmktime((int) $date['hour'], (int) $date['minute'], (int) $date['second'], $date['month'], $date['day'], $date['year']);
+}
+
+/**
+ * The timezone of the site (named zone or UTC offset), also before WordPress 5.3.
+ */
+function fktr_timezone() {
+	if (function_exists('wp_timezone')) {
+		return wp_timezone();
+	}
+	$name = get_option('timezone_string');
+	if ($name) {
+		try {
+			return new DateTimeZone($name);
+		} catch (Exception $e) {
+			// An invalid name: use the offset.
+		}
+	}
+	$offset = (float) get_option('gmt_offset');
+	$hours = (int) $offset;
+	return new DateTimeZone(sprintf('%+03d:%02d', $hours, abs(($offset - $hours) * 60)));
+}
+
+/**
+ * Fakturo dates are the wall clock of the site written as UTC. These two turn one into a real UTC timestamp and back, with the timezone (and summer time) of the site.
+ */
+function fktr_local_to_utc($local_timestamp) {
+	$date = new DateTime(gmdate('Y-m-d H:i:s', (int) $local_timestamp), fktr_timezone());
+	return $date->getTimestamp();
+}
+
+function fktr_utc_to_local($utc_timestamp) {
+	return (int) $utc_timestamp + fktr_timezone()->getOffset(new DateTime('@' . (int) $utc_timestamp));
 }
 
 function getRateFromCurrencyId($currency_id) {
@@ -268,8 +302,8 @@ function get_sales_on_range($from, $to) {
         pm.meta_key = 'date'
 		AND p.post_status = 'publish'
 		AND p.post_type = 'fktr_sale'
-		AND pm.meta_value >= %s
-		AND pm.meta_value < %s
+		AND CAST(pm.meta_value AS UNSIGNED) >= %d
+		AND CAST(pm.meta_value AS UNSIGNED) <= %d
         GROUP BY p.ID 
 		", $from, $to);
 	} else {

@@ -462,7 +462,7 @@ class fktrPostTypeReceipts {
 					'decimal_numbers' => $setting_system['decimal_numbers'],
 					'currency_position' => $setting_system['currency_position'],
 					'default_currency' => $setting_system['currency'],
-					'current_date' => date_i18n($setting_system['dateformat'],  time()),
+					'current_date' => date_i18n($setting_system['dateformat'], current_time('timestamp')),
 					'digits_receipt_number' => $setting_system['digits_receipt_number'],
 					'post_status' => $post->post_status,
 					'datetimepicker' => $objectL10n,

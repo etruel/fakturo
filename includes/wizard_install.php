@@ -253,8 +253,8 @@ class fktr_wizard {
 			wp_enqueue_script('jquery-wizard-date-format', FAKTURO_PLUGIN_URL . 'assets/js/wizard_date_format.js', array( 'jquery' ), WPE_FAKTURO_VERSION, true );
 			wp_localize_script('jquery-wizard-date-format', 'date_object',
 				array(
-					'date_one' => date_i18n('d/m/Y', time()),
-					'date_two' => date_i18n('m/d/Y', time()),
+					'date_one' => date_i18n('d/m/Y', current_time('timestamp')),
+					'date_two' => date_i18n('m/d/Y', current_time('timestamp')),
 				)
 			);
 			
