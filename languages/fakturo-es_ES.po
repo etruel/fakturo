@@ -4545,6 +4545,11 @@ msgstr "Este número de recibo ya está en uso, inténtalo de nuevo."
 msgid "The receipt number %1$s was already in use, the receipt was saved with number %2$s."
 msgstr "El número de recibo %1$s ya estaba en uso, el recibo se guardó con el número %2$s."
 
+#. translators: %s: check number.
+#: includes/post-types-receipts.php:1110
+msgid "The check %s was not registered: a check with that number already exists."
+msgstr "El cheque %s no se registró: ya existe un cheque con ese número."
+
 #: includes/post-types-sales.php:136
 msgid "Unpaid"
 msgstr "Sin pagar"

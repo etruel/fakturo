@@ -1363,19 +1363,23 @@ if (!class_exists('fktrPostTypeSales')) :
 		}
 
 		public static function updateReceiptsAffected($sale_id, $receipt_id, $affected, $currency_receipt) {
-			$sale_data = self::get_sale_data($sale_id);
-			$affected_standar = fakturo_mask_to_float($affected);
-			$affected_in_sale = fakturo_transform_money($currency_receipt, $sale_data['invoice_currency'], $affected_standar);
-			if (!is_array($sale_data['receipts'])) {
-				$sale_data['receipts'] = array();
-			}
-			if ($affected_in_sale > 0) {
-				$sale_data['receipts'][$receipt_id] = $affected_in_sale;
-			} else {
-				unset($sale_data['receipts'][$receipt_id]);
-			}
-			$new = apply_filters('fktr_sale_metabox_save_receipts', $sale_data['receipts']);
-			update_post_meta($sale_id, 'receipts', $new);
+			// Two receipts paying the same invoice at once must both stay in its list, so the list is read again under a lock.
+			fktr_atomic::run('receipts_' . (int) $sale_id, function () use ($sale_id, $receipt_id, $affected, $currency_receipt) {
+				fktr_atomic::forget_meta($sale_id);
+				$sale_data = self::get_sale_data($sale_id);
+				$affected_standar = fakturo_mask_to_float($affected);
+				$affected_in_sale = fakturo_transform_money($currency_receipt, $sale_data['invoice_currency'], $affected_standar);
+				if (!is_array($sale_data['receipts'])) {
+					$sale_data['receipts'] = array();
+				}
+				if ($affected_in_sale > 0) {
+					$sale_data['receipts'][$receipt_id] = $affected_in_sale;
+				} else {
+					unset($sale_data['receipts'][$receipt_id]);
+				}
+				$new = apply_filters('fktr_sale_metabox_save_receipts', $sale_data['receipts']);
+				update_post_meta($sale_id, 'receipts', $new);
+			});
 		}
 
 		public static function getProductStock($productId, $sale_id, $reserved = false) {

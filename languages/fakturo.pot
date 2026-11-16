@@ -4202,6 +4202,11 @@ msgstr ""
 msgid "The receipt number %1$s was already in use, the receipt was saved with number %2$s."
 msgstr ""
 
+#. translators: %s: check number.
+#: includes/post-types-receipts.php:1110
+msgid "The check %s was not registered: a check with that number already exists."
+msgstr ""
+
 #: includes/post-types-sales.php:136
 msgid "Unpaid"
 msgstr ""

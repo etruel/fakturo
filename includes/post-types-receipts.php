@@ -10,6 +10,9 @@ if (!defined('ABSPATH'))  {
 if ( ! class_exists('fktrPostTypeReceipts') ) :
 class fktrPostTypeReceipts {
 	const PUBLISH_LOCK = 'receipt_publish';
+	// Post meta: the receipt already took its amount from the balance, checks and invoices (APPLIED) / gave them back (REVERTED).
+	const APPLIED = 'fktr_effects_applied';
+	const REVERTED = 'fktr_effects_reverted';
 	function __construct() {
 		
 		add_action( 'init', array(__CLASS__, 'setup'), 1 );
@@ -965,6 +968,10 @@ class fktrPostTypeReceipts {
 			return false;
 		}
 		
+		// Cancelling and then deleting a receipt, or twice in a row, gives things back only once.
+		if (!add_post_meta($post_id, self::REVERTED, time(), true)) {
+			return false;
+		}
 		$fields = self::get_receipt_data($post_id);
 		fktrPostTypeClients::add_balance($fields['client_id'], $fields['available_to_include']);
 		if (!empty($fields['ck_ids'])) {
@@ -993,7 +1000,7 @@ class fktrPostTypeReceipts {
 	public static function before_delete($post_id) {  // just permanent delete
 		$post_type = get_post_type($post_id);
 		$post_status = get_post_status($post_id);
-		if ($post_status == 'publish') {
+		if ($post_status == 'publish' || $post_status == 'trash') {
 			self::action_on_delete($post_id);
 		}
 	}
@@ -1043,6 +1050,9 @@ class fktrPostTypeReceipts {
 		
 		return $fields;
 	}
+	/**
+	 * Cleans the posted values. It changes nothing outside $fields: what a receipt does to the balance, the checks and the invoices happens once, in apply_effects().
+	 */
 	public static function before_save($fields) {
 		$setting_system = get_option('fakturo_system_options_group', false);
 		
@@ -1058,13 +1068,19 @@ class fktrPostTypeReceipts {
 		} else {
 			$fields['available_to_include'] = fakturo_mask_to_float($fields['available_to_include']);
 		}
-		fktrPostTypeClients::remove_balance($fields['client_id'], $fields['available_to_include']);
-		
 		if (empty($fields['cash'])) {
 			$fields['cash'] = 0;
 		} else {
 			$fields['cash'] = fakturo_mask_to_float($fields['cash']);
 		}
+		return $fields;
+	}
+	/**
+	 * What publishing a receipt does outside itself: takes the amount from the client's balance, registers the checks it brings and records on each invoice how much the receipt pays. save() calls it once per receipt (see APPLIED); action_on_delete() undoes it.
+	 */
+	public static function apply_effects($fields) {
+		fktrPostTypeClients::remove_balance($fields['client_id'], $fields['available_to_include']);
+		
 		$fields['ck_ids'] = array();
 		if (!empty($fields['ck_banks'])) {
 			foreach ($fields['ck_banks'] as $k => $bank_id) {
@@ -1081,17 +1097,20 @@ class fktrPostTypeReceipts {
 				$fieldsCheck = apply_filters('before_save_tax_fktr_check', $fieldsCheck);
 				$fieldsCheck['status'] = 'D';
 				$fieldsCheck['provider_id'] = 0;
-				 
-				if(!term_exists($serial_number, 'fktr_check')) {
-					$data_check = wp_insert_term(
-						$serial_number,
-						'fktr_check',
-						 array(
-							'description' => json_encode($fieldsCheck)
-						)
-					);
-					$fields['ck_ids'][$k] = $data_check['term_id'];
+				
+				$data_check = term_exists($serial_number, 'fktr_check') ? false : wp_insert_term(
+					$serial_number,
+					'fktr_check',
+					array(
+						'description' => json_encode($fieldsCheck)
+					)
+				);
+				if (!$data_check || is_wp_error($data_check)) {
+					/* translators: %s: check number. */
+					fktrNotices::add(array('text' => esc_html(sprintf(__('The check %s was not registered: a check with that number already exists.', 'fakturo'), $serial_number)), 'error' => true));
+					continue;
 				}
+				$fields['ck_ids'][$k] = $data_check['term_id'];
 			}
 		}
 		unset($fields['ck_banks']);
@@ -1099,7 +1118,6 @@ class fktrPostTypeReceipts {
 		unset($fields['ck_currencies']);
 		unset($fields['ck_values']);
 		unset($fields['ck_dates']);
-		unset($fields['ck_cashing_dates']);
 		unset($fields['ck_cashing_dates']);
 		unset($fields['ck_notes']);
 		
@@ -1124,7 +1142,6 @@ class fktrPostTypeReceipts {
 		unset($fields['inv_total_account']);
 		unset($fields['inv_origin_account']);
 		unset($fields['inv_currency']);
-		
 		
 		return $fields;
 	}
@@ -1196,32 +1213,32 @@ class fktrPostTypeReceipts {
 		
 		
 		
-		$setting_system = get_option('fakturo_system_options_group', false);
-		$fields = apply_filters('fktr_clean_receipt_fields',$_POST);
-		$fields['ID'] = $post_id;
-		$fields = apply_filters('fktr_receipt_before_save',$fields);
-		
-		$fields['date'] = current_time('timestamp');
-		/*
-		if(isset($fields['date']) && is_string($fields['date'])) {
-
-			$fields['date'] = fakturo_date2time($fields['date'], $setting_system['dateformat'] );
+		// Only a published receipt moves money, and only once: a second save_post for the same receipt (an add-on calling wp_update_post, for instance) finds the mark and does nothing.
+		if ($post->post_status != 'publish' || !add_post_meta($post_id, self::APPLIED, time(), true)) {
+			return false;
 		}
-		*/
+		
+		try {
+			$fields = apply_filters('fktr_clean_receipt_fields',$_POST);
+			$fields['ID'] = $post_id;
+			$fields = apply_filters('fktr_receipt_before_save',$fields);
+			$fields = self::apply_effects($fields);
+		
+			$fields['date'] = current_time('timestamp');
 	
-		
-		foreach (fktr_guard::fields($fields, 'receipt', array('check_invs', 'to_pay', 'date')) as $field => $value ) {
+			foreach (fktr_guard::fields($fields, 'receipt', array('check_invs', 'to_pay', 'date')) as $field => $value ) {
 			
-			if ( !is_null( $value ) ) {
-				$new = apply_filters('fktr_receipt_metabox_save_' . $field, $value );  //filtra cada campo antes de grabar
-				update_post_meta( $post_id, $field, $new );
+				if ( !is_null( $value ) ) {
+					$new = apply_filters('fktr_receipt_metabox_save_' . $field, $value );  //filtra cada campo antes de grabar
+					update_post_meta( $post_id, $field, $new );
 				
-			}
+				}
 			
-		}
-		if ($post->post_status == 'publish') {
-		   self::updateSuggestReceiptNumber($fields['receipt_number']);
-		   fktr_atomic::release(self::PUBLISH_LOCK);
+			}
+			self::updateSuggestReceiptNumber($fields['receipt_number']);
+		} finally {
+			// The mark stays even if something failed half way: doing it all again would take the amount twice.
+			fktr_atomic::release(self::PUBLISH_LOCK);
 		}
 		do_action( 'fktr_save_receipt', $post_id, $post );
 		
