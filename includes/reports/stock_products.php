@@ -779,8 +779,8 @@ class stock_products_report {
 		</div>
 	
 		<!-- Include jsPDF and autoTable if not already included -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+		<script src="<?php echo esc_url(FAKTURO_PLUGIN_URL . 'assets/js/jspdf/jspdf.umd.min.js'); ?>"></script>
+		<script src="<?php echo esc_url(FAKTURO_PLUGIN_URL . 'assets/js/jspdf/jspdf.plugin.autotable.min.js'); ?>"></script>
 	
 		<script>
 			// Add event listener for PDF button
