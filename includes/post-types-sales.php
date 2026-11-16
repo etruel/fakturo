@@ -1953,7 +1953,8 @@ if (!class_exists('fktrPostTypeSales')) :
 			}
 
 			$setting_system = get_option('fakturo_system_options_group', false);
-			$fields = apply_filters('fktr_clean_sale_fields', $_POST);
+			// WordPress adds slashes to $_POST: work with the real text and slash it again only for update_post_meta().
+			$fields = apply_filters('fktr_clean_sale_fields', wp_unslash($_POST));
 			$fields = apply_filters('fktr_sale_before_save', $fields, $post);
 
 			// A blocked invoice takes nothing from the stock: its lines stay as they were, so the stock still matches them.
@@ -1985,7 +1986,7 @@ if (!class_exists('fktrPostTypeSales')) :
 
 				if (!is_null($value)) {
 					$new = apply_filters('fktr_sale_metabox_save_' . $field, $value);  //filtra cada campo antes de grabar
-					update_post_meta($post_id, $field, $new);
+					update_post_meta($post_id, $field, wp_slash($new));
 				}
 			}
 			if ($post->post_status == 'publish') {

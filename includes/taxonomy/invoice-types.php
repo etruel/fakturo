@@ -264,7 +264,7 @@ class fktr_tax_nvoice_types {
 			$_POST['term_meta']['discriminates_taxes'] = $_POST['term_meta_discriminates_taxes'];
 			$_POST['term_meta']['sum'] = $_POST['term_meta_sum'];
 			//$_POST['term_meta']['symbol'] = $_POST['term_meta_symbol'];
-			set_fakturo_term($term_id, $tt_id, $_POST['term_meta']);
+			set_fakturo_term($term_id, $tt_id, wp_unslash($_POST['term_meta']));
 		}
 	}
 	

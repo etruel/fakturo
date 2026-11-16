@@ -1083,8 +1083,9 @@ class fktrPostTypeReceipts {
 		
 		$fields['ck_ids'] = array();
 		if (!empty($fields['ck_banks'])) {
+			// The posted text comes with slashes; the JSON is built from the real text and slashed once for wp_insert_term(), which removes them.
 			foreach ($fields['ck_banks'] as $k => $bank_id) {
-				$serial_number = $fields['ck_numbers'][$k];
+				$serial_number = wp_unslash($fields['ck_numbers'][$k]);
 				$fieldsCheck = array();
 				$fieldsCheck['client_id'] = $fields['client_id'];
 				$fieldsCheck['bank_id'] = $bank_id;
@@ -1093,16 +1094,16 @@ class fktrPostTypeReceipts {
 				$fieldsCheck['date'] = $fields['ck_dates'][$k];
 				$fieldsCheck['cashing_date'] = $fields['ck_cashing_dates'][$k];
 				$fieldsCheck['date_status'] = $fields['ck_cashing_dates'][$k];
-				$fieldsCheck['notes'] = $fields['ck_notes'][$k];
+				$fieldsCheck['notes'] = wp_unslash($fields['ck_notes'][$k]);
 				$fieldsCheck = apply_filters('before_save_tax_fktr_check', $fieldsCheck);
 				$fieldsCheck['status'] = 'D';
 				$fieldsCheck['provider_id'] = 0;
 				
 				$data_check = term_exists($serial_number, 'fktr_check') ? false : wp_insert_term(
-					$serial_number,
+					wp_slash($serial_number),
 					'fktr_check',
 					array(
-						'description' => json_encode($fieldsCheck)
+						'description' => wp_slash(json_encode($fieldsCheck))
 					)
 				);
 				if (!$data_check || is_wp_error($data_check)) {

@@ -53,7 +53,7 @@ class fktr_popup_taxonomy {
 			$return = new stdClass();
 			$return->code = 1; 
 			$return->term = $ret; 
-			$return->name = $_POST['tag-name']; 
+			$return->name = wp_unslash($_POST['tag-name']); 
 			die(json_encode($return));
 		}
 		else {

@@ -145,7 +145,7 @@ class fktr_tax_countries {
 	}
 	public static function save_fields($term_id, $tt_id) {
 		if (isset( $_POST['term_meta'])) {
-			set_fakturo_term($term_id, $tt_id, $_POST['term_meta']);
+			set_fakturo_term($term_id, $tt_id, wp_unslash($_POST['term_meta']));
 		}
 	}
 	

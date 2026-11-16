@@ -232,7 +232,7 @@ class fktr_tax_currency {
 		if (isset( $_POST['term_meta'])) {
 			
 			$_POST['term_meta'] = apply_filters('before_save_tax_fktr_currencies', $_POST['term_meta']);
-			set_fakturo_term($term_id, $tt_id, $_POST['term_meta']);
+			set_fakturo_term($term_id, $tt_id, wp_unslash($_POST['term_meta']));
 		}
 	}
 	
