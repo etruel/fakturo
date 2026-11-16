@@ -22,7 +22,31 @@ if (!class_exists('fktr_mail')) :
 			exit;
 		}
 
+		/**
+		 * Runs a send with the mail state it needs: phpmailer_init only attaches the PDF while $sending names the send, and the attachments of one e-mail must not travel in the next one. The cron, the bulk action and the sale API call the senders without any admin action behind them.
+		 */
+		private static function sending($name, $callback) {
+			$previous			 = self::$sending;
+			$previous_attach	 = self::$attachments;
+			if (!self::$sending) {
+				self::$sending = $name;
+			}
+			self::$attachments = array();
+			try {
+				return call_user_func($callback);
+			} finally {
+				self::$sending		 = $previous;
+				self::$attachments	 = $previous_attach;
+			}
+		}
+
 		public static function send_sale_invoice_pdf_to_client($id, $redirect = true, $notices = true) {
+			return self::sending('send_invoice_2_client', function () use ($id, $redirect, $notices) {
+				return self::deliver_sale_invoice($id, $redirect, $notices);
+			});
+		}
+
+		private static function deliver_sale_invoice($id, $redirect, $notices) {
 			$sale_data	 = fktrPostTypeSales::get_sale_data($id);
 			$client_data = fktrPostTypeClients::get_client_data($sale_data['client_id']);
 			if ($sale_data['post_status'] != 'publish') {
@@ -166,6 +190,12 @@ if (!class_exists('fktr_mail')) :
 		}
 
 		public static function send_receipt_pdf_to_client($id, $redirect = true) {
+			return self::sending('send_receipt_2_client', function () use ($id, $redirect) {
+				return self::deliver_receipt($id, $redirect);
+			});
+		}
+
+		private static function deliver_receipt($id, $redirect) {
 			$receipt_data = fktrPostTypeReceipts::get_receipt_data($id);
 
 			$client_data = fktrPostTypeClients::get_client_data($receipt_data['client_id']);

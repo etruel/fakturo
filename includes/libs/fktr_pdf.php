@@ -27,7 +27,12 @@
 		 * Renders HTML to PDF with the options every Fakturo document uses (remote files only from the allowed hosts, HTML5 parser). Returns the Dompdf object to call output() or stream() on; throws if dompdf fails.
 		 */
 		public static function render($html, $paper = 'A4', $orientation = 'portrait') {
-			$pdf = self::getInstance();
+			if (!class_exists('Dompdf\\Dompdf')) {
+				self::includes();
+			}
+			// A new dompdf for every document: one that already rendered cannot render a second one (it fails inside the layout).
+			$pdf = new Dompdf();
+			$pdf->getOptions()->setAllowedRemoteHosts(self::remote_hosts());
 			$pdf->getOptions()->set('isRemoteEnabled', true);
 			$pdf->getOptions()->set('isHtml5ParserEnabled', true);
 			$pdf->setPaper($paper, $orientation);
