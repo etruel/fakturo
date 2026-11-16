@@ -138,18 +138,36 @@ function set_fakturo_term($term_id = null, $tt_id = null, $args = null) {
 	}
 }
 
+/**
+ * A number typed with the separators of the settings ("1.234,56", "1,234") as a plain number ("1234.56", "1234").
+ * Without a decimal separator the thousand separator is only removed when it groups the digits by three, so a number that already is plain ("1234.56" with "," as decimal separator) stays as it is.
+ */
 function fakturo_mask_to_float($value) {
 	$setting_system = get_option('fakturo_system_options_group', false);
 	if (!isset($value)) {
 		$value = '0';
 	}
-	if (strpos($value, $setting_system['decimal']) !== false) {
+	if (is_int($value) || is_float($value)) {
+		return $value;
+	}
+	$value = trim((string) $value);
+	if ($setting_system['decimal'] !== '' && strpos($value, $setting_system['decimal']) !== false) {
 		$pieceNumber	 = explode($setting_system['decimal'], $value);
 		$pieceNumber[0]	 = str_replace($setting_system['thousand'], '', $pieceNumber[0]);
 		$value			 = implode('.', $pieceNumber);
 		$value			 = filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+	} elseif ($setting_system['thousand'] !== '' && preg_match('/^[-+]?\d{1,3}(?:' . preg_quote($setting_system['thousand'], '/') . '\d{3})+$/', $value)) {
+		$value = str_replace($setting_system['thousand'], '', $value);
 	}
 	return $value;
+}
+
+/**
+ * Rounds an amount to the decimals of the settings, so balances and payments that are added up do not collect floating point dust.
+ */
+function fktr_round_money($value) {
+	$setting_system = get_option('fakturo_system_options_group', false);
+	return round((float) $value, max(0, min(9, (int) $setting_system['decimal_numbers'])));
 }
 
 function fakturo_porcent_to_mask($value) {

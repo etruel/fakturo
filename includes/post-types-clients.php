@@ -711,7 +711,7 @@ class fktrPostTypeClients {
 			if (!isset($data_client['balance'])) {
 				$data_client['balance'] = 0;
 			}
-			$new = apply_filters('fktr_client_metabox_save_balance', $data_client['balance'] + $difference);
+			$new = apply_filters('fktr_client_metabox_save_balance', fktr_round_money($data_client['balance'] + $difference));
 			update_post_meta($client_id, 'balance', $new);
 		});
 		return true;

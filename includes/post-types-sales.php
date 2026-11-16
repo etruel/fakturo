@@ -1368,7 +1368,7 @@ if (!class_exists('fktrPostTypeSales')) :
 				fktr_atomic::forget_meta($sale_id);
 				$sale_data = self::get_sale_data($sale_id);
 				$affected_standar = fakturo_mask_to_float($affected);
-				$affected_in_sale = fakturo_transform_money($currency_receipt, $sale_data['invoice_currency'], $affected_standar);
+				$affected_in_sale = fktr_round_money(fakturo_transform_money($currency_receipt, $sale_data['invoice_currency'], $affected_standar));
 				if (!is_array($sale_data['receipts'])) {
 					$sale_data['receipts'] = array();
 				}
