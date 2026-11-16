@@ -409,6 +409,27 @@ if (class_exists('fktrPostTypeSubscriptions')) {
 	fktrSmoke::ok(gmdate('Y-m-d', fktr_utc_to_local($next(0, 'years', 1, $u('2028-02-29 10:00')))) === '2029-02-28', 'one year after February 29 is February 28');
 	$cron = fktrPostTypeSubscriptions::cron_next('0 9 * * *', 0, 'cron', array(), $u('2026-11-16 00:00'));
 	fktrSmoke::ok(gmdate('H:i', fktr_utc_to_local($cron)) === '09:00', 'a cron at 09:00 runs at 09:00 of the site');
+	if ($type_tax && isset($api) && !is_wp_error($api)) {
+		// Billing a subscription goes through fktr_create_sale() (called directly: the task itself would bill every real subscription that is due).
+		$sub = fktrSmoke::post(array('post_type' => 'fktr_subscriptions', 'post_status' => 'publish', 'post_title' => 'SMOKE subscription'));
+		$sub_meta = array('client_id' => $d['client_id'], 'invoice_type' => $type_tax, 'sale_point' => $sale_point, 'invoice_currency' => $currency, 'invoice_discount' => 0, 'invoice_saleman' => $admin,
+			'uc_id' => array(0, 0), 'uc_code' => array('S1', 'S2'), 'uc_description' => array('Monthly plan', 'Extra "x" \\ y'), 'uc_quality' => array(1, 2), 'uc_unit_price' => array(100, 25), 'uc_amount' => array(100, 50), 'uc_tax' => array(0, 0), 'uc_tax_porcent' => array(0, 0));
+		foreach ($sub_meta as $k => $v) {
+			update_post_meta($sub, $k, wp_slash($v));
+		}
+		$billed = fktrPostTypeSubscriptions::createInvoiceFromSubscriptionId($sub, true, 1234567890);
+		if (fktrSmoke::ok(!is_wp_error($billed), 'a subscription is billed with the invoice function', is_wp_error($billed) ? $billed->get_error_message() : '')) {
+			fktrSmoke::$posts[] = $billed;
+			$bd = fktrPostTypeSales::get_sale_data($billed);
+			fktrSmoke::ok(get_post_status($billed) === 'publish' && (float) $bd['in_total'] === 150.0, 'with its totals and published', $bd['in_total']);
+			fktrSmoke::ok($bd['uc_description'][1] === 'Extra "x" \\ y', 'and the text of its lines exactly as typed');
+			fktrSmoke::ok(fktrPostTypeSubscriptions::createInvoiceFromSubscriptionId($sub, true, 1234567890) === $billed, 'billing the same moment again gives the same invoice');
+			$missing = $sub_meta;
+			update_post_meta($sub, 'client_id', 999999999);
+			$failed = fktrPostTypeSubscriptions::createInvoiceFromSubscriptionId($sub, true, 1234567891);
+			fktrSmoke::ok(is_wp_error($failed) && $failed->get_error_code() === 'fktr_sale_no_client', 'a subscription whose client is gone is reported, not billed');
+		}
+	}
 	fktrSmoke::ok(class_exists('fktrSubscriptionsCron') && wp_next_scheduled('subscription_cron') !== false || (get_site_option('fktr_subscriptions_cron')['only_external'] ?? 0), 'the billing task is scheduled (or the site bills only from the external cron)');
 } else {
 	fktrSmoke::skip('subscriptions', 'the add-on is not active');

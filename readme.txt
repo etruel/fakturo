@@ -139,6 +139,7 @@ Yes. `fktr_create_sale( $client, $lines, $args )` creates (and by default publis
 * License screen: the key is shown masked (only its last four characters) instead of in full, saving without touching the field keeps the key, and when the license server does not answer the screen asks again after five minutes instead of making you wait up to 15 seconds on every visit.
 * E-mails sent without an admin click behind them (the bulk action "Send PDF to clients" and the billing of subscriptions) now carry the PDF, which they were leaving out, and one e-mail no longer carries the attachments of the previous one; sending several invoices or receipts in a row no longer stops with a fatal error because each PDF now gets its own PDF engine.
 * New function `fktr_create_sale()` for other plugins and integrations: it creates an invoice from code with the same numbering, stock and tax rules as the invoice screen, finds or creates the client by e-mail, never invoices the same external transaction twice and can e-mail the PDF.
+* Validating an invoice from the screen without all its fields no longer logs notices, and a line given to `fktr_create_sale()` with `tax_id` 0 has no tax instead of the default one.
 
 = 1.0.10 (Oct 23, 2026) =
 * New Add-ons screen: activate, license and manage auto-updates of each add-on from its own row, with bulk actions and live search.

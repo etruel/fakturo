@@ -1429,7 +1429,7 @@ if (!class_exists('fktrPostTypeSales')) :
 
 			if ($setting_system['use_stock_product'] && $invoice_type->sum == 0 && $setting_system['stock_less_zero'] == 0) {
 				$reserved = false;
-				if ($fields['original_post_status'] == 'draft') {
+				if (isset($fields['original_post_status']) && $fields['original_post_status'] == 'draft') {
 					$reserved = true;
 				}
 				$error = 0;
@@ -1441,7 +1441,7 @@ if (!class_exists('fktrPostTypeSales')) :
 
 								if (empty($productStocks[$product_id])) {
 
-									$productStocks[$product_id] = self::getProductStock($product_id, $fields['post_ID'], $reserved);
+									$productStocks[$product_id] = self::getProductStock($product_id, isset($fields['post_ID']) ? $fields['post_ID'] : 0, $reserved);
 								}
 
 								$productStocks[$product_id][$location_id] = $productStocks[$product_id][$location_id] - $quantity;

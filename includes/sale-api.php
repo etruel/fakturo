@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
  * $client  array  `id` of an existing client, or `email` to find one (and `name`, `address`, `city`, `postcode`, `phone`, `taxpayer`, `country_id`, `state_id`,
  *                 `tax_condition`, `payment_type`, `price_scale` to create it when there is none; `create_client` in $args turns that off).
  * $lines   array  each: `description` (or `product_id`), `quantity`, `unit_price` (a plain number, without tax unless the invoice type shows the taxes apart),
- *                 optional `product_id`, `code`, `tax_id` (a tax of Fakturo; the product's or the default tax when missing).
+ *                 optional `product_id`, `code`, `tax_id` (a tax of Fakturo; 0 = no tax; the product's or the default tax when the key is missing).
  * $args    array  `invoice_type`, `sale_point`, `currency` (the defaults of the settings when missing), `date` (timestamp of the site clock, now by default), `discount` (percent),
  *                 `publish` (true: the invoice is published and cannot change; false: it stays a draft), `invoice_number` (the next one by default),
  *                 `stock_location` (location that gives the stock; the first one by default), `saleman` (user id), `author` (user id),
@@ -298,7 +298,12 @@ if (!class_exists('fktrSaleApi')) :
 				if ($description === '') {
 					return self::error('fktr_sale_bad_line', /* translators: %d: line number. */ sprintf(__('Line %d needs a description.', 'fakturo'), $i + 1));
 				}
-				$tax_id = !empty($line['tax_id']) ? (int) $line['tax_id'] : ( !empty($product['tax']) ? (int) $product['tax'] : (int) $setting['tax'] );
+				// `tax_id` given (even 0 = no tax) is used as it is; without it the tax of the product, then the default tax of the settings.
+				if (array_key_exists('tax_id', $line)) {
+					$tax_id = (int) $line['tax_id'];
+				} else {
+					$tax_id = !empty($product['tax']) ? (int) $product['tax'] : (int) $setting['tax'];
+				}
 				$tax = $tax_id ? get_fakturo_term($tax_id, 'fktr_tax') : null;
 				if ($tax_id && is_wp_error($tax)) {
 					return self::error('fktr_sale_bad_line', /* translators: %d: line number. */ sprintf(__('Line %d: the tax does not exist.', 'fakturo'), $i + 1));
