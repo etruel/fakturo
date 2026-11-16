@@ -132,6 +132,7 @@ You can either install it automatically from the WordPress admin, or do it manua
 * The PDF export of the reports (stock, client summary, client incomes, account movements and commissions) uses jsPDF and jsPDF-AutoTable bundled in the plugin instead of loading them from cdnjs.cloudflare.com: no request to an outside server and it works without internet access.
 * PDFs of invoices, receipts, e-mails and template previews are all made by one shared routine, so the PDF view of an invoice now shows images and logos from the site like receipts do; the webcam snapshot of clients, providers and products is checked (only JPEG or PNG images) and only replaces the previous photo when the new one was saved.
 * The print view of an invoice no longer shows PHP notices when the client has no tax condition or payment type (a draft, a new client) or the invoice has no currency yet.
+* License screen: the key is shown masked (only its last four characters) instead of in full, saving without touching the field keeps the key, and when the license server does not answer the screen asks again after five minutes instead of making you wait up to 15 seconds on every visit.
 
 = 1.0.10 (Oct 23, 2026) =
 * New Add-ons screen: activate, license and manage auto-updates of each add-on from its own row, with bulk actions and live search.

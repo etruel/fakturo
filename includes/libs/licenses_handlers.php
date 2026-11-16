@@ -203,6 +203,18 @@ class fktr_licenses_handlers {
 		return isset($by_file[$plugin_file]) ? $by_file[$plugin_file] : false;
 	}
 
+	/**
+	 * The key as it is shown on screen: the full key is not printed in the page (screenshots, support chats, a shoulder), only its last four characters.
+	 */
+	public static function mask_key($key) {
+		$key = (string) $key;
+		$len = strlen($key);
+		if ($len <= 8) {
+			return str_repeat('*', $len);
+		}
+		return str_repeat('*', 12) . substr($key, -4);
+	}
+
 	public static function has_valid_license($plugin_name) {
 		return ( self::get_key($plugin_name) && self::get_license_status($plugin_name) === 'valid' );
 	}
@@ -286,6 +298,20 @@ class fktr_licenses_handlers {
 	}
 
 	/**
+	 * The store did not answer a check: ask again in five minutes, not on every load of the screen (each try can wait 15 seconds).
+	 */
+	private static function postpone_check($plugin_name) {
+		$all				 = self::get_map('fktr_license_info');
+		$info				 = ( isset($all[$plugin_name]) && is_array($all[$plugin_name]) ) ? $all[$plugin_name] : array();
+		$info['checked']	 = time() - self::CHECK_EVERY + 5 * MINUTE_IN_SECONDS;
+		if (!isset($info['license_id'])) {
+			$info['license_id'] = 0;
+		}
+		$all[$plugin_name]	 = $info;
+		self::set_map('fktr_license_info', $all, false);
+	}
+
+	/**
 	 * Asks the store about a license and remembers the answer.
 	 */
 	private static function refresh($plugin_name, $action = 'check_license', $license = null) {
@@ -293,6 +319,9 @@ class fktr_licenses_handlers {
 			$license = self::get_key($plugin_name);
 		}
 		$data = self::request($plugin_name, $action, $license);
+		if (!$data && $action === 'check_license') {
+			self::postpone_check($plugin_name);
+		}
 		if ($data) {
 			if ($action === 'deactivate_license') {
 				if (isset($data->license) && $data->license === 'deactivated') {
@@ -468,7 +497,7 @@ class fktr_licenses_handlers {
 					)) . '</h2>
 					<div class="fktr-license-body">
 						<label class="fktr-license-label" for="license_key_' . esc_attr($plugin_name) . '">' . esc_html__('License Key', 'fakturo') . '</label>
-						<input id="license_key_' . esc_attr($plugin_name) . '" class="fktr-license-key" name="license_key[' . esc_attr($plugin_name) . ']" type="text" autocomplete="off" spellcheck="false" value="' . esc_attr($license ? $license : '') . '">
+						<input id="license_key_' . esc_attr($plugin_name) . '" class="fktr-license-key" name="license_key[' . esc_attr($plugin_name) . ']" type="text" autocomplete="off" spellcheck="false" value="' . esc_attr($license ? self::mask_key($license) : '') . '">
 						<span class="description">' . esc_html__('Enter your license key and save: the site is activated for updates and support.', 'fakturo') . '</span>
 						<div class="fktr-license-status">' . self::render_status($plugin_name, $args) . '</div>
 						<div class="fktr-license-message" role="status"></div>
@@ -506,6 +535,10 @@ class fktr_licenses_handlers {
 			}
 			$new = trim(sanitize_text_field($posted[$plugin_name]));
 			$old = isset($keys[$plugin_name]) ? (string) $keys[$plugin_name] : '';
+			if ($new !== '' && $old !== '' && self::mask_key($old) === $new) {
+				// The field still has the masked key that was shown: nothing was typed.
+				$new = $old;
+			}
 			if ($new === $old && $old !== '') {
 				continue;
 			}

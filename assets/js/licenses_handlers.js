@@ -1,5 +1,9 @@
 jQuery(function ($) {
 	var cfg = window.fktr_license_object;
+	// The key is shown masked: selecting it all means typing a new one replaces it.
+	$('.fktr-licenses').on('focus', '.fktr-license-key', function () {
+		this.select();
+	});
 	$('.fktr-licenses').on('click', '.fktr-license-act', function () {
 		var $btn = $(this), $card = $btn.closest('.fktr-license-card'), $msg = $card.find('.fktr-license-message');
 		$card.find('.fktr-license-act').prop('disabled', true);

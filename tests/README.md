@@ -37,3 +37,7 @@ It writes data (and removes it), so it refuses to run unless the site is `local`
 ## Adding a check
 
 Open `smoke.php`, pick the section and call `fktrSmoke::ok($condition, 'what must be true', 'detail shown on failure')`. Anything that creates a post goes through `fktrSmoke::post()` so it is deleted at the end; `fktrSmoke::submit()` saves a post the way its edit screen does (form fields plus the save nonce).
+
+## Handler audit
+
+`python3 tests/audit-handlers.py includes ../fakturo_subscriptions/includes` lists the AJAX and admin-post handlers whose body shows no permission check or no nonce (it counts `fktr_guard` as both), redirects to a request value, a nonce read without `isset`, and `update_option()` from `$_POST`. Handlers checked by hand that the patterns cannot see are listed in `REVIEWED` with the reason. Run it after adding a handler; at the moment core and Subscriptions have nothing to review and `fakturo_afip` still has (see the TODO).
