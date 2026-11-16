@@ -159,7 +159,7 @@ class fktrPostTypeProviders {
 		
 		$inTD = '';
 		if(!current_user_can('fakturo_seller'))	 {
-			$allsellers = get_users( array( 'role' => 'fakturo_seller' ) );
+			$allsellers = fktrUserRoles::salesmen(false);
 			
 			$inTD .= '<select name="user_aseller" id="user_aseller">';
 			$inTD .= '<option value="'.esc_attr((( $user_aseller == 0)?' selected="selected"':'')).'">'. __('Choose a Salesman', 'fakturo'  ) . '</option>';

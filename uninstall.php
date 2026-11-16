@@ -59,8 +59,12 @@ class fktrUninstall {
 	}
 
 	private static function remove_roles() {
-		remove_role('fakturo_manager');
-		remove_role('fakturo_seller');
+		// The two built-in roles and any other "fakturo_*" role that an add-on created.
+		foreach (array_keys(wp_roles()->roles) as $slug) {
+			if (strpos($slug, 'fakturo_') === 0) {
+				remove_role($slug);
+			}
+		}
 		$admin = get_role('administrator');
 		if ($admin) {
 			foreach (array_keys($admin->capabilities) as $cap) {

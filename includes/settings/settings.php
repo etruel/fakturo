@@ -52,7 +52,7 @@ class fktrSettings {
 	// highlight the proper top level menu
 	static function tax_menu_correction($parent_file) {
 		global $current_screen;  // este no lo toma
-		if ($current_screen->id == "admin_page_fakturo-settings-system") {
+		if ($current_screen->id == "admin_page_fakturo-settings-system" || $current_screen->id == "admin_page_fakturo-settings-roles") {
 			//$pagenow = null;
 			$parent_file = 'admin.php?page=fakturo_dashboard';
 		}
@@ -62,7 +62,7 @@ class fktrSettings {
 	// highlight the proper sub level menu
 	static function tax_submenu_correction($submenu_file) {
 		global $current_screen;  //este lo toma pero el menu superior no
-		if ($current_screen->id == "admin_page_fakturo-settings-system") {
+		if ($current_screen->id == "admin_page_fakturo-settings-system" || $current_screen->id == "admin_page_fakturo-settings-roles") {
 			$submenu_file = 'fakturo-settings';
 		}
 		return $submenu_file;
@@ -114,6 +114,9 @@ class fktrSettings {
 			wp_enqueue_style('style-settings',FAKTURO_PLUGIN_URL .'assets/css/settings-system.css');
 			wp_enqueue_style('style-datetimepicker',FAKTURO_PLUGIN_URL .'assets/css/jquery.datetimepicker.css');	
 		
+		}
+		if ($current_screen->id == 'admin_page_fakturo-settings-roles') {
+			wp_enqueue_style('style-settings',FAKTURO_PLUGIN_URL .'assets/css/settings-system.css');
 		}
 		if ($current_screen->id == "fakturo_page_fakturo-settings" ) {
 			wp_enqueue_style('style-settings-company',FAKTURO_PLUGIN_URL .'assets/css/settings-company.css');
@@ -173,6 +176,7 @@ class fktrSettings {
 		$values['bank_entity'] = 0;
 		$values['commissions_for_salespeople'] = 0;
 		$values['delete_data_on_uninstall'] = 0;
+		$values['roles_access'] = array();
 		return apply_filters('fktr_system_options_init', $values);
 	}
 
@@ -209,6 +213,13 @@ class fktrSettings {
 			array('sanitize_callback' => array(__CLASS__, 'sanitize_system_option'))
 		);
 		add_option('fakturo_system_options_group', self::system_defaults());
+
+		// Same option, its own form: the permissions of the roles are saved apart from the system settings.
+		register_setting(
+			'fakturo-settings-roles',
+			'fakturo_system_options_group',
+			array('sanitize_callback' => array(__CLASS__, 'sanitize_system_option'))
+		);
 
 		register_setting(
 			'fakturo-settings-dashboard',  // settings section
@@ -280,6 +291,13 @@ class fktrSettings {
 			return $old;
 		}
 		$new = $old;
+		// The Access by role screen sends the permissions of the roles and nothing else.
+		if (self::is_form('fakturo-settings-roles')) {
+			if (current_user_can('manage_options')) {
+				$new['roles_access'] = !empty($input['roles_access_reset']) ? array() : fktrUserRoles::changes(isset($input['roles_access']) ? $input['roles_access'] : array(), isset($old['roles_access']) ? $old['roles_access'] : array());
+			}
+			return $new;
+		}
 		$form = self::is_form('fakturo-settings-system');
 
 		foreach (array('currency', 'payment_type', 'bank_entity', 'sale_point', 'invoice_type', 'price_scale', 'tax') as $key) {
@@ -338,6 +356,10 @@ class fktrSettings {
 		if (isset($input['list_invoice_number_separator'])) {
 			$new['list_invoice_number_separator'] = substr(str_replace(array('<', '>', '"', "'"), '', (string) $input['list_invoice_number_separator']), 0, 5);
 		}
+		// Who can open the permissions of the roles: the administrator of the site, not the team that they affect.
+		if (current_user_can('manage_options') && isset($input['roles_access'])) {
+			$new['roles_access'] = fktrUserRoles::clean($input['roles_access']);
+		}
 		return apply_filters('fktr_sanitize_system_options', $new, $input, $old);
 	}
 
@@ -358,6 +380,18 @@ class fktrSettings {
 			}
 		}
 		return $new;
+	}
+
+	/**
+	 * Access by Role: what each Fakturo role can do on this site. Only the administrator of the site gets here.
+	 */
+	public static function fakturo_settings_roles() {
+		echo '<div id="tab_container"><br/><h1>' . esc_html__('Access by Role', 'fakturo') . '</h1>
+			<form method="post" action="options.php">';
+		settings_fields('fakturo-settings-roles');
+		echo fktrUserRoles::access_section('fakturo_system_options_group');
+		submit_button();
+		echo '</form></div><!-- #tab_container-->';
 	}
 
 	public static function fakturo_settings_dashboard() {
@@ -1217,6 +1251,7 @@ class fktrSettings {
 				'system_settings' =>  array('text' => __( 'General', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings-system'), 'screen' => 'admin_page_fakturo-settings-system'),
 				'print-template' =>  array('text' => __( 'Print Templates', 'fakturo' ), 'url' => admin_url('edit.php?post_type=fktr_print_template'), 'screen' => 'fktr_print_template'),
 				'email-template' =>  array('text' => __( 'E-mail Templates', 'fakturo' ), 'url' => admin_url('edit.php?post_type=fktr_email_template'), 'screen' => 'fktr_email_template'),
+				'roles-access' =>  array('text' => __( 'Access by Role', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings-roles'), 'screen' => 'admin_page_fakturo-settings-roles'),
 				'dashboard-settings' =>  array('text' => __( 'Dashboard Setup', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings-dashboard'), 'screen' => 'admin_page_fakturo-settings-dashboard'),
 				'default' =>  array('text' => __( 'System Settings', 'fakturo' ), 'url' => admin_url('admin.php?page=fakturo-settings-system'), 'screen' => 'admin_page_fakturo-settings-system')
 			)),
@@ -1248,6 +1283,11 @@ class fktrSettings {
 			))
 		);
 		
+		// Only the administrator of the site opens the permissions of the roles.
+		if (!current_user_can('manage_options')) {
+			unset($sections_tabs['system']['roles-access']);
+		}
+
 		// In a network the licenses are managed from the network admin, otherwise only by who can manage the site.
 		if (is_multisite() || !current_user_can(fktr_licenses_handlers::CAPABILITY)) {
 			unset($sections_tabs['licenses']);

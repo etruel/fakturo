@@ -131,6 +131,15 @@ class fktr_guard {
 	}
 
 	/**
+	 * The HTML of a template is shown as it is written. This header makes the browser treat that page as a document of its own: its scripts do not run and it can not reach the session of the administrator who opens it.
+	 */
+	public static function sandbox() {
+		if (!headers_sent()) {
+			header('Content-Security-Policy: sandbox');
+		}
+	}
+
+	/**
 	 * A numeric id from the request that must be a post of the given type; 0 otherwise.
 	 */
 	public static function post_id($value, $type) {

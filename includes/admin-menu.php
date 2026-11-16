@@ -169,6 +169,16 @@ class fktrAdminMenu {
 			array('fktrSettings','fakturo_settings_dashboard')
 		);	
 		add_action('load-' . $page, array(__CLASS__, 'hidden_page_title'));
+		// The permissions of the roles are for the administrator of the site, not for the team they affect.
+		$page = add_submenu_page(
+			'',
+			__( 'Settings', 'fakturo' ),
+			__( 'Settings', 'fakturo' ),
+			'manage_options',
+			'fakturo-settings-roles',
+			array('fktrSettings','fakturo_settings_roles')
+		);
+		add_action('load-' . $page, array(__CLASS__, 'hidden_page_title'));
 		// In a network the licenses are managed from the network admin (fktrNetwork).
 		if (!is_multisite()) {
 			$page = add_submenu_page(

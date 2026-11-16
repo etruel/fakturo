@@ -4,3 +4,7 @@
 #fakturo_system_options_group_search_code  {
     width: 100% !important;;
 }
+table.fktr-access { max-width: 900px; margin-top: 10px; }
+table.fktr-access th, table.fktr-access td { vertical-align: top; }
+table.fktr-access th:not(:first-child), table.fktr-access td:not(:first-child) { text-align: center; width: 110px; }
+table.fktr-access td p.description { margin: 2px 0 0; font-weight: normal; }

@@ -43,7 +43,7 @@ class fktrPostTypeEmailTemplates {
 		add_action( 'post_submitbox_misc_actions', array(__CLASS__, 'submitbox') );
 	}
 	public static function reset_email_template() {
-		$template_id = fktr_guard::item('reset_email_template', 'fktr_email_template', 'manage_options')->ID;
+		$template_id = fktr_guard::item('reset_email_template', 'fktr_email_template', 'fktr_edit_templates')->ID;
 		
 		// Obtener los datos actuales
 		$email_template = self::get_email_template_data($template_id);
@@ -130,6 +130,7 @@ class fktrPostTypeEmailTemplates {
 			if ($tpl->error) {
 				wp_die(esc_html($tpl->error));
 			}
+			fktr_guard::sandbox();
 			echo '<div style="padding: 15px 10px; font-size: 14px; border-radius: 2px; border: 1px solid #ddd;">'.__('E-mail template', 'fakturo' ).': '.esc_html(get_post_field('post_title', $template_id)).'</div><br/>';
 			echo '<div style="padding: 15px 10px; font-size: 14px; border-radius: 2px; border: 1px solid #ddd;">'.__('E-mail Subject', 'fakturo' ).': ['.$htmlSubject.']</div><br/>';
 			echo '<div style="padding: 15px 10px; font-size: 14px; border-radius: 2px; border: 1px solid #ddd;">'.__('E-mail Body', 'fakturo' ).': ['.$htmlContent.']</div><br/>';
@@ -367,7 +368,7 @@ class fktrPostTypeEmailTemplates {
 	}
 	public static function copy_email_template() {
 		// Get the original post
-		$post = fktr_guard::item('copy_email_template', 'fktr_email_template', 'manage_options', 'post');
+		$post = fktr_guard::item('copy_email_template', 'fktr_email_template', 'fktr_edit_templates', 'post');
 
 		// Copy the post and insert it
 		if (isset($post) && $post!=null) {
@@ -686,7 +687,7 @@ class fktrPostTypeEmailTemplates {
 	}
 	public static function save($post_id, $post) {
 		global $wpdb;
-		if (!fktr_guard::saving($post_id, $post, 'fktr_email_template', 'manage_options')) {
+		if (!fktr_guard::saving($post_id, $post, 'fktr_email_template', 'fktr_edit_templates')) {
 			return false;
 		}	
 	

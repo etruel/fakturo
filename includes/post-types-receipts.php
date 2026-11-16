@@ -119,6 +119,7 @@ class fktrPostTypeReceipts {
             fktr_pdf::stream($html);
         } else {
             // Muestra el HTML si no se solicita PDF
+            fktr_guard::sandbox();
             echo $html;
         }
 

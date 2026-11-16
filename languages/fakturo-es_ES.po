@@ -7649,3 +7649,135 @@ msgstr "Eliminar las claves de licencia y estos ajustes cuando se borre Fakturo 
 #: includes/network.php
 msgid "Off by default. The data of each site is kept or deleted according to the setting of that site in Fakturo → Settings."
 msgstr "Desactivado por defecto. Los datos de cada sitio se conservan o se eliminan según el ajuste de ese sitio en Fakturo → Ajustes."
+
+#: includes/users/users-roles.php
+msgid "Fakturo menu and dashboard"
+msgstr "Menú y panel de Fakturo"
+
+#: includes/users/users-roles.php
+msgid "Shows the Fakturo menu and its dashboard. Without it the person can not reach anything else."
+msgstr "Muestra el menú de Fakturo y su panel. Sin esto la persona no puede llegar a nada más."
+
+#: includes/users/users-roles.php
+msgid "See, create and delete invoices. A published invoice can not be changed by anyone."
+msgstr "Ver, crear y eliminar facturas. Una factura publicada no la puede cambiar nadie."
+
+#: includes/users/users-roles.php
+msgid "See, create and cancel receipts."
+msgstr "Ver, crear y cancelar recibos."
+
+#: includes/users/users-roles.php
+msgid "See and edit the clients."
+msgstr "Ver y editar los clientes."
+
+#: includes/users/users-roles.php
+msgid "See and edit the products and their stock."
+msgstr "Ver y editar los productos y su stock."
+
+#: includes/users/users-roles.php
+msgid "See and edit the providers."
+msgstr "Ver y editar los proveedores."
+
+#: includes/users/users-roles.php
+msgid "Taxes, currencies, sale points, payment types, stocks and the other lists that the invoices use."
+msgstr "Impuestos, monedas, puntos de venta, tipos de pago, stocks y las demás listas que usan las facturas."
+
+#: includes/users/users-roles.php
+msgid "Templates: see"
+msgstr "Plantillas: ver"
+
+#: includes/users/users-roles.php
+msgid "Open the lists of print and e-mail templates."
+msgstr "Abrir las listas de plantillas de impresión y de e-mail."
+
+#: includes/users/users-roles.php
+msgid "Templates: change"
+msgstr "Plantillas: modificar"
+
+#: includes/users/users-roles.php
+msgid "Save, copy and reset print and e-mail templates."
+msgstr "Guardar, copiar y restablecer las plantillas de impresión y de e-mail."
+
+#: includes/users/users-roles.php
+msgid "What a template writes is shown to whoever prints the document (scripts in it are blocked): give this to people who work with the documents of the business."
+msgstr "Lo que escribe una plantilla se muestra a quien imprime el documento (sus scripts se bloquean): dáselo a quienes trabajan con los documentos del negocio."
+
+#: includes/users/users-roles.php
+msgid "Company, system and dashboard settings, and the setup wizard. Not the licenses."
+msgstr "Ajustes de la empresa, del sistema y del panel, y el asistente de configuración. No las licencias."
+
+#: includes/users/users-roles.php
+msgid "Users: see"
+msgstr "Usuarios: ver"
+
+#: includes/users/users-roles.php
+msgid "See the list of users, for example to choose the salesman of an invoice."
+msgstr "Ver la lista de usuarios, por ejemplo para elegir el vendedor de una factura."
+
+#: includes/users/users-roles.php
+msgid "Users: create and edit"
+msgstr "Usuarios: crear y editar"
+
+#: includes/users/users-roles.php
+msgid "Only users who have a Fakturo role, and only with roles that do not give more than the person has."
+msgstr "Solo usuarios que tienen un rol de Fakturo, y solo con roles que no den más de lo que la persona tiene."
+
+#: includes/users/users-roles.php
+msgid "Report: sales"
+msgstr "Informe: ventas"
+
+#: includes/users/users-roles.php
+msgid "Report: clients summary and stock"
+msgstr "Informe: resumen de clientes y stock"
+
+#: includes/users/users-roles.php
+msgid "Report: client incomes"
+msgstr "Informe: ingresos de clientes"
+
+#: includes/users/users-roles.php
+msgid "Report: client account"
+msgstr "Informe: cuenta de clientes"
+
+#: includes/users/users-roles.php
+msgid "Report: salesmen"
+msgstr "Informe: vendedores"
+
+#: includes/users/users-roles.php
+msgid "Report: %s"
+msgstr "Informe: %s"
+
+#: includes/users/users-roles.php
+msgid "Opens this report."
+msgstr "Abre este informe."
+
+#: includes/users/users-roles.php
+msgid "Access by role"
+msgstr "Accesos por rol"
+
+#: includes/users/users-roles.php
+msgid "Choose what each Fakturo role can do on this site. The administrator always has everything. Changes apply when you save."
+msgstr "Elegí qué puede hacer cada rol de Fakturo en este sitio. El administrador siempre tiene todo. Los cambios se aplican al guardar."
+
+#: includes/users/users-roles.php
+msgid "Permission"
+msgstr "Permiso"
+
+#: includes/users/users-roles.php
+msgid "Administrator"
+msgstr "Administrador"
+
+#: includes/users/users-roles.php
+msgid "Different from the default"
+msgstr "Distinto del valor por defecto"
+
+#: includes/users/users-roles.php
+msgid "Always"
+msgstr "Siempre"
+
+#: includes/users/users-roles.php
+msgid "Restore the default permissions of all the roles"
+msgstr "Restaurar los permisos por defecto de todos los roles"
+
+#: includes/settings/settings.php
+msgid "Access by Role"
+msgstr "Accesos por rol"

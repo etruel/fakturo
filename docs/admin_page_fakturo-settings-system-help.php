@@ -20,6 +20,14 @@ $helptexts = array(
 		),
 
 	),
+	'ACCESS BY ROLE ' => array( 
+		'tabtitle' =>  __('Access by role', 'fakturo' ),
+		'item1' => array( 
+			'title' => __('Access by role','fakturo'),
+			'tip' => __('Only administrators see this section. Each row is something people can do and each column is a Fakturo role: tick the boxes of what that role may do on this site. The administrator always has everything. A box outlined in yellow is different from the default, and "Restore the default permissions" undoes all the changes. Roles added by add-ons, such as an accountant, appear as new columns.', 'fakturo' ),
+			'plustip' => __('Anything that could harm the site, like installing plugins, editing files or the licenses, can not be given from here.', 'fakturo' ),
+		),
+	),
 	'FIELDS ' => array( 
 		'tabtitle' =>  __('Fields', 'fakturo' ),
 		'item1' => array( 

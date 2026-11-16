@@ -81,6 +81,10 @@ You can either install it automatically from the WordPress admin, or do it manua
 
 * Go To Fakturo settings and set up the plugin configurations. Is easy, but there are many options that must be setup following your country's standards.
 
+= Can an add-on add a role, like an accountant? =
+
+Yes. Add it with the `fktr_team_roles` filter (the slug must start with `fakturo_`) and say which permission groups it starts with: `$roles['fakturo_accountant'] = array( 'label' => 'Fakturo Accountant', 'groups' => array( 'menu', 'report_client_incomes', 'report_client_account_movements' ) );`. An add-on's own permissions are added to the table with the `fktr_role_permission_groups` filter. The administrator of each site can change them in Settings > System > Access by role.
+
 = Can another plugin create invoices? =
 
 Yes. `fktr_create_sale( $client, $lines, $args )` creates (and by default publishes) an invoice and returns its id, or a `WP_Error` that says why not. `$client` is a client id or an e-mail (the client is found by e-mail, or created from the data you give); `$lines` are `description`, `quantity` and `unit_price` (and optionally `product_id`, `code`, `tax_id`); `$args` can set `invoice_type`, `sale_point`, `currency`, `date`, `discount`, `publish`, `invoice_number`, `stock_location`, `external_ref` with `source` (the same transaction never makes a second invoice: the first one is returned; `fktr_find_sale_by_ref()` looks it up) and `send_email`. The numbering, the stock rules and the totals are the ones of the invoice screen. It is documented at the top of `includes/sale-api.php`.
@@ -89,6 +93,8 @@ Yes. `fktr_create_sale( $client, $lines, $args )` creates (and by default publis
 == Changelog ==
 
 = 1.1 =
+* New "Access by role" section in Settings > System: the administrator of each site chooses, with a table of boxes, what the Fakturo Manager and the Fakturo Salesman can do (invoices, receipts, clients, products, each money report, settings, users, templates...) and can restore the defaults. Add-ons can add roles (an accountant with the money reports only, for example) and permission groups; the table of settings shows them. A person can only give a role that does not have more than they have.
+* Print and e-mail templates are saved with their own permission, "Templates: change", that the administrator gives to the roles that need it, instead of needing the administrator's.
 * Welcome and Getting Started screens now speak English out of the box with full Spanish translation, and link to the right Fakturo pages.
 * Ready for PHP 8.2 and 8.3: no more deprecated notices when reading settings, printing or exporting PDFs.
 * PDFs of invoices, receipts and reports keep every character, including accents, symbols and non-Latin alphabets.

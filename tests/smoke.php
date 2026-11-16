@@ -435,6 +435,132 @@ if (class_exists('fktrPostTypeSubscriptions')) {
 	fktrSmoke::skip('subscriptions', 'the add-on is not active');
 }
 
+// ---------------------------------------------------------------- access by role
+fktrSmoke::section('Access by role');
+{
+	$opt_name = 'fakturo_system_options_group';
+	fktrSettings::register_settings(); // admin_init does not run in WP-CLI: without it the sanitizer of the option is not attached
+	$opt_before = get_option($opt_name);
+	$roles_before = array();
+	foreach (fktrUserRoles::slugs() as $slug) {
+		$roles_before[$slug] = array_filter(get_role($slug)->capabilities);
+	}
+	require_once ABSPATH . 'wp-admin/includes/user.php';
+	if (is_multisite()) {
+		require_once ABSPATH . 'wp-admin/includes/ms.php';
+	}
+	$team = array();
+	foreach (array('fakturo_manager' => 'mgr', 'fakturo_seller' => 'sel') as $role => $short) {
+		$team[$short] = wp_insert_user(array('user_login' => 'fktr_smoke_' . $short, 'user_pass' => wp_generate_password(24), 'user_email' => 'smoke-' . $short . '@fktr-smoke.invalid', 'role' => $role));
+	}
+	$can = function ($user, $cap) {
+		clean_user_cache($user);
+		return user_can($user, $cap);
+	};
+	$has = function ($slug, $cap) {
+		$role = get_role($slug);
+		return $role && !empty($role->capabilities[$cap]);
+	};
+	$save = function ($cells, $form = false) use ($opt_name) {
+		$value = get_option($opt_name);
+		$value['roles_access'] = $cells;
+		if ($form) {
+			$_POST = array('option_page' => 'fakturo-settings-roles');
+		}
+		update_option($opt_name, $value);
+		$_POST = array();
+		return get_option($opt_name);
+	};
+
+	fktrSmoke::ok(!is_wp_error($team['mgr']) && !is_wp_error($team['sel']), 'a manager and a salesman for the test');
+	fktrSmoke::ok($can($admin, 'fktr_edit_templates') && $can($admin, 'edit_fktr_products'), 'the administrator has every capability');
+	fktrSmoke::ok($can($team['mgr'], 'edit_fakturo_settings') && !$can($team['mgr'], 'fktr_edit_templates'), 'by default the manager changes settings but not templates');
+	fktrSmoke::ok($can($team['sel'], 'edit_fktr_sales') && !$can($team['sel'], 'edit_fakturo_settings') && !$can($team['sel'], 'fakturo_reports'), 'by default the salesman sells and has no settings or reports');
+	fktrSmoke::ok(array_keys(fktrUserRoles::groups()) && isset(fktrUserRoles::groups()['report_client_incomes']), 'every money report is a group of its own');
+
+	// A manager can not change what the roles can do.
+	wp_set_current_user($team['mgr']);
+	$stored = $save(array('fakturo_seller' => array('report_client_incomes' => 1)));
+	wp_set_current_user($admin);
+	fktrSmoke::ok(empty($stored['roles_access']) && !$has('fakturo_seller', 'fktr_report_client_incomes'), 'a manager can not change the permissions of the roles');
+
+	// The administrator can: only the differences are saved.
+	$stored = $save(array('fakturo_seller' => array('report_client_incomes' => 1, 'sales' => 1), 'fakturo_manager' => array('products' => 0, 'sales' => 1, 'bogus' => 1), 'fakturo_nobody' => array('sales' => 1)));
+	fktrSmoke::ok($stored['roles_access'] == array('fakturo_seller' => array('report_client_incomes' => 1), 'fakturo_manager' => array('products' => 0)), 'only the differences with the default are saved, unknown roles and groups dropped', json_encode($stored['roles_access']));
+	fktrSmoke::ok($has('fakturo_seller', 'fktr_report_client_incomes') && $has('fakturo_seller', 'fakturo_reports') && !$has('fakturo_seller', 'fktr_report_sales'), 'the salesman gets that report only');
+	fktrSmoke::ok(!$has('fakturo_manager', 'edit_fktr_products') && $has('fakturo_manager', 'edit_fktr_clients'), 'the manager lost the products and kept the clients');
+	fktrSmoke::ok($can($admin, 'edit_fktr_products'), 'the administrator keeps what the manager lost');
+
+	// The form sends the whole table, unchecked boxes as 0.
+	$matrix = fktrUserRoles::matrix();
+	$sent = array();
+	foreach ($matrix as $slug => $row) {
+		foreach ($row as $key => $value) {
+			$sent[$slug][$key] = $value ? '1' : '0';
+		}
+	}
+	$sent['fakturo_seller']['templates_edit'] = '1';
+	$sent['fakturo_seller']['report_client_incomes'] = '0';
+	$sent['fakturo_manager']['products'] = '1';
+	$stored = $save($sent, true);
+	fktrSmoke::ok($stored['roles_access'] === array('fakturo_seller' => array('templates_edit' => 1)), 'the table of the form is saved as differences too', json_encode($stored['roles_access']));
+	fktrSmoke::ok($has('fakturo_seller', 'fktr_edit_templates') && !$has('fakturo_seller', 'fktr_report_client_incomes') && $has('fakturo_manager', 'edit_fktr_products'), 'and the roles follow it');
+	fktrSmoke::ok(!empty($stored['use_stock_product']) === !empty($opt_before['use_stock_product']) && $stored['dateformat'] === $opt_before['dateformat'], 'the form of the roles leaves the other settings as they are');
+	fktrSmoke::ok($can($team['sel'], 'fktr_edit_templates'), 'a user with that role can use the permission at once');
+
+	// A person can not hand out a role that has more than they have.
+	fktrSmoke::ok(fktrUserRoles::can_give($team['mgr'], 'fakturo_manager'), 'a manager can give the manager role');
+	fktrSmoke::ok(!fktrUserRoles::can_give($team['mgr'], 'fakturo_seller'), 'but not a salesman role that now can change templates, which the manager can not');
+	fktrSmoke::ok(!fktrUserRoles::can_give($team['sel'], 'fakturo_manager') && fktrUserRoles::can_give($team['sel'], 'fakturo_seller'), 'a salesman can not give the manager role');
+
+	// A role an add-on defines.
+	$accountant = function ($roles) {
+		$roles['fakturo_accountant'] = array('label' => 'Fakturo Accountant', 'groups' => array('menu', 'report_client_incomes', 'report_client_account_movements'));
+		return $roles;
+	};
+	add_filter('fktr_team_roles', $accountant);
+	fktrUserRoles::apply_roles();
+	fktrSmoke::ok($has('fakturo_accountant', 'fktr_report_client_account_movements') && $has('fakturo_accountant', 'fakturo_reports') && $has('fakturo_accountant', 'edit_fakturo_dashboard'), 'an accountant role gets its money reports and the menu');
+	fktrSmoke::ok(!$has('fakturo_accountant', 'edit_fktr_sales') && !$has('fakturo_accountant', 'fktr_report_sales') && !$has('fakturo_accountant', 'edit_fakturo_settings'), 'and nothing else');
+	$table = fktrUserRoles::access_section($opt_name);
+	fktrSmoke::ok(strpos($table, 'Fakturo Accountant') !== false && strpos($table, '[roles_access][fakturo_accountant][report_client_incomes]') !== false, 'the table of the settings shows the new role');
+	$stored = $save(array('fakturo_accountant' => array('sales' => 1)));
+	fktrSmoke::ok($has('fakturo_accountant', 'edit_fktr_sales'), 'and the administrator can give it more');
+	$acc_user = wp_insert_user(array('user_login' => 'fktr_smoke_acc', 'user_pass' => wp_generate_password(24), 'user_email' => 'smoke-acc@fktr-smoke.invalid', 'role' => 'fakturo_accountant'));
+	$team['acc'] = $acc_user;
+	$men = wp_list_pluck(fktrUserRoles::salesmen(), 'ID');
+	fktrSmoke::ok(in_array($team['sel'], $men) && in_array($acc_user, $men) && in_array($admin, $men), 'whoever can invoice, also with a role from an add-on, can be the salesman of an invoice');
+	$stored = $save(array('fakturo_accountant' => array('sales' => 0)));
+	$men = wp_list_pluck(fktrUserRoles::salesmen(), 'ID');
+	fktrSmoke::ok(!in_array($acc_user, $men), 'and whoever can not, is not offered');
+	remove_filter('fktr_team_roles', $accountant);
+	remove_role('fakturo_accountant');
+
+	// Back to the defaults.
+	$stored = $save(array('fakturo_seller' => array('sales' => 0)), true);
+	$_POST = array('option_page' => 'fakturo-settings-roles');
+	$value = get_option($opt_name);
+	$value['roles_access_reset'] = 1;
+	update_option($opt_name, $value);
+	$_POST = array();
+	$after = array();
+	foreach (fktrUserRoles::slugs() as $slug) {
+		$after[$slug] = array_filter(get_role($slug)->capabilities);
+	}
+	fktrSmoke::ok(get_option($opt_name)['roles_access'] === array() && $after == $roles_before, 'restoring the defaults gives back the roles as they were');
+	$count = count(fktrUserRoles::groups());
+	fktrSmoke::ok(substr_count(fktrUserRoles::access_section($opt_name), 'type="checkbox"') === $count * count(fktrUserRoles::slugs()) + 1, 'the table has a box for every role and group');
+
+	foreach ($team as $id) {
+		if (!is_wp_error($id)) {
+			is_multisite() ? wpmu_delete_user($id) : wp_delete_user($id); // in a network wp_delete_user() only takes the user off the site
+		}
+	}
+	update_option($opt_name, $opt_before);
+	fktrUserRoles::apply_roles();
+	wp_set_current_user($admin);
+}
+
 // ---------------------------------------------------------------- screens, AJAX and printing over HTTP
 fktrSmoke::section('Screens over HTTP');
 if (getenv('FKTR_SMOKE_SKIP_SCREENS')) {
@@ -523,6 +649,7 @@ if (getenv('FKTR_SMOKE_SKIP_SCREENS')) {
 	$print = fktr_guard::url('print_invoice', $sale);
 	$r = $get(html_entity_decode($print));
 	fktrSmoke::ok(wp_remote_retrieve_response_code($r) === 200 && stripos(wp_remote_retrieve_body($r), '<') !== false && !$php_error(wp_remote_retrieve_body($r)), 'the print view of an invoice loads', wp_remote_retrieve_response_code($r) . ' ' . substr(trim(preg_replace('/\s+/', ' ', wp_strip_all_tags(wp_remote_retrieve_body($r)))), 0, 200) . ' ' . $print);
+	fktrSmoke::ok(stripos((string) wp_remote_retrieve_header($r, 'content-security-policy'), 'sandbox') !== false, 'the print view of a template comes in a sandbox: its scripts do not run');
 	$r = $get(html_entity_decode($print) . '&pdf=1');
 	fktrSmoke::ok(strpos(wp_remote_retrieve_body($r), '%PDF-') === 0, 'the PDF of an invoice is served');
 	$r = $get(html_entity_decode(fktr_guard::url('print_receipt', $receipt)) . '&pdf=1');

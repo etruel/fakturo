@@ -7101,3 +7101,135 @@ msgstr ""
 #: includes/network.php
 msgid "Off by default. The data of each site is kept or deleted according to the setting of that site in Fakturo → Settings."
 msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Fakturo menu and dashboard"
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Shows the Fakturo menu and its dashboard. Without it the person can not reach anything else."
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "See, create and delete invoices. A published invoice can not be changed by anyone."
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "See, create and cancel receipts."
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "See and edit the clients."
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "See and edit the products and their stock."
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "See and edit the providers."
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Taxes, currencies, sale points, payment types, stocks and the other lists that the invoices use."
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Templates: see"
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Open the lists of print and e-mail templates."
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Templates: change"
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Save, copy and reset print and e-mail templates."
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "What a template writes is shown to whoever prints the document (scripts in it are blocked): give this to people who work with the documents of the business."
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Company, system and dashboard settings, and the setup wizard. Not the licenses."
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Users: see"
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "See the list of users, for example to choose the salesman of an invoice."
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Users: create and edit"
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Only users who have a Fakturo role, and only with roles that do not give more than the person has."
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Report: sales"
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Report: clients summary and stock"
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Report: client incomes"
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Report: client account"
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Report: salesmen"
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Report: %s"
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Opens this report."
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Access by role"
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Choose what each Fakturo role can do on this site. The administrator always has everything. Changes apply when you save."
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Permission"
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Administrator"
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Different from the default"
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Always"
+msgstr ""
+
+#: includes/users/users-roles.php
+msgid "Restore the default permissions of all the roles"
+msgstr ""
+
+#: includes/settings/settings.php
+msgid "Access by Role"
+msgstr ""

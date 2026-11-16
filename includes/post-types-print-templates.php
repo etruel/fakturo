@@ -44,7 +44,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 
 		public static function reset_print_template() {
 
-			$template_id = fktr_guard::item('reset_print_template', 'fktr_print_template', 'manage_options')->ID;
+			$template_id = fktr_guard::item('reset_print_template', 'fktr_print_template', 'fktr_edit_templates')->ID;
 
 			$print_template = self::get_print_template_data($template_id);
 			if (!isset($print_template['assigned'])) {
@@ -83,7 +83,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 
 		public static function copy_print_template() {
 			// Get the original post
-			$post = fktr_guard::item('copy_print_template', 'fktr_print_template', 'manage_options', 'post');
+			$post = fktr_guard::item('copy_print_template', 'fktr_print_template', 'fktr_edit_templates', 'post');
 
 			// Copy the post and insert it
 			if (isset($post) && $post != null) {
@@ -424,6 +424,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 				if (isset($_REQUEST['pdf'])) {
 					fktr_pdf::stream($html);
 				} else {
+					fktr_guard::sandbox();
 					echo $html;
 				}
 
@@ -911,7 +912,7 @@ if (!class_exists('fktrPostTypePrintTemplates')) :
 
 		public static function save($post_id, $post) {
 			global $wpdb;
-		if (!fktr_guard::saving($post_id, $post, 'fktr_print_template', 'manage_options')) {
+		if (!fktr_guard::saving($post_id, $post, 'fktr_print_template', 'fktr_edit_templates')) {
 			return false;
 		}
 

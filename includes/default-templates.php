@@ -90,7 +90,7 @@ class fktrDefaultTemplates {
 	}
 
 	public static function create_from_button() {
-		if (!current_user_can('manage_options') || !isset($_GET['_nonce']) || !wp_verify_nonce($_GET['_nonce'], self::NONCE)) {
+		if (!current_user_can('fktr_edit_templates') || !isset($_GET['_nonce']) || !wp_verify_nonce($_GET['_nonce'], self::NONCE)) {
 			wp_die(__('A problem, please try again.', 'fakturo'), '', 403);
 		}
 		$kind = (isset($_GET['kind']) && $_GET['kind'] == 'email') ? 'email' : 'print';
@@ -106,7 +106,7 @@ class fktrDefaultTemplates {
 
 	public static function list_button($which) {
 		global $typenow;
-		if ($which != 'top' || !in_array($typenow, array('fktr_print_template', 'fktr_email_template')) || !current_user_can('manage_options')) {
+		if ($which != 'top' || !in_array($typenow, array('fktr_print_template', 'fktr_email_template')) || !current_user_can('fktr_edit_templates')) {
 			return;
 		}
 		$kind = $typenow == 'fktr_email_template' ? 'email' : 'print';
@@ -116,7 +116,7 @@ class fktrDefaultTemplates {
 
 	public static function ajax_default_template() {
 		check_ajax_referer(self::NONCE, 'nonce');
-		if (!current_user_can('manage_options')) {
+		if (!current_user_can('fktr_edit_templates')) {
 			wp_send_json_error(__('A problem, please try again.', 'fakturo'));
 		}
 		$kind = (isset($_POST['kind']) && $_POST['kind'] == 'email') ? 'email' : 'print';

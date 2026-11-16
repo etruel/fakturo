@@ -193,6 +193,7 @@ if (!class_exists('fktrPostTypeSales')) :
 				if (isset($_REQUEST['pdf'])) {
 					fktr_pdf::stream($html);
 				} else {
+					fktr_guard::sandbox();
 					echo $html;
 				}
 
@@ -1047,10 +1048,7 @@ if (!class_exists('fktrPostTypeSales')) :
 			}
 			$select_sale_mans = 'No Saleman';
 			if ($post->post_status != 'publish') {
-				$allsellers = get_users(array('role' => 'fakturo_seller'));
-				$allmanagers = get_users(array('role' => 'fakturo_manager'));
-				$alladmins = get_users(array('role' => 'administrator'));
-				$allsellers = array_merge($allsellers, $allmanagers, $alladmins);
+				$allsellers = fktrUserRoles::salesmen();
 				$select_sale_mans = '<select name="invoice_saleman" id="invoice_saleman">';
 				$select_sale_mans .= '<option value=""' . (($sale_data['invoice_saleman'] == 0) ? ' selected="selected"' : '') . '>' . __('Choose a Salesman', 'fakturo') . '</option>';
 				foreach ($allsellers as $suser) {
