@@ -259,11 +259,11 @@ function padLeft(nr, n, str) {
 
 function addNoticeMessage(msg, classN) {
 	if (jQuery('#fieldNotice').length) {
-		jQuery('#fieldNotice').html('<p>'+msg+'</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Descartar este aviso.</span></button>');
+		jQuery('#fieldNotice').html('<p>'+msg+'</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">'+receipts_object.txt_dismiss_notice+'</span></button>');
 		jQuery('#fieldNotice').attr('class', ''+classN+' fade he20 notice is-dismissible');
 		jQuery('#fieldNotice').fadeIn();
 	} else {
-		jQuery('#poststuff').prepend('<div id="fieldNotice" class="'+classN+' fade he20 notice is-dismissible"><p>'+msg+'</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Descartar este aviso.</span></button></div>');
+		jQuery('#poststuff').prepend('<div id="fieldNotice" class="'+classN+' fade he20 notice is-dismissible"><p>'+msg+'</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">'+receipts_object.txt_dismiss_notice+'</span></button></div>');
 	}
 	jQuery('.notice-dismiss').click(function(){
 		jQuery(this).parent().fadeOut();

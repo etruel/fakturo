@@ -470,9 +470,9 @@ class fktr_welcome {
 				</div>
 				<div class="column wpe-flex is-edge-to-edge has-accent-background-color">
 					<div class="about__image is-vertically-aligned-center">
-						<img src="<?php echo FAKTURO_PLUGIN_URL . 'screenshot-1.png'; ?>" alt="Facturación" />
+						<img src="<?php echo FAKTURO_PLUGIN_URL . 'screenshot-1.png'; ?>" alt="<?php echo esc_attr__('Invoicing', 'fakturo'); ?>" />
 						<hr>
-						<img src="<?php echo FAKTURO_PLUGIN_URL . 'screenshot-3.png'; ?>" alt="Facturación" />
+						<img src="<?php echo FAKTURO_PLUGIN_URL . 'screenshot-3.png'; ?>" alt="<?php echo esc_attr__('Invoicing', 'fakturo'); ?>" />
 					</div>
 				</div>
 			</div>
@@ -538,7 +538,7 @@ class fktr_welcome {
 				</div>
 				<div class="column wpe-flex is-edge-to-edge has-accent-background-color">
 					<div class="about__image is-vertically-aligned-center">
-						<img src="<?php echo FAKTURO_PLUGIN_URL . 'screenshot-5.png'; ?>" alt="Facturación" />
+						<img src="<?php echo FAKTURO_PLUGIN_URL . 'screenshot-5.png'; ?>" alt="<?php echo esc_attr__('Invoicing', 'fakturo'); ?>" />
 					</div>
 				</div>
 			</div>
@@ -546,7 +546,7 @@ class fktr_welcome {
 			<div class="about__section about__section_height has-2-columns">
 				<div class="column wpe-flex is-edge-to-edge has-accent-background-color">
 					<div class="about__image is-vertically-aligned-center">
-						<img src="<?php echo FAKTURO_PLUGIN_URL . 'screenshot-5.png'; ?>" alt="Facturación" />
+						<img src="<?php echo FAKTURO_PLUGIN_URL . 'screenshot-5.png'; ?>" alt="<?php echo esc_attr__('Invoicing', 'fakturo'); ?>" />
 					</div>
 				</div>
 				<div class="column is-vertically-aligned-center">

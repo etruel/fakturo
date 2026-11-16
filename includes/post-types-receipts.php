@@ -469,6 +469,7 @@ class fktrPostTypeReceipts {
 					
 					
 					'txt_loading' => __('Loading', 'fakturo' ),
+					'txt_dismiss_notice' => __('Dismiss this notice.', 'fakturo'),
 					'txt_cancel' => __('Cancel', 'fakturo' ),
 					'url_loading_image' => get_bloginfo('wpurl').'/wp-admin/images/wpspin_light.gif',
 					

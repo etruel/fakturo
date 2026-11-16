@@ -341,7 +341,7 @@ class expenses_summary_report {
 
                 doc.save("commission_report.pdf");
             } else {
-                alert("No se encontraron tablas para exportar!");
+                alert(' . wp_json_encode(__('No tables found to export!', 'fakturo')) . ');
             }
         });
 
@@ -369,7 +369,7 @@ class expenses_summary_report {
                 link.click();
                 document.body.removeChild(link);
             } else {
-                alert("No se encontró la tabla para exportar!");
+                alert(' . wp_json_encode(__('No table found to export!', 'fakturo')) . ');
             }
         });
         </script>';

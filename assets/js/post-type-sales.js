@@ -123,17 +123,17 @@ jQuery(document).ready(function($) {
 		}
 		else {
 			jQuery(".client_data").fadeIn();
-			jQuery("#client_data_id").html('Loading...');
-			jQuery("#client_name").html('Loading...');
-			jQuery("#client_address").html('Loading...');
-			jQuery("#client_city").html('Loading...');
-			jQuery("#client_state").html('Loading...');
-			jQuery("#client_country").html('Loading...');
-			jQuery("#client_taxpayer").html('Loading...');
+			jQuery("#client_data_id").html(sales_object.txt_loading + '...');
+			jQuery("#client_name").html(sales_object.txt_loading + '...');
+			jQuery("#client_address").html(sales_object.txt_loading + '...');
+			jQuery("#client_city").html(sales_object.txt_loading + '...');
+			jQuery("#client_state").html(sales_object.txt_loading + '...');
+			jQuery("#client_country").html(sales_object.txt_loading + '...');
+			jQuery("#client_taxpayer").html(sales_object.txt_loading + '...');
 			jQuery("#client_tax_condition").fadeOut();
 			jQuery("#client_payment_type").fadeOut();
-			jQuery("#client_price_scale").html('Loading...');
-			jQuery("#client_credit_limit").html('Loading...');
+			jQuery("#client_price_scale").html(sales_object.txt_loading + '...');
+			jQuery("#client_credit_limit").html(sales_object.txt_loading + '...');
 
 
 			var data = {
@@ -324,12 +324,12 @@ function listCurrencieshiden(lim) {
 
 function addNoticeMessage(msg, classN) {
 	if (jQuery('#fieldNotice').length) {
-		jQuery('#fieldNotice').html('<p>' + msg + '</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Descartar este aviso.</span></button>');
+		jQuery('#fieldNotice').html('<p>' + msg + '</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">' + sales_object.txt_dismiss_notice + '</span></button>');
 		jQuery('#fieldNotice').attr('class', '' + classN + ' fade he20 notice is-dismissible');
 		jQuery('#fieldNotice').fadeIn();
 	}
 	else {
-		jQuery('#poststuff').prepend('<div id="fieldNotice" class="' + classN + ' fade he20 notice is-dismissible"><p>' + msg + '</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Descartar este aviso.</span></button></div>');
+		jQuery('#poststuff').prepend('<div id="fieldNotice" class="' + classN + ' fade he20 notice is-dismissible"><p>' + msg + '</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">' + sales_object.txt_dismiss_notice + '</span></button></div>');
 	}
 	jQuery('.notice-dismiss').click(function() {
 		jQuery(this).parent().fadeOut();

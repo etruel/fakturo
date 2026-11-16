@@ -4207,6 +4207,18 @@ msgstr ""
 msgid "The check %s was not registered: a check with that number already exists."
 msgstr ""
 
+#: includes/post-types-sales.php:722
+msgid "Dismiss this notice."
+msgstr ""
+
+#: includes/reports/expenses_summary.php:344
+msgid "No tables found to export!"
+msgstr ""
+
+#: includes/reports/expenses_summary.php:372
+msgid "No table found to export!"
+msgstr ""
+
 #: includes/post-types-sales.php:136
 msgid "Unpaid"
 msgstr ""

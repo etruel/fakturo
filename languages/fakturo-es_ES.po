@@ -4550,6 +4550,18 @@ msgstr "El número de recibo %1$s ya estaba en uso, el recibo se guardó con el 
 msgid "The check %s was not registered: a check with that number already exists."
 msgstr "El cheque %s no se registró: ya existe un cheque con ese número."
 
+#: includes/post-types-sales.php:722
+msgid "Dismiss this notice."
+msgstr "Descartar este aviso."
+
+#: includes/reports/expenses_summary.php:344
+msgid "No tables found to export!"
+msgstr "¡No se encontraron tablas para exportar!"
+
+#: includes/reports/expenses_summary.php:372
+msgid "No table found to export!"
+msgstr "¡No se encontró la tabla para exportar!"
+
 #: includes/post-types-sales.php:136
 msgid "Unpaid"
 msgstr "Sin pagar"

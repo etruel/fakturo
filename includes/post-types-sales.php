@@ -718,6 +718,7 @@ if (!class_exists('fktrPostTypeSales')) :
 							'txt_total_quantity' => __('Total quantity', 'fakturo'),
 							'txt_remaining' => __('Remaining', 'fakturo'),
 							'txt_loading' => __('Loading', 'fakturo'),
+							'txt_dismiss_notice' => __('Dismiss this notice.', 'fakturo'),
 							'txt_no_stock' => __('Stock not available', 'fakturo'),
 							'txt_exc_stock' => __('Stock exceeded', 'fakturo'),
 							'txt_max' => __('Max', 'fakturo'),
