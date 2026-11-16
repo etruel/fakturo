@@ -7756,7 +7756,7 @@ msgstr "Accesos por rol"
 
 #: includes/users/users-roles.php
 msgid "Choose what each Fakturo role can do on this site. The administrator always has everything. Changes apply when you save."
-msgstr "Elegí qué puede hacer cada rol de Fakturo en este sitio. El administrador siempre tiene todo. Los cambios se aplican al guardar."
+msgstr "Elige qué puede hacer cada rol de Fakturo en este sitio. El administrador siempre tiene todo. Los cambios se aplican al guardar."
 
 #: includes/users/users-roles.php
 msgid "Permission"
@@ -7781,3 +7781,347 @@ msgstr "Restaurar los permisos por defecto de todos los roles"
 #: includes/settings/settings.php
 msgid "Access by Role"
 msgstr "Accesos por rol"
+
+#: docs
+msgid "What is this?"
+msgstr "¿Qué es esto?"
+
+#: docs
+msgid "Commission scales"
+msgstr "Escalas de comisión"
+
+#: docs
+msgid "A commission is the part of the sales that a salesperson earns. Here you write the rules: how much each salesperson earns according to how much they sold. Fakturo applies those rules and shows the result in <b>Reports &rarr; Salesmen</b>."
+msgstr "Una comisión es la parte de las ventas que gana un vendedor. Acá escribes las reglas: cuánto gana cada vendedor según cuánto vendió. Fakturo aplica esas reglas y muestra el resultado en <b>Informes &rarr; Vendedores</b>."
+
+#: docs
+msgid "Fakturo only calculates. It does not pay anybody and it does not save the result: every time you open the report it is calculated again with the invoices of the period you choose. You can export it to PDF or CSV."
+msgstr "Fakturo solo calcula. No le paga a nadie y no guarda el resultado: cada vez que abres el informe se calcula de nuevo con las facturas del período que elijas. Puedes exportarlo a PDF o CSV."
+
+#: docs
+msgid "Before you start"
+msgstr "Antes de empezar"
+
+#: docs
+msgid "The switch <b>Activate commissions for salespeople</b> in Settings &rarr; System must be on, otherwise this screen is not shown. The salesperson of an invoice is chosen when the invoice is made."
+msgstr "El interruptor <b>Activar comisiones para vendedores</b> de Configuración &rarr; Sistema debe estar activado; si no, esta pantalla no se muestra. El vendedor de una factura se elige al hacer la factura."
+
+#: docs
+msgid "How it is calculated"
+msgstr "Cómo se calcula"
+
+#: docs
+msgid "Step by step"
+msgstr "Paso a paso"
+
+#: docs
+msgid "1. You choose the period in the report (this month, last year, custom dates...).<br>2. For each salesperson Fakturo counts the <b>finished invoices</b> of that period (drafts do not count) and adds up their totals, less the credit notes.<br>3. It looks for the scale of that salesperson: the one with their name, or, if they have none, the <b>Base scale</b>.<br>4. Inside that scale it looks for the range that fits the <b>number of invoices</b> the salesperson made in the period.<br>5. It applies the percentage of that range to the <b>whole</b> total sold in the period."
+msgstr "1. Eliges el período en el informe (este mes, el año pasado, fechas a elección...).<br>2. Para cada vendedor, Fakturo cuenta las <b>facturas terminadas</b> de ese período (los borradores no cuentan) y suma sus totales, menos las notas de crédito.<br>3. Busca la escala de ese vendedor: la que tiene su nombre o, si no tiene ninguna, la <b>Escala base</b>.<br>4. Dentro de esa escala busca el rango que corresponde a la <b>cantidad de facturas</b> que hizo el vendedor en el período.<br>5. Aplica el porcentaje de ese rango al total <b>completo</b> vendido en el período."
+
+#: docs
+msgid "Example"
+msgstr "Ejemplo"
+
+#: docs
+msgid "Base scale: from 1 to 10 invoices = 3%, from 11 to 20 = 5%, from 21 with no end = 8%.<br>Ana made 12 invoices in the month and sold 24,000 in total. 12 is in the range 11 to 20, so she earns 5% of <b>all</b> 24,000 = 1,200. It is not 3% on the first 10 invoices and 5% on the rest: the percentage of the range applies to everything.<br>If Ana made 25 invoices she would earn 8% of everything she sold."
+msgstr "Escala base: de 1 a 10 facturas = 3%, de 11 a 20 = 5%, desde 21 sin fin = 8%.<br>Ana hizo 12 facturas en el mes y vendió 24.000 en total. 12 está en el rango de 11 a 20, así que gana el 5% de <b>todos</b> los 24.000 = 1.200. No es 3% sobre las primeras 10 facturas y 5% sobre el resto: el porcentaje del rango se aplica a todo.<br>Si Ana hubiera hecho 25 facturas ganaría el 8% de todo lo que vendió."
+
+#: docs
+msgid "The warning sign in the report"
+msgstr "El signo de advertencia del informe"
+
+#: docs
+msgid "A salesperson shown with the commission in 0 and a warning sign has no scale, or their number of invoices is not inside any range. Add a scale or fix the ranges."
+msgstr "Un vendedor que aparece con la comisión en 0 y un signo de advertencia no tiene escala, o su cantidad de facturas no está dentro de ningún rango. Agrega una escala o corrige los rangos."
+
+#: docs
+msgid "A name for you to recognize the scale, for example \"Base\" or \"Ana - special\"."
+msgstr "Un nombre para que reconozcas la escala, por ejemplo \"Base\" o \"Ana - especial\"."
+
+#: docs
+msgid "Scale Type"
+msgstr "Tipo de escala"
+
+#: docs
+msgid "<b>Base Scale</b>: it is used for every salesperson that has no scale of their own. Only one is allowed: Fakturo does not let you create a second one.<br><b>Exception Scale</b>: for one particular salesperson. Choose their name in <i>Assigned Salesperson</i> and they will use this scale instead of the base one."
+msgstr "<b>Escala base</b>: se usa para todos los vendedores que no tienen una escala propia. Solo se permite una: Fakturo no deja crear una segunda.<br><b>Escala de excepción</b>: para un vendedor en particular. Elige su nombre en <i>Vendedor asignado</i> y usará esta escala en lugar de la base."
+
+#: docs
+msgid "Assigned Salesperson"
+msgstr "Vendedor asignado"
+
+#: docs
+msgid "Who this scale is for. It appears when the type is Exception Scale (the Base Scale is for everybody). Choose the salesperson: if you leave it empty the scale is never used. Only people who can make invoices appear in the list."
+msgstr "Para quién es esta escala. Aparece cuando el tipo es Escala de excepción (la escala base es para todos). Elige al vendedor: si lo dejas vacío la escala nunca se usa. En la lista solo aparecen las personas que pueden hacer facturas."
+
+#: docs
+msgid "It is kept for commissions by product category, but at the moment the report does not use it. Leave it empty."
+msgstr "Está guardada para comisiones por categoría de producto, pero por ahora el informe no la usa. Déjala vacía."
+
+#: docs
+msgid "Commission Ranges"
+msgstr "Rangos de comisión"
+
+#: docs
+msgid "Each row is a range: <b>From</b> and <b>To</b> are a number of invoices in the period and <b>%</b> is the percentage of the sales that the salesperson earns. Press <b>+</b> to add a row and <b>-</b> to remove it.<br>Leave <b>To</b> empty in the last row: it means \"or more\".<br>Start the first range in 1 and make each range start right after the previous one ends (1 to 10, 11 to 20, 21 and more). If there is a gap, a salesperson whose number of invoices falls in it earns nothing."
+msgstr "Cada fila es un rango: <b>Desde</b> y <b>Hasta</b> son una cantidad de facturas del período y <b>%</b> es el porcentaje de las ventas que gana el vendedor. Pulsa <b>+</b> para agregar una fila y <b>-</b> para quitarla.<br>Deja <b>Hasta</b> vacío en la última fila: significa \"o más\".<br>Empieza el primer rango en 1 y haz que cada rango empiece justo después de que termine el anterior (1 a 10, 11 a 20, 21 y más). Si hay un hueco, un vendedor cuya cantidad de facturas caiga en él no gana nada."
+
+#: docs
+msgid "Good to know"
+msgstr "Conviene saber"
+
+#: docs
+msgid "What is added up"
+msgstr "Qué se suma"
+
+#: docs
+msgid "The total of each invoice with its taxes, converted to the default currency of the system with the rates of your currencies. A credit note is not an invoice sold: it is not counted in the number of invoices and its total is subtracted from what the salesperson sold."
+msgstr "El total de cada factura con sus impuestos, convertido a la moneda por defecto del sistema con las cotizaciones de tus monedas. Una nota de crédito no es una factura vendida: no cuenta en la cantidad de facturas y su total se resta de lo que vendió el vendedor."
+
+#: docs
+msgid "Changing a scale"
+msgstr "Cambiar una escala"
+
+#: docs
+msgid "Since the report is calculated when you open it, a change in a scale also changes the commissions of past periods when you look at them again. Export the report if you need to keep the figures of a closed month."
+msgstr "Como el informe se calcula al abrirlo, un cambio en una escala también cambia las comisiones de períodos pasados cuando vuelves a mirarlos. Exporta el informe si necesitas conservar las cifras de un mes cerrado."
+
+#: docs
+msgid "Each person who works with Fakturo has a role. Here you choose what each role can do on this site: each row is something people can do and each column is a role. Tick the boxes and press Save."
+msgstr "Cada persona que trabaja con Fakturo tiene un rol. Aquí eliges qué puede hacer cada rol en este sitio: cada fila es algo que se puede hacer y cada columna es un rol. Marca las casillas y pulsa Guardar."
+
+#: docs
+msgid "The administrator of the site always has everything. A box outlined in yellow is different from the default. \"Restore the default permissions\" undoes all your changes. Only administrators see this screen."
+msgstr "El administrador del sitio siempre tiene todo. Una casilla con borde amarillo es distinta del valor por defecto. \"Restaurar los permisos por defecto\" deshace todos tus cambios. Solo los administradores ven esta pantalla."
+
+#: docs
+msgid "Roles added by add-ons"
+msgstr "Roles agregados por complementos"
+
+#: docs
+msgid "An add-on can bring a role of its own, for example an accountant who only sees the money reports. It appears here as a new column."
+msgstr "Un complemento puede traer un rol propio, por ejemplo un contador que solo ve los informes de dinero. Aparece aquí como una columna nueva."
+
+#: docs
+msgid "Limits"
+msgstr "Límites"
+
+#: docs
+msgid "Things that could harm the site, like installing plugins, editing files or the licenses, can not be given from here. A person who can create users can only give roles that have no more permissions than they have."
+msgstr "Lo que podría dañar el sitio, como instalar plugins, editar archivos o las licencias, no se puede dar desde aquí. Una persona que puede crear usuarios solo puede dar roles que no tengan más permisos que ella."
+
+#: docs
+msgid "Fakturo shows a row of big shortcut buttons (invoices, receipts, clients, reports...). Here you choose which buttons it shows, in which order and where."
+msgstr "Fakturo muestra una fila de botones grandes de acceso directo (facturas, recibos, clientes, informes...). Aquí eliges qué botones muestra, en qué orden y dónde."
+
+#: docs
+msgid "Shows the row of buttons at the top of every Fakturo screen. If it is off, the buttons only appear on the Fakturo dashboard."
+msgstr "Muestra la fila de botones arriba de todas las pantallas de Fakturo. Si está desactivado, los botones solo aparecen en el escritorio de Fakturo."
+
+#: docs
+msgid "Shows the same row at the top of the other WordPress screens too (posts, users...). It needs the previous switch to be on."
+msgstr "Muestra la misma fila arriba de las demás pantallas de WordPress también (entradas, usuarios...). Necesita que el interruptor anterior esté activado."
+
+#: docs
+msgid "Dialer 1 to 7"
+msgstr "Acceso 1 a 7"
+
+#: docs
+msgid "The seven places of the row, from left to right. Choose what each one opens, or \"Select a option\" to leave it empty. Each person only sees the buttons they have permission for, so the same row can look different for a salesman and for a manager."
+msgstr "Los siete lugares de la fila, de izquierda a derecha. Elige qué abre cada uno, o \"Select a option\" para dejarlo vacío. Cada persona solo ve los botones para los que tiene permiso, así que la misma fila puede verse distinta para un vendedor y para un supervisor."
+
+#: docs
+msgid "The starting page of Fakturo. At the top there are big buttons that take you to what you use most; below them, the panels that Fakturo and its add-ons show."
+msgstr "La página de inicio de Fakturo. Arriba hay botones grandes que te llevan a lo que más usas; debajo, los paneles que muestran Fakturo y sus complementos."
+
+#: docs
+msgid "Buttons"
+msgstr "Botones"
+
+#: docs
+msgid "You only see the buttons that your role may use. The administrator chooses which buttons there are, and in which order, in Settings &rarr; System &rarr; Dashboard Setup."
+msgstr "Solo ves los botones que tu rol puede usar. El administrador elige qué botones hay, y en qué orden, en Configuración &rarr; Sistema &rarr; Configurar escritorio."
+
+#: docs
+msgid "Where to start"
+msgstr "Por dónde empezar"
+
+#: docs
+msgid "If this is a new site, open Settings and run the configuration wizard first: the invoices need a currency, an invoice type and a sale point."
+msgstr "Si el sitio es nuevo, abre Configuración y ejecuta primero el asistente de configuración: las facturas necesitan una moneda, un tipo de factura y un punto de venta."
+
+#: docs
+msgid "Reports show what happened in your business during a period. Choose the report in the tabs, set the dates and press the filter button. Only finished invoices and receipts are counted, and the amounts are shown in the default currency of the system."
+msgstr "Los informes muestran qué pasó en tu negocio durante un período. Elige el informe en las pestañas, pon las fechas y pulsa el botón de filtrar. Solo se cuentan las facturas y los recibos terminados, y los importes se muestran en la moneda por defecto del sistema."
+
+#: docs
+msgid "Who sees what"
+msgstr "Quién ve qué"
+
+#: docs
+msgid "Each report has its own permission, so you can give someone only the money reports. The administrator sets it in Settings &rarr; System &rarr; Access by Role."
+msgstr "Cada informe tiene su propio permiso, así que puedes dar a alguien solo los informes de dinero. El administrador lo define en Configuración &rarr; Sistema &rarr; Accesos por rol."
+
+#: docs
+msgid "The reports"
+msgstr "Los informes"
+
+#: docs
+msgid "A chart with the total invoiced in the period."
+msgstr "Un gráfico con el total facturado en el período."
+
+#: docs
+msgid "<b>Summary</b>: the invoices and receipts of a client in the period. <b>Incomes</b>: invoices and receipts of the period with the taxes by type of document. <b>Client account</b>: every movement of a client with debit (invoices), credit (receipts) and the balance after each one."
+msgstr "<b>Resumen</b>: las facturas y los recibos de un cliente en el período. <b>Ingresos</b>: facturas y recibos del período con los impuestos por tipo de documento. <b>Cuenta del cliente</b>: cada movimiento de un cliente con débito (facturas), crédito (recibos) y el saldo después de cada uno."
+
+#: docs
+msgid "The inventory: each product with its stock, its price scale, its cost and its price."
+msgstr "El inventario: cada producto con su stock, su escala de precios, su costo y su precio."
+
+#: docs
+msgid "Salesmen"
+msgstr "Vendedores"
+
+#: docs
+msgid "How many invoices each salesperson made, how much they sold and the commission they earn according to your Commission Scales. See the help of that screen (Settings &rarr; Tables &rarr; Scales) to understand how it is calculated."
+msgstr "Cuántas facturas hizo cada vendedor, cuánto vendió y la comisión que gana según tus escalas de comisión. Mira la ayuda de esa pantalla (Configuración &rarr; Tablas &rarr; Escalas) para entender cómo se calcula."
+
+#: docs
+msgid "Export"
+msgstr "Exportar"
+
+#: docs
+msgid "PDF and CSV"
+msgstr "PDF y CSV"
+
+#: docs
+msgid "The client reports and the Salesmen report have buttons to download the table as a PDF to print or as a CSV file to open in a spreadsheet. The file has what you see on the screen, with the filters you chose."
+msgstr "Los informes de clientes y el de vendedores tienen botones para descargar la tabla como PDF para imprimir o como archivo CSV para abrir en una planilla. El archivo tiene lo que ves en pantalla, con los filtros que elegiste."
+
+#: docs
+msgid "Add-ons are extra plugins that give Fakturo more abilities, such as recurring subscriptions or electronic invoicing. This list shows the ones you have installed and the ones you can get."
+msgstr "Los complementos son plugins extra que le dan más capacidades a Fakturo, como las suscripciones recurrentes o la facturación electrónica. Esta lista muestra los que tienes instalados y los que puedes conseguir."
+
+#: docs
+msgid "The button of each add-on"
+msgstr "El botón de cada complemento"
+
+#: docs
+msgid "<b>Activate</b> if it is installed but stopped. <b>License</b> if it needs a license key to receive updates: it takes you to the Licenses screen. Otherwise a switch to let WordPress update it by itself."
+msgstr "<b>Activar</b> si está instalado pero detenido. <b>Licencia</b> si necesita una clave de licencia para recibir actualizaciones: te lleva a la pantalla de Licencias. Si no, un interruptor para que WordPress lo actualice solo."
+
+#: docs
+msgid "If the list is empty"
+msgstr "Si la lista está vacía"
+
+#: docs
+msgid "The list of available add-ons is downloaded from etruel.com. If that site does not answer, Fakturo waits 15 minutes before asking again; the add-ons you already have keep working."
+msgstr "La lista de complementos disponibles se descarga de etruel.com. Si ese sitio no responde, Fakturo espera 15 minutos antes de volver a preguntar; los complementos que ya tienes siguen funcionando."
+
+#: includes/taxonomy/scales.php
+msgid "Commission Scales"
+msgstr "Escalas de comisión"
+
+#: includes/taxonomy/scales.php
+msgid "Commission Scale"
+msgstr "Escala de comisión"
+
+#: includes/taxonomy/scales.php
+msgid "Search Commission Scales"
+msgstr "Buscar escalas de comisión"
+
+#: includes/taxonomy/scales.php
+msgid "Popular Commission Scales"
+msgstr "Escalas de comisión populares"
+
+#: includes/taxonomy/scales.php
+msgid "All Commission Scales"
+msgstr "Todas las escalas de comisión"
+
+#: includes/taxonomy/scales.php
+msgid "Parent Scale"
+msgstr "Escala superior"
+
+#: includes/taxonomy/scales.php
+msgid "Edit Commission Scale"
+msgstr "Editar escala de comisión"
+
+#: includes/taxonomy/scales.php
+msgid "Update Commission Scale"
+msgstr "Actualizar escala de comisión"
+
+#: includes/taxonomy/scales.php
+msgid "Add New Commission Scale"
+msgstr "Agregar nueva escala de comisión"
+
+#: includes/taxonomy/scales.php
+msgid "New Commission Scale Name"
+msgstr "Nombre de la nueva escala de comisión"
+
+#: includes/taxonomy/scales.php
+msgid "Separate Commission Scales with commas"
+msgstr "Separa las escalas de comisión con comas"
+
+#: includes/taxonomy/scales.php
+msgid "Add or remove Commission Scales"
+msgstr "Agregar o quitar escalas de comisión"
+
+#: includes/taxonomy/scales.php
+msgid "Choose from the most used Commission Scales"
+msgstr "Elige entre las escalas de comisión más usadas"
+
+#: includes/taxonomy/scales.php
+msgid "No Commission Scales found."
+msgstr "No se encontraron escalas de comisión."
+
+#: includes/taxonomy/scales.php
+msgid "Select the salesperson for this commission scale"
+msgstr "Elige el vendedor de esta escala de comisión"
+
+#: includes/taxonomy/scales.php
+msgid "Select the category for this commission scale"
+msgstr "Elige la categoría de esta escala de comisión"
+
+#: includes/taxonomy/scales.php
+msgid "Base Scale"
+msgstr "Escala base"
+
+#: includes/taxonomy/scales.php
+msgid "Exception Scale"
+msgstr "Escala de excepción"
+
+#: includes/taxonomy/scales.php
+msgid "Select the type of commission scale"
+msgstr "Elige el tipo de escala de comisión"
+
+#: includes/taxonomy/scales.php
+msgid "Define commission percentage ranges"
+msgstr "Define los rangos de porcentaje de comisión"
+
+#: includes/taxonomy/scales.php
+msgid "Define commission percentage ranges. Leave \"To\" field empty for infinity."
+msgstr "Define los rangos de porcentaje de comisión. Deja \"Hasta\" vacío para que no tenga límite."
+
+#: includes/taxonomy/scales.php
+msgid "To (optional)"
+msgstr "Hasta (opcional)"
+
+#: includes/taxonomy/scales.php
+msgid "Ranges"
+msgstr "Rangos"
+
+#: includes/taxonomy/scales.php
+msgid "Unknown"
+msgstr "Desconocido"
+
+#: includes/taxonomy/scales.php
+msgid "all Salesman"
+msgstr "todos los vendedores"
+
+#: includes/taxonomy/scales.php
+msgid "all Category"
+msgstr "todas las categorías"
+
+#: includes/taxonomy/scales.php
+msgid "A Base Scale already exists. Only one Base Scale is allowed."
+msgstr "Ya existe una escala base. Solo se permite una."

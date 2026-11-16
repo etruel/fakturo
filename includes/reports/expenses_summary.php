@@ -37,20 +37,6 @@ class expenses_summary_report {
     }
 
     /**
-     * Extract total amount from post excerpt
-     */
-    private static function extract_total_sum($excerpt) {
-        $total_sum = 0;
-        $excerpts = explode('Cliente:', $excerpt);
-        foreach ($excerpts as $exc) {
-            if (preg_match('/Total: (\d+)/', $exc, $matches)) {
-                $total_sum += intval($matches[1]);
-            }
-        }
-        return $total_sum;
-    }
-
-    /**
      * Add hooks for reports.
      */
     public static function hooks() {
@@ -134,26 +120,49 @@ class expenses_summary_report {
             );
         }
 
-        $query = "SELECT 
-           pm2.meta_value AS invoice_saleman,
-            u.user_email,
-            u.display_name,
-            COUNT(*) AS total,
-            GROUP_CONCAT(p.post_content SEPARATOR ' ') AS post_content,
-            GROUP_CONCAT(p.post_date SEPARATOR ', ') AS post_date,
-            GROUP_CONCAT(p.post_excerpt SEPARATOR 'Cliente:') AS post_excerpt 
+        $rows = $wpdb->get_results("SELECT p.ID, p.post_date, pm2.meta_value AS invoice_saleman, u.user_email, u.display_name
             FROM {$wpdb->posts} p 
-            LEFT JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id 
+            INNER JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id 
                 AND pm2.meta_key = 'invoice_saleman' 
             LEFT JOIN {$wpdb->users} u ON pm2.meta_value = u.ID
             WHERE p.post_status = 'publish' 
             AND p.post_type = 'fktr_sale' 
-            AND pm2.meta_key IS NOT NULL
             {$date_condition}
             {$seller_condition}
-            GROUP BY pm2.meta_value, u.ID";
+            ORDER BY p.post_date");
+        if (!$rows) {
+            return array();
+        }
 
-        return $wpdb->get_results($query);
+        // One line per salesperson: how many invoices, what they sold in the default currency and the date of the last one. A credit note (an invoice type that gives goods back) is not a sale: it takes its total off, as the client reports do.
+        $setting_system = get_option('fakturo_system_options_group', array());
+        update_meta_cache('post', wp_list_pluck($rows, 'ID'));
+        $by_seller = array();
+        foreach ($rows as $row) {
+            $key = (string) $row->invoice_saleman;
+            if (!isset($by_seller[$key])) {
+                $by_seller[$key] = (object) array(
+                    'invoice_saleman' => $row->invoice_saleman,
+                    'user_email' => $row->user_email,
+                    'display_name' => $row->display_name,
+                    'total' => 0,
+                    'total_sum' => 0,
+                    'post_date' => $row->post_date,
+                );
+            }
+            $type = (int) get_post_meta($row->ID, 'invoice_type', true);
+            $term = $type > 0 ? get_fakturo_term($type, 'fktr_invoice_types') : null;
+            $credit = $term && !is_wp_error($term) && !empty($term->sum);
+            $amount = fakturo_transform_money(get_post_meta($row->ID, 'invoice_currency', true), $setting_system['currency'], (float) get_post_meta($row->ID, 'in_total', true));
+            if ($credit) {
+                $by_seller[$key]->total_sum -= $amount;
+            } else {
+                $by_seller[$key]->total++;
+                $by_seller[$key]->total_sum += $amount;
+            }
+            $by_seller[$key]->post_date = max($by_seller[$key]->post_date, $row->post_date);
+        }
+        return array_values($by_seller);
     }
 
     public static function content($request, $ranges) {
@@ -217,7 +226,7 @@ class expenses_summary_report {
                 $matching_scale = $base_scale;
             }
     
-            $total_sum = self::extract_total_sum($sale->post_excerpt);
+            $total_sum = $sale->total_sum;
     
             $percentage = 0;
             if ($matching_scale && !empty($matching_scale['ranges'])) {
@@ -239,16 +248,7 @@ class expenses_summary_report {
                     esc_attr__('No commission range matched for this seller', 'fakturo') . 
                     '"></span>';
             }
-            // Split the string into an array of date strings
-            $date_array = explode(", ", $sale->post_date);
-
-            // Convert each date string to a DateTime object
-            $date_objects = array_map(function ($date) {
-                return new DateTime($date);
-            }, $date_array);
-
-            // Find the latest date
-            $latest_date = max($date_objects);
+            $latest_date = new DateTime($sale->post_date);
             echo '<tr>
                 <td>' . esc_html($sale->display_name) . '</td>
                 <td>' . esc_html($sale->user_email) . '</td>

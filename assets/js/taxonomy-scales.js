@@ -44,7 +44,7 @@ jQuery(document).ready(function() {
                 messageDiv.id = 'base-scale-warning';
                 messageDiv.className = 'error';
                 messageDiv.style.color = 'red';
-                messageDiv.textContent = 'A Base Scale already exists. Only one Base Scale is allowed.';
+                messageDiv.textContent = (window.fktr_scales && fktr_scales.base_exists) || 'A Base Scale already exists. Only one Base Scale is allowed.';
                 typeSelect.parentNode.appendChild(messageDiv);
             }
         } else {

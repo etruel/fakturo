@@ -60,7 +60,6 @@ class client_incomes {
 							continue;
 						}
 					}
-                    print_r($object_data);
 					$discriminates_taxes = false;
 					if ($object_data['invoice_type'] > 0) {
 						$term_invoice_type = get_fakturo_term($object_data['invoice_type'], 'fktr_invoice_types');		

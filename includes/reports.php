@@ -263,7 +263,7 @@ class reports {
 
 			'salesman' => apply_filters('ftkr_report_expenses_sections', array(
 				'expenses_summary' => array('text' => __( 'Summary', 'fakturo' ), 'sec' => 'expenses_summary', 'cap' => 'fktr_report_expenses'),
-				'default' => array('text' => __( 'Vendedores', 'fakturo' ), 'sec' => 'expenses_summary', 'cap' => 'fktr_report_expenses')
+				'default' => array('text' => __( 'Salesmen', 'fakturo' ), 'sec' => 'expenses_summary', 'cap' => 'fktr_report_expenses')
 			)),
 	
 		);

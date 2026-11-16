@@ -7233,3 +7233,347 @@ msgstr ""
 #: includes/settings/settings.php
 msgid "Access by Role"
 msgstr ""
+
+#: docs
+msgid "What is this?"
+msgstr ""
+
+#: docs
+msgid "Commission scales"
+msgstr ""
+
+#: docs
+msgid "A commission is the part of the sales that a salesperson earns. Here you write the rules: how much each salesperson earns according to how much they sold. Fakturo applies those rules and shows the result in <b>Reports &rarr; Salesmen</b>."
+msgstr ""
+
+#: docs
+msgid "Fakturo only calculates. It does not pay anybody and it does not save the result: every time you open the report it is calculated again with the invoices of the period you choose. You can export it to PDF or CSV."
+msgstr ""
+
+#: docs
+msgid "Before you start"
+msgstr ""
+
+#: docs
+msgid "The switch <b>Activate commissions for salespeople</b> in Settings &rarr; System must be on, otherwise this screen is not shown. The salesperson of an invoice is chosen when the invoice is made."
+msgstr ""
+
+#: docs
+msgid "How it is calculated"
+msgstr ""
+
+#: docs
+msgid "Step by step"
+msgstr ""
+
+#: docs
+msgid "1. You choose the period in the report (this month, last year, custom dates...).<br>2. For each salesperson Fakturo counts the <b>finished invoices</b> of that period (drafts do not count) and adds up their totals, less the credit notes.<br>3. It looks for the scale of that salesperson: the one with their name, or, if they have none, the <b>Base scale</b>.<br>4. Inside that scale it looks for the range that fits the <b>number of invoices</b> the salesperson made in the period.<br>5. It applies the percentage of that range to the <b>whole</b> total sold in the period."
+msgstr ""
+
+#: docs
+msgid "Example"
+msgstr ""
+
+#: docs
+msgid "Base scale: from 1 to 10 invoices = 3%, from 11 to 20 = 5%, from 21 with no end = 8%.<br>Ana made 12 invoices in the month and sold 24,000 in total. 12 is in the range 11 to 20, so she earns 5% of <b>all</b> 24,000 = 1,200. It is not 3% on the first 10 invoices and 5% on the rest: the percentage of the range applies to everything.<br>If Ana made 25 invoices she would earn 8% of everything she sold."
+msgstr ""
+
+#: docs
+msgid "The warning sign in the report"
+msgstr ""
+
+#: docs
+msgid "A salesperson shown with the commission in 0 and a warning sign has no scale, or their number of invoices is not inside any range. Add a scale or fix the ranges."
+msgstr ""
+
+#: docs
+msgid "A name for you to recognize the scale, for example \"Base\" or \"Ana - special\"."
+msgstr ""
+
+#: docs
+msgid "Scale Type"
+msgstr ""
+
+#: docs
+msgid "<b>Base Scale</b>: it is used for every salesperson that has no scale of their own. Only one is allowed: Fakturo does not let you create a second one.<br><b>Exception Scale</b>: for one particular salesperson. Choose their name in <i>Assigned Salesperson</i> and they will use this scale instead of the base one."
+msgstr ""
+
+#: docs
+msgid "Assigned Salesperson"
+msgstr ""
+
+#: docs
+msgid "Who this scale is for. It appears when the type is Exception Scale (the Base Scale is for everybody). Choose the salesperson: if you leave it empty the scale is never used. Only people who can make invoices appear in the list."
+msgstr ""
+
+#: docs
+msgid "It is kept for commissions by product category, but at the moment the report does not use it. Leave it empty."
+msgstr ""
+
+#: docs
+msgid "Commission Ranges"
+msgstr ""
+
+#: docs
+msgid "Each row is a range: <b>From</b> and <b>To</b> are a number of invoices in the period and <b>%</b> is the percentage of the sales that the salesperson earns. Press <b>+</b> to add a row and <b>-</b> to remove it.<br>Leave <b>To</b> empty in the last row: it means \"or more\".<br>Start the first range in 1 and make each range start right after the previous one ends (1 to 10, 11 to 20, 21 and more). If there is a gap, a salesperson whose number of invoices falls in it earns nothing."
+msgstr ""
+
+#: docs
+msgid "Good to know"
+msgstr ""
+
+#: docs
+msgid "What is added up"
+msgstr ""
+
+#: docs
+msgid "The total of each invoice with its taxes, converted to the default currency of the system with the rates of your currencies. A credit note is not an invoice sold: it is not counted in the number of invoices and its total is subtracted from what the salesperson sold."
+msgstr ""
+
+#: docs
+msgid "Changing a scale"
+msgstr ""
+
+#: docs
+msgid "Since the report is calculated when you open it, a change in a scale also changes the commissions of past periods when you look at them again. Export the report if you need to keep the figures of a closed month."
+msgstr ""
+
+#: docs
+msgid "Each person who works with Fakturo has a role. Here you choose what each role can do on this site: each row is something people can do and each column is a role. Tick the boxes and press Save."
+msgstr ""
+
+#: docs
+msgid "The administrator of the site always has everything. A box outlined in yellow is different from the default. \"Restore the default permissions\" undoes all your changes. Only administrators see this screen."
+msgstr ""
+
+#: docs
+msgid "Roles added by add-ons"
+msgstr ""
+
+#: docs
+msgid "An add-on can bring a role of its own, for example an accountant who only sees the money reports. It appears here as a new column."
+msgstr ""
+
+#: docs
+msgid "Limits"
+msgstr ""
+
+#: docs
+msgid "Things that could harm the site, like installing plugins, editing files or the licenses, can not be given from here. A person who can create users can only give roles that have no more permissions than they have."
+msgstr ""
+
+#: docs
+msgid "Fakturo shows a row of big shortcut buttons (invoices, receipts, clients, reports...). Here you choose which buttons it shows, in which order and where."
+msgstr ""
+
+#: docs
+msgid "Shows the row of buttons at the top of every Fakturo screen. If it is off, the buttons only appear on the Fakturo dashboard."
+msgstr ""
+
+#: docs
+msgid "Shows the same row at the top of the other WordPress screens too (posts, users...). It needs the previous switch to be on."
+msgstr ""
+
+#: docs
+msgid "Dialer 1 to 7"
+msgstr ""
+
+#: docs
+msgid "The seven places of the row, from left to right. Choose what each one opens, or \"Select a option\" to leave it empty. Each person only sees the buttons they have permission for, so the same row can look different for a salesman and for a manager."
+msgstr ""
+
+#: docs
+msgid "The starting page of Fakturo. At the top there are big buttons that take you to what you use most; below them, the panels that Fakturo and its add-ons show."
+msgstr ""
+
+#: docs
+msgid "Buttons"
+msgstr ""
+
+#: docs
+msgid "You only see the buttons that your role may use. The administrator chooses which buttons there are, and in which order, in Settings &rarr; System &rarr; Dashboard Setup."
+msgstr ""
+
+#: docs
+msgid "Where to start"
+msgstr ""
+
+#: docs
+msgid "If this is a new site, open Settings and run the configuration wizard first: the invoices need a currency, an invoice type and a sale point."
+msgstr ""
+
+#: docs
+msgid "Reports show what happened in your business during a period. Choose the report in the tabs, set the dates and press the filter button. Only finished invoices and receipts are counted, and the amounts are shown in the default currency of the system."
+msgstr ""
+
+#: docs
+msgid "Who sees what"
+msgstr ""
+
+#: docs
+msgid "Each report has its own permission, so you can give someone only the money reports. The administrator sets it in Settings &rarr; System &rarr; Access by Role."
+msgstr ""
+
+#: docs
+msgid "The reports"
+msgstr ""
+
+#: docs
+msgid "A chart with the total invoiced in the period."
+msgstr ""
+
+#: docs
+msgid "<b>Summary</b>: the invoices and receipts of a client in the period. <b>Incomes</b>: invoices and receipts of the period with the taxes by type of document. <b>Client account</b>: every movement of a client with debit (invoices), credit (receipts) and the balance after each one."
+msgstr ""
+
+#: docs
+msgid "The inventory: each product with its stock, its price scale, its cost and its price."
+msgstr ""
+
+#: docs
+msgid "Salesmen"
+msgstr ""
+
+#: docs
+msgid "How many invoices each salesperson made, how much they sold and the commission they earn according to your Commission Scales. See the help of that screen (Settings &rarr; Tables &rarr; Scales) to understand how it is calculated."
+msgstr ""
+
+#: docs
+msgid "Export"
+msgstr ""
+
+#: docs
+msgid "PDF and CSV"
+msgstr ""
+
+#: docs
+msgid "The client reports and the Salesmen report have buttons to download the table as a PDF to print or as a CSV file to open in a spreadsheet. The file has what you see on the screen, with the filters you chose."
+msgstr ""
+
+#: docs
+msgid "Add-ons are extra plugins that give Fakturo more abilities, such as recurring subscriptions or electronic invoicing. This list shows the ones you have installed and the ones you can get."
+msgstr ""
+
+#: docs
+msgid "The button of each add-on"
+msgstr ""
+
+#: docs
+msgid "<b>Activate</b> if it is installed but stopped. <b>License</b> if it needs a license key to receive updates: it takes you to the Licenses screen. Otherwise a switch to let WordPress update it by itself."
+msgstr ""
+
+#: docs
+msgid "If the list is empty"
+msgstr ""
+
+#: docs
+msgid "The list of available add-ons is downloaded from etruel.com. If that site does not answer, Fakturo waits 15 minutes before asking again; the add-ons you already have keep working."
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Commission Scales"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Commission Scale"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Search Commission Scales"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Popular Commission Scales"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "All Commission Scales"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Parent Scale"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Edit Commission Scale"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Update Commission Scale"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Add New Commission Scale"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "New Commission Scale Name"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Separate Commission Scales with commas"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Add or remove Commission Scales"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Choose from the most used Commission Scales"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "No Commission Scales found."
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Select the salesperson for this commission scale"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Select the category for this commission scale"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Base Scale"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Exception Scale"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Select the type of commission scale"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Define commission percentage ranges"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Define commission percentage ranges. Leave \"To\" field empty for infinity."
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "To (optional)"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Ranges"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "Unknown"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "all Salesman"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "all Category"
+msgstr ""
+
+#: includes/taxonomy/scales.php
+msgid "A Base Scale already exists. Only one Base Scale is allowed."
+msgstr ""

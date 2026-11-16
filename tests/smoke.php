@@ -340,6 +340,19 @@ if ($type_tax) {
 			$d2 = fktrPostTypeSales::get_sale_data($second);
 			fktrSmoke::ok($d2['client_id'] === $d['client_id'], 'finds the same client instead of making another');
 			fktrSmoke::ok((int) $d2['invoice_number'] === (int) $d['invoice_number'] + 1, 'and takes the next number');
+			// The commissions report adds up the real totals of the invoices, in any language and with decimals.
+			$mine = get_posts(array('post_type' => 'fktr_sale', 'post_status' => 'publish', 'numberposts' => -1, 'fields' => 'ids', 'meta_key' => 'invoice_saleman', 'meta_value' => $admin));
+			$sum = 0;
+			$count = 0;
+			foreach ($mine as $sid) {
+				$kind = get_fakturo_term((int) get_post_meta($sid, 'invoice_type', true), 'fktr_invoice_types');
+				$sign = (!is_wp_error($kind) && !empty($kind->sum)) ? -1 : 1;
+				$count += $sign > 0 ? 1 : 0;
+				$sum += $sign * fakturo_transform_money(get_post_meta($sid, 'invoice_currency', true), $setting['currency'], (float) get_post_meta($sid, 'in_total', true));
+			}
+			$line = expenses_summary_report::get_sales_data(array('seller_id' => $admin), array('from' => strtotime('2000-01-01'), 'to' => time() + 365 * DAY_IN_SECONDS));
+			fktrSmoke::ok(count($line) === 1 && (int) $line[0]->total === $count && abs($line[0]->total_sum - $sum) < 0.01, 'the commissions report counts the invoices of a salesman and adds up their real totals, less the credit notes', $line ? $line[0]->total . '/' . $count . ' ' . $line[0]->total_sum . ' vs ' . $sum : 'no rows');
+			fktrSmoke::ok(fktr_tax_commission_scales::before_save(array('ranges' => array(array('from' => '0', 'to' => '5', 'percentage' => '0'), array('from' => '6', 'to' => '', 'percentage' => '3'), array('from' => '', 'to' => '9', 'percentage' => '4'))))['ranges'] === array(array('from' => '0', 'to' => '5', 'percentage' => '0'), array('from' => '6', 'to' => PHP_INT_MAX, 'percentage' => '3')), 'a commission range may start at 0 and may be 0%; one without start is dropped; an empty end is no limit');
 		}
 		// e-mail with the PDF attached (the mail is stopped before it leaves)
 		$seen = array();
@@ -428,6 +441,25 @@ if (class_exists('fktrPostTypeSubscriptions')) {
 			update_post_meta($sub, 'client_id', 999999999);
 			$failed = fktrPostTypeSubscriptions::createInvoiceFromSubscriptionId($sub, true, 1234567891);
 			fktrSmoke::ok(is_wp_error($failed) && $failed->get_error_code() === 'fktr_sale_no_client', 'a subscription whose client is gone is reported, not billed');
+			// What the billing task records is shown on the subscription screen and in the list.
+			update_post_meta($sub, 'billing_error', array('time' => time(), 'code' => 'x', 'message' => 'No stock <b>"A"</b>'));
+			global $pagenow, $post;
+			$keep = array($pagenow, $post);
+			$pagenow = 'post.php';
+			$post = get_post($sub);
+			ob_start();
+			fktrPostTypeSubscriptions::billing_notices();
+			$shown = ob_get_clean();
+			$_GET['post_type'] = 'fktr_subscriptions';
+			$pagenow = 'edit.php';
+			ob_start();
+			fktrPostTypeSubscriptions::billing_notices();
+			$listed = ob_get_clean();
+			unset($_GET['post_type']);
+			list($pagenow, $post) = $keep;
+			delete_post_meta($sub, 'billing_error');
+			fktrSmoke::ok(strpos($shown, 'notice-error') !== false && strpos($shown, '&lt;b&gt;') !== false && strpos($shown, '<b>') === false && strpos($shown, 'No stock') !== false, 'a failed billing is shown on the subscription screen, with its reason escaped');
+			fktrSmoke::ok(strpos($listed, 'notice-error') !== false && strpos($listed, 'post=' . $sub) !== false, 'and in the list, with a link to the subscription');
 		}
 	}
 	fktrSmoke::ok(class_exists('fktrSubscriptionsCron') && wp_next_scheduled('subscription_cron') !== false || (get_site_option('fktr_subscriptions_cron')['only_external'] ?? 0), 'the billing task is scheduled (or the site bills only from the external cron)');

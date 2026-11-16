@@ -32,6 +32,7 @@ class fktr_tax_commission_scales {
 		}
 		wp_enqueue_script('jquery-select2', FAKTURO_PLUGIN_URL . 'assets/js/jquery.select2.js', array('jquery'), WPE_FAKTURO_VERSION, true);
             wp_enqueue_script('fakturo_taxonomy_scales', FAKTURO_PLUGIN_URL . 'assets/js/taxonomy-scales.js', array('jquery'), WPE_FAKTURO_VERSION, true);
+		wp_localize_script('fakturo_taxonomy_scales', 'fktr_scales', array('base_exists' => __('A Base Scale already exists. Only one Base Scale is allowed.', 'fakturo')));
 	}
 	
 	static function redirect_term_location($location, $tax ){
@@ -391,8 +392,8 @@ class fktr_tax_commission_scales {
                     newRangeRow.classList.add("range-row");
                     
                     newRangeRow.innerHTML = `
-                        <input type="number" name="term_meta[ranges][${currentRows}][from]" placeholder="'.__('Desde', 'fakturo').'" class="small-text" required>
-                        <input type="number" name="term_meta[ranges][${currentRows}][to]" placeholder="'.__('Hasta (opcional)', 'fakturo').'" class="small-text">
+                        <input type="number" name="term_meta[ranges][${currentRows}][from]" placeholder="'.__('From', 'fakturo').'" class="small-text" required>
+                        <input type="number" name="term_meta[ranges][${currentRows}][to]" placeholder="'.__('To (optional)', 'fakturo').'" class="small-text">
                         <input type="number" name="term_meta[ranges][${currentRows}][percentage]" placeholder="%" class="small-text" required>
                         <button type="button" class="button button-secondary remove-range">-</button>
                     `;
@@ -473,14 +474,14 @@ class fktr_tax_commission_scales {
     public static function before_save($fields) {
         if (isset($fields['ranges']) && is_array($fields['ranges'])) {
             foreach ($fields['ranges'] as $key => $range) {
-                // Ensure required fields are set
-                if (empty($range['from']) || empty($range['percentage'])) {
+                // A range needs its start and its percentage; a 0 is a valid number.
+                if (!isset($range['from'], $range['percentage']) || !is_numeric($range['from']) || !is_numeric($range['percentage'])) {
                     unset($fields['ranges'][$key]);
                     continue;
                 }
                 
                 // If "to" is empty, it means it's an unbounded range (greater than)
-                if (empty($range['to'])) {
+                if (!isset($range['to']) || !is_numeric($range['to'])) {
                     $fields['ranges'][$key]['to'] = PHP_INT_MAX;
                 }
             }
