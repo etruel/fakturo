@@ -27,11 +27,11 @@ $helptexts = array(
 		'tabtitle' =>  __('How it is calculated', 'fakturo' ),
 		'item1' => array( 
 			'title' => __('Step by step','fakturo'),
-			'tip' => __('1. You choose the period in the report (this month, last year, custom dates...).<br>2. For each salesperson Fakturo counts the <b>finished invoices</b> of that period (drafts do not count) and adds up their totals, less the credit notes.<br>3. It looks for the scale of that salesperson: the one with their name, or, if they have none, the <b>Base scale</b>.<br>4. Inside that scale it looks for the range that fits the <b>number of invoices</b> the salesperson made in the period.<br>5. It applies the percentage of that range to the <b>whole</b> total sold in the period.', 'fakturo' ),
+			'tip' => __('1. You choose the period in the report (this month, last year, custom dates...).<br>2. For each salesperson Fakturo counts the <b>finished invoices</b> of that period (drafts do not count) and adds up their totals, less the credit notes.<br>3. It looks for the scale of that salesperson: the one with their name, or, if they have none, the <b>Base scale</b>.<br>4. Inside that scale it looks for the range that fits the <b>number of invoices</b> the salesperson made in the period.<br>5. It applies the percentage of that range to the <b>whole</b> total sold in the period.<br>6. If that range has a <b>fixed amount</b>, it is added once to the result.', 'fakturo' ),
 		),
 		'item2' => array( 
 			'title' => __('Example','fakturo'),
-			'tip' => __('Base scale: from 1 to 10 invoices = 3%, from 11 to 20 = 5%, from 21 with no end = 8%.<br>Ana made 12 invoices in the month and sold 24,000 in total. 12 is in the range 11 to 20, so she earns 5% of <b>all</b> 24,000 = 1,200. It is not 3% on the first 10 invoices and 5% on the rest: the percentage of the range applies to everything.<br>If Ana made 25 invoices she would earn 8% of everything she sold.', 'fakturo' ),
+			'tip' => __('Base scale: from 1 to 10 invoices = 3%, from 11 to 20 = 5%, from 21 with no end = 8%.<br>Ana made 12 invoices in the month and sold 24,000 in total. 12 is in the range 11 to 20, so she earns 5% of <b>all</b> 24,000 = 1,200. It is not 3% on the first 10 invoices and 5% on the rest: the percentage of the range applies to everything.<br>If Ana made 25 invoices she would earn 8% of everything she sold.<br>If the range 21 or more also had a fixed amount of 500, Ana would earn 8% of everything plus 500 as a prize for reaching 21 invoices.', 'fakturo' ),
 		),
 		'item3' => array( 
 			'title' => __('The warning sign in the report','fakturo'),
@@ -58,7 +58,7 @@ $helptexts = array(
 		),
 		'item5' => array( 
 			'title' => __('Commission Ranges','fakturo'),
-			'tip' => __('Each row is a range: <b>From</b> and <b>To</b> are a number of invoices in the period and <b>%</b> is the percentage of the sales that the salesperson earns. Press <b>+</b> to add a row and <b>-</b> to remove it.<br>Leave <b>To</b> empty in the last row: it means "or more".<br>Start the first range in 1 and make each range start right after the previous one ends (1 to 10, 11 to 20, 21 and more). If there is a gap, a salesperson whose number of invoices falls in it earns nothing.','fakturo'),
+			'tip' => __('Each row is a range: <b>From</b> and <b>To</b> are a number of invoices in the period and <b>%</b> is the percentage of the sales that the salesperson earns and <b>Fixed amount</b> is an optional prize in money that is added when the salesperson reaches that range (leave it empty for none). Press <b>+</b> to add a row and <b>-</b> to remove it.<br>Leave <b>To</b> empty in the last row: it means "or more".<br>Start the first range in 1 and make each range start right after the previous one ends (1 to 10, 11 to 20, 21 and more). If there is a gap, a salesperson whose number of invoices falls in it earns nothing.','fakturo'),
 		),
 	),
 	'GOOD TO KNOW' => array( 

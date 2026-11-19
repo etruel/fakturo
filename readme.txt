@@ -94,6 +94,7 @@ Yes. `fktr_create_sale( $client, $lines, $args )` creates (and by default publis
 
 = 1.1 =
 * Commissions report: it adds up the real totals of the invoices (any language, with decimals, in the default currency, less the credit notes) instead of reading them from the text of the invoice summary, which gave wrong figures; a commission range can start at 0 and be 0%.
+* Commission ranges have an optional fixed amount: a prize in money that is added once to the percentage when the salesperson reaches that range. The percentage also accepts decimals.
 * The Incomes report no longer prints a dump of the invoice data at the top of the page.
 * Contextual help for the dashboard, the dashboard setup, the reports, the add-ons screen, Access by Role and, explained step by step with an example, the commission scales; the commission scales screen is now translated.
 * New "Access by role" section in Settings > System: the administrator of each site chooses, with a table of boxes, what the Fakturo Manager and the Fakturo Salesman can do (invoices, receipts, clients, products, each money report, settings, users, templates...) and can restore the defaults. Add-ons can add roles (an accountant with the money reports only, for example) and permission groups; the table of settings shows them. A person can only give a role that does not have more than they have.

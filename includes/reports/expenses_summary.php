@@ -229,16 +229,19 @@ class expenses_summary_report {
             $total_sum = $sale->total_sum;
     
             $percentage = 0;
+            $fixed = 0;
             if ($matching_scale && !empty($matching_scale['ranges'])) {
                 foreach ($matching_scale['ranges'] as $range) {
                     if ($sale->total >= $range['from'] && $sale->total <= $range['to']) {
                         $percentage = $range['percentage'];
+                        $fixed = !empty($range['fixed']) ? (float) $range['fixed'] : 0;
                         break;
                     }
                 }
             }  
             
-            $commission = $total_sum * ($percentage/100);
+            // The fixed amount of the range reached is added once to the percentage.
+            $commission = $total_sum * ($percentage/100) + $fixed;
             $grand_total_commission += $commission;
 
             // Agregar el ícono de warning si la comisión es 0

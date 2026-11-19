@@ -352,7 +352,19 @@ if ($type_tax) {
 			}
 			$line = expenses_summary_report::get_sales_data(array('seller_id' => $admin), array('from' => strtotime('2000-01-01'), 'to' => time() + 365 * DAY_IN_SECONDS));
 			fktrSmoke::ok(count($line) === 1 && (int) $line[0]->total === $count && abs($line[0]->total_sum - $sum) < 0.01, 'the commissions report counts the invoices of a salesman and adds up their real totals, less the credit notes', $line ? $line[0]->total . '/' . $count . ' ' . $line[0]->total_sum . ' vs ' . $sum : 'no rows');
-			fktrSmoke::ok(fktr_tax_commission_scales::before_save(array('ranges' => array(array('from' => '0', 'to' => '5', 'percentage' => '0'), array('from' => '6', 'to' => '', 'percentage' => '3'), array('from' => '', 'to' => '9', 'percentage' => '4'))))['ranges'] === array(array('from' => '0', 'to' => '5', 'percentage' => '0'), array('from' => '6', 'to' => PHP_INT_MAX, 'percentage' => '3')), 'a commission range may start at 0 and may be 0%; one without start is dropped; an empty end is no limit');
+			$cleaned = fktr_tax_commission_scales::before_save(array('ranges' => array(array('from' => '0', 'to' => '5', 'percentage' => '0'), array('from' => '6', 'to' => '', 'percentage' => '3', 'fixed' => '50.5'), array('from' => '', 'to' => '9', 'percentage' => '4'), array('from' => '10', 'to' => '12', 'percentage' => '1', 'fixed' => '-7'))));
+			fktrSmoke::ok($cleaned['ranges'] == array(array('from' => '0', 'to' => '5', 'percentage' => '0', 'fixed' => 0), array('from' => '6', 'to' => PHP_INT_MAX, 'percentage' => '3', 'fixed' => 50.5), array('from' => '10', 'to' => '12', 'percentage' => '1', 'fixed' => 0)), 'a commission range may start at 0 and may be 0%; one without start is dropped; an empty end is no limit; the fixed amount is optional and never negative');
+			// A scale of the salesman with 3% and a fixed amount: the report adds the fixed amount once to the percentage.
+			$scale = wp_insert_term('fktr_smoke_scale', 'fktr_commission_scales');
+			if (fktrSmoke::ok(!is_wp_error($scale), 'a commission scale can be created')) {
+				set_fakturo_term($scale['term_id'], $scale['term_taxonomy_id'], fktr_tax_commission_scales::before_save(array('type' => 'exception', 'seller_id' => $admin, 'ranges' => array(array('from' => '1', 'to' => '', 'percentage' => '3', 'fixed' => '50')))));
+				ob_start();
+				expenses_summary_report::content(array('seller_id' => $admin, 'range' => 'other', 'sec' => 'expenses_summary'), array('from' => strtotime('2000-01-01'), 'to' => time() + 365 * DAY_IN_SECONDS));
+				$html = ob_get_clean();
+				$expected_commission = number_format($sum * 0.03 + 50, 2, '.', ',');
+				fktrSmoke::ok(strpos($html, '<td>' . $expected_commission . ' ') !== false, 'the commissions report gives the percentage of the range plus its fixed amount', $expected_commission);
+				wp_delete_term($scale['term_id'], 'fktr_commission_scales');
+			}
 		}
 		// e-mail with the PDF attached (the mail is stopped before it leaves)
 		$seen = array();

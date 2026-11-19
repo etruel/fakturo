@@ -178,11 +178,12 @@ class fktr_tax_commission_scales {
                 <div class="range-row">
                     <input type="number" name="term_meta[ranges][0][from]" placeholder="'.__('From', 'fakturo').'" class="small-text">
                     <input type="number" name="term_meta[ranges][0][to]" placeholder="'.__('To', 'fakturo').'" class="small-text">
-                    <input type="number" name="term_meta[ranges][0][percentage]" placeholder="%" class="small-text">
+                    <input type="number" step="any" min="0" name="term_meta[ranges][0][percentage]" placeholder="%" class="small-text">
+                    <input type="number" step="any" min="0" name="term_meta[ranges][0][fixed]" placeholder="'.__('Fixed amount', 'fakturo').'" class="small-text">
                     <button type="button" class="button button-secondary add-range">+</button>
                 </div>
             </div>
-            <p class="description">'.__('Define commission percentage ranges', 'fakturo').'</p>
+            <p class="description">'.__('Define commission percentage ranges. The fixed amount is optional.', 'fakturo').'</p>
         </div>';
     
         $echoHtml .= self::get_ranges_script();
@@ -287,7 +288,8 @@ class fktr_tax_commission_scales {
                 $echoHtml .= '<div class="range-row">
                     <input type="number" name="term_meta[ranges]['.$index.'][from]" value="'.esc_attr($range->from).'" placeholder="'.__('From', 'fakturo').'" class="small-text">
                     <input type="number" name="term_meta[ranges]['.$index.'][to]" value="'.esc_attr($to_value).'" placeholder="'.__('To', 'fakturo').'" class="small-text">
-                    <input type="number" name="term_meta[ranges]['.$index.'][percentage]" value="'.esc_attr($range->percentage).'" placeholder="%" class="small-text">
+                    <input type="number" step="any" min="0" name="term_meta[ranges]['.$index.'][percentage]" value="'.esc_attr($range->percentage).'" placeholder="%" class="small-text">
+                    <input type="number" step="any" min="0" name="term_meta[ranges]['.$index.'][fixed]" value="'.esc_attr(isset($range->fixed) ? $range->fixed : '').'" placeholder="'.__('Fixed amount', 'fakturo').'" class="small-text">
                     '.($is_last ? '<button type="button" class="button button-secondary add-range">+</button>' : '').'
                     '.($index > 0 ? '<button type="button" class="button button-secondary remove-range">-</button>' : '').'
                 </div>';
@@ -296,13 +298,14 @@ class fktr_tax_commission_scales {
             $echoHtml .= '<div class="range-row">
                 <input type="number" name="term_meta[ranges][0][from]" placeholder="'.__('From', 'fakturo').'" class="small-text">
                 <input type="number" name="term_meta[ranges][0][to]" placeholder="'.__('To', 'fakturo').'" class="small-text">
-                <input type="number" name="term_meta[ranges][0][percentage]" placeholder="%" class="small-text">
+                <input type="number" step="any" min="0" name="term_meta[ranges][0][percentage]" placeholder="%" class="small-text">
+                <input type="number" step="any" min="0" name="term_meta[ranges][0][fixed]" placeholder="'.__('Fixed amount', 'fakturo').'" class="small-text">
                 <button type="button" class="button button-secondary add-range">+</button>
             </div>';
         }
     
         $echoHtml .= '</div>
-                <p class="description">'.__('Define commission percentage ranges. Leave "To" field empty for infinity.', 'fakturo').'</p>
+                <p class="description">'.__('Define commission percentage ranges. Leave "To" field empty for infinity. The fixed amount is optional.', 'fakturo').'</p>
             </td>
         </tr>';
     
@@ -394,7 +397,8 @@ class fktr_tax_commission_scales {
                     newRangeRow.innerHTML = `
                         <input type="number" name="term_meta[ranges][${currentRows}][from]" placeholder="'.__('From', 'fakturo').'" class="small-text" required>
                         <input type="number" name="term_meta[ranges][${currentRows}][to]" placeholder="'.__('To (optional)', 'fakturo').'" class="small-text">
-                        <input type="number" name="term_meta[ranges][${currentRows}][percentage]" placeholder="%" class="small-text" required>
+                        <input type="number" step="any" min="0" name="term_meta[ranges][${currentRows}][percentage]" placeholder="%" class="small-text" required>
+                        <input type="number" step="any" min="0" name="term_meta[ranges][${currentRows}][fixed]" placeholder="'.__('Fixed amount', 'fakturo').'" class="small-text">
                         <button type="button" class="button button-secondary remove-range">-</button>
                     `;
                     
@@ -455,10 +459,11 @@ class fktr_tax_commission_scales {
                 $ranges_str = '';
                 if (!empty($term->ranges)) {
                     foreach ($term->ranges as $range) {
+                        $bonus = !empty($range->fixed) ? ' + ' . (float) $range->fixed : '';
                         if (empty($range->to) || $range->to == PHP_INT_MAX) {
-                            $ranges_str .= sprintf('%d+: %d%%, ', $range->from, $range->percentage);
+                            $ranges_str .= sprintf('%d+: %s%%%s, ', $range->from, (float) $range->percentage, $bonus);
                         } else {
-                            $ranges_str .= sprintf('%d-%d: %d%%, ', $range->from, $range->to, $range->percentage);
+                            $ranges_str .= sprintf('%d-%d: %s%%%s, ', $range->from, $range->to, (float) $range->percentage, $bonus);
                         }
                     }
                     $out = rtrim($ranges_str, ', ');
@@ -479,6 +484,10 @@ class fktr_tax_commission_scales {
                     unset($fields['ranges'][$key]);
                     continue;
                 }
+                
+                // The fixed amount is optional: anything that is not a positive number means none.
+                $fixed = isset($range['fixed']) && is_numeric($range['fixed']) ? max(0, (float) $range['fixed']) : 0;
+                $fields['ranges'][$key]['fixed'] = $fixed;
                 
                 // If "to" is empty, it means it's an unbounded range (greater than)
                 if (!isset($range['to']) || !is_numeric($range['to'])) {

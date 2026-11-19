@@ -7815,16 +7815,16 @@ msgid "Step by step"
 msgstr "Paso a paso"
 
 #: docs
-msgid "1. You choose the period in the report (this month, last year, custom dates...).<br>2. For each salesperson Fakturo counts the <b>finished invoices</b> of that period (drafts do not count) and adds up their totals, less the credit notes.<br>3. It looks for the scale of that salesperson: the one with their name, or, if they have none, the <b>Base scale</b>.<br>4. Inside that scale it looks for the range that fits the <b>number of invoices</b> the salesperson made in the period.<br>5. It applies the percentage of that range to the <b>whole</b> total sold in the period."
-msgstr "1. Eliges el período en el informe (este mes, el año pasado, fechas a elección...).<br>2. Para cada vendedor, Fakturo cuenta las <b>facturas terminadas</b> de ese período (los borradores no cuentan) y suma sus totales, menos las notas de crédito.<br>3. Busca la escala de ese vendedor: la que tiene su nombre o, si no tiene ninguna, la <b>Escala base</b>.<br>4. Dentro de esa escala busca el rango que corresponde a la <b>cantidad de facturas</b> que hizo el vendedor en el período.<br>5. Aplica el porcentaje de ese rango al total <b>completo</b> vendido en el período."
+msgid "1. You choose the period in the report (this month, last year, custom dates...).<br>2. For each salesperson Fakturo counts the <b>finished invoices</b> of that period (drafts do not count) and adds up their totals, less the credit notes.<br>3. It looks for the scale of that salesperson: the one with their name, or, if they have none, the <b>Base scale</b>.<br>4. Inside that scale it looks for the range that fits the <b>number of invoices</b> the salesperson made in the period.<br>5. It applies the percentage of that range to the <b>whole</b> total sold in the period.<br>6. If that range has a <b>fixed amount</b>, it is added once to the result."
+msgstr "1. Eliges el período en el informe (este mes, el año pasado, fechas a elección...).<br>2. Para cada vendedor, Fakturo cuenta las <b>facturas terminadas</b> de ese período (los borradores no cuentan) y suma sus totales, menos las notas de crédito.<br>3. Busca la escala de ese vendedor: la que tiene su nombre o, si no tiene ninguna, la <b>Escala base</b>.<br>4. Dentro de esa escala busca el rango que corresponde a la <b>cantidad de facturas</b> que hizo el vendedor en el período.<br>5. Aplica el porcentaje de ese rango al total <b>completo</b> vendido en el período.<br>6. Si ese rango tiene un <b>monto fijo</b>, se suma una sola vez al resultado."
 
 #: docs
 msgid "Example"
 msgstr "Ejemplo"
 
 #: docs
-msgid "Base scale: from 1 to 10 invoices = 3%, from 11 to 20 = 5%, from 21 with no end = 8%.<br>Ana made 12 invoices in the month and sold 24,000 in total. 12 is in the range 11 to 20, so she earns 5% of <b>all</b> 24,000 = 1,200. It is not 3% on the first 10 invoices and 5% on the rest: the percentage of the range applies to everything.<br>If Ana made 25 invoices she would earn 8% of everything she sold."
-msgstr "Escala base: de 1 a 10 facturas = 3%, de 11 a 20 = 5%, desde 21 sin fin = 8%.<br>Ana hizo 12 facturas en el mes y vendió 24.000 en total. 12 está en el rango de 11 a 20, así que gana el 5% de <b>todos</b> los 24.000 = 1.200. No es 3% sobre las primeras 10 facturas y 5% sobre el resto: el porcentaje del rango se aplica a todo.<br>Si Ana hubiera hecho 25 facturas ganaría el 8% de todo lo que vendió."
+msgid "Base scale: from 1 to 10 invoices = 3%, from 11 to 20 = 5%, from 21 with no end = 8%.<br>Ana made 12 invoices in the month and sold 24,000 in total. 12 is in the range 11 to 20, so she earns 5% of <b>all</b> 24,000 = 1,200. It is not 3% on the first 10 invoices and 5% on the rest: the percentage of the range applies to everything.<br>If Ana made 25 invoices she would earn 8% of everything she sold.<br>If the range 21 or more also had a fixed amount of 500, Ana would earn 8% of everything plus 500 as a prize for reaching 21 invoices."
+msgstr "Escala base: de 1 a 10 facturas = 3%, de 11 a 20 = 5%, desde 21 sin fin = 8%.<br>Ana hizo 12 facturas en el mes y vendió 24.000 en total. 12 está en el rango de 11 a 20, así que gana el 5% de <b>todos</b> los 24.000 = 1.200. No es 3% sobre las primeras 10 facturas y 5% sobre el resto: el porcentaje del rango se aplica a todo.<br>Si Ana hubiera hecho 25 facturas ganaría el 8% de todo lo que vendió.<br>Si el rango de 21 o más tuviera además un monto fijo de 500, Ana ganaría el 8% de todo más 500 como premio por llegar a 21 facturas."
 
 #: docs
 msgid "The warning sign in the report"
@@ -7863,8 +7863,8 @@ msgid "Commission Ranges"
 msgstr "Rangos de comisión"
 
 #: docs
-msgid "Each row is a range: <b>From</b> and <b>To</b> are a number of invoices in the period and <b>%</b> is the percentage of the sales that the salesperson earns. Press <b>+</b> to add a row and <b>-</b> to remove it.<br>Leave <b>To</b> empty in the last row: it means \"or more\".<br>Start the first range in 1 and make each range start right after the previous one ends (1 to 10, 11 to 20, 21 and more). If there is a gap, a salesperson whose number of invoices falls in it earns nothing."
-msgstr "Cada fila es un rango: <b>Desde</b> y <b>Hasta</b> son una cantidad de facturas del período y <b>%</b> es el porcentaje de las ventas que gana el vendedor. Pulsa <b>+</b> para agregar una fila y <b>-</b> para quitarla.<br>Deja <b>Hasta</b> vacío en la última fila: significa \"o más\".<br>Empieza el primer rango en 1 y haz que cada rango empiece justo después de que termine el anterior (1 a 10, 11 a 20, 21 y más). Si hay un hueco, un vendedor cuya cantidad de facturas caiga en él no gana nada."
+msgid "Each row is a range: <b>From</b> and <b>To</b> are a number of invoices in the period and <b>%</b> is the percentage of the sales that the salesperson earns and <b>Fixed amount</b> is an optional prize in money that is added when the salesperson reaches that range (leave it empty for none). Press <b>+</b> to add a row and <b>-</b> to remove it.<br>Leave <b>To</b> empty in the last row: it means \"or more\".<br>Start the first range in 1 and make each range start right after the previous one ends (1 to 10, 11 to 20, 21 and more). If there is a gap, a salesperson whose number of invoices falls in it earns nothing."
+msgstr "Cada fila es un rango: <b>Desde</b> y <b>Hasta</b> son una cantidad de facturas del período y <b>%</b> es el porcentaje de las ventas que gana el vendedor y <b>Monto fijo</b> es un premio opcional en dinero que se suma cuando el vendedor llega a ese rango (déjalo vacío si no hay). Pulsa <b>+</b> para agregar una fila y <b>-</b> para quitarla.<br>Deja <b>Hasta</b> vacío en la última fila: significa \"o más\".<br>Empieza el primer rango en 1 y haz que cada rango empiece justo después de que termine el anterior (1 a 10, 11 a 20, 21 y más). Si hay un hueco, un vendedor cuya cantidad de facturas caiga en él no gana nada."
 
 #: docs
 msgid "Good to know"
@@ -8095,12 +8095,12 @@ msgid "Select the type of commission scale"
 msgstr "Elige el tipo de escala de comisión"
 
 #: includes/taxonomy/scales.php
-msgid "Define commission percentage ranges"
-msgstr "Define los rangos de porcentaje de comisión"
+msgid "Define commission percentage ranges. The fixed amount is optional."
+msgstr "Define los rangos de porcentaje de comisión. El monto fijo es opcional."
 
 #: includes/taxonomy/scales.php
-msgid "Define commission percentage ranges. Leave \"To\" field empty for infinity."
-msgstr "Define los rangos de porcentaje de comisión. Deja \"Hasta\" vacío para que no tenga límite."
+msgid "Define commission percentage ranges. Leave \"To\" field empty for infinity. The fixed amount is optional."
+msgstr "Define los rangos de porcentaje de comisión. Deja \"Hasta\" vacío para que no tenga límite. El monto fijo es opcional."
 
 #: includes/taxonomy/scales.php
 msgid "To (optional)"
@@ -8125,3 +8125,8 @@ msgstr "todas las categorías"
 #: includes/taxonomy/scales.php
 msgid "A Base Scale already exists. Only one Base Scale is allowed."
 msgstr "Ya existe una escala base. Solo se permite una."
+
+
+#: includes/taxonomy/scales.php
+msgid "Fixed amount"
+msgstr "Monto fijo"
